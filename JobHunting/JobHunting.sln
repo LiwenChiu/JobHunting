@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobHunting", "JobHunting\JobHunting.csproj", "{DC64A74A-2F50-43FF-B76A-B41BC88AD8B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC64A74A-2F50-43FF-B76A-B41BC88AD8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC64A74A-2F50-43FF-B76A-B41BC88AD8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC64A74A-2F50-43FF-B76A-B41BC88AD8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC64A74A-2F50-43FF-B76A-B41BC88AD8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC1B1DE8-1F00-4F29-9B3C-6721AD1CA686}
+	EndGlobalSection
+EndGlobal
