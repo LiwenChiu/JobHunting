@@ -29,6 +29,11 @@
     <Folder Include="Areas\Companies\Data\" />
     <Folder Include="Areas\Companies\Models\" />
     <Folder Include="Areas\Companies\Views\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 
 </Project>
