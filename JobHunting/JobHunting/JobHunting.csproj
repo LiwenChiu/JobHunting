@@ -17,22 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admins\Controllers\" />
     <Folder Include="Areas\Admins\Data\" />
     <Folder Include="Areas\Admins\Models\" />
-    <Folder Include="Areas\Admins\Views\" />
-    <Folder Include="Areas\Candidates\Controllers\" />
     <Folder Include="Areas\Candidates\Data\" />
     <Folder Include="Areas\Candidates\Models\" />
-    <Folder Include="Areas\Candidates\Views\" />
-    <Folder Include="Areas\Companies\Controllers\" />
     <Folder Include="Areas\Companies\Data\" />
     <Folder Include="Areas\Companies\Models\" />
-    <Folder Include="Areas\Companies\Views\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="efpt.config.json.user" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 

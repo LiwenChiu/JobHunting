@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "DuckContext",
+   "ContextClassName": "DuckCandidatesContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Models",
+   "OutputPath": "Areas\/Candidates\/Models",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "JobHunting",
    "Schemas": null,
@@ -15,71 +15,7 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[Admins]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CandidateLetters]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CandidateOpeningRecords]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Candidates]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Companies]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CompanyApprovals]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CompanyLetters]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CompanyOrders]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CompanyResumeRecords]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Notifications]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Openings]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[OpeningTags]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[PricingPlans]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Resumes]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ResumeTags]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[TagClasses]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Tags]",
          "ObjectType": 0
       }
    ],
@@ -87,7 +23,7 @@
    "UncountableWords": null,
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
-   "UseDatabaseNames": false,
+   "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": true,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
