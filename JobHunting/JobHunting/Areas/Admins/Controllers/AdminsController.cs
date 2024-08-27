@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Admins.Areas.Admins.Models;
 using JobHunting.Areas.Admins.Models;
 
 namespace JobHunting.Areas.Admins.Controllers
@@ -34,7 +35,7 @@ namespace JobHunting.Areas.Admins.Controllers
             }
 
             var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
+                .FirstOrDefaultAsync(m => m.AdminID == id);
             if (admin == null)
             {
                 return NotFound();
@@ -54,7 +55,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AdminId,PersonnelCode,Email,Password,Name,Authority")] Admin admin)
+        public async Task<IActionResult> Create([Bind("AdminID,PersonnelCode,Email,Password,Name,Authority")] Admin admin)
         {
             if (ModelState.IsValid)
             {
@@ -86,9 +87,9 @@ namespace JobHunting.Areas.Admins.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AdminId,PersonnelCode,Email,Password,Name,Authority")] Admin admin)
+        public async Task<IActionResult> Edit(int id, [Bind("AdminID,PersonnelCode,Email,Password,Name,Authority")] Admin admin)
         {
-            if (id != admin.AdminId)
+            if (id != admin.AdminID)
             {
                 return NotFound();
             }
@@ -102,7 +103,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AdminExists(admin.AdminId))
+                    if (!AdminExists(admin.AdminID))
                     {
                         return NotFound();
                     }
@@ -125,7 +126,7 @@ namespace JobHunting.Areas.Admins.Controllers
             }
 
             var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
+                .FirstOrDefaultAsync(m => m.AdminID == id);
             if (admin == null)
             {
                 return NotFound();
@@ -151,7 +152,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
         private bool AdminExists(int id)
         {
-            return _context.Admins.Any(e => e.AdminId == id);
+            return _context.Admins.Any(e => e.AdminID == id);
         }
     }
 }
