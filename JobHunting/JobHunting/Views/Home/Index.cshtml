@@ -2,6 +2,46 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="container border border-2" style="width:1000px;height:120px">
+    <div class="row">
+        <div class="col">
+            <div class="mb-3 mt-3 calculator-dropdown">
+                <label class="calculator-dropdown-label" for="apiChoice">選擇地區</label>
+                <select class="select" name="" id="" style="width:200px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+                <label class="calculator-dropdown-label" for="apiChoice">能力標籤</label>
+                <select class="select" name="" id="" style="width:200px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+                <label class="calculator-dropdown-label" for="apiChoice">選擇工時</label>
+                <select class="select" name="" id="" style="width:200px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 mb-0">
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" />
+            </div>
+            <div class="col-2 mb-0">
+                <button class="btn btn-warning">搜尋</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
 <div class="text-center">
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
@@ -14,14 +54,18 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <!-- Product name-->
-                                <h5 class="fw-bolder">Fancy Product</h5>
+                                <h5 class="fw-bolder">職缺</h5>
                                 <!-- Product price-->
-                                $40.00 - $80.00
+                                公司名稱
                             </div>
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" href="#">應徵</a>
+                                <a class="btn btn-outline-dark mt-auto" href="#">儲存</a>
+                                </div>
+                            
                         </div>
                     </div>
                 </div>
