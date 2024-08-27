@@ -11,7 +11,7 @@ namespace JobHunting.Areas.Admins.Controllers
         }
         public IActionResult JobSeeker()
         {
-            return View(JobSeeker);
+            return View();
         }
     }
 }
