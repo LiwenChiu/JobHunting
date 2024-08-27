@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<JobHunting.Areas.Candidates.Models.Candidate>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "求職者會員中心";
 }
 
 @section Styles
@@ -9,15 +9,13 @@
 
 }
 
-@* <h1>Index</h1> *@
-
-@* <partial name="_Member" /> *@
+<partial name="_Member" />
 @* <partial name="_Resume" /> *@
 @* <partial name="_Opening" /> *@
 @* <partial name="_Record" /> *@
 @* <partial name="_Message" /> *@
 
-<div class="container py-3 back">
+@* <div class="container py-3 back">
     <div class="row">
         <div class="col-lg-4">
             <div class="card mb-4">
@@ -181,95 +179,7 @@
             </div>
         </div>
     </div>
-</div>
-
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NationalID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sex)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Birthday)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Degree)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmploymentStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MilitaryService)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NationalID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sex)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Birthday)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Degree)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmploymentStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MilitaryService)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CandidateID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CandidateID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CandidateID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table> *@
+</div> *@
 
 @section Scripts
 {
