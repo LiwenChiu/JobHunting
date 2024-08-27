@@ -1,3 +1,4 @@
+using Admins.Areas.Admins.Models;
 using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
