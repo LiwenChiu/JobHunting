@@ -2,12 +2,13 @@
 
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Area("Companies")]
     public class HomeController : Controller
     {
-        [Area("Companies")]
         public IActionResult Index()
         {
             return View();
         }
+
     }
 }

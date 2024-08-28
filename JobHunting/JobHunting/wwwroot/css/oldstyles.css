@@ -11058,8 +11058,12 @@ body {
   background-color: #212529;
   color: rgba(255, 255, 255, 0.5);
 }
+.sb-sidenav-warning {
+    background-color: #ffc107;
+    color: rgba(255, 193, 7, 0.5);
+}
 .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
-  color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.25);
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link {
   color: rgba(255, 255, 255, 0.5);
