@@ -1,64 +1,63 @@
 ﻿@{
-    Layout = null;
+    ViewData["Title"] = "管理者中心";
 }
-@section Styles {
-    <link href="~/css/oldstyles.css" rel="stylesheet" />
-    <link href="~/css/styles.css" rel="stylesheet" />
-    <style>
-    .form-group {
-        margin: 30px;
-    }
 
+@section Styles {
+    <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" asp-append-version="true" />
+    <style>
+
+    </style>
 }
-</style>
+
+<table class="table table-striped table-hover">
+    <thead class="table-primary">
+        <tr>
+            <td>ProduceID</td>
+            <td>ProduceName</td>
+            <td>SupplierID</td>
+            <td>CategoryID</td>
+            <td>QuantityPerUnit</td>
+            <td>UnitPrice</td>
+            <td>UnitInStock</td>
+            <td>UnitOnOrder</td>
+            <td>ReorderLevel</td>
+            <td>Discontinued</td>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="~/lib/datatables/js/jquery.datatables.min.js" asp-append-version="true"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("table").dataTable({
+                ajax: {
+                    type: "GET",
+                    url: "/Products/IndexJson",
+                    dataSrc: function (data) {
+                        return data;
+                    }
+                },
+                columns: [
+                    { "data": "productId", "width": "10%" },
+                    { "data": "productName", "width": "10%" },
+                    { "data": "supplierId", "width": "10%" },
+                    { "data": "categoryId", "width": "10%" },
+                    { "data": "quantityPerUnit", "width": "10%" },
+                    { "data": "unitPrice", "width": "10%" },
+                    { "data": "unitsInStock", "width": "10%" },
+                    { "data": "unitsOnOrder", "width": "10%" },
+                    { "data": "reorderLevel", "width": "10%" },
+                    { "data": "discontinued", "width": "10%" },
+                ],
+                fixedHeader: {
+                    header: true
+                },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.1.3/i18n/zh-HANT.json',
+                }
+            });
+        });
+    </script>
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>小鴨上工-登入</title>
-    <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-</head>
-<body class="bg-warning">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div><h3 class="text-center font-weight-light my-4">登入</h3></div>
-                                <div class="card-body">
-                                    <form asp-controller="Home" asp-action="Index">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                        <div class="form-group">
-                                            <label class="control-label">管理員ID :</label>
-                                            <input id="adminId" name="adminId" class="form-control rounded-pill" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">密碼 :</label>
-                                            <input id="password" name="password" class="form-control rounded-pill" />
-                                        </div>
-                                        <div class="form-group text-center">
-                                            <input type="submit" value="登入" class="btn btn-primary rounded-pill" id="submit" name="subimt" />
-                                        </div>
-                                        <div class="small"><a href="register.html">註冊</a></div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-        
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="js/scripts.js"></script>
-</body>
-</html>
