@@ -1,8 +1,4 @@
-﻿@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -42,7 +38,8 @@
                                             <input id="password" name="password" class="form-control rounded-pill" />
                                         </div>
                                         <div class="form-group text-center">
-                                            <input type="submit" value="登入" class="btn btn-primary rounded-pill" id="submit" name="subimt" />
+                                            <button id="btnLogin" class="btn btn-primary rounded-pill" name="subimt" v-on:click="StatusChange">登入</button>
+                                            @* <input type="submit" value="登入" class="btn btn-primary rounded-pill" id="submit" name="subimt" /> *@
                                         </div>
                                         <div class="small"><a href="register.html">註冊</a></div>
                                     </form>
@@ -53,9 +50,10 @@
                 </div>
             </main>
         </div>
-        
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </body>
 </html>

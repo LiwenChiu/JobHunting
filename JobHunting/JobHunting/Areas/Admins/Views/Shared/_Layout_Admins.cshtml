@@ -26,10 +26,8 @@
             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color:lightgray;"><h3>小鴨上工</h3></a>
         </div>
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <a class="nav-link" role="button">
-            <li class="mx-2">返回首頁</li></a>
-            <a class="nav-link" role="button">
-            <li class="mx-2">登出</li></a>
+            <li class="mx-2"><a class="nav-link" role="button">返回首頁</a></li>
+            <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
         </ul>
     </nav>
 
@@ -92,6 +90,8 @@
     <script src="~/js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="~/js/datatables-simple-demo.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.min.js" integrity="sha512-68nX9HBOSaBoykGPeuSV0g7tEn3q76QId4mMVtYkAYFD+Ll/nNi5/ugqsCVPKih7hRAGNQuARd4jbOmuAMsM1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
