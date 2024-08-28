@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/test.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="~/css/oldstyles.css" rel="stylesheet" />
+    @await RenderSectionAsync("Styles", required: false)
     
 </head>
 <body class="sb-nav-fixed" >
