@@ -9,5 +9,11 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
+
+        [Area("Companies")]
+        public IActionResult IndexCompanies()
+        {
+            return View();
+        }
     }
 }
