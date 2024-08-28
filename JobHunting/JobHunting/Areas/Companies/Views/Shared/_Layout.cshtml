@@ -9,21 +9,26 @@
     <link rel="stylesheet" href="~/test.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="~/css/oldstyles.css" rel="stylesheet" />
-    
+    <style>
+        a{
+            text-decoration: none
+        }
+    </style>
 </head>
 <body class="sb-nav-fixed" >
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3 " href="index.html">會員帳號 </a>
+        <a class="navbar-brand ps-3 ">會員帳號 </a>
         <!-- Sidebar Toggle-->
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 btn btn-light bg-" id="sidebarToggle"
-                href="#!"></button>
+        <button class=" btn-sm order-1 order-lg-0 me-4 me-lg-0 " id="sidebarToggle" href="#!">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         <div class="d-none d-md-inline-block form-inline mx-auto ">
-            <h3>小鴨上工</h3>
+            <h3><a class="" asp-area="" asp-controller="Home" asp-action="Index">小鴨上工</a></h3>
         </div>
         <!-- Navbar-->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <a href="#">
+            <a class="" asp-area="" asp-controller="Home" asp-action="Index">
             <li class="mx-2">返回首頁</li>
             </a>
             <a href="#">
@@ -40,11 +45,9 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                             <a class="nav-link" asp-area="Companies" asp-controller="Companies" asp-action="Index">
-                                <div></div>
                                 會員中心
                             </a>
                             <a class="nav-link collapsed" asp-area="Companies" asp-controller="Home" asp-action="Index">
-                                <div></div>
                                 基本資料
                                 <div class="sb-sidenav-collapse-arrow"></div>
                             </a>
@@ -52,16 +55,22 @@
                                  data-bs-parent="#sidenavAccordion">
                             </div>
                                 <a class="nav-link collapsed" asp-area="Companies" asp-controller="Home" asp-action="Index">
-                                    <div></div>
                                     公司介紹
                                     <div class="sb-sidenav-collapse-arrow"></div>
                                 </a>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
-                                 data-bs-parent="#sidenavAccordion"></div>
-                                <a class="nav-link collapsed" asp-area="Companies" asp-controller="Home" asp-action="Index">
-                                    求職者履歷
-                                    <div class="sb-sidenav-collapse-arrow"></div>
-                                </a>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                求職者履歷
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" asp-area="Companies" asp-controller="Home" asp-action="Index">暫存履歷</a>
+                                <a class="nav-link" asp-area="Companies" asp-controller="Home" asp-action="Index">已錄取</a>
+                                <a class="nav-link" asp-area="Companies" asp-controller="Home" asp-action="Index">已發送面試邀約</a>
+                                </nav>
+                            </div>
+                            
                             <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
                                  data-bs-parent="#sidenavAccordionPages">
                             </div>
