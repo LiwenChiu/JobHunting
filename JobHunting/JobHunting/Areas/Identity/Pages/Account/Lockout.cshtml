@@ -1,0 +1,10 @@
+﻿@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "帳號暫時被鎖定!";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">密碼輸入錯誤達上限，請稍後再嘗試登入。</p>
+</header>
