@@ -56,6 +56,7 @@
                     <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2">登入</button><br />
                     <a id="forgot-password" asp-page="./ForgotPassword">忘記密碼</a>
                     <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">註冊會員</a>
+                    <partial name="_CandidateBtnLogin" />
                 </div>
                 <div>
                     @* <p>
