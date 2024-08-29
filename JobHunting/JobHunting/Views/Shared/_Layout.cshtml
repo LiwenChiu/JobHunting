@@ -14,8 +14,13 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <link href="css/styles.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
+    <style>
+        .bgcolor {
+            background-color: #ffeedf;
+        }
+    </style>
 </head>
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bgcolor">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
