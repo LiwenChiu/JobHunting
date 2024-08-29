@@ -1,33 +1,46 @@
-﻿@section Styles
-{
-
-}
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="row"></th>
-            <th>公司</th>
-            <th>職缺</th>
-            <th>履歷</th>
-            <th>應徵日期</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="CandidateOpeningRecords">
-        <tr v-for="item in jobclass">
-            <th scope="row">{{item.id}}</th>
-            <td>{{item.companyName}}</td>
-            <td>{{item.jobName}}</td>
-            <td>{{item.resume}}</td>
-            <td>{{item.data}}</td>
-            <td><partial name="_OpeningDetailBtnModal" /></td>
-        </tr>
-    </tbody>
-</table>
-
-
-@section Scripts
-{
-   
-        
-}
+﻿
+@* 應徵紀錄清單 *@
+<div class="container" align="center">
+    <h3>應徵紀錄列表</h3>
+    <table class="table table-striped table-hover">
+        <thead class="table-warning" align="center">
+            <tr>
+                <th></th>
+                <th>公司</th>
+                <th>職缺</th>
+                <th>履歷</th>
+                <th>應徵日期</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="CandidateOpeningRecords">
+            <tr v-for="item in jobclass" align="center">
+                <th>{{item.id}}</th>
+                <td>{{item.companyName}}</td>
+                <td>{{item.jobName}}</td>
+                <td>{{item.resume}}</td>
+                <td>{{item.data}}</td>
+                <td><partial name="_OpeningDetailBtnModal" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" v-on:click="page1"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
