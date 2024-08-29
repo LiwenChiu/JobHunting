@@ -1,9 +1,72 @@
-﻿@section Styles
-{
+﻿@section Styles {
+    <style>
+        .inputCompanyName {
+            width: 150px;
+        }
 
+        a {
+            text-decoration: none
+        }
+
+    </style>
 }
 
+<div class="container  bg-light mt-5 " style="border-radius: 30px;">
+    <h3 class="CompanyNameh3 text-center mt-4">公司介紹</h3>
+    <div class="text-end me-5"><button class="btn btn-outline-secondary text">編輯</button></div>
+    
+    <div class="inputOutAreas text-center pt-3">
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                公司名稱<span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control inputCompanyName col">
 
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                電子郵件<span class="text-danger">*</span>
+            </label>
+            <input type="email" class="form-control inputCompanyName col">
+
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                通訊電話<span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control inputCompanyName col">
+
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                通訊地址<span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control inputCompanyName col">
+
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                福利制度
+            </label>
+            <input type="text" class="form-control inputCompanyName col">
+
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                圖片
+            </label>
+            <input type="file" class="form-control inputCompanyName col">
+
+        </div>
+        <div class="d-sm-flex my-1 py-3 inputAreas">
+            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                簡介
+            </label>
+            <textarea class="form-control" style="height:150px"></textarea>
+        </div>
+        <button type="submit" class="btn btn-outline-secondary">編輯完成</button>
+    </div>
+</div>
 
 
 @section Scripts
