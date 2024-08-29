@@ -14,8 +14,13 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <link href="css/styles.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
+    <style>
+        .bgcolor {
+            background-color: #ffeedf;
+        }
+    </style>
 </head>
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bgcolor">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
@@ -34,6 +39,17 @@
                             <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
                             <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
                             <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#!">All Products</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">求職者註冊</a></li>
+                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">求職者登入</a></li>
+                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyRegister">公司註冊</a></li>
+                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyLogin">公司登入</a></li>
                             </ul>
                         </li>
                     </ul>

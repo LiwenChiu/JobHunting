@@ -1,55 +1,59 @@
 ﻿@section Styles {
-    <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" asp-append-version="true" />
     <style>
 
     </style>
 }
 
-<table class="table table-striped table-hover">
-    <thead class="table-primary">
-        <tr>
-            <td>求職者ID</td>
-            <td>姓名</td>
-            <td>性別</td>
-            <td>年齡</td>
-            <td>學歷</td>
-            <td>地區</td>
-        </tr>
-    </thead>
-</table>
+<div class="container py-2">
+    <div class="card mb-4">
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <td>公司ID</td>
+                    <td>公司名稱</td>
+                    <td>統一編號</td>
+                    <td>聯絡人</td>
+                    <td>電話</td>
+                    <td>電子信箱</td>
+                </tr>
+            </thead>
+            <tbody id="CandidateOpeningRecords">
+                <tr class="overcard">
+                    <td>hihi</td>
+                    <td>sdgasfs</td>
+                    <td>itsdVDfsdme</td>
+                    <td>isdfSdffa</td>
+                    <td>srjsdzhr</td>
+                    <td>sfdsrfkiuytgy</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <script src="~/lib/datatables/js/jquery.datatables.min.js" asp-append-version="true"></script>
-    <script src="//cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $("table").dataTable({
-                ajax: {
-                    type: "GET",
-                    url: "/Products/IndexJson",
-                    dataSrc: function (data) {
-                        return data;
-                    }
-                },
-                columns: [
-                    { "data": "productId", "width": "10%" },
-                    { "data": "productName", "width": "10%" },
-                    { "data": "supplierId", "width": "10%" },
-                    { "data": "categoryId", "width": "10%" },
-                    { "data": "quantityPerUnit", "width": "10%" },
-                    { "data": "unitPrice", "width": "10%" },
-                    { "data": "unitsInStock", "width": "10%" },
-                    { "data": "unitsOnOrder", "width": "10%" },
-                    { "data": "reorderLevel", "width": "10%" },
-                    { "data": "discontinued", "width": "10%" },
-                ],
-                fixedHeader: {
-                    header: true
-                },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/2.1.3/i18n/zh-HANT.json',
-                }
-            });
-        });
+
     </script>
 }
