@@ -20,7 +20,7 @@
     @* 上方導覽列 *@
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" role="button">會員帳號</a>
+        <a class="navbar-brand ps-3" role="button"><i class="fa-regular fa-building" style="color: #ffffff;"></i>     會員帳號</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
         <!-- Navbar Return-->
@@ -40,7 +40,7 @@
             <nav class="sb-sidenav sb-sidenav-warning" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">會員中心</div>
+@*                         <div class="sb-sidenav-menu-heading">會員中心</div> *@
                         <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=0}"><h4>會員首頁</h4></button>
                         <nav class="sb-sidenav-menu-nested nav">
                             <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1}">會員資料</button>
@@ -87,10 +87,10 @@
                         </nav>
                     </div>
                 </div>
-                <div class="sb-sidenav-footer">
+                @* <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
                     公司帳號
-                </div>
+                </div> *@
             </nav>
         </div>
 
