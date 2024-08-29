@@ -23,6 +23,15 @@
             <h2 class="text-center">新會員註冊</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="text-center pb-3">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                    <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                    <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
+                </div>
+            </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.NationalID" class="form-control rounded-pill bg-danger bg-opacity-25" aria-required="true" placeholder="身分證字號" />
                 <label asp-for="Input.NationalID">身分證字號</label>
