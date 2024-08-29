@@ -58,13 +58,13 @@
                             </button>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){ResumeStatus = 1}">履歷暫存</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 1;}">履歷暫存</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){ResumeStatus = 2}">面試邀約</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 2;}">面試邀約</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){ResumeStatus = 3}">已獲錄取</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 3;}">已獲錄取</button>
                                 </nav>
                             </div>
                         </nav>
@@ -75,10 +75,10 @@
                             </button>
                             <div class="collapse" id="collapseMessage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){MessageStatus = 1}">應徵訊息</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5;MessageStatus = 1;}">應徵訊息</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){MessageStatus = 2}">意見訊息</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5;MessageStatus = 2;}">意見訊息</button>
                                 </nav>
                             </div>
                         </nav>
