@@ -49,10 +49,10 @@
                             </button>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext">公司清單</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){MemberStatus = 1}">公司清單</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext">求職者清單</button>
+                                    <button type="button" class="nav-link astext" v-on:click="function(){MemberStatus = 2}">求職者清單</button>
                                 </nav>
                             </div>
                         </nav>
@@ -110,6 +110,7 @@
             data() {
                 return {
                     pageStatus: 0,
+                    MemberStatus: 1,
                 };
             },
             methods:{
