@@ -1,0 +1,145 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+@section Styles {
+    <style>
+        .returnlogin {
+            text-align:right;
+        }
+
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
+
+    </style>
+
+
+
+}
+
+@* <h1>@ViewData["Title"]</h1> *@
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2 class="text-center">註冊公司資料</h2>
+        <section>
+            <form id="account" method="post">
+                <hr />
+                <div class="text-center pb-3">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+
+                        <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off"
+                               checked>
+                        <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input id="Input.CompanyID" name="Input.CompanyID" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="CompanyID" aria-required="true" placeholder="公司名稱" />
+                    <label id="Input.CompanyID" name="Input.CompanyID" class="form-label">公司名稱</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.CompanyID" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="Email" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email" class="form-label">電子郵件</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.GUINumber" name="Input.GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
+                    <label id="Input.GUINumber" name="Input.GUINumber" class="form-label">統一編號</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.GUINumber" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.ContactPhone" name="Input.ContactPhone" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="ContactPhone" aria-required="true" placeholder="通訊電話" />
+                    <label id="Input.ContactPhone" name="Input.ContactPhone" class="form-label">通訊電話</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.ContactPhone" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.Address" name="Input.Address" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="Address" aria-required="true" placeholder="通訊地址" />
+                    <label id="Input.Address" name="Input.Address" class="form-label">通訊地址</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.Address" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.ContactName" name="Input.ContactName" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="ContactName" aria-required="true" placeholder="聯絡人" />
+                    <label id="Input.ContactName" name="Input.ContactName" class="form-label">聯絡人</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.ContactName" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.Password" class="form-label">密碼</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <!-- @* <div class="checkbox mb-3">
+                    <label asp-for="Input.RememberMe" class="form-label ">
+                        <input class="form-check-input" asp-for="Input.RememberMe" />
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div> *@ -->
+                <div class="text-center">
+
+                    <button id="login-submit" type="submit"
+                            class="w-50 btn btn-md btn-warning rounded-pill py-2">
+                        註冊
+                    </button><br />
+                    <p>
+                        <a asp-page="./CompanyLogin" asp-route-returnUrl="@Model.ReturnUrl">已有會員?登入</a>
+                        <partial name="_CompanyBtnRegister"/>
+                </div>
+                <div>
+                    <!-- @* <p>
+                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email
+                            confirmation</a>
+                    </p> *@ -->
+                </div>
+            </form>
+        </section>
+    </div>
+    <!-- @* <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to log in.</h3>
+            <hr />
+            @{
+            if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+            <div>
+                <p>
+                    There are no external authentication services configured. See this <a
+                        href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                        about setting up this ASP.NET application to support logging in via external services</a>.
+                </p>
+            </div>
+            }
+            else
+            {
+            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
+                method="post" class="form-horizontal">
+                <div>
+                    <p>
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name"
+                            title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                        }
+                    </p>
+                </div>
+            </form>
+            }
+            }
+        </section>
+    </div> *@ -->
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
