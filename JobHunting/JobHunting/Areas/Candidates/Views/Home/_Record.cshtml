@@ -11,8 +11,8 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="CandidateOpeningRecords">
-                <tr v-for="item in jobclass">
+            <tbody>
+                <tr v-for="item in jobclass.slice(pageStart, pageEnd)">
                     <th scope="row">{{item.id}}</th>
                     <td>{{item.companyName}}</td>
                     <td>{{item.jobName}}</td>
@@ -25,17 +25,15 @@
         <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item">
+                    <li class="page-item" v-on:click="setPage(currentPage-1)">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item">
+                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                        <a class="page-link" href="#">{{item}}</a>
+                    </li>
+                    <li class="page-item" v-on:click="setPage(currentPage+1)">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
