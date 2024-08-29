@@ -6,6 +6,13 @@
 
 <h1>這裡是局部檢視_Message訊息總覽</h1>
 
+<div v-if="MessageStatus == 1">
+    <partial name="_Notifications" />
+</div>
+<div v-else>
+    <partial name="_OpinionLetters" />
+</div>
+
 
 @section Scripts
 {
