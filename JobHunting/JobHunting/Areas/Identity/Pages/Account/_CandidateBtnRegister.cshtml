@@ -1,0 +1,110 @@
+﻿<div class="mb-3">
+    <button type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#modalId"
+            class="btn btn-warning">
+        註冊
+    </button>
+</div>
+<div class="modal fade scrollbar"
+     id="modalId"
+     tabindex="-1"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     role="dialog"
+     aria-labelledby="modalTitleId"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+         role="document">
+        <div class="modal-content col-md-4">
+            <div class="modal-header" style="background-color: #f7d179;">
+                <h5 class="modal-title text-center" id="modalTitleId" style="width:95% ;">
+                    來到小鴨，馬上上工
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="width:5% ;">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <h2 class="text-center">新會員註冊</h2>
+                            <hr />
+                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            <div class="text-center pb-3">
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                                    <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                                    <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
+                                </div>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input id="Input.NationalID" name="Input.NationalID" class="form-control rounded-pill bg-danger bg-opacity-25" aria-required="true" placeholder="身分證字號" />
+                                <label id="Input.NationalID" name="Input.NationalID" class="form-label">身分證字號</label>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Input.NationalID" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input id="Input.Email" name="Input.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                <label id="Input.Email" name="Input.Email" class="form-label">電子信箱</label>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Input.Email" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input id="Input.Password" name="Input.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <label id="Input.Password" name="Input.Password" class="form-label">密碼</label>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Input.Password" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input id="Input.ConfirmPassword" name="Input.ConfirmPassword" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <label id="Input.ConfirmPassword" name="Input.ConfirmPassword" class="form-label">確認密碼</label>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Input.ConfirmPassword" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="text-center">
+                                <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill">註冊</button>
+                                <p>
+                                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">已有會員?登入</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    @* <div class="col-md-6 col-md-offset-2">
+                    <section>
+                    <h3>Use another service to register.</h3>
+                    <hr />
+                    @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                    <div>
+                    <p>
+                    There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                    about setting up this ASP.NET application to support logging in via external services</a>.
+                    </p>
+                    </div>
+                    }
+                    else
+                    {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                    <p>
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                    }
+                    </p>
+                    </div>
+                    </form>
+                    }
+                    }
+                    </section>
+                    </div> *@
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
