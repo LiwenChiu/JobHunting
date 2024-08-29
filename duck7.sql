@@ -23,7 +23,8 @@ CREATE TABLE Openings
 (
 	OpeningID int primary key identity,
 	CompanyID int not null
-		references Companies(CompanyID),
+		references Companies(CompanyID)
+		on delete cascade,
 	Title nvarchar(60) not null,
 	TitleClass nvarchar(100),
 	[Address] nvarchar(100),
@@ -57,7 +58,8 @@ CREATE TABLE Resumes
 (
 	ResumeID int primary key identity,
 	CandidateID int not null
-		references Candidates(CandidateID),
+		references Candidates(CandidateID)
+		on delete cascade,
 	Title nvarchar(60) not null,
 	TitleClass nvarchar(100),
 	Intro nvarchar(200),
@@ -111,8 +113,9 @@ CREATE TABLE Tags
 (
 	TagID int primary key identity,
 	TagName nvarchar(30) not null,
-	TagClassID int not null
+	TagClassID int not null default(0)
 		references TagClasses(TagClassID)
+		on delete set default
 )
 GO
 CREATE TABLE OpeningTags
