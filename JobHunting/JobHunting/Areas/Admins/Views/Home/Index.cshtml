@@ -1,57 +1,123 @@
-﻿
+﻿@model IEnumerable<JobHunting.Areas.Candidates.Models.Candidate>
 
-@section Styles {
-    <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" asp-append-version="true" />
+@{
+    ViewData["Title"] = "管理中心";
+}
+
+@section Styles
+{
     <style>
-
+        .astext {
+            background: none;
+            border: none;
+            margin: 0;
+            cursor: pointer;
+        }
     </style>
 }
 
-<table class="table table-striped table-hover">
-    <thead class="table-primary">
-        <tr>
-            <td>求職者ID</td>
-            <td>姓名</td>
-            <td>性別</td>
-            <td>年齡</td>
-            <td>學歷</td>
-            <td>地區</td>
-        </tr>
-    </thead>
-</table>
+<div class="sb-nav-fixed" id="app">
+    @* 上方導覽列 *@
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" role="button"><i class="fa-solid fa-user-tie" style="color: #ffffff;"></i>    員工帳號</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Return-->
+        <div class="d-none d-md-inline-block form-inline mx-auto ">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color:lightgray;"><h3>小鴨上工</h3></a>
+        </div>
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="mx-2"><a class="nav-link" role="button">返回首頁</a></li>
+            <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
+        </ul>
+    </nav>
 
-@section Scripts {
-    <script src="~/lib/datatables/js/jquery.datatables.min.js" asp-append-version="true"></script>
-    <script src="//cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
+    @* 左側導覽列 *@
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <!-- left-Navbar-->
+            <nav class="sb-sidenav accordion sb-sidenav-warning" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        @* <div class="sb-sidenav-menu-heading">管理中心</div> *@
+                        <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=0}"><h4>管理首頁</h4></button>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="function(){pageStatus=1}">
+                                會員管理
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </button>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1;MemberStatus = 1;}">公司清單</button>
+                                </nav>
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1;MemberStatus = 2;}">求職者清單</button>
+                                </nav>
+                            </div>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=2}">訂單紀錄</button>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=3}">審核公司</button>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4}">客服中心</button>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5}">方案管理</button>
+                        </nav>
+                    </div>
+                </div>
+                @* <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    管理者帳號
+                </div> *@
+            </nav>
+        </div>
+
+        @* 求職者會員中心內容 *@
+        <div id="layoutSidenav_content">
+            <template v-if="pageStatus == 0">
+                <partial name="_Home" />
+            </template>
+            <template v-else-if="pageStatus == 1">
+                <partial name="_MemberManagement" />
+            </template>
+            <template v-else-if="pageStatus == 2">
+                <partial name="_Orders" />
+            </template>
+            <template v-else-if="pageStatus == 3">
+                <partial name="_Approval" />
+            </template>
+            <template v-else-if="pageStatus == 4">
+                <partial name="_OpinionLetters" />
+            </template>
+            <template v-else>
+                <partial name="_PricingPlansManagement" />
+            </template>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        $(document).ready(function () {
-            $("table").dataTable({
-                ajax: {
-                    type: "GET",
-                    url: "/Products/IndexJson",
-                    dataSrc: function (data) {
-                        return data;
-                    }
-                },
-                columns: [
-                    { "data": "productId", "width": "10%" },
-                    { "data": "productName", "width": "10%" },
-                    { "data": "supplierId", "width": "10%" },
-                    { "data": "categoryId", "width": "10%" },
-                    { "data": "quantityPerUnit", "width": "10%" },
-                    { "data": "unitPrice", "width": "10%" },
-                    { "data": "unitsInStock", "width": "10%" },
-                    { "data": "unitsOnOrder", "width": "10%" },
-                    { "data": "reorderLevel", "width": "10%" },
-                    { "data": "discontinued", "width": "10%" },
-                ],
-                fixedHeader: {
-                    header: true
-                },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/2.1.3/i18n/zh-HANT.json',
-                }
-            });
-        });
+        let VueApp = {
+            data() {
+                return {
+                    pageStatus: 0,
+                    MemberStatus: 1,
+                };
+            },
+            methods:{
+
+            },
+        };
+
+        let app = Vue.createApp(VueApp).mount("#app");
     </script>
 }

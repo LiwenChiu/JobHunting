@@ -1,0 +1,21 @@
+﻿@section Styles {
+    <style>
+
+    </style>
+}
+
+<h1>這裡是局部檢視_MemberManagement會員管理</h1>
+
+<template v-if="MemberStatus == 1">
+    <partial name="_CompanyList" />
+</template>
+<template v-else>
+    <partial name="_CandidateList" />
+</template>
+
+@section Scripts {
+    
+    <script>
+        
+    </script>
+}
