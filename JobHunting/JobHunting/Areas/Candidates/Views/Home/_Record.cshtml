@@ -2,12 +2,32 @@
 {
 
 }
-
-
-<h1>這裡是局部檢視_Record應徵紀錄</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="row"></th>
+            <th>公司</th>
+            <th>職缺</th>
+            <th>履歷</th>
+            <th>應徵日期</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="CandidateOpeningRecords">
+        <tr v-for="item in jobclass">
+            <th scope="row">{{item.id}}</th>
+            <td>{{item.companyName}}</td>
+            <td>{{item.jobName}}</td>
+            <td>{{item.resume}}</td>
+            <td>{{item.data}}</td>
+            <td><partial name="_OpeningDetailBtnModal" /></td>
+        </tr>
+    </tbody>
+</table>
 
 
 @section Scripts
 {
-
+   
+        
 }
