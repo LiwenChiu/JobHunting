@@ -18,38 +18,42 @@
         .bgcolor {
             background-color: #ffeedf;
         }
+
+        .astext {
+            background: none;
+            border: none;
+            margin: 0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="sb-nav-fixed bgcolor">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#!">小鴨上工</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">小鴨上工</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">首頁</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">意見回饋</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+                    @* <li class="nav-item astext"><partial name="_OpinionLettersBtnPartial" /></li> *@
+                        <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">All Products</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">Admins/Login</a></li>
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                                <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
+                                <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
+                                <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">All Products</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">求職者註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">求職者登入</a></li>
-                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyRegister">公司註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyLogin">公司登入</a></li>
+                                <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">求職者註冊</a></li>
+                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">求職者登入</a></li>
+                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyRegister">公司註冊</a></li>
+                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyLogin">公司登入</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -61,8 +65,8 @@
         <header class="bg-warning py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">Home Page</h1>
-            </div>
+                    <h1 class="display-4 fw-bolder">Home Page</h1>
+                </div>
             </div>
         </header>
         <br />
@@ -73,7 +77,7 @@
                     @RenderBody()
                 </div>
             </main>
-            <footer class="py-4 bg-light mt-auto">
+            @* <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
                         <div class="text-muted">Copyright &copy; Your Website 2023</div>
@@ -84,9 +88,52 @@
                         </div>
                     </div>
                 </div>
-            </footer>
+            </footer> *@
+        </div>
+
+        @* 意見處理Modal *@
+    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+         aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container bg-light" style="border-radius: 30px;">
+                        <div class="inputOutAreas" style="width:95%">
+                            <h3 class="CompanyNameh3" style="text-align: center">意見信件</h3>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label">客服類別</label>
+                                <select class="form-control">
+                                    <option value="value">網站使用問題</option>
+                                    <option value="value">申訴/檢舉公司</option>
+                                    <option value="value">建議</option>
+                                </select>
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
+                                <input type="text" class="form-control ">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <img src="~/images/no_image_available.jpg" />
+                            </div>
+
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                <textarea class="form-control" style="height:150px" name="意見信件訊息"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="text-center pb-3 "><label class="fw-bold">目前處理狀態 : 處理中/已處理</label></div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
