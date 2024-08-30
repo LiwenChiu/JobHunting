@@ -2,10 +2,9 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using JobHunting.Areas.Admins.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Admins.Areas.Admins.Models;
+namespace JobHunting.Areas.Admins.Models;
 
 public partial class DuckAdminsContext : DbContext
 {
@@ -20,7 +19,7 @@ public partial class DuckAdminsContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E8670DB8AE");
+            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E86BBEC4D2");
 
             entity.Property(e => e.Email)
                 .IsRequired()
