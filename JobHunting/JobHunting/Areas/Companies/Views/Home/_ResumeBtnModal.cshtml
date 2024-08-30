@@ -1,0 +1,216 @@
+﻿<!-- Button trigger modal -->
+    <button type="button" data-bs-toggle="modal"
+            data-bs-target="#modalId" class="btn btn-primary">
+        查看履歷
+    </button>
+
+<!-- Modal -->
+<div class="modal fade"
+     id="modalId"
+     tabindex="-1" 
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     role="dialog"
+     aria-labelledby="modalTitleId"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h3 class="modal-title text-center" id="modalTitleId" style="width:95%">
+                    履歷
+                </h3>
+                <button type="button" 
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mb-3">
+                    <div class="card bg-warning">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label for="" class="mb-2" size="10">姓名</label>
+                                                    <input type="text">
+                                                    <label for="" class="mb-2">性別</label>
+                                                    <input type="radio" name="sex"><label>男</label>
+                                                    <input type="radio" name="sex"><label>女</label>
+                                                    <input type="radio" name="sex"><label>其他</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">生日</label>
+                                                    <input type="date">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">電話</label>
+                                                    <input type="tel">
+                                                    <label for="" class="mb-2">學歷</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">郵件</label>
+                                                    <input type="email" class="form-control">
+                                                </div>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label for="" class="mb-2">就業狀態</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">上班時段</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">希望職稱</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">能力標籤 / 證照</label>
+                                                    <textarea name="" id="" class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">自傳</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success">暫存</button>
+                @* 發送面試通知按鈕 *@
+                <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                        data-bs-target="#interviewMailBtn">
+                    面試
+                </button>
+                @* 發送錄取通知按鈕 *@
+                <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                        data-bs-target="#OfferMailBtn">
+                    錄取
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* 發送錄取通知 *@
+
+<div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+     aria-labelledby="modalTitleId " aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                    <div class="inputOutAreas">
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                            <input type="date" class="form-control inputDate">
+                        </div>
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                            <input type="time" class="form-control inputTime">
+                        </div>
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                            <input type="text" class="form-control inputPlace">
+                        </div>
+
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                            <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-warning">
+                <button type="submit" class="btn btn-outline-secondary">發送</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* 發送面試通知 *@
+
+<div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+     aria-labelledby="modalTitleId " aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                    <div class="inputOutAreas">
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                            <input type="date" class="form-control inputDate">
+                        </div>
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                            <input type="time" class="form-control inputTime">
+                        </div>
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                            <input type="text" class="form-control inputPlace">
+                        </div>
+
+                        <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                            <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                            <textarea class="form-control " style="height:150px" name="錄用通知訊息"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-warning">
+                <button type="submit" class="btn btn-outline-secondary">發送</button>
+            </div>
+        </div>
+    </div>
+</div>
