@@ -50,52 +50,52 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
 @*                         <div class="sb-sidenav-menu-heading">會員中心</div> *@
-                        <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=0}"><h4>會員首頁</h4></button>
+                        <button type="button" class="nav-link astext" v-on:click="pageStatus=0"><h4>會員首頁</h4></button>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1}">會員資料</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=1">會員資料</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=2}">公司介紹</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=2">公司介紹</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=3}">職缺刊登</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">職缺刊登</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="function(){pageStatus=4}">
+                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=4">
                                 履歷瀏覽
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </button>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 1;}">履歷暫存</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 1;">履歷暫存</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 2;}">面試邀約</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 2;">面試邀約</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4;ResumeStatus = 3;}">已獲錄取</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 3;">已獲錄取</button>
                                 </nav>
                             </div>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseMessage" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="function(){pageStatus=5}">
+                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseMessage" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=5">
                                 訊息總覽
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </button>
                             <div class="collapse" id="collapseMessage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5;MessageStatus = 1;}">應徵訊息</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus = 1;">應徵訊息</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5;MessageStatus = 2;}">意見訊息</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus = 2;">意見訊息</button>
                                 </nav>
                             </div>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=6}">方案選擇</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=6">方案選擇</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=7}">訂單紀錄</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=7">訂單紀錄</button>
                         </nav>
                     </div>
                 </div>
