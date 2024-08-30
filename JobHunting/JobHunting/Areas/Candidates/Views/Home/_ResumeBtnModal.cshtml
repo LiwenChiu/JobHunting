@@ -18,10 +18,17 @@
         <div class="modal-content">
             <div class="card modal-body bg-warning">
                 <div class="card-body container-fluid">
-                    <label class="text-center">
-                        編輯履歷
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="TagCheckedResume = [];"></button>
-                    </label>
+                    <div class="modal-header" style="background-color: #f7d179;">
+                        <h5 class="modal-titl text-center" id="modalTitleId" style="width:95% ;">
+                            編輯履歷
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                                style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                        </button>
+                    </div>
                             
                             <div class="row">
                                 <div class="col-sm-6">
@@ -106,11 +113,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success">編輯完成</button>
+                    <button type="button" class="btn btn-success">編輯完成</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="TagCheckedResume = [];">取消</button>
-            </div>
+                        </div>
         </div>
     </div>
 </div>

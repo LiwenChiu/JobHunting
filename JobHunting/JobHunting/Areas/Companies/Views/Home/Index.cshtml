@@ -147,10 +147,33 @@
                     pageStatus: 0,
                     ResumeStatus: 1,
                     MessageStatus: 1,
+                    TagClasses: [
+                        { TagClassID: 1, TagClass: "電腦科學" },
+                        { TagClassID: 2, TagClass: "數學" },
+                        { TagClassID: 3, TagClass: "醫學" },
+                    ],
+                    Tags: [
+                        { TagClassID: 1, TagID: 1, TagName: "C#" },
+                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
+                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
+                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
+                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
+                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
+                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
+                    ],
+                    TagCheckedResume: [],
                 };
             },
             methods:{
-
+                filterTagClass: function (ClassID) {
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.TagClassID == ClassID;
+                    });
+                },
+                ReturnhashtagID: function (item) {
+                    return `#${item.TagClass}`;
+                },
             },
         };
 
