@@ -115,6 +115,9 @@
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
                                 <input type="text" class="form-control ">
                             </div>
+                            <div class="d-sm-flex inputAreas justify-content-around">
+                                <input type="file" accept="image/*" />
+                            </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <img src="~/images/no_image_available.jpg" />
                             </div>
@@ -125,11 +128,21 @@
                             </div>
 
                         </div>
-                        <div class="text-center pb-3 "><label class="fw-bold">目前處理狀態 : 處理中/已處理</label></div>
-
                     </div>
                 </div>
-
+                <div class="modal-footer">
+                    <button id="insert" type="button"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal"
+                            v-on:click="insert">
+                        送出
+                    </button>
+                    <button type="button"
+                            class="btn btn-warning"
+                            data-bs-dismiss="modal" v-on:click="TagCheckedResume=[]">
+                        取消
+                    </button>
+                </div>
             </div>
         </div>
     </div>
