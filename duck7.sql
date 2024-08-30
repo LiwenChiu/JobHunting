@@ -128,8 +128,7 @@ CREATE TABLE OpeningTags
 		on delete cascade,
 	TagID int
 		references Tags(TagID)
-		on delete cascade,
-	TagStatus bit not null default(0)
+		on delete cascade
 	primary key(OpeningID,TagID)
 )
 GO
@@ -140,8 +139,7 @@ CREATE TABLE ResumeTags
 		on delete cascade,
 	TagID int
 		references Tags(TagID)
-		on delete cascade,
-	TagStatus bit not null default(0)
+		on delete cascade
 	primary key(ResumeID,TagID)
 )
 GO
