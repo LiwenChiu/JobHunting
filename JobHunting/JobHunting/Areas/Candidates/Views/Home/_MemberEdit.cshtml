@@ -1,0 +1,117 @@
+﻿<!-- Button trigger modal -->
+<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    修改會員資料
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改會員資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">姓名</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input class="text-muted mb-0 form-control" value="Norman Nobody" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">性別</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="col">
+                                <input type="radio" id="male" name="gender">
+                                <label for="html">男</label>
+                                <input type="radio" id="female" name="gender">
+                                <label for="css">女</label>
+                                <input type="radio" id="other" name="gender">
+                                <label for="javascript">其他</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">生日</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="date" class="text-muted mb-0 form-control" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">電子信箱</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="email" class="text-muted mb-0 form-control" value="example@example.com" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">手機號碼</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="tel" class="text-muted mb-0 form-control" value="0987-654-321" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">住址</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="text-muted mb-0 form-control" value="100 台北市 中正區 重慶南路一段 122號" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">學歷</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="text-muted mb-0 form-control" value="高中" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">就業狀態</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <select>
+                                <option value="unemployed">待業中</option>
+                                <option value="employed">在職中</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">兵役</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <select>
+                                <option value="unemployed">役畢</option>
+                                <option value="employed">免役</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">儲存</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
