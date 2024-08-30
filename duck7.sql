@@ -37,6 +37,7 @@ CREATE TABLE Openings
 	ContactName nvarchar(30) not null,
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320),
+	ReleaseYN bit not null default(0),
 )
 GO
 CREATE TABLE Candidates
@@ -67,7 +68,8 @@ CREATE TABLE Resumes
 	WorkExperience nvarchar(Max),
 	Certification varbinary(Max),
 	[Time] nvarchar(60),
-	[Address] nvarchar(100)
+	[Address] nvarchar(100),
+	ReleaseYN bit not null default(1),
 )
 GO
 CREATE TABLE CandidateOpeningRecords
