@@ -50,32 +50,32 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         @* <div class="sb-sidenav-menu-heading">管理中心</div> *@
-                        <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=0}"><h4>管理首頁</h4></button>
+                        <button type="button" class="nav-link astext" v-on:click="pageStatus=0"><h4>管理首頁</h4></button>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="function(){pageStatus=1}">
+                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=1">
                                 會員管理
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </button>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1;MemberStatus = 1;}">公司清單</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=1;MemberStatus = 1;">公司清單</button>
                                 </nav>
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=1;MemberStatus = 2;}">求職者清單</button>
+                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=1;MemberStatus = 2;">求職者清單</button>
                                 </nav>
                             </div>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=2}">訂單紀錄</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=2">訂單紀錄</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=3}">審核公司</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">審核公司</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=4}">客服中心</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">客服中心</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="function(){pageStatus=5}">方案管理</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=5">方案管理</button>
                         </nav>
                     </div>
                 </div>

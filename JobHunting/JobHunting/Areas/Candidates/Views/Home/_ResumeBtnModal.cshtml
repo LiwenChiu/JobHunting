@@ -18,10 +18,10 @@
         <div class="modal-content">
             <div class="card modal-body bg-warning">
                 <div class="card-body container-fluid">
-                    <div class="row">
-                        <h3>編輯履歷</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+                    <label class="text-center">
+                        編輯履歷
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="TagCheckedResume = [];"></button>
+                    </label>
                             
                             <div class="row">
                                 <div class="col-sm-6">
@@ -30,8 +30,9 @@
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label for="" class="mb-2" size="10">姓名</label>
-                                                    <input type="text">
+                                                <label class="mb-2" size="10">姓名<input type="text" required></label>
+                                                </div>
+                                                <div>
                                                     <label for="" class="mb-2">性別</label>
                                                     <input type="radio" name="sex"><label>男</label>
                                                     <input type="radio" name="sex"><label>女</label>
@@ -43,13 +44,13 @@
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="mb-2">電話</label>
-                                                    <input type="tel">
+                                                    <input type="tel" required>
                                                     <label for="" class="mb-2">學歷</label>
                                                     <input type="text">
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="mb-2">郵件</label>
-                                                    <input type="email" class="form-control">
+                                                    <input type="email" class="form-control" required>
                                                 </div>
                                             </p>
 
@@ -79,17 +80,16 @@
                                                     <input type="text">
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">上班時段</label>
-                                                    <input type="text">
+                                                    <label class="mb-2">上班時段: <input type="time"><input type="time"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">希望職稱</label>
-                                                    <input type="text">
+                                                    <label class="mb-2">希望職稱: <input type="text"></label>
+                                                    
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">能力標籤 / 證照</label>
-                                                    <textarea name="" id="" class="form-control" rows="3"></textarea>
+                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
                                                 </div>
+                                                <partial name="_Tags" />
                                             </p>
 
                                         </div>
@@ -109,7 +109,7 @@
                         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success">編輯完成</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="TagCheckedResume = [];">取消</button>
             </div>
         </div>
     </div>

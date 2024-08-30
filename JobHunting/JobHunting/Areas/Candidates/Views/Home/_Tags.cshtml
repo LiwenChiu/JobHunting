@@ -1,21 +1,22 @@
 ﻿<p>
-    <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Toggle first element</a>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Toggle second element</button>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button>
+    <label>
+        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+        check: {{TagCheckedResume}}<label><span class="badge bg-primary" v-for="item in "></span></label>
+    </label>
 </p>
-<div class="row">
-    <div class="col">
-        <div class="collapse multi-collapse" id="multiCollapseExample1">
-            <div class="card card-body">
-                Some placeholder content for the first collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+<div class="collapse" id="TagsCollapse">
+    <div class="card card-body">
+        <template v-for="(item,index) in TagClasses">
+            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item,TagClass)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+            <div class="collapse" v-bind:id="item.TagClass">
+                <div>
+                    <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
+                        <input type="checkbox" v-bind:id="Tag.TagName" v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
+                        <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
+                    </template>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="collapse multi-collapse" id="multiCollapseExample2">
-            <div class="card card-body">
-                Some placeholder content for the second collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
-            </div>
-        </div>
+            <hr />
+        </template>
     </div>
 </div>
