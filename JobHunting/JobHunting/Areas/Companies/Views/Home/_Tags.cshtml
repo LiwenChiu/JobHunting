@@ -7,7 +7,7 @@
 <div class="collapse" id="TagsCollapse">
     <div class="card card-body">
         <template v-for="(item,index) in TagClasses">
-            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item,TagClass)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
             <div class="collapse" v-bind:id="item.TagClass">
                 <div>
                     <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">

@@ -4,6 +4,20 @@ CREATE DATABASE [Duck]
 GO
 USE [Duck]
 GO
+CREATE TABLE TitleCategories
+(
+	TitleCategoryID nchar(1) primary key,
+	TitleCategoryName nvarchar(40) not null
+)
+GO
+CREATE TABLE TitleClasses
+(
+	TitleClassID nchar(2) primary key,
+	TitleCategoryID nchar(1) not null
+		references TitleCategories(TitleCategoryID),
+	TitleClassName nvarchar(40) not null
+)
+GO
 CREATE TABLE Companies
 (
     CompanyID int primary key identity,
@@ -28,7 +42,9 @@ CREATE TABLE Openings
 		references Companies(CompanyID)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClass nvarchar(100),
+	TitleClassID nchar(2)
+		references TitleClasses(TitleClassID)
+		on delete set null,
 	[Address] nvarchar(100),
 	[Description] nvarchar(300) not null,
 	Benefits nvarchar(200),
@@ -64,7 +80,6 @@ CREATE TABLE Resumes
 		references Candidates(CandidateID)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClass nvarchar(100),
 	Intro nvarchar(200),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
