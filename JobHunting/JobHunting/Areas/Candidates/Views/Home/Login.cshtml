@@ -1,0 +1,50 @@
+﻿@section Styles {
+    <style>
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2 class="text-center">會員登入</h2>
+        <section>
+            <form id="account" method="post">
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="text-center pb-3">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                        <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.NationalID" name="Input.NationalID" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" />
+                    <label id="Input.NationalID" name="Input.NationalID" class="form-label">身分證字號</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.Email" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.Email" name="Input.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label id="Input.Email" name="Input.Email" class="form-label">電子信箱</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.Email" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="Input.Password" name="Input.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <label id="Input.Password" name="Input.Password" class="form-label">密碼</label>
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Input.Password" data-valmsg-replace="true"></span>
+                </div>
+                <div class="text-center">
+                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2">登入</button><br />
+                    <a asp-area="Candidates" asp-controller="Home" asp-action="Register">註冊會員</a>
+                    <partial name="_BtnLogin" />
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
