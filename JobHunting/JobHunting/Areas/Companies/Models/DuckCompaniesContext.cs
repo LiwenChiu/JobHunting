@@ -19,9 +19,8 @@ public partial class DuckCompaniesContext : DbContext
     {
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasKey(e => e.CompanyId).HasName("PK__Companie__2D971C4CEDC7988B");
+            entity.HasKey(e => e.CompanyID).HasName("PK__Companie__2D971C4C53945396");
 
-            entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Benefits).HasMaxLength(200);
             entity.Property(e => e.CompanyName)
@@ -36,7 +35,7 @@ public partial class DuckCompaniesContext : DbContext
             entity.Property(e => e.ContactPhone)
                 .IsRequired()
                 .HasMaxLength(24);
-            entity.Property(e => e.Guinumber).HasColumnName("GUINumber");
+            entity.Property(e => e.Date).HasColumnType("datetime");
             entity.Property(e => e.Intro).HasMaxLength(200);
             entity.Property(e => e.Password)
                 .IsRequired()
