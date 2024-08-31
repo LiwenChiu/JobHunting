@@ -7,9 +7,9 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class Company
 {
-    public int CompanyId { get; set; }
+    public int CompanyID { get; set; }
 
-    public int Guinumber { get; set; }
+    public int GUINumber { get; set; }
 
     public string Password { get; set; }
 
@@ -28,4 +28,8 @@ public partial class Company
     public string ContactPhone { get; set; }
 
     public string ContactEmail { get; set; }
+
+    public bool Status { get; set; }
+
+    public DateTime Date { get; set; }
 }

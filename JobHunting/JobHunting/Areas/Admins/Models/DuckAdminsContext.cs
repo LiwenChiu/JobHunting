@@ -19,7 +19,7 @@ public partial class DuckAdminsContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E86BBEC4D2");
+            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E82EA11492");
 
             entity.Property(e => e.Email)
                 .IsRequired()
