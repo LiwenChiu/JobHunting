@@ -1,14 +1,20 @@
 ﻿
 
 <div class="col-10 mx-auto  mt-4 position-relative" style="">
-        <select class=" position-absolute bottom-0" style="width:35%">
-        <option value=""></option>
-        <option value="">公司名稱</option>
-        <option value="">訂單ID</option>
-        <option value="">方案名稱</option>
-        <option value="">到期日</option>
-        <option value="">訂購日期</option>
+    <div class="position-absolute col-10 mt-2">
+        <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
+            <option :value="idx" v-for="items,idx in OptionDetail">{{items.Detail}}</option>
+
         </select>
+        <select  class="" style=" width:20%" id="OrdOpDetails" v-model="orderSelB">
+            <option value=0 v-if="orderSelA==0" v-for="item,idx in OptionDetails">{{item.name}}</option>
+            <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OptionDetails">{{item.OrderName}}</option>
+            <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OptionDetails">{{item.OrderDate}}</option>
+            <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OptionDetails">{{item.ExpireDate}}</option>
+            <option value=4 v-else="orderSelA==4" v-for="item,idx in OptionDetails">{{item.PaymentStatus}}</option>
+        </select>
+    </div>
+   
 
     <h3 class="text-center" style="">訂單紀錄</h3>
 </div>
@@ -22,65 +28,17 @@
                 <th class="col">方案名稱</th>
                 <th class="col">訂購日期</th>
                 <th class="col">到期日</th>
+                <th class="col">付款狀態</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>1</th>
-                <td>你好有限公司</td>
-                <td>1天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>4</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>5</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>6</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>7</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
-            </tr>
-            <tr>
-                <th>8</th>
-                <td>我不好有限公司</td>
-                <td>30天</td>
-                <td>昨日</td>
-                <td>2024/09/15</td>
+            <tr v-for="item in OptionDetails">
+                <th>{{item.OrderID}}</th>
+                <td>{{item.name}}</td>
+                <td>{{item.OrderName}}</td>
+                <td>{{item.OrderDate}}</td>
+                <td>{{item.ExpireDate}}</td>
+                <td><button class="btn btn-light btn-sm">{{item.PaymentStatus}}</button></td>
             </tr>
         </tbody>
     </table>
@@ -97,3 +55,4 @@
     </nav>
 </div>
 
+<div></div>
