@@ -16,7 +16,9 @@ CREATE TABLE Companies
     Picture varbinary(max),
     ContactName nvarchar(30) not null,
     ContactPhone nvarchar(24) not null,
-    ContactEmail nvarchar(320) not null
+    ContactEmail nvarchar(320) not null,
+	[Status] bit not null default(0),
+	[Date] datetime not null
 )
 GO
 CREATE TABLE Openings
@@ -37,6 +39,7 @@ CREATE TABLE Openings
 	ContactName nvarchar(30) not null,
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320),
+	ReleaseYN bit not null default(0),
 )
 GO
 CREATE TABLE Candidates
@@ -67,14 +70,15 @@ CREATE TABLE Resumes
 	WorkExperience nvarchar(Max),
 	Certification varbinary(Max),
 	[Time] nvarchar(60),
-	[Address] nvarchar(100)
+	[Address] nvarchar(100),
+	ReleaseYN bit not null default(1),
 )
 GO
-CREATE TABLE CandidateOpeningRecords
+CREATE TABLE ResumeOpeningRecords
 (
-	CandidateOpeningRecordID int primary key identity,
-	CandidateID int
-		references Candidates(CandidateID)
+	ResumeOpeningRecordID int primary key identity,
+	ResumeID int
+		references Resumes(ResumeID)
 		on delete cascade,
 	OpeningID int
 		references Openings(OpeningID)
@@ -82,7 +86,6 @@ CREATE TABLE CandidateOpeningRecords
 	CompanyID int not null,
 	CompanyName nvarchar(40) not null,
 	OpeningTitle nvarchar(60) not null,
-	ResumeID int,
 	ApplyDate date,
 	LikeYN bit not null default(0),
 	InterviewYN bit not null default(0),
@@ -125,8 +128,7 @@ CREATE TABLE OpeningTags
 		on delete cascade,
 	TagID int
 		references Tags(TagID)
-		on delete cascade,
-	TagStatus bit not null default(0)
+		on delete cascade
 	primary key(OpeningID,TagID)
 )
 GO
@@ -137,8 +139,7 @@ CREATE TABLE ResumeTags
 		on delete cascade,
 	TagID int
 		references Tags(TagID)
-		on delete cascade,
-	TagStatus bit not null default(0)
+		on delete cascade
 	primary key(ResumeID,TagID)
 )
 GO
@@ -166,7 +167,10 @@ CREATE TABLE CompanyOrders
 	CompanyName nvarchar(40) not null,
 	GUINumber int not null,
 	PlanTitle nvarchar(40) not null,
+	Price money
+		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	[Status] bit not null default(0),
 )
 GO
 CREATE TABLE Notifications
@@ -195,19 +199,6 @@ CREATE TABLE Admins
 	[Password] nvarchar(16) not null,
 	[Name] nvarchar(30) not null,
 	Authority int
-)
-GO
-CREATE TABLE CompanyApprovals
-(
-	CompanyID int not null
-		references Companies(CompanyID)
-		on delete cascade,
-	AdminID int not null default(0)
-		references Admins(AdminID)
-		on delete set default,
-	[Status] bit not null default(0),
-	[Date] datetime not null
-	primary key(CompanyID,AdminID)
 )
 GO
 CREATE TABLE OpinionLetters

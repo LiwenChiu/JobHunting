@@ -77,6 +77,9 @@
                         <nav class="sb-sidenav-menu-nested nav">
                             <button type="button" class="nav-link astext" v-on:click="pageStatus=5">方案管理</button>
                         </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=6">標籤管理</button>
+                        </nav>
                     </div>
                 </div>
                 @* <div class="sb-sidenav-footer">
@@ -103,8 +106,11 @@
             <template v-else-if="pageStatus == 4">
                 <partial name="_OpinionLetters" />
             </template>
-            <template v-else>
+            <template v-else-if="pageStatus == 5">
                 <partial name="_PricingPlansManagement" />
+            </template>
+            <template v-else>
+                <partial name="_TagManagement" />
             </template>
         </div>
 
