@@ -69,13 +69,10 @@
                             <button type="button" class="nav-link astext" v-on:click="pageStatus=2">訂單紀錄</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">審核公司</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">客服中心</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">客服中心</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=5">方案管理</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">方案管理</button>
                         </nav>
                     </div>
                 </div>
@@ -98,9 +95,6 @@
                 <partial name="_Orders" />
             </template>
             <template v-else-if="pageStatus == 3">
-                <partial name="_Approval" />
-            </template>
-            <template v-else-if="pageStatus == 4">
                 <partial name="_OpinionLetters" />
             </template>
             <template v-else>
@@ -120,11 +114,38 @@
                 return {
                     pageStatus: 0,
                     MemberStatus: 1,
+                    isShow:false,
+                    orderSelA: "",
+                    orderSelB: "",
+                    OptionDetails:
+                    [
+                        {OrderID:1,name:"你好好有限公司",OrderName:"1天",OrderDate:"昨日",ExpireDate:"2024/09/15",PaymentStatus:"尚未付款"},
+                        {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
+                        {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
+
+                        
+                    ],
+                    OptionDetail: 
+                    [
+                            {Detail: "公司名稱" },
+                            {Detail: "方案名稱" },
+                            {Detail: "訂購日期" },
+                            {Detail: "到期日" },
+                            {Detail: "付款狀態" },
+
+                    ],
+                        
                 };
             },
             methods:{
-
             },
+            watch: {
+                orderSelA: function (selval) {
+                    this.orderSelB = selval
+                },
+                               
+            },
+            
         };
 
         let app = Vue.createApp(VueApp).mount("#app");
