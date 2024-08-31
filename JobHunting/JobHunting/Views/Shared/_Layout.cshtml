@@ -28,70 +28,70 @@
     </style>
 </head>
 <body class="sb-nav-fixed bgcolor">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container px-4 px-lg-5">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">小鴨上工</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
                     @* <li class="nav-item astext"><partial name="_OpinionLettersBtnPartial" /></li> *@
-                        <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                                <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                                <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">求職者註冊</a></li>
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">求職者登入</a></li>
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyRegister">公司註冊</a></li>
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/CompanyLogin">公司登入</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-        </nav>
-        <!-- Header-->
-        <header class="bg-warning py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Home Page</h1>
-                </div>
-            </div>
-        </header>
-        <br />
-        <br />
-        <div id="layoutSidenav_content">
-            <main>
-                <div>
-                    @RenderBody()
-                </div>
-            </main>
-            @* <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer> *@
-        </div>
+                    <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
+                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
+                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Register">求職者註冊</a></li>
+                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li>
+                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li>
+                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li>
+                        </ul>
+                    </li>
+                </ul>
 
-        @* 意見處理Modal *@
+            </div>
+        </div>
+    </nav>
+    <!-- Header-->
+    <header class="bg-warning py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Home Page</h1>
+            </div>
+        </div>
+    </header>
+    <br />
+    <br />
+    <div id="layoutSidenav_content">
+        <main>
+            <div>
+                @RenderBody()
+            </div>
+        </main>
+        @* <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+        <div class="text-muted">Copyright &copy; Your Website 2023</div>
+        <div>
+        <a href="#">Privacy Policy</a>
+        &middot;
+        <a href="#">Terms &amp; Conditions</a>
+        </div>
+        </div>
+        </div>
+        </footer> *@
+    </div>
+
+    @* 意見處理Modal *@
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
          aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">

@@ -24,6 +24,14 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             return View();
         }
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult Register()
+        {
+            return View();
+        }
 
         // GET: Candidates/Details/5
         public async Task<IActionResult> Details(int? id)
