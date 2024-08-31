@@ -19,7 +19,7 @@ public partial class DuckCandidatesContext : DbContext
     {
         modelBuilder.Entity<Candidate>(entity =>
         {
-            entity.HasKey(e => e.CandidateID).HasName("PK__Candidat__DF539BFCFC5B39BB");
+            entity.HasKey(e => e.CandidateID).HasName("PK__Candidat__DF539BFC8DF170C7");
 
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Degree).HasMaxLength(30);
