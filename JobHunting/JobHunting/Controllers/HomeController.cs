@@ -22,6 +22,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+        public IActionResult CompanyIndex()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
