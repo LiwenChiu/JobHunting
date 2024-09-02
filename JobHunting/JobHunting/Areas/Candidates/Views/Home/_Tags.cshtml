@@ -11,8 +11,8 @@
             <div class="collapse" v-bind:id="item.TagClass">
                 <div>
                     <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
-                        <input type="checkbox" v-bind:id="Tag.TagName" v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
-                        <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
+                        <input type="checkbox" v-bind:id="changeTagNameTo(Tag.TagName)" v-bind:value="Tag.TagID" v-model="TagCheckedResume" />
+                        <label v-bind:for="changeTagNameTo(Tag.TagName)">{{Tag.TagName}}</label>
                     </template>
                 </div>
             </div>

@@ -1,32 +1,29 @@
 ﻿<!-- Button trigger modal -->
 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tagsModal">
-    選擇標籤<span class="badge bg-secondary">9</span>
+    選擇標籤 <span class="badge bg-secondary">9</span>
     <span class="visually-hidden">標籤數量</span>
 </button>
+<button type="button" class="btn btn-outline-danger">清除</button>
 
 <!-- Modal -->
-<div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsModal" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="tagsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="tagsModal">能力標籤</h5>
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">能力標籤</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
-                    <div v-for="(item,index) in TagClasses">
-                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
-                        <div class="collapse" v-bind:id="item.TagClass">
-                            <div>
-                                <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
-                                    <input type="checkbox" v-bind:id="Tag.TagName" v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
-                                    <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
-                                </template>
-                            </div>
+                <div v-for="item in TagClasses">
+                    <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+                    <div class="collapse" v-bind:id="item.TagClass">
+                        <div class="px-2" v-for="Tag in filterTagClass(item,item.TagClassID)">
+                            <input type="checkbox" v-bind:id="Tag.TagName" v-model="TagCheckedResume" />
+                            <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
                         </div>
-                        <hr />
                     </div>
-                
+                    <hr />
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">關閉</button>
