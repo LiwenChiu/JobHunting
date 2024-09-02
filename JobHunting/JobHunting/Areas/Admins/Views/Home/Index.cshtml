@@ -12,6 +12,20 @@
 }
 
 <h1>首頁</h1>
+<div id=""></div>
+<button type="button" class="btn btn-outline-warning" v-for="item in PricingPlans">
+    <div class="col">
+        <div class="card overcard" style="height:50px">
+            <div class="card-body">
+                <div class="row row-cols-3 align-items-center">
+                    <p>{{item.Title}}</p>
+                    <p>{{item.Intro}}</p>
+                    <p>售價：{{item.Price}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</button>
 
 @section Scripts
 {
