@@ -1,0 +1,399 @@
+﻿@section Styles {
+    @* ViewData["Title"] = "Home Page"; *@
+    <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" asp-append-version="true" />
+    <style>
+
+    </style>
+
+}
+
+<div id="app2">
+    @* 搜尋列 *@
+    <div class="container border border-2 col-10 mb-4">
+        <div class="row calculator-dropdown py-md-2">
+            <div class="col-sm-3">
+                <label class="calculator-dropdown-label" for="apiChoice">選擇地區</label>
+                <select class="select" name="" id="" style="width:150px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="calculator-dropdown-label" for="apiChoice">選擇年資</label>
+                <select class="select" name="" id="" style="width:150px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="calculator-dropdown-label" for="apiChoice">技能類別</label>
+                <select class="select" name="" id="" style="width:150px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="calculator-dropdown-label" for="apiChoice">學歷</label>
+                <select class="select" name="" id="" style="width:150px;height:30px" ;>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+        </div>
+        <div class="row py-md-2">
+            <div class="col-10 mb-0">
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" />
+            </div>
+            <div class="col-2 mb-0">
+                <button class="btn btn-warning">搜尋</button>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    @* 履歷清單 *@
+
+    <div id="homeList" class="container">
+        <table class="table table-striped table-hover">
+            <thead class="table-warning" align="center">
+                <tr>
+                    <td>姓名</td>
+                    <td>年紀</td>
+                    <td>性別</td>
+                    <td>學歷</td>
+                    <td>所在地</td>
+                    <td>年資</td>
+                    <td>技能</td>
+                </tr>
+            </thead>
+            <tbody align="center">
+                <tr v-for="item in resumes.slice(pageStart, pageEnd)" data-bs-toggle="modal" data-bs-target="#modalId">
+                    <td>{{item.CandidatesName}}</td>
+                    <td>{{item.Age}}</td>
+                    <td>{{item.Sex}}</td>
+                    <td>{{item.Degree}}</td>
+                    <td>{{item.Address}}</td>
+                    <td>{{item.WorkingExperience}}</td>
+                    <td>{{item.TagName}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" v-on:click="setPage(currentPage-1)">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                        <a class="page-link" href="#">{{item}}</a>
+                    </li>
+                    <li class="page-item" v-on:click="setPage(currentPage+1)">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="modal fade"
+         id="modalId"
+         tabindex="-1"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         role="dialog"
+         aria-labelledby="modalTitleId"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-center" id="modalTitleId" style="width:95%">
+                        履歷
+                    </h3>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mb-3">
+                        <div class="card bg-warning">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                                <p class="card-text">
+                                                    <div class="col">
+                                                        <label for="" class="mb-2" size="10">姓名</label>
+                                                        <input type="text">
+                                                        <label for="" class="mb-2">性別</label>
+                                                        <input type="radio" name="sex"><label>男</label>
+                                                        <input type="radio" name="sex"><label>女</label>
+                                                        <input type="radio" name="sex"><label>其他</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">生日</label>
+                                                        <input type="date">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">電話</label>
+                                                        <input type="tel">
+                                                        <label for="" class="mb-2">學歷</label>
+                                                        <input type="text">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">郵件</label>
+                                                        <input type="email" class="form-control">
+                                                    </div>
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                                <p class="card-text">
+                                                    <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                                <p class="card-text">
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">就業狀態</label>
+                                                        <input type="text">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">上班時段</label>
+                                                        <input type="text">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">希望職稱</label>
+                                                        <input type="text">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">能力標籤 / 證照</label>
+                                                        <textarea name="" id="" class="form-control" rows="3"></textarea>
+                                                    </div>
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="text-align:center">自傳</h5>
+                                                <p class="card-text">
+                                                    <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success">暫存</button>
+                    @* 發送面試通知按鈕 *@
+                    <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                            data-bs-target="#interviewMailBtn">
+                        面試
+                    </button>
+                    @* 發送錄取通知按鈕 *@
+                    <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                            data-bs-target="#OfferMailBtn">
+                        錄取
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 發送錄取通知 *@
+
+    <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+         aria-labelledby="modalTitleId " aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                        <div class="inputOutAreas">
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                <input type="date" class="form-control inputDate">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                <input type="time" class="form-control inputTime">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                <input type="text" class="form-control inputPlace">
+                            </div>
+
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-warning">
+                    <button type="submit" class="btn btn-outline-secondary">發送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 發送面試通知 *@
+
+    <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+         aria-labelledby="modalTitleId " aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                        <div class="inputOutAreas">
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                <input type="date" class="form-control inputDate">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                <input type="time" class="form-control inputTime">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                <input type="text" class="form-control inputPlace">
+                            </div>
+
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                <textarea class="form-control " style="height:150px" name="錄用通知訊息"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-warning">
+                    <button type="submit" class="btn btn-outline-secondary">發送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        let vueList = {
+            data() {
+                return {
+                    in: 1,
+                    perpage: 5, //一頁的資料數
+                    currentPage: 1,
+                    resumes: [{ CandidatesId: 1, CandidatesName: "陳某某", Age: 32, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、MVC、Vue" },
+                    { CandidatesId: 2, CandidatesName: "林某某", Age: 32, Sex: "男", Degree: "大學", Address: "台北市", WorkingExperience: 5, TagName: "C#、MVC" },
+                    { CandidatesId: 5, CandidatesName: "王某某", Age: 31, Sex: "女", Degree: "碩士", Address: "新北市", WorkingExperience: 3, TagName: "C#、Vue" },
+                    { CandidatesId: 3, CandidatesName: "陳某某", Age: 32, Sex: "女", Degree: "大學", Address: "桃園市", WorkingExperience: 4, TagName: "C#、MVC、Vue" },
+                    { CandidatesId: 8, CandidatesName: "李某某", Age: 27, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、Java、Vue" },
+                    { CandidatesId: 7, CandidatesName: "張某某", Age: 32, Sex: "女", Degree: "高中", Address: "桃園市", WorkingExperience: 5, TagName: "Vue" },
+                    { CandidatesId: 4, CandidatesName: "郭某某", Age: 35, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 7, TagName: "C#、MVC、Vue" },
+                    { CandidatesId: 9, CandidatesName: "鍾某某", Age: 28, Sex: "男", Degree: "碩士", Address: "台北市", WorkingExperience: 5, TagName: "C#、Vue" },
+                    { CandidatesId: 10, CandidatesName: "陳某某", Age: 24, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、多益800、Vue" },
+                    { CandidatesId: 6, CandidatesName: "李某某", Age: 32, Sex: "女", Degree: "博士", Address: "台北市", WorkingExperience: 6, TagName: "C#、MVC、Vue" },
+                    { CandidatesId: 11, CandidatesName: "王某某", Age: 40, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 10, TagName: "C#、MVC、Vue" },
+                    ]
+                }
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.resumes.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                }
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+            }
+        };
+        let vacancies = Vue.createApp(vueList).mount("#homeList");
+        // let VueApp2 = {
+        //     data() {
+        //         return {
+        //             TagClasses: [
+        //                 { TagClassID: 1, TagClass: "電腦科學" },
+        //                 { TagClassID: 2, TagClass: "數學" },
+        //                 { TagClassID: 3, TagClass: "醫學" },
+        //             ],
+        //             Tags: [
+        //                 { TagClassID: 1, TagID: 1, TagName: "C#" },
+        //                 { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
+        //                 { TagClassID: 1, TagID: 3, TagName: "Azure" },
+        //                 { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
+        //                 { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
+        //                 { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
+        //                 { TagClassID: 3, TagID: 7, TagName: "精神科" },
+        //             ],
+        //             TagCheckedResume: [],
+        //         };
+        //     },
+        //     methods: {
+        //         filterTagClass: function (ClassID) {
+        //             let _this = this;
+        //             return _this.Tags.filter(function (item) {
+        //                 return item.TagClassID == ClassID;
+        //             });
+        //         },
+        //         ReturnhashtagID: function (item) {
+        //             return `#${item.TagClass}`;
+        //         },
+        //     },
+        // };
+
+        // let app2 = Vue.createApp(VueApp2).mount("#app2");
+
+    </script>
+}

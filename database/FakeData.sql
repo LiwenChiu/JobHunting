@@ -235,12 +235,12 @@ INSERT INTO ResumeTags (ResumeID, TagID) VALUES
 (10, 6);
 GO
 INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
-(N'7天方案', 'Limited access for seven days', 7, 380, 1.00),
-(N'30天方案', 'Access for startups for thirty days', 30, 4200, 1.00),
-(N'60天方案', 'Access to all features for sixty days', 60, 6800, 1.00),
-(N'90天方案', 'Access to all features for ninety days', 90, 8400, 1.00),
-(N'180天方案', 'Access to all features for one hundred and eighty days', 180, 15750, 1.00),
-(N'365天方案', 'Access to all features for one year', 365, 31500, 1.00);
+(N'7天方案', '7天方案', 7, 380, 1.00),
+(N'30天方案', '30天方案', 30, 4200, 1.00),
+(N'60天方案', '60天方案', 60, 6800, 1.00),
+(N'90天方案', '90天方案', 90, 8400, 1.00),
+(N'180天方案', '180天方案', 180, 15750, 1.00),
+(N'365天方案', '365天方案', 365, 31500, 1.00);
 GO
 INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, PlanTitle, Price, OrderDate, [Status]) VALUES
 (1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),

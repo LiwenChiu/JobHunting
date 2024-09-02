@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JobHunting.Areas.Companies.Models;
+namespace JobHunting.Areas.Admins.Models;
 
 public partial class Company
 {
