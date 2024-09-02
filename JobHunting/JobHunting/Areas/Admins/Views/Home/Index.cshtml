@@ -153,6 +153,15 @@
                         { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
                         { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
                         { TagClassID: 3, TagID: 7, TagName: "精神科" },
+                        { TagClassID: 1, TagID: 8, TagName: "Java" },
+                        { TagClassID: 1, TagID: 9, TagName: "ASP.NET Core MVC" },
+                        { TagClassID: 1, TagID: 10, TagName: "Node.js" },
+                        { TagClassID: 1, TagID: 11, TagName: "C++" },
+                        { TagClassID: 1, TagID: 12, TagName: "Python" },
+                        { TagClassID: 2, TagID: 13, TagName: "代數論" },
+                        { TagClassID: 2, TagID: 14, TagName: "實變數函數論" },
+                        { TagClassID: 2, TagID: 15, TagName: "高等線性代數" },
+                        { TagClassID: 2, TagID: 16, TagName: "統計學" },
                     ],
                     TagCheckedResume: [],
                     selectedTagID: null,
@@ -172,6 +181,14 @@
                         return item.TagClassID == ClassID;
                     });
                 },
+                // selectedFilterTagClass: function (ClassID, TagCheckedResume) {
+                //     let _this = this;
+                //     return this.Tags.filter(function (item) {
+                //         return item.TagClassID == ClassID;
+                //     }).filter(function (item) {
+                //         return TagCheckedResume.indexof(item.TagID) > -1;
+                //     });
+                // },
                 ReturnhashtagID:function(item){
                     return `#${item.TagClass}`;
                 },

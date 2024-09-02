@@ -11,6 +11,15 @@
     <link href="~/css/oldstyles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Styles", required: false)
+    <style>
+        .selectScroll {
+            overflow-y: auto;
+        }
+
+        option {
+            overflow-y: scroll;
+        }
+    </style>
 </head>
 
 <body>

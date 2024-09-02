@@ -1,6 +1,8 @@
 ﻿<div class="container text-center pt-2 my-2 border border-warning border-2" style="overflow-y:auto;">
-    <div v-for="(item,index) in TagClasses">
-        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+    <div v-for="item in TagClasses">
+        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}
+                @* <span class="badge bg-danger">{{selectedFilterTagClass(item.TagClassID,TagCheckedResume).length}}</span> *@
+            </button>
         <div class="collapse" v-bind:id="item.TagClass">
             <div class="row">
                 <div class="col-2" v-for="Tag in filterTagClass(item.TagClassID)">
@@ -47,7 +49,7 @@
                 </div>
                 <div class="py-1">
                     <label class="h5" for="addTaginput">新增標籤名稱:  </label>
-                    <input type="text" id="addTaginput" name="新增標籤名稱" v-model="TagName" />
+                    <input type="text" id="addTaginput" name="新增標籤名稱" v-model.trim="TagName" />
                 </div>
                 @* 新增的Tag名稱:{{TagName}}
                 <br />
@@ -71,7 +73,7 @@
             </div>
             <div class="modal-body">
                 <label class="h5" for="addTagClassInput">新增標籤類別名稱:  </label>
-                <input type="text" id="addTagClassInput" name="新增標籤類別名稱" v-model="TagClassName" />
+                <input type="text" id="addTagClassInput" name="新增標籤類別名稱" v-model.trim="TagClassName" />
                 @* 新增的TagClass名稱:{{TagClassName}} *@
             </div>
             <div class="modal-footer">
@@ -113,7 +115,7 @@
                 </div>
                 <div class="py-1">
                     <label class="h5" for="editTagName">輸入修改名稱:</label>
-                    <input id="editTagName" type="text" name="輸入修改名稱" v-model="TagName" />
+                    <input id="editTagName" type="text" name="輸入修改名稱" v-model.trim="TagName" />
                 </div>
                 @* 屬於TagClassID:{{selectedTagClassID}}，修改的TagID:{{selectedTagID}}
                 <br />
@@ -144,7 +146,7 @@
                 </div>
                 <div class="py-1">
                     <label class="h5" for="editTagClassInput">修改標籤名稱:  </label>
-                    <input type="text" id="editTagClassInput" name="修改標籤名稱" v-model="TagClassName" />
+                    <input type="text" id="editTagClassInput" name="修改標籤名稱" v-model.trim="TagClassName" />
                 </div>
                 @* 修改TagClassID:{{selectedTagClassID}}，新增的TagClass名稱:{{TagClassName}} *@
             </div>
@@ -161,11 +163,11 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h3 class="modal-title text-light" id="deleteTagsLabel">刪除標籤</h3>
+                <h3 class="modal-title text-light" id="deleteTagsLabel">刪除標籤 - 請點選上方標籤</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h5>請問是否要刪除標籤:</h5>
+                <h5>請問是否要刪除標籤(已選{{TagCheckedResume.length}}個標籤):</h5>
                 <div class="row">
                     <template v-for="id in TagCheckedResume">
                         <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTag(id)">{{tagIDToName(id)}}</button>
