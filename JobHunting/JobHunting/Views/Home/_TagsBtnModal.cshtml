@@ -5,7 +5,8 @@
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsModal" aria-hidden="true">
+<div class="modal fade" id="tagsModal" tabindex="-1" 
+     aria-labelledby="tagsModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,11 +16,14 @@
             <div class="modal-body">
                 
                     <div v-for="(item,index) in TagClasses">
-                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+                        <button class="astext overcard" type="button" data-bs-toggle="collapse" 
+                            v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" 
+                            v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
                         <div class="collapse" v-bind:id="item.TagClass">
                             <div>
                                 <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
-                                    <input type="checkbox" v-bind:id="Tag.TagName" v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
+                                    <input type="checkbox" v-bind:id="Tag.TagName" 
+                                        v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
                                     <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
                                 </template>
                             </div>

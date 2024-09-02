@@ -4,7 +4,7 @@
 
 }
 
-<div id="app2">
+<div id="">
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
@@ -32,7 +32,7 @@
                     <option value="C">C</option>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" id="app2">
                 <partial name="_TagsBtnModal" />
             </div>
         </div>
@@ -117,7 +117,7 @@
 @section Scripts
 {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    @* <script>
+    <script>
         let VueApp2 = {
             data() {
                 return {
@@ -151,6 +151,6 @@
             },
         };
 
-        let app2 = Vue.createApp(VueApp2).mount("#app2"); *@
+        let app2 = Vue.createApp(VueApp2).mount("#app2");
     </script>
 }
