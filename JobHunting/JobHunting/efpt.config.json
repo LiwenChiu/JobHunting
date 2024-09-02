@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "DuckAdminsContext",
+   "ContextClassName": "DuckCompaniesContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Areas\/Admins\/Models",
+   "OutputPath": "Areas\/Companies\/Models",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "JobHunting",
    "Schemas": null,
@@ -16,6 +16,70 @@
    "Tables": [
       {
          "Name": "[dbo].[Admins]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Candidates]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Companies]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CompanyOrders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CompanyResumeRecords]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Notifications]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Openings]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OpeningTags]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OpinionLetters]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PricingPlans]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ResumeOpeningRecords]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Resumes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ResumeTags]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TagClasses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Tags]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TitleCategories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TitleClasses]",
          "ObjectType": 0
       }
    ],

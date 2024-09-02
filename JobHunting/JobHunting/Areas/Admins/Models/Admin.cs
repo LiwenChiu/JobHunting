@@ -18,4 +18,6 @@ public partial class Admin
     public string Name { get; set; }
 
     public int? Authority { get; set; }
+
+    public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
 }

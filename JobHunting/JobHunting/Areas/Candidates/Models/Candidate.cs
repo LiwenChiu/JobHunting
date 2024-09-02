@@ -30,4 +30,10 @@ public partial class Candidate
     public string EmploymentStatus { get; set; }
 
     public string MilitaryService { get; set; }
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
+    public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
+
+    public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
 }
