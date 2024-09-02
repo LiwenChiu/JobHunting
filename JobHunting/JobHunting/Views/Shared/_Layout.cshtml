@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="~/test.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
     <link href="css/styles.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
     <style>
@@ -35,7 +35,7 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">小鴨上工</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/assets/duck.ico" />小鴨上工</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -69,7 +69,8 @@
     <header class="bg-warning py-5">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">Home Page</h1>
+                @* <h1 class="display-4 fw-bolder">Home Page</h1> *@
+                <label style="font-size:700%;">小鴨<img src="~/gif/9e25a15f2aae61fb18f7782b65b6baf7.gif" style="width:30%;"/>上工</label>
             </div>
         </div>
     </header>
