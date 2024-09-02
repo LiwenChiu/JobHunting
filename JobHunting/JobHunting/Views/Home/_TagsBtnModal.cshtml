@@ -14,11 +14,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div v-for="(item,index) in TagClasses">
+                <div v-for="item in TagClasses">
                     <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
                     <div class="collapse" v-bind:id="item.TagClass">
-                        <div class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
-                            <input type="checkbox" v-bind:id="Tag.TagName" v-bind:value="Tag.TagName" v-model="TagCheckedResume" />
+                        <div class="px-2" v-for="Tag in filterTagClass(item,item.TagClassID)">
+                            <input type="checkbox" v-bind:id="Tag.TagName" v-model="TagCheckedResume" />
                             <label v-bind:for="Tag.TagName">{{Tag.TagName}}</label>
                         </div>
                     </div>

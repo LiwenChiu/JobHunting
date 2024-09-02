@@ -69,16 +69,13 @@
                             <button type="button" class="nav-link astext" v-on:click="pageStatus=2">訂單紀錄</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">審核公司</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">客服中心</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">客服中心</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">方案管理</button>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=5">方案管理</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=6">標籤管理</button>
+                            <button type="button" class="nav-link astext" v-on:click="pageStatus=5">標籤管理</button>
                         </nav>
                     </div>
                 </div>
@@ -101,12 +98,9 @@
                 <partial name="_Orders" />
             </template>
             <template v-else-if="pageStatus == 3">
-                <partial name="_Approval" />
-            </template>
-            <template v-else-if="pageStatus == 4">
                 <partial name="_OpinionLetters" />
             </template>
-            <template v-else-if="pageStatus == 5">
+            <template v-else-if="pageStatus == 4">
                 <partial name="_PricingPlansManagement" />
             </template>
             <template v-else>
@@ -126,11 +120,124 @@
                 return {
                     pageStatus: 0,
                     MemberStatus: 1,
+                    isShow:false,
+                    orderSelA: "",
+                    orderSelB: "",
+                    OptionDetails:
+                    [
+                        {OrderID:1,name:"你好好有限公司",OrderName:"1天",OrderDate:"昨日",ExpireDate:"2024/09/15",PaymentStatus:"尚未付款"},
+                        {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
+                        {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
+
+                        
+                    ],
+                    OptionDetail: 
+                    [
+                            {Detail: "公司名稱" },
+                            {Detail: "方案名稱" },
+                            {Detail: "訂購日期" },
+                            {Detail: "到期日" },
+                            {Detail: "付款狀態" },
+
+                    ],
+                    TagClasses: [
+                        { TagClassID: 1, TagClass: "電腦科學"},
+                        { TagClassID: 2, TagClass: "數學" },
+                        { TagClassID: 3, TagClass: "醫學" },
+                    ],
+                    Tags: [
+                        { TagClassID: 1, TagID: 1, TagName: "C#" },
+                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
+                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
+                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
+                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
+                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
+                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
+                    ],
+                    TagCheckedResume: [],
+                    selectedTagID: null,
+                    selectedTagClassID: null,
+                    TagName: "",
+                    TagClassName: "",
                 };
             },
             methods:{
+                changeTagNameTo: function (TagName) {
+                    let _this = this;
+                    return `${TagName}BindID`;
+                },
+                filterTagClass:function(ClassID) {
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.TagClassID == ClassID;
+                    });
+                },
+                ReturnhashtagID:function(item){
+                    return `#${item.TagClass}`;
+                },
+                clearAllSelectedTag: function () {
+                    let _this = this;
+                    _this.selectedTagID = null;
+                    _this.selectedTagClassID = null;
+                    _this.TagName = "";
+                    _this.TagClassName = "";
+                },
+                addTag:function(TagClassID,TagName){
+                    let _this = this;
 
+                    _this.selectedTagClassID = null;
+                    _this.TagName = "";
+                },
+                addTagClass:function(TagClassName){
+                    let _this = this;
+
+                    _this.TagClassName = "";
+                },
+                editTag:function(selectedTagClassID,selectedTagID,TagName){
+                    let _this = this;
+
+                    _this.selectedTagClassID = null;
+                    _this.selectedTagID = null;
+                    _this.TagName = "";
+                },
+                editTagClass: function (selectedTagClassID, TagClassName) {
+                    let _this = this;
+
+                    _this.selectedTagClassID = null;
+                    _this.TagClassName = null;
+                },
+                // changeItem:function(event){
+                //     let _this = this;
+                //     _this.selectedTagID = event.target.value;
+                // },
+                removeChooseTag: function (id) {
+                    let _this = this;
+                    _this.TagCheckedResume.splice(jQuery.inArray(id, _this.TagCheckedResume), 1);
+                },
+                tagIDToName:function(id){
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.TagID == id;
+                    })[0].TagName;
+                },
+                deleteTags:function(Array){
+                    let _this = this;
+
+                    _this.TagCheckedResume = [];
+                },
+                deleteTagClass: function (selectedTagClassID) {
+                    let _this = this;
+
+                    _this.selectedTagClassID = null;
+                },
             },
+            watch: {
+                orderSelA: function (selval) {
+                    this.orderSelB = selval
+                },
+                               
+            },
+            
         };
 
         let app = Vue.createApp(VueApp).mount("#app");
