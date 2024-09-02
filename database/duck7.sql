@@ -24,6 +24,9 @@ CREATE TABLE Companies
 	GUINumber int not null,
 	[Password] nvarchar(16) not null,
     CompanyName nvarchar(40) not null,
+	TitleClassID nchar(2)
+		references TitleClasses(TitleClassID)
+		on delete set null,
 	[Address] nvarchar(100),
     Intro nvarchar(200),
 	Benefits nvarchar(200),
@@ -80,6 +83,9 @@ CREATE TABLE Resumes
 		references Candidates(CandidateID)
 		on delete cascade,
 	Title nvarchar(60) not null,
+	TitleClassID nchar(2)
+		references TitleClasses(TitleClassID)
+		on delete set null,
 	Intro nvarchar(200),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
@@ -123,17 +129,17 @@ CREATE TABLE CompanyResumeRecords
 GO
 CREATE TABLE TagClasses
 (
-	TagClassID int primary key identity,
+	TagClassID int primary key identity(0,1),
 	TagClass nvarchar(30) not null
 )
 GO
 CREATE TABLE Tags
 (
 	TagID int primary key identity,
-	TagName nvarchar(30) not null,
-	TagClassID int not null default(0)
+	TagClassID int default(0)
 		references TagClasses(TagClassID)
-		on delete set default
+		on delete set default,
+	TagName nvarchar(30) not null,
 )
 GO
 CREATE TABLE OpeningTags
