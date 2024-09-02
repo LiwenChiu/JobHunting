@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JobHunting.Areas.Candidates.Models;
+namespace JobHunting.Areas.Admins.Models;
 
 public partial class Candidate
 {
