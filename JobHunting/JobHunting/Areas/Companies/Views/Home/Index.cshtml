@@ -169,6 +169,10 @@
                 };
             },
             methods:{
+                changeTagNameTo: function (TagName) {
+                    let _this = this;
+                    return `${TagName}BindID`;
+                },
                 filterTagClass: function (ClassID) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
