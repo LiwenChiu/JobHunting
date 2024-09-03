@@ -1,4 +1,5 @@
-﻿@section Styles {
+﻿@model IEnumerable<Candidate>
+@section Styles {
     @* ViewData["Title"] = "Home Page"; *@
     <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" asp-append-version="true" />
     <style>
@@ -13,14 +14,6 @@
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">選擇地區</label>
-                <select class="select" name="" id="" style="width:150px;height:30px" ;>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="apiChoice">選擇年資</label>
                 <select class="select" name="" id="" style="width:150px;height:30px" ;>
                     <option value="A">A</option>
                     <option value="B">B</option>
@@ -67,22 +60,18 @@
                     <td>性別</td>
                     <td>學歷</td>
                     <td>所在地</td>
-                    <td>年資</td>
-                    <td>技能</td>
+@*                     <td>技能</td> *@
                     <td></td>
                 </tr>
             </thead>
             <tbody align="center"> 
-                <tr v-for="item in resumes.slice(pageStart, pageEnd)">
-                    <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.CandidatesName}}</a></td>
-                    <td>{{item.Age}}</td>
-                    <td>{{item.Sex}}</td>
-                    <td>{{item.Degree}}</td>
-                    <td>{{item.Address}}</td>
-                    <td>{{item.WorkingExperience}}</td>
-                    <td>{{item.TagName}}</td>
+                <tr v-for="item in candidates.slice(pageStart,pageEnd)">
+                    <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.name}}</a></td>
+                    <td>{{item.age}}</td>
+                    <td>{{item.sex}}</td>
+                    <td>{{item.degree}}</td>
+                    <td>{{item.address}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalId">預覽</button></td>
-                    
                 </tr>
                 
             </tbody>
@@ -147,10 +136,6 @@
                         </div>
                         <div class="col-sm-7 ">
                             <div class="row">
-                                <h5 class="text-center">工作經驗</h5>
-                                <div class="col-12 col-sm-12">
-                                    <label>年資:</label>
-                                </div>
                                 <div class="col-12 col-sm-12">
                                     <p>工作經驗詳述</p>
                                 </div>
@@ -173,26 +158,15 @@
         let vueList = {
             data() {
                 return {
+                    candidates: @Json.Serialize(Model),
                     in: 1,
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
-                    resumes: [{ CandidatesId: 1, CandidatesName: "陳某某", Age: 32, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、MVC、Vue" },
-                    { CandidatesId: 2, CandidatesName: "林某某", Age: 32, Sex: "男", Degree: "大學", Address: "台北市", WorkingExperience: 5, TagName: "C#、MVC" },
-                    { CandidatesId: 5, CandidatesName: "王某某", Age: 31, Sex: "女", Degree: "碩士", Address: "新北市", WorkingExperience: 3, TagName: "C#、Vue" },
-                    { CandidatesId: 3, CandidatesName: "陳某某", Age: 32, Sex: "女", Degree: "大學", Address: "桃園市", WorkingExperience: 4, TagName: "C#、MVC、Vue" },
-                    { CandidatesId: 8, CandidatesName: "李某某", Age: 27, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、Java、Vue" },
-                    { CandidatesId: 7, CandidatesName: "張某某", Age: 32, Sex: "女", Degree: "高中", Address: "桃園市", WorkingExperience: 5, TagName: "Vue" },
-                    { CandidatesId: 4, CandidatesName: "郭某某", Age: 35, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 7, TagName: "C#、MVC、Vue" },
-                    { CandidatesId: 9, CandidatesName: "鍾某某", Age: 28, Sex: "男", Degree: "碩士", Address: "台北市", WorkingExperience: 5, TagName: "C#、Vue" },
-                    { CandidatesId: 10, CandidatesName: "陳某某", Age: 24, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 5, TagName: "C#、多益800、Vue" },
-                    { CandidatesId: 6, CandidatesName: "李某某", Age: 32, Sex: "女", Degree: "博士", Address: "台北市", WorkingExperience: 6, TagName: "C#、MVC、Vue" },
-                    { CandidatesId: 11, CandidatesName: "王某某", Age: 40, Sex: "男", Degree: "大學", Address: "新北市", WorkingExperience: 10, TagName: "C#、MVC、Vue" },
-                    ]
                 }
             },
             computed: {
                 totalPage() {
-                    return Math.ceil(this.resumes.length / this.perpage)
+                    return Math.ceil(this.candidates.length / this.perpage)
                     //Math.ceil()取最小整數
                 },
                 pageStart() {
@@ -203,6 +177,7 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 }
+                
             },
             methods: {
                 setPage(page) {
@@ -211,6 +186,28 @@
                     }
                     this.currentPage = page
                 },
+                // send(){
+                //     let url = 'https://localhost:7169/Home/GetCandidate';
+                //     let request = {
+                //         method: 'GET',
+                //         cache: 'no-cache',
+                //         headers: new Headers({
+                //             'Content-Type': 'application/json'
+                //         })
+                //     };
+                //     fetch(url, request)
+                //         .then(response => {
+                //             return response.json();
+                //         })
+                //         .then(model => {
+                //             $.each(model, function (index, item) {
+                //                 console.log(item.Name);
+                //             });
+                //         })
+                //         .catch(error => {
+                //             console.error(error);
+                //         });
+                // }
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#homeList");
