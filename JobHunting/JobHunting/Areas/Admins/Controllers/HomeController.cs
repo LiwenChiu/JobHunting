@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JobHunting.Areas.Admins.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -43,6 +44,18 @@ namespace JobHunting.Areas.Admins.Controllers
         public IActionResult TagManagement()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult TagManagement(TagManagementViewModel tmvm)
+        {
+            if (ModelState.IsValid)
+            {
+
+                return RedirectToAction("Index");
+            }
+            return View(tmvm);
         }
 
         public IActionResult Login()

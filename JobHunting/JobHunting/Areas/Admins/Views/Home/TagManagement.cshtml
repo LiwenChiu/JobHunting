@@ -1,4 +1,6 @@
-﻿@{
+﻿@model TagManagementViewModel
+
+@{
     ViewData["Title"] = "標籤管理";
 }
 
@@ -9,7 +11,7 @@
     </style>
 }
 
-<div id="TagManagement" class="py-2 px-1">
+<form id="TagManagement" class="py-2 px-1" asp-area="Admins" asp-controller="Home" asp-action="TagManagement" method="POST">
     <div class="container text-center pt-2 my-2 border border-warning border-2" style="overflow-y:auto;">
         <div v-for="item in TagClasses">
             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">
@@ -218,7 +220,7 @@
             </div>
         </div>
     </div>
-</div>
+</form>
 
 @section Scripts
 {
