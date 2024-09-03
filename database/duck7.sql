@@ -186,7 +186,7 @@ CREATE TABLE CompanyOrders
 		references PricingPlans(PlanID)
 		on delete set null,
 	CompanyName nvarchar(40) not null,
-	GUINumber int not null,
+	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
 	Price money
 		CHECK(Price >= 0), 

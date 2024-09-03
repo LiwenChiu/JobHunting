@@ -79,7 +79,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 Status = co.Status,
             }).Where(covmfilter => covmfilter.OrderID == covm.OrderID ||
                                     covmfilter.CompanyName.Contains(covm.CompanyName) ||
-                                    covmfilter.GUINumber.ToString().Contains(covm.GUINumber.ToString()) ||
+                                    covmfilter.GUINumber.Contains(covm.GUINumber) ||
                                     covmfilter.Title.Contains(covm.Title) ||
                                     covmfilter.Intro.Contains(covm.Intro))
               .Select(covmfilter => new CompanyOrdersViewModel
