@@ -4,15 +4,15 @@
     {
         public int OrderID { get; set; }
 
-        public int CompanyID { get; set; }
+        public int? CompanyID { get; set; }
 
-        public int PlanID { get; set; }
+        public int? PlanID { get; set; }
         
         public string CompanyName { get; set; }
 
         public int GUINumber { get; set; }
 
-        public string PlanTitle { get; set; }
+        public string Title { get; set; }
 
         public decimal Price { get; set; }
 
