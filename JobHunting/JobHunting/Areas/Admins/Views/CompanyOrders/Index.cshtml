@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<JobHunting.Areas.Admins.Models.CompanyOrder>
+
+@{
     ViewData["Title"] = "訂單紀錄";
 }
 
@@ -10,44 +12,47 @@
 }
 
 <div id="PricingOrderHistory">
-    <div class="col-10 mx-auto  mt-4 position-relative" style="">
-        <div class="position-absolute col-10 mt-2">
+    <h3 class="text-center pt-2">訂單紀錄</h3>
+
+    <div class="row py-2 px-1">
+        <div class="col-md-10">
             <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
                 <option :value="idx" v-for="items,idx in OptionDetail">{{items.Detail}}</option>
-
             </select>
             <select class="" style=" width:20%" id="OrdOpDetails" v-model="orderSelB">
                 <option value=0 v-if="orderSelA==0" v-for="item,idx in OptionDetails">{{item.name}}</option>
-                <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OptionDetails">{{item.OrderName}}</option>
-                <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OptionDetails">{{item.OrderDate}}</option>
-                <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OptionDetails">{{item.ExpireDate}}</option>
-                <option value=4 v-else="orderSelA==4" v-for="item,idx in OptionDetails">{{item.PaymentStatus}}</option>
+                <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OptionDetails">{{item.orderName}}</option>
+                <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OptionDetails">{{item.orderDate}}</option>
+                <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OptionDetails">{{item.expireDate}}</option>
+                <option value=4 v-else="orderSelA==4" v-for="item,idx in OptionDetails">{{item.paymentStatus}}</option>
             </select>
         </div>
-
-
-        <h3 class="text-center" style="">訂單紀錄</h3>
+        <div class="container-fluid row py-2">
+            <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
+            <input type="text" id="filterCompanyOrders" class="col-md-8" v-model.trim="" />
+        </div>
     </div>
+    
 
     <div class="container tableOutside ">
         <table class="table table-striped text-center mt-5" id="ChangePage" style="">
             <thead class="table-warning">
                 <tr>
-                    <th class="col ">訂單ID</th>
-                    <th class="col">公司名稱</th>
-                    <th class="col">方案名稱</th>
-                    <th class="col">訂購日期</th>
-                    <th class="col">到期日</th>
-                    <th class="col">付款狀態</th>
+                    <th scope="col">訂單ID</th>
+                    <th scope="col">公司名稱</th>
+                    <th scope="col">方案名稱</th>
+                    <th scope="col">訂購日期</th>
+                    <th scope="col">到期日</th>
+                    <th scope="col">付款狀態</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="item in OptionDetails">
-                    <th>{{item.OrderID}}</th>
+                    <th scope="row">{{item.OrderID}}</th>
                     <td>{{item.name}}</td>
-                    <td>{{item.OrderName}}</td>
-                    <td>{{item.OrderDate}}</td>
-                    <td>{{item.ExpireDate}}</td>
+                    <td>{{item.orderName}}</td>
+                    <td>{{item.orderDate}}</td>
+                    <td>{{item.expireDate}}</td>
                     <td><button class="btn btn-light btn-sm">{{item.PaymentStatus}}</button></td>
                 </tr>
             </tbody>
@@ -72,6 +77,7 @@
         let VueAppPricingOrderHistory = {
             data(){
                 return {
+                    baseAddress: "https://localhost:7169",
                     isShow:false,
                     orderSelA: "",
                     orderSelB: "",
@@ -81,7 +87,7 @@
                         {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
                         {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
                     ],
-                    OptionDetail: 
+                    OptionDetail:
                     [
                         {Detail: "公司名稱" },
                         {Detail: "方案名稱" },
@@ -97,11 +103,19 @@
                 },
             },
             methods:{
-
+                filterCompanyOrders: function () {
+                    let _this = this;
+                    let request = {};
+                    request.
+                },
             },
             watched:{
 
             },
+            mounted: function(){
+                let _this = this;
+                _this.filterCompanyOrders();
+            }
         };
         let app = Vue.createApp(VueAppPricingOrderHistory).mount("#PricingOrderHistory");
     </script>

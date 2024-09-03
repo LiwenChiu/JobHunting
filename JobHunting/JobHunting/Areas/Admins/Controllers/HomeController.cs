@@ -26,11 +26,6 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        public IActionResult PricingOrderHistory()
-        {
-            return View();
-        }
-
         public IActionResult ClientServiceCenter()
         {
             return View();
@@ -48,12 +43,12 @@ namespace JobHunting.Areas.Admins.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult TagManagement(TagManagementViewModel tmvm)
+        public IActionResult TagManagement([Bind("TagClassID,TagClass,TagID,TagName")]TagManagementViewModel tmvm)
         {
             if (ModelState.IsValid)
             {
 
-                return RedirectToAction("Index");
+                return RedirectToAction("TagManagement");
             }
             return View(tmvm);
         }
