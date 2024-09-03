@@ -1,4 +1,7 @@
-﻿
+﻿@using JobHunting.Areas.Companies.ViewModel
+@using JobHunting.Areas.Companies.Models;
+@model IEnumerable<JobHunting.Areas.Companies.ViewModel.ReceiveResumeViewModel>
+
 <div class="col-10 mx-auto  mt-4">
     <div class="row">
         <div class="col-5">
@@ -31,55 +34,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
-            <tr>
-                <th>2024/8/31</th>
-                <td>前端工程師</td>
-                <td>緯育美術班-前端工程師</td>
-                <td><partial name="_ResumeBtnModal"></td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th>@item.ApplyDate</th>
+                    <td>@item.Title</td>
+                    <td>@item.TitleClassName</td>
+                    <td><partial name="_ResumeBtnModal"></td>
+                </tr>
+            }
         </tbody>
     </table>
     <nav aria-label="Page navigation example">
@@ -94,4 +57,3 @@
         </ul>
     </nav>
 </div>
-
