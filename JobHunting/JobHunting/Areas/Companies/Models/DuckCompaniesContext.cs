@@ -204,7 +204,7 @@ public partial class DuckCompaniesContext : DbContext
                 .HasForeignKey(d => d.CompanyID)
                 .HasConstraintName("FK__Openings__Compan__2D27B809");
 
-            entity.HasOne(d => d.TitleClass).WithMany(p => p.Openings)
+            entity.HasOne(d => d.TitleClasses).WithMany(p => p.Openings)
                 .HasForeignKey(d => d.TitleClassID)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK__Openings__TitleC__2E1BDC42");
