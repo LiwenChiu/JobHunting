@@ -7,256 +7,42 @@
 @section Styles
 {
     <style>
-        .astext {
-            background: none;
-            border: none;
-            margin: 0;
-            cursor: pointer;
-        }
-
-        .overcard:hover {
-            background-color: #e6e6e6;
-        }
-
-        .bgcolor{
-            background-color: #ffeedf;
-        }
 
     </style>
 }
 
-<div class="sb-nav-fixed" id="app">
-    @* 上方導覽列 *@
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
-        <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" role="button"><i class="fa-solid fa-user-tie" style="color: #ffffff;"></i>    員工帳號</a>
-        <!-- Sidebar Toggle-->
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-        <!-- Navbar Return-->
-        <div class="d-none d-md-inline-block form-inline mx-auto ">
-            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color:white;"><h3>小鴨上工</h3></a>
-        </div>
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="mx-2"><a class="nav-link" role="button">返回首頁</a></li>
-            <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
-        </ul>
-    </nav>
-
-    @* 左側導覽列 *@
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <!-- left-Navbar-->
-            <nav class="sb-sidenav accordion sb-sidenav-warning" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        @* <div class="sb-sidenav-menu-heading">管理中心</div> *@
-                        <button type="button" class="nav-link astext" v-on:click="pageStatus=0"><h4>管理首頁</h4></button>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=1">
-                                會員管理
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </button>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=1;MemberStatus = 1;">公司清單</button>
-                                </nav>
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=1;MemberStatus = 2;">求職者清單</button>
-                                </nav>
-                            </div>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=2">訂單紀錄</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">客服中心</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=4">方案管理</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=5">標籤管理</button>
-                        </nav>
-                    </div>
+<h1>首頁</h1>
+<div id=""></div>
+<button type="button" class="btn btn-outline-warning" v-for="item in PricingPlans">
+    <div class="col">
+        <div class="card overcard" style="height:50px">
+            <div class="card-body">
+                <div class="row row-cols-3 align-items-center">
+                    <p>{{item.Title}}</p>
+                    <p>{{item.Intro}}</p>
+                    <p>售價：{{item.Price}}</p>
                 </div>
-                @* <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    管理者帳號
-                </div> *@
-            </nav>
+            </div>
         </div>
-
-        @* 求職者會員中心內容 *@
-        <div id="layoutSidenav_content" class="bgcolor">
-            <template v-if="pageStatus == 0">
-                <partial name="_Home" />
-            </template>
-            <template v-else-if="pageStatus == 1">
-                <partial name="_MemberManagement" />
-            </template>
-            <template v-else-if="pageStatus == 2">
-                <partial name="_Orders" />
-            </template>
-            <template v-else-if="pageStatus == 3">
-                <partial name="_OpinionLetters" />
-            </template>
-            <template v-else-if="pageStatus == 4">
-                <partial name="_PricingPlansManagement" />
-            </template>
-            <template v-else>
-                <partial name="_TagManagement" />
-            </template>
-        </div>
-
     </div>
-</div>
+</button>
 
 @section Scripts
 {
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        let VueApp = {
+        let VueAppIndex = {
             data() {
                 return {
-                    pageStatus: 0,
-                    MemberStatus: 1,
-                    isShow:false,
-                    orderSelA: "",
-                    orderSelB: "",
-                    OptionDetails:
-                    [
-                        {OrderID:1,name:"你好好有限公司",OrderName:"1天",OrderDate:"昨日",ExpireDate:"2024/09/15",PaymentStatus:"尚未付款"},
-                        {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
-                        {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
-
-                        
-                    ],
-                    OptionDetail: 
-                    [
-                            {Detail: "公司名稱" },
-                            {Detail: "方案名稱" },
-                            {Detail: "訂購日期" },
-                            {Detail: "到期日" },
-                            {Detail: "付款狀態" },
-
-                    ],
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學"},
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                        { TagClassID: 1, TagID: 8, TagName: "Java" },
-                        { TagClassID: 1, TagID: 9, TagName: "ASP.NET Core MVC" },
-                        { TagClassID: 1, TagID: 10, TagName: "Node.js" },
-                        { TagClassID: 1, TagID: 11, TagName: "C++" },
-                        { TagClassID: 1, TagID: 12, TagName: "Python" },
-                        { TagClassID: 2, TagID: 13, TagName: "代數論" },
-                        { TagClassID: 2, TagID: 14, TagName: "實變數函數論" },
-                        { TagClassID: 2, TagID: 15, TagName: "高等線性代數" },
-                        { TagClassID: 2, TagID: 16, TagName: "統計學" },
-                    ],
-                    TagCheckedResume: [],
-                    selectedTagID: null,
-                    selectedTagClassID: null,
-                    TagName: "",
-                    TagClassName: "",
+                    
                 };
             },
             methods:{
-                changeTagNameTo: function (TagName) {
-                    let _this = this;
-                    return `${TagName}BindID`;
-                },
-                filterTagClass:function(ClassID) {
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
-                    });
-                },
-                // selectedFilterTagClass: function (ClassID, TagCheckedResume) {
-                //     let _this = this;
-                //     return this.Tags.filter(function (item) {
-                //         return item.TagClassID == ClassID;
-                //     }).filter(function (item) {
-                //         return TagCheckedResume.indexof(item.TagID) > -1;
-                //     });
-                // },
-                ReturnhashtagID:function(item){
-                    return `#${item.TagClass}`;
-                },
-                clearAllSelectedTag: function () {
-                    let _this = this;
-                    _this.selectedTagID = null;
-                    _this.selectedTagClassID = null;
-                    _this.TagName = "";
-                    _this.TagClassName = "";
-                },
-                addTag:function(TagClassID,TagName){
-                    let _this = this;
-
-                    _this.selectedTagClassID = null;
-                    _this.TagName = "";
-                },
-                addTagClass:function(TagClassName){
-                    let _this = this;
-
-                    _this.TagClassName = "";
-                },
-                editTag:function(selectedTagClassID,selectedTagID,TagName){
-                    let _this = this;
-
-                    _this.selectedTagClassID = null;
-                    _this.selectedTagID = null;
-                    _this.TagName = "";
-                },
-                editTagClass: function (selectedTagClassID, TagClassName) {
-                    let _this = this;
-
-                    _this.selectedTagClassID = null;
-                    _this.TagClassName = null;
-                },
-                // changeItem:function(event){
-                //     let _this = this;
-                //     _this.selectedTagID = event.target.value;
-                // },
-                removeChooseTag: function (id) {
-                    let _this = this;
-                    _this.TagCheckedResume.splice(jQuery.inArray(id, _this.TagCheckedResume), 1);
-                },
-                tagIDToName:function(id){
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagID == id;
-                    })[0].TagName;
-                },
-                deleteTags:function(Array){
-                    let _this = this;
-
-                    _this.TagCheckedResume = [];
-                },
-                deleteTagClass: function (selectedTagClassID) {
-                    let _this = this;
-
-                    _this.selectedTagClassID = null;
-                },
+                
             },
             watch: {
-                orderSelA: function (selval) {
-                    this.orderSelB = selval
-                },
-                               
+                
             },
-            
         };
-
-        let app = Vue.createApp(VueApp).mount("#app");
+        let app = Vue.createApp(VueAppIndex).mount("#app");
     </script>
 }

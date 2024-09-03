@@ -17,7 +17,7 @@ public partial class CompanyOrder
 
     public int GUINumber { get; set; }
 
-    public string PlanTitle { get; set; }
+    public string Title { get; set; }
 
     public decimal? Price { get; set; }
 

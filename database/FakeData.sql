@@ -242,7 +242,7 @@ INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
 (N'180天方案', '180天方案', 180, 15750, 1.00),
 (N'365天方案', '365天方案', 365, 31500, 1.00);
 GO
-INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, PlanTitle, Price, OrderDate, [Status]) VALUES
+INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
 (1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),
 (2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 1),
 (3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 1),
