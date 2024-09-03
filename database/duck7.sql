@@ -21,7 +21,7 @@ GO
 CREATE TABLE Companies
 (
     CompanyID int primary key identity,
-	GUINumber int not null,
+	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
     CompanyName nvarchar(40) not null,
 	TitleClassID nchar(2)
