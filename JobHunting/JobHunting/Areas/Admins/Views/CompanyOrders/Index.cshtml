@@ -17,19 +17,19 @@
     <div class="row py-2 px-1">
         <div class="col-md-10">
             <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
-                <option :value="idx" v-for="items,idx in OptionDetail">{{items.Detail}}</option>
+                <option :value="idx" v-for="items,idx in OrderDetail">{{items.Detail}}</option>
             </select>
             <select class="" style=" width:20%" id="OrdOpDetails" v-model="orderSelB">
-                <option value=0 v-if="orderSelA==0" v-for="item,idx in OptionDetails">{{item.name}}</option>
-                <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OptionDetails">{{item.orderName}}</option>
-                <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OptionDetails">{{item.orderDate}}</option>
-                <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OptionDetails">{{item.expireDate}}</option>
-                <option value=4 v-else="orderSelA==4" v-for="item,idx in OptionDetails">{{item.paymentStatus}}</option>
+                <option value=0 v-if="orderSelA==0" v-for="item,idx in OrderDetails">{{item.name}}</option>
+                <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OrderDetails">{{item.orderName}}</option>
+                <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OrderDetails">{{item.orderDate}}</option>
+                <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OrderDetails">{{item.expireDate}}</option>
+                <option value=4 v-else="orderSelA==4" v-for="item,idx in OrderDetails">{{item.paymentStatus}}</option>
             </select>
         </div>
         <div class="container-fluid row py-2">
             <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
-            <input type="text" id="filterCompanyOrders" class="col-md-8" v-model.trim="" />
+            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入篩選關鍵字" v-model.trim="filter" v-on:keyup="filterCompanyOrders" />
         </div>
     </div>
     
@@ -47,7 +47,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in OptionDetails">
+                <tr v-for="item in OrderDetails">
                     <th scope="row">{{item.OrderID}}</th>
                     <td>{{item.name}}</td>
                     <td>{{item.orderName}}</td>
@@ -78,16 +78,12 @@
             data(){
                 return {
                     baseAddress: "https://localhost:7169",
+                    filter: "",
                     isShow:false,
                     orderSelA: "",
                     orderSelB: "",
-                    OptionDetails:
-                    [
-                        {OrderID:1,name:"你好好有限公司",OrderName:"1天",OrderDate:"昨日",ExpireDate:"2024/09/15",PaymentStatus:"尚未付款"},
-                        {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
-                        {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
-                    ],
-                    OptionDetail:
+                    OrderDetails: [],
+                    OrderDetail:
                     [
                         {Detail: "公司名稱" },
                         {Detail: "方案名稱" },
@@ -106,7 +102,7 @@
                 filterCompanyOrders: function () {
                     let _this = this;
                     let request = {};
-                    request.
+                    request.OrderID = isNaN(Number(_this.filter)) ? -1 : Number 
                 },
             },
             watched:{
