@@ -13,7 +13,7 @@ namespace JobHunting.Areas.Admins.ViewModels
         
         public string CompanyName { get; set; }
 
-        public int GUINumber { get; set; }
+        public string GUINumber { get; set; }
 
         public string Title { get; set; }
 

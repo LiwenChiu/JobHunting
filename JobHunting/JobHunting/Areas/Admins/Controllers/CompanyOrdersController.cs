@@ -24,7 +24,6 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/CompanyOrders
         public IActionResult Index()
         {
-            var PricingPlan = _context.PricingPlans;
             return View(_context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
                 OrderID = co.OrderID,
@@ -58,6 +57,39 @@ namespace JobHunting.Areas.Admins.Controllers
                 Intro = co.Plan.Intro,
                 Status = co.Status,
             }));
+        }
+
+        //POST: Admins/CompanyOrders/Filter
+        [HttpPost("Filter")]
+        [ValidateAntiForgeryToken]
+        public async Task<IEnumerable<CompanyOrdersViewModel>> Filter(CompanyOrdersViewModel covm)
+        {
+            return _context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
+            {
+                OrderID = co.OrderID,
+                CompanyID = co.CompanyID,
+                PlanID = co.PlanID,
+                CompanyName = co.CompanyName,
+                GUINumber = co.GUINumber,
+                Title = co.Title,
+                Price = co.Price,
+                OrderDate = co.OrderDate,
+                Duration = co.Plan.Duration,
+                Intro = co.Plan.Intro,
+                Status = co.Status,
+            }).Where(covmfilter => covmfilter.OrderID == covm.OrderID ||
+                                    covmfilter.CompanyName.Contains(covm.CompanyName) ||
+                                    covmfilter.GUINumber.Contains(covm.GUINumber) ||
+                                    covmfilter.Title.Contains(covm.Title) ||
+                                    covmfilter.Intro.Contains(covm.Intro))
+              .Select(covmfilter => new CompanyOrdersViewModel
+              {
+                  OrderID = covmfilter.OrderID,
+                  CompanyName = covmfilter.CompanyName,
+                  GUINumber = covmfilter.GUINumber,
+                  Title = covmfilter.Title,
+                  Intro = covmfilter.Intro,
+              });
         }
 
 
