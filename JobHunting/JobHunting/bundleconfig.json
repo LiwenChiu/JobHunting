@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/datatables/css/dataTables.bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/lib/datatables/css/dataTables.bootstrap.css"
+    ]
+  }
+]

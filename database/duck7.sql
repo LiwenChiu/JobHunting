@@ -187,7 +187,7 @@ CREATE TABLE CompanyOrders
 		on delete set null,
 	CompanyName nvarchar(40) not null,
 	GUINumber int not null,
-	PlanTitle nvarchar(40) not null,
+	Title nvarchar(40) not null,
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,

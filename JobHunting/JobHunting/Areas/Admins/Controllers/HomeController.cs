@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JobHunting.Areas.Admins.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -25,11 +26,6 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        public IActionResult PricingOrderHistory()
-        {
-            return View();
-        }
-
         public IActionResult ClientServiceCenter()
         {
             return View();
@@ -43,6 +39,18 @@ namespace JobHunting.Areas.Admins.Controllers
         public IActionResult TagManagement()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult TagManagement([Bind("TagClassID,TagClass,TagID,TagName")]TagManagementViewModel tmvm)
+        {
+            if (ModelState.IsValid)
+            {
+
+                return RedirectToAction("TagManagement");
+            }
+            return View(tmvm);
         }
 
         public IActionResult Login()
