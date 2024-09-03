@@ -22,10 +22,10 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
         // GET: Admins/CompanyOrders
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var PricingPlan = _context.PricingPlans;
-            return View(_context.CompanyOrders.Select(co => new CompanyOrdersViewModel
+            return View(_context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
                 OrderID = co.OrderID,
                 CompanyID = co.CompanyID,
@@ -34,35 +34,32 @@ namespace JobHunting.Areas.Admins.Controllers
                 GUINumber = co.GUINumber,
                 Title = co.Title,
                 Price = co.Price,
-
+                OrderDate = co.OrderDate,
+                Duration = co.Plan.Duration,
+                Intro = co.Plan.Intro,
+                Status = co.Status,
             }));
         }
 
         // GET: Admins/CompanyOrders/IndexJson
         public async Task<JsonResult> IndexJson()
         {
-            return Json(_context.CompanyOrders);
+            return Json(_context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
+            {
+                OrderID = co.OrderID,
+                CompanyID = co.CompanyID,
+                PlanID = co.PlanID,
+                CompanyName = co.CompanyName,
+                GUINumber = co.GUINumber,
+                Title = co.Title,
+                Price = co.Price,
+                OrderDate = co.OrderDate,
+                Duration = co.Plan.Duration,
+                Intro = co.Plan.Intro,
+                Status = co.Status,
+            }));
         }
 
-        // GET: Admins/CompanyOrders/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var companyOrder = await _context.CompanyOrders
-                .Include(c => c.Company)
-                .Include(c => c.Plan)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
-            if (companyOrder == null)
-            {
-                return NotFound();
-            }
-
-            return View(companyOrder);
-        }
 
         private bool CompanyOrderExists(int id)
         {
