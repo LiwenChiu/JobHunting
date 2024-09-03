@@ -1,10 +1,15 @@
-﻿<div class="container py-2">
+﻿@using JobHunting.Areas.Candidates.ViewModels;
+@using JobHunting.Areas.Candidates.Models;
+@model ResumeOpeningRecord
+
+
+<div class="container py-2">
     <div class="card mb-4">
         <table class="table">
             <thead>
                 <tr>
                     <th scope="row"></th>
-                    <th>公司</th>
+                    <th>公司名稱</th>
                     <th>職缺</th>
                     <th>履歷</th>
                     <th>應徵日期</th>
@@ -12,14 +17,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in jobclass.slice(pageStart, pageEnd)">
-                    <th scope="row">{{item.id}}</th>
-                    <td>{{item.companyName}}</td>
-                    <td>{{item.jobName}}</td>
-                    <td>{{item.resume}}</td>
-                    <td>{{item.data}}</td>
-                    <td><partial name="_OpeningDetailBtnModal" /></td>
-                </tr>
+                @foreach (var item in ViewBag._Record)
+                {
+                    <tr>
+                        <th scope="row">@item.ResumeOpeningRecordID</th>
+                        <td>@item.CompanyName</td>
+                        <td>@item.OpeningTitle</td>
+                        <td>@item.Title</td>
+                        <td>@item.ApplyDate</td>
+                        <td><partial name="_OpeningDetailBtnModal" /></td>
+                    </tr>
+                }
+                
+
             </tbody>
         </table>
         <div>
