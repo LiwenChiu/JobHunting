@@ -1,0 +1,100 @@
+﻿<!-- Button trigger modal -->
+<button type="button" class="btn btn-warning form-control mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <div class="row mb-3 text-center">
+        <div class="col">工程師</div>
+        <div class="col">AAA公司</div>
+        <div class="col">台北市大安區</div>
+        <div class="col-4">Coding</div>
+    </div>
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+        <div class="modal-content col-md-4">
+            <div class="modal-header" style="background-color: #f7d179;">
+                <h5 class="modal-title text-center" id="exampleModalLabel">職缺名稱</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="">職缺名稱:</label>
+                                <input type="text" v-model="title" class="form-control" value="工程師" readonly unselectable="on" />
+                                <label class="">公司名稱:</label>
+                                <input type="text" v-model="companyName" class="form-control" value="AAA公司" readonly unselectable="on" />
+                                <label class="">工作地點:</label>
+                                <input type="text" v-model="address" class="form-control" value="台北市大安區" readonly unselectable="on" />
+                                <label class="">連絡電話:</label>
+                                <input type="text" v-model="contactPhone" class="form-control" value="0987-654-321" readonly unselectable="on" />
+                                <label class="">電子郵件:</label>
+                                <input type="text" v-model="contactEmial" class="form-control" value="example@exam.com" readonly unselectable="on" />
+                                <label class="">薪資條件:</label>
+                                <input type="text" v-model="salary" class="form-control" value="待遇面議" readonly unselectable="on" />
+                                <label class="">上班時段:</label>
+                                <input type="text" v-model="time" class="form-control" value="9:00~18:00" readonly unselectable="on" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="">職缺類別:</label>
+                                <select disabled>
+                                    <optgroup label="資訊科技">
+                                        <option>前端工程師</option>
+                                        <option selected>全端工程師</option>
+                                    </optgroup>
+                                    <optgroup label="醫療保健">
+                                        <option>醫師</option>
+                                        <option>護理師</option>
+                                    </optgroup>
+                                </select>
+                                <label class="">學歷要求:</label>
+                                <select disabled>
+                                    <option selected>大學</option>
+                                    <option>國中</option>
+                                    <option>高中</option>
+                                </select>
+                            </div>
+                            <div id="tags">
+                                <label>能力標籤:</label>
+                                <span class="badge badge-pill badge-primary">Primary</span>
+                                <h6>
+                                    - 電腦科學&nbsp;
+                                    <span class="badge bg-success">C#</span>
+                                    <span class="badge bg-success">JavaScript</span>
+                                </h6>
+                                <h6>
+                                    - 化學&nbsp;
+                                    <span class="badge bg-primary">有機化學</span>
+                                    <span class="badge bg-primary">分析化學</span>
+                                </h6>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="form-textarea" class="col-form-label">福利:</label>
+                                <textarea class="form-control" id="benefits" style="height:100px" readonly unselectable="on">12345</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                <textarea class="form-control" id="description" style="height:300px" readonly unselectable="on">ABCDE</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <select>
+                    <option value="1">第一份履歷</option>
+                    <option value="2">第二份履歷</option>
+                    <option value="3">第三份履歷</option>
+                    <option value="4">第四份履歷</option>
+                </select>
+                <button id="apply" type="button" class="btn btn-primary" data-bs-dismiss="modal">應徵</button>
+                <button id="favorite" type="button" class="btn btn-danger" data-bs-dismiss="modal">收藏</button>
+            </div>
+        </div>
+    </div>
+</div>

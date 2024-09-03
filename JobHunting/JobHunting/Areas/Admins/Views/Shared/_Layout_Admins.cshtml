@@ -3,29 +3,100 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData["Title"] - 管理中心</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/test.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="~/css/oldstyles.css" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Styles", required: false)
     <style>
-        .selectScroll {
-            overflow-y: auto;
+        .astext {
+            background: none;
+            border: none;
+            margin: 0;
+            cursor: pointer;
         }
 
-        option {
-            overflow-y: scroll;
+        .overcard:hover {
+            background-color: #e6e6e6;
+        }
+
+        .bgcolor {
+            background-color: #ffeedf;
         }
     </style>
 </head>
 
-<body>
+<body class="sb-nav-fixed">
+    @* 上方導覽列 *@
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" role="button"><i class="fa-solid fa-user-tie" style="color: #ffffff;"></i>    員工帳號</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Return-->
+        <div class="d-none d-md-inline-block form-inline mx-auto ">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color:lightgray;"><h3>小鴨上工</h3></a>
+        </div>
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="mx-2"><a class="nav-link" role="button">返回首頁</a></li>
+            <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
+        </ul>
+    </nav>
 
-    @RenderBody()
+    @* 左側導覽列 *@
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <!-- left-Navbar-->
+            <nav class="sb-sidenav accordion sb-sidenav-warning" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        @* <div class="sb-sidenav-menu-heading">管理中心</div> *@
+                        <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="Index"><h4>管理首頁</h4></a>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" asp-area="Admins" asp-controller="Home" asp-action="MemberManagement">
+                                會員管理
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="CompanyList">公司清單</a>
+                                </nav>
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="CandidateList">求職者清單</a>
+                                </nav>
+                            </div>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="PricingOrderHistory">訂單紀錄</a>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="ClientServiceCenter">客服中心</a>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="PricingPlansManagement">方案管理</a>
+                        </nav>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a type="button" class="nav-link astext" asp-area="Admins" asp-controller="Home" asp-action="TagManagement">標籤管理</a>
+                        </nav>
+                    </div>
+                </div>
+                @* <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                管理者帳號
+                </div> *@
+            </nav>
+        </div>
+
+        <div id="layoutSidenav_content" class="bgcolor">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
+        
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
