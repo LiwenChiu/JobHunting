@@ -27,8 +27,6 @@ namespace JobHunting.Areas.Candidates.Controllers
         // GET: Candidates
         public IActionResult Index()
         {
-            ViewBag._Record = _Record();
-            ViewBag.B = _RecordB();
 
             return View();
 
@@ -42,36 +40,30 @@ namespace JobHunting.Areas.Candidates.Controllers
             return View();
         }
 
-        public List<RecordViewmodel> _Record()
+        public IActionResult Home()
         {
-            var resumeOpeningRecords = _context.ResumeOpeningRecords;
-            var resumes = _context.Resumes;
-            var openings = _context.Openings;
-
-            var query = (from ResumeOpeningRecord in _context.ResumeOpeningRecords
-                         join Resume in _context.Resumes
-                         on ResumeOpeningRecord.ResumeID equals Resume.ResumeID
-                         join Opening in _context.Openings
-                         on ResumeOpeningRecord.OpeningID equals Opening.OpeningID
-                         select new RecordViewmodel
-                         {
-                             ResumeOpeningRecordID = ResumeOpeningRecord.ResumeOpeningRecordID,
-                             CompanyName = ResumeOpeningRecord.CompanyName,
-                             OpeningTitle = ResumeOpeningRecord.OpeningTitle,
-                             ApplyDate = ResumeOpeningRecord.ApplyDate,
-                             Title = Resume.Title,
-
-                         });
-
-                     List<RecordViewmodel>result =query.ToList();
-
-            return result;
-
+            return View();
         }
-        public List<Models.ResumeOpeningRecord> _RecordB()
+        public IActionResult Member()
         {
-             var result = _context.ResumeOpeningRecords.Take(10).ToList();
-             return result;
+            return View();
+        }
+
+        public IActionResult Record()
+        {
+            var TitleClasses = _context.TitleClasses;
+            var Openings = _context.Openings;
+
+            return View(_context.ResumeOpeningRecords
+                 .Include(c => c.Resume).Include(a => a.Opening).Select(p => new RecordViewmodel
+                 {
+                     ResumeOpeningRecordID = p.ResumeOpeningRecordID,
+                     ApplyDate = p.ApplyDate,
+                     CompanyName = p.CompanyName,
+                     OpeningTitle = p.OpeningTitle,
+                     Title = p.Resume.Title,
+                 }));
+
         }
 
 

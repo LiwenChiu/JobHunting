@@ -1,6 +1,4 @@
-﻿@using JobHunting.Areas.Candidates.ViewModels;
-@using JobHunting.Areas.Candidates.Models;
-@model ResumeOpeningRecord
+﻿@model IEnumerable<JobHunting.Areas.Candidates.ViewModels.RecordViewmodel>
 
 
 <div class="container py-2">
@@ -17,18 +15,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in ViewBag._Record)
+                @foreach (var item in Model)
                 {
                     <tr>
-                        <th scope="row">@item.ResumeOpeningRecordID</th>
-                        <td>@item.CompanyName</td>
-                        <td>@item.OpeningTitle</td>
-                        <td>@item.Title</td>
-                        <td>@item.ApplyDate</td>
+                        <th>@Html.DisplayFor(modelItem => item.ResumeOpeningRecordID)</th>
+                        <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.OpeningTitle)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ApplyDate)</td>
                         <td><partial name="_OpeningDetailBtnModal" /></td>
                     </tr>
                 }
-                
+
 
             </tbody>
         </table>
