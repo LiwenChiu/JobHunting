@@ -10,7 +10,6 @@
     <link href="~/css/oldstyles.css" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    
     @await RenderSectionAsync("Styles", required: false)
 
         <style >
@@ -33,7 +32,7 @@
 
 </head>
 <body>
-    <div class="sb-nav-fixed Duck" id="app">
+    <div class="sb-nav-fixed Duck">
         @* 上方導覽列 *@
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
             <!-- Navbar Brand-->
@@ -58,30 +57,30 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             @* <div class="sb-sidenav-menu-heading">會員中心</div> *@
-                            <a class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Home"><h4>會員首頁</h4></a>
+                            <a class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Index"><h4>會員首頁</h4></a>
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Member">會員資料</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <button type="button" class="nav-link astext" v-on:click="pageStatus=2">履歷管理</button>
+                                <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Resume">履歷管理</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <button type="button" class="nav-link astext" v-on:click="pageStatus=3">職缺收藏</button>
+                                <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Opening">職缺收藏</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Record">應徵紀錄</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=5">
+                                <a class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                     訊息總覽
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </button>
+                                </a>
                                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus=1">應徵訊息</button>
+                                        <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="Notifications">應徵訊息</a>
                                     </nav>
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus=2">意見訊息</button>
+                                        <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="OpinionLetters">意見訊息</a>
                                     </nav>
                                 </div>
                             </nav>
@@ -94,7 +93,11 @@
                 </nav>
                 
             </div>
-            @RenderBody()
+            <div id="layoutSidenav_content" class="bgcolor">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
         
     </div>
@@ -107,6 +110,7 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="~/js/datatables-simple-demo.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js" integrity="sha512-DdX/YwF5e41Ok+AI81HI8f5/5UsoxCVT9GKYZRIzpLxb8Twz4ZwPPX+jQMwMhNQ9b5+zDEefc+dcvQoPWGNZ3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

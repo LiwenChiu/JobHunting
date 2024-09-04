@@ -1,42 +1,18 @@
-﻿@section Styles
-{
-    <style>
-        
-    </style>
+﻿@{
+    ViewData["Title"] = "會員中心";
 }
-
-<div class="container-fluid py-2" id="ResumeApp">
+<div class="selectbutton text-center py-2 ">
+    <button type="button" class="btn btn-outline-danger btn-md mx-3">面試邀約</button>
+    <button type="button" class="btn btn-outline-danger btn-md mx-3">結果通知</button>
+    <button type="button" class="btn btn-outline-danger btn-md mx-3">意見信件</button>
+</div>
+<div class="container-fluid py-1">
     <div class="letters row">
         <div class="col-md-3 mb-4">
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
-                    <h2 class="text-center">新增<br />履歷</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title pb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 錄取結果 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        @* <button type="button" class="btn btn-info">查看</button> *@
-                        <partial name="_ResumeBtnModal" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">面試邀約</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
@@ -44,7 +20,7 @@
                     <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
                     <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
                     <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
+                        <partial name="_OfferStatusBtnPartial" />
                     </div>
                 </div>
             </div>
@@ -53,7 +29,24 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">結果通知</span>
+                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
+                    </div>
+                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
+                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
+                    <div class="text-center">
+                        <partial name="_OfferStatusBtnPartial" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -70,7 +63,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -87,7 +80,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -104,7 +97,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -121,7 +114,24 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
+                    </div>
+                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
+                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-info">查看</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <span class="card-title mb-3 ms-5">意見名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -153,83 +163,8 @@
                         </a>
                     </li>
                 </ul>
+
             </nav>
         </div>
     </div>
 </div>
-
-
-@section Scripts
-{
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        let VueApp = {
-            data() {
-                return {
-                    pageStatus: 0,
-                    perpage: 3, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
-                    jobclass: [
-                        { id: 1, companyName: "星宇航空", jobName: "軟體工程師", resume: "履歷1", data: "2024/10/02" },
-                        { id: 2, companyName: "台積電", jobName: "硬體工程師", resume: "履歷2", data: "2024/10/12" },
-                        { id: 3, companyName: "台達電", jobName: "作業員", resume: "履歷3", data: "2024/10/05" },
-                        { id: 4, companyName: "台大醫院", jobName: "護理師", resume: "履歷4", data: "2024/10/04" },
-                    ],
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學"},
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
-                    TagCheckedResume: [],
-                };
-            },
-            computed: {
-                totalPage() {
-                    return Math.ceil(this.jobclass.length / this.perpage)
-                    //Math.ceil()取最小整數
-                },
-                pageStart() {
-                    return (this.currentPage - 1) * this.perpage
-                    //取得該頁第一個值的index
-                },
-                pageEnd() {
-                    return this.currentPage * this.perpage
-                    //取得該頁最後一個值的index
-                }
-            },
-            methods: {
-                setPage(page) {
-                    if (page <= 0 || page > this.totalPage) {
-                        return
-                    }
-                    this.currentPage = page
-                },
-                filterTagClass:function(ClassID) {
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
-                    });
-                },
-                ReturnhashtagID:function(item){
-                    return `#${item.TagClass}`;
-                },
-                changeTagNameTo: function (TagName) {
-                    let _this = this;
-                    return `${TagName}BindID`;
-                },
-            },
-        };
-        let app = Vue.createApp(VueApp).mount("#ResumeApp");
-    </script>
-
-}

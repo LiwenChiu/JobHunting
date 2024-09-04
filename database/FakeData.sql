@@ -165,7 +165,7 @@ INSERT INTO CompanyResumeRecords (CompanyID, ResumeID, LikeYN, InterviewYN, Hire
 (9, 9, 1, 1, 0),
 (10, 10, 1, 0, 0);
 GO
-INSERT INTO TagClasses (TagClass) VALUES
+INSERT INTO TagClasses (TagClassName) VALUES
 (N'¨ä¥L'),
 ('Programming'),
 ('Design'),

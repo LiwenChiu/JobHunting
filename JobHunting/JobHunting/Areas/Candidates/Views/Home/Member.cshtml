@@ -5,7 +5,7 @@
     </style>
 }
 
-<div class="container py-2">
+<div class="container py-2" id="MemberApp">
     <div class="card mb-4">
         <h1 class="align-self-center text-muted mb-0">會員資料</h1>
         @* <button type="button" class="btn btn-outline-secondary">修改會員資料</button> *@
@@ -99,7 +99,75 @@
 
 @section Scripts
 {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-
+        let VueApp = {
+            data() {
+                return {
+                    pageStatus: 0,
+                    perpage: 3, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                    jobclass: [
+                        { id: 1, companyName: "星宇航空", jobName: "軟體工程師", resume: "履歷1", data: "2024/10/02" },
+                        { id: 2, companyName: "台積電", jobName: "硬體工程師", resume: "履歷2", data: "2024/10/12" },
+                        { id: 3, companyName: "台達電", jobName: "作業員", resume: "履歷3", data: "2024/10/05" },
+                        { id: 4, companyName: "台大醫院", jobName: "護理師", resume: "履歷4", data: "2024/10/04" },
+                    ],
+                    TagClasses: [
+                        { TagClassID: 1, TagClass: "電腦科學"},
+                        { TagClassID: 2, TagClass: "數學" },
+                        { TagClassID: 3, TagClass: "醫學" },
+                    ],
+                    Tags: [
+                        { TagClassID: 1, TagID: 1, TagName: "C#" },
+                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
+                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
+                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
+                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
+                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
+                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
+                    ],
+                    TagCheckedResume: [],
+                };
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.jobclass.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                }
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                filterTagClass:function(ClassID) {
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.TagClassID == ClassID;
+                    });
+                },
+                ReturnhashtagID:function(item){
+                    return `#${item.TagClass}`;
+                },
+                changeTagNameTo: function (TagName) {
+                    let _this = this;
+                    return `${TagName}BindID`;
+                },
+            },
+        };
+        let app = Vue.createApp(VueApp).mount("#MemberApp");
     </script>
+
 }

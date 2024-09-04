@@ -9,6 +9,5 @@ namespace JobHunting.Areas.Companies.ViewModel
         public DateOnly? ApplyDate { get; set; }
         public string Title { get; set; }
         public string TitleClassName { get; set; }
-
     }
 }
