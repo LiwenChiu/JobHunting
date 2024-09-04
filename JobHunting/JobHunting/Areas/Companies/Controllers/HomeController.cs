@@ -4,6 +4,7 @@ using JobHunting.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Candidates.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
@@ -17,16 +18,26 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var Openings = _context.Openings;
-            var TitleClasses= _context.TitleClasses;
-            var ResumeOpeningRecords = _context.ResumeOpeningRecords;
-            return View(Openings.Select(p=>new ReceiveResumeViewModel
-            {
-                Title = p.Title,
-                TitleClassName = TitleClasses.Where(s=>s.TitleClassID==p.TitleClassID).Select(s=>s.TitleClassName).Single(),
-                ApplyDate = ResumeOpeningRecords.Where(a=>a.OpeningID==p.OpeningID).Select(a=>a.ApplyDate).Single(),
-            }));
+            return View();
         }
+
+        public IActionResult Member()
+        {
+            return View();
+        }
+        public IActionResult Intro()
+        {
+            return View();
+        }
+        public IActionResult Opening()
+        {
+            return View();
+        }
+        public IActionResult Resume()
+        {
+            return View();
+        }
+
         public IActionResult Login()
         {
             return View();
@@ -35,26 +46,25 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        //public List<ReceiveResumeViewModel> _ReceiveResume()
-        //{
-        //    var titleClasses = _context.TitleClasses;
-        //    var resumeOpeningRecords = _context.ResumeOpeningRecords;
-        //    var openings = _context.Openings;
-        //    var query = (from TitleClass in _context.TitleClasses
-        //                join Opening in _context.Openings
-        //                on TitleClass.TitleClassID equals Opening.TitleClassID
-        //                join ResumeOpeningRecord in _context.ResumeOpeningRecords
-        //                on Opening.OpeningID equals ResumeOpeningRecord.OpeningID
-        //                select new ReceiveResumeViewModel
-        //                {
-        //                    TitleClassName = TitleClass.TitleClassName,
-        //                    Title = Opening.Title,
-        //                    ApplyDate = ResumeOpeningRecord.ApplyDate
-        //                }).Take(10);
-
-        //    List<ReceiveResumeViewModel> result = query.ToList();
-
-        //    return result;
-        //}
+        public IActionResult Message()
+        {
+            return View();
+        }
+        public IActionResult Notifications()
+        {
+            return View();
+        }
+        public IActionResult OpinionLetters()
+        {
+            return View();
+        }
+        public IActionResult PricingPlans()
+        {
+            return View();
+        }
+        public IActionResult PricingOrderHistory()
+        {
+            return View();
+        }
     }
 }

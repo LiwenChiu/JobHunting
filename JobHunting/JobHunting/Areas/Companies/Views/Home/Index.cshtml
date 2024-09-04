@@ -6,140 +6,157 @@
 
 @section Styles
 {
-    <style>
-        .astext {
-            background: none;
-            border: none;
-            margin: 0;
-            cursor: pointer;
-        }
-
-        .overcard:hover {
-            background-color: #e6e6e6;
-        }
-
-        .bgcolor {
-            background-color: #ffeedf;
-        }
-
-    </style>
+    
 }
+<div class="container py-2">
+    <div class="col-lg">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h1 class="card-title">公司名稱</h1>
+                <p class="card-text">公司簡介sdjfjsadijfailgasjfoisjgiujfkmdsijkdjgmdsjgk</p>
+                <p class="card-text"><small class="text-muted">成立於1920年</small></p>
 
-<div class="sb-nav-fixed" id="app">
-    @* 上方導覽列 *@
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-warning">
-        <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" role="button"><i class="fa-regular fa-building" style="color: #ffffff;"></i>     會員帳號</a>
-        <!-- Sidebar Toggle-->
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-        <!-- Navbar Return-->
-        <div class="d-none d-md-inline-block form-inline mx-auto ">
-            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color:white;"><h3>小鴨上工</h3></a>
+                <div class="card text-white col-lg-11 align-self-center">
+                    <img src="~/images/memelovetriangle_297886754.jpg" style="height: 200px" />
+                </div>
+            </div>
         </div>
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="mx-2"><a class="nav-link" role="button" asp-area="" asp-controller="Home" asp-action="Index">返回首頁</a></li>
-            <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
-        </ul>
-    </nav>
+    </div>
 
-    @* 左側導覽列 *@
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <!-- left-Navbar-->
-            <nav class="sb-sidenav sb-sidenav-warning" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-@*                         <div class="sb-sidenav-menu-heading">會員中心</div> *@
-                        <button type="button" class="nav-link astext" v-on:click="pageStatus=0"><h4>會員首頁</h4></button>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=1">會員資料</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=2">公司介紹</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=3">職缺刊登</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=4">
-                                履歷瀏覽
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </button>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 1;">履歷暫存</button>
-                                </nav>
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 2;">投遞履歷</button>
-                                </nav>
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 3;">面試邀約</button>
-                                </nav>
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=4;ResumeStatus = 4;">已獲錄取</button>
-                                </nav>
-                            </div>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseMessage" aria-expanded="false" aria-controls="collapseLayouts" v-on:click="pageStatus=5">
-                                訊息總覽
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </button>
-                            <div class="collapse" id="collapseMessage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus = 1;">應徵訊息</button>
-                                </nav>
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <button type="button" class="nav-link astext" v-on:click="pageStatus=5;MessageStatus = 2;">意見訊息</button>
-                                </nav>
-                            </div>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=6">方案選擇</button>
-                        </nav>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <button type="button" class="nav-link astext" v-on:click="pageStatus=7">訂單紀錄</button>
-                        </nav>
+    <div class="col-lg">
+        <div class="card mb-1">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">統一編號</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">748937464
                     </div>
                 </div>
-                @* <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    公司帳號
-                </div> *@
-            </nav>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">地址</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">100 台北市 中正區 重慶南路一段 122號</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">聯絡人姓名</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">佩佩蛙</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">聯絡人電話</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">0987-654-321</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">聯絡人信箱</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">example@exam.com</p>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        @* 求職者會員中心內容 *@
-        <div id="layoutSidenav_content" class="bgcolor">
-            <template v-if="pageStatus == 0">
-                <partial name="_Home" />
-            </template>
-            <template v-if="pageStatus == 1">
-                <partial name="_Member" />
-            </template>
-            <template v-else-if="pageStatus == 2">
-                <partial name="_Intro" />
-            </template>
-            <template v-else-if="pageStatus == 3">
-                <partial name="_Opening" />
-            </template>
-            <template v-else-if="pageStatus == 4">
-                <partial name="_Resume" />
-            </template>
-            <template v-else-if="pageStatus == 5">
-                <partial name="_Message" />
-            </template>
-            <template v-else-if="pageStatus == 6" >
-                <partial name="_PricingPlans" />
-            </template>
-            <template v-else-if="pageStatus == 7">
-                <partial name="_PricingOrderhistoryPartial" />
-            </template>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 mb-md-0 h-100">
+                    <div class="card-body">
+                        <button type="button" class="mb-4 astext" v-on:click="function(){pageStatus=3}">
+                            <h4>
+                                <span class="text-primary font-italic me-1">我的</span>職缺
+                            </h4>
+                        </button>
+                        <div class="row row-cols-1 row-cols-md-1 g-4">
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">職缺名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">職缺名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">職缺名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">職缺名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 mb-md-0 h-100">
+                    <div class="card-body">
+                        <button type="button" class="mb-4 astext" v-on:click="function(){pageStatus=4}">
+                            <h4>
+                                <span class="text-primary font-italic me-1">收藏</span>履歷
+                            </h4>
+                        </button>
+                        <div class="row row-cols-1 row-cols-md-1 g-4">
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">履歷名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">履歷名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">履歷名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card overcard">
+                                    <div class="card-body">
+                                        <h5 class="card-title">履歷名稱</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
     </div>
-</div>
 
 @section Scripts
 {
