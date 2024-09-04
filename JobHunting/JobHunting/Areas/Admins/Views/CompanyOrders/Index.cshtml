@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CompanyOrdersViewModel>
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.CompanyOrdersViewModel>
 
 @{
     ViewData["Title"] = "訂單紀錄";
@@ -104,7 +104,7 @@
                     let request = {};
                     request.OrderID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
                     request.CompanyName = request.GUINumber = request.Title = request.Intro = _this.filter;
-                    request.CompanyID = request.PlanID = request.Price = request.OrderDate = request.Duration = request.Status = null;
+                    // request.CompanyID = request.PlanID = request.Price = request.OrderDate = request.Duration = request.Status = null;
                     axios.post(`${_this.baseAddress}/Admins/CompanyOrders/Filter`, request)
                         .then(
                             response => {
