@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Candidate>
+﻿
+
+
 @section Styles {
     @* ViewData["Title"] = "Home Page"; *@
     <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" asp-append-version="true" />
@@ -51,7 +53,9 @@
 
     @* 履歷清單 *@
 
+    @* 履歷清單2 *@
     <div id="homeList" class="container">
+        <button v-on:click="beforeMount">2323</button>
         <table class="table table-striped table-hover">
             <thead class="table-warning" align="center">
                 <tr>
@@ -60,20 +64,20 @@
                     <td>性別</td>
                     <td>學歷</td>
                     <td>所在地</td>
-@*                     <td>技能</td> *@
+                    <td>技能</td>
                     <td></td>
                 </tr>
+                
             </thead>
             <tbody align="center"> 
                 <tr v-for="item in candidates.slice(pageStart,pageEnd)">
                     <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.name}}</a></td>
                     <td>{{item.age}}</td>
-                    <td>{{item.sex}}</td>
+                    <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
                     <td>{{item.address}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalId">預覽</button></td>
                 </tr>
-                
             </tbody>
         </table>
         <div>
@@ -152,6 +156,7 @@
     </div>
 </div>
 
+
 @section Scripts {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
@@ -159,6 +164,7 @@
             data() {
                 return {
                     candidates: @Json.Serialize(Model),
+                    cab: [{}],
                     in: 1,
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
@@ -176,7 +182,8 @@
                 pageEnd() {
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
-                }
+                },
+              
                 
             },
             methods: {
@@ -186,28 +193,33 @@
                     }
                     this.currentPage = page
                 },
-                // send(){
-                //     let url = 'https://localhost:7169/Home/GetCandidate';
-                //     let request = {
-                //         method: 'GET',
-                //         cache: 'no-cache',
-                //         headers: new Headers({
-                //             'Content-Type': 'application/json'
-                //         })
-                //     };
-                //     fetch(url, request)
-                //         .then(response => {
-                //             return response.json();
-                //         })
-                //         .then(model => {
-                //             $.each(model, function (index, item) {
-                //                 console.log(item.Name);
-                //             });
-                //         })
-                //         .catch(error => {
-                //             console.error(error);
-                //         });
-                // }
+                selectSex(item) {
+                        if (item == false)
+                            return item = "男";
+                        else
+                            return item = "女";
+                },
+                send() {
+                    let url = 'https://localhost:7169/Home/GetCandidate';
+                    let request = {
+                        method: 'GET',
+                        cache: 'no-cache',
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        })
+                    };
+                    fetch(url, request)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(model => {
+                            this.cab = model
+                            console.log(this.cab);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                },
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#homeList");

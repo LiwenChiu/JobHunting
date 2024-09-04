@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace JobHunting.Models;
 
-public partial class TagClass
+public partial class TagClasses
 {
     public int TagClassID { get; set; }
 
-    public string TagClass1 { get; set; }
+    public string TagClass { get; set; }
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

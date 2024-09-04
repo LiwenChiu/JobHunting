@@ -5,17 +5,19 @@ using System.Collections.Generic;
 
 namespace JobHunting.Models;
 
-public partial class Tag
+public partial class TitleClass
 {
-    public int TagID { get; set; }
+    public string TitleClassID { get; set; }
 
-    public int? TagClassID { get; set; }
+    public string TitleCategoryID { get; set; }
 
-    public string TagName { get; set; }
+    public string TitleClassName { get; set; }
 
-    public virtual TagClasses TagClass { get; set; }
+    public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
 
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
     public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
+
+    public virtual TitleCategory TitleCategory { get; set; }
 }

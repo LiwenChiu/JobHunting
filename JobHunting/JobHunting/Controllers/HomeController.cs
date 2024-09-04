@@ -1,4 +1,7 @@
+using JobHunting.Areas.Candidates.ViewModels;
+using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
+using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
@@ -43,19 +46,22 @@ namespace JobHunting.Controllers
         //{
         //    return View();
         //}
-        //public async Task<IEnumerable<Candidate>> GetCandidate()
-        //{
-        //    return _context.Candidates.Select(c => new Candidate
-        //    {
-        //        Name = c.Name,
-        //        Sex = c.Sex,
-        //        Degree = c.Degree,
-        //        Address = c.Address,
-        //    });
-        //}
+
         public async Task<IActionResult> CompanyIndex()
         {
             return View(await _context.Candidates.ToListAsync());
+        }
+        public async Task<IActionResult> TagList()
+        {
+            var Tag = _context.Tags;
+            var TagClass = _context.TagClasses;
+
+            return View(Tag.Select(p => new ResumeViewModel
+            {
+                TagName = p.TagName,
+                TagClass = TagClass.Where(s => s.TagClassID == p.TagClassID).Select(s => s.TagClass).Single(),
+            }));
+
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
