@@ -130,7 +130,7 @@ GO
 CREATE TABLE TagClasses
 (
 	TagClassID int primary key identity(0,1),
-	TagClass nvarchar(30) not null
+	TagClassName nvarchar(30) not null
 )
 GO
 CREATE TABLE Tags
