@@ -25,11 +25,17 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         public IActionResult ReceiveResume()
         {
+            return View();
+        }
+        //Get
+        [HttpGet]
+        public JsonResult ReceiveResume2()
+        {
             var Openings = _context.Openings;
             var TitleClasses = _context.TitleClasses;
             var ResumeOpeningRecords = _context.ResumeOpeningRecords;
             ViewBag.TitleClass = new SelectList(TitleClasses, "TitleClassID", "TitleClassName");
-            return View(Openings.Select(p => new ReceiveResumeViewModel
+            return Json(Openings.Select(p => new
             {
                 Title = p.Title,
                 TitleClassName = TitleClasses.Where(s => s.TitleClassID == p.TitleClassID).Select(s => s.TitleClassName).Single(),

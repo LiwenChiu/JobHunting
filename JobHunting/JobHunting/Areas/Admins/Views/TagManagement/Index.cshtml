@@ -316,7 +316,14 @@
                         _this.bootPage();
                         _this.selectedTagClassID = null;
                         _this.TagName = "";
-                    }).catch(err => { alert(err) });
+                        }).catch(err => {
+                            if (err.response) {
+                                console.log(err.response.data);  // 查看伺服器返回的詳細錯誤信息
+                                alert(err.response.data.message || "Request failed with status code 400");
+                            } else {
+                                alert(err.message);
+                            }
+                        });
                 },
                 addTagClass: function (TagClassName) {
                     let _this = this;
