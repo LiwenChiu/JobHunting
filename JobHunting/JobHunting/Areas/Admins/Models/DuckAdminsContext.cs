@@ -47,7 +47,7 @@ public partial class DuckAdminsContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E8D8B6D884");
+            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E8B4B96BB7");
 
             entity.Property(e => e.Email)
                 .IsRequired()
@@ -375,7 +375,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<TitleClass>(entity =>
         {
-            entity.HasKey(e => e.TitleClassID).HasName("PK__TitleCla__7CC2BED9E7DDC26A");
+            entity.HasKey(e => e.TitleClassID).HasName("PK__TitleCla__7CC2BED9E26B224F");
 
             entity.Property(e => e.TitleClassID)
                 .HasMaxLength(2)

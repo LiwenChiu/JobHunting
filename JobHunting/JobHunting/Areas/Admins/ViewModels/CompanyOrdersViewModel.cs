@@ -23,6 +23,8 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public int Duration { get; set; }
 
+        //public DateTime ExpirationTime { get; set; }
+
         public string Intro { get; set; }
 
         public bool Status { get; set; }
