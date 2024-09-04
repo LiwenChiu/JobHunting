@@ -48,6 +48,22 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             return View();
         }
+        public IActionResult Resume()
+        {
+            return View();
+        }
+        public IActionResult Opening()
+        {
+            return View();
+        }
+        public IActionResult Notifications()
+        {
+            return View();
+        }
+        public IActionResult OpinionLetters()
+        {
+            return View();
+        }
 
         public IActionResult Record()
         {
