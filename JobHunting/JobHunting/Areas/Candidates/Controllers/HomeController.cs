@@ -93,8 +93,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Json(RecordData);
         }
 
-        [HttpPost]
-        public async Task<IEnumerable<>>
+        
 
 
 
