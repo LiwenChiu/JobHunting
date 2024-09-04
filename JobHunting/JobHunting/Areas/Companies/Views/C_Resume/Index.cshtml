@@ -1,15 +1,48 @@
-﻿<div class="selectbutton text-center py-2 ">
-    <button type="button" class="btn btn-outline-danger btn-md mx-3">面試邀約</button>
-    <button type="button" class="btn btn-outline-danger btn-md mx-3">結果通知</button>
-    <button type="button" class="btn btn-outline-danger btn-md mx-3">意見信件</button>
-</div>
-<div class="container-fluid py-1">
+﻿@{
+    ViewData["Title"] = "會員中心";
+}
+
+<div class="container-fluid py-2">
     <div class="letters row">
         <div class="col-md-3 mb-4">
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title pb-3 ms-5">履歷名稱</span>
+                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
+                    </div>
+                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 錄取結果 :</p>
+                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
+                    <div class="text-center">
+                        <partial name="_ResumeBtnModal">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <span class="card-title pb-3 ms-5">履歷名稱</span>
+                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
+                    </div>
+                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 錄取結果 :</p>
+                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
+                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-info">查看</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
@@ -17,7 +50,7 @@
                     <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
                     <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
                     <div class="text-center">
-                        <partial name="_OpinionLettersBtnPartial" />
+                        <button type="button" class="btn btn-info">查看</button>
                     </div>
                 </div>
             </div>
@@ -26,24 +59,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        <partial name="_OpinionLettersBtnPartial" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -60,7 +76,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -77,7 +93,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -94,7 +110,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -111,24 +127,7 @@
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body">
                     <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">意見名稱</span>
+                        <span class="card-title mb-3 ms-5">履歷名稱</span>
                         <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
                     </div>
                     <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
@@ -160,7 +159,6 @@
                         </a>
                     </li>
                 </ul>
-
             </nav>
         </div>
     </div>

@@ -1,0 +1,96 @@
+﻿@using JobHunting.Areas.Companies.ViewModel
+@using JobHunting.Areas.Companies.Models;
+@model IEnumerable<JobHunting.Areas.Companies.ViewModel.ReceiveResumeViewModel>
+@{
+    ViewData["Title"] = "會員中心";
+}
+<div class="col-10 mx-auto  mt-4">
+    <div class="row">
+        <div class="col-5">
+            <select id="dropdownItem" asp-items="@ViewBag.TitleClass" class="mt-1" style="width:40%;">
+                <option>-----請選擇-----</option>
+            </select>
+            <span id="TitleClass"></span>
+        </div>
+        <div class="col-7">
+            <h3 class="text-right" style="">應徵履歷</h3>
+        </div>
+    </div>
+</div>
+
+
+<div class="container tableOutside ">
+    <table class="table table-striped" id="ChangePage" style="text-align: center">
+        <thead class="table-warning">
+            <tr>
+                <th class="col">應徵日期</th>
+                <th class="col">職缺類別</th>
+                <th class="col">職缺名稱</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th>@item.ApplyDate</th>
+                    <td>@item.Title</td>
+                    <td>@item.TitleClassName</td>
+                    <td><partial name="_ResumeBtnModal"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination ">
+            <li class="page-item me-auto"><a class="page-link" href="#">上一頁</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item ms-auto"><a class="page-link" href="#">下一頁</a></li>
+        </ul>
+    </nav>
+</div>
+@section Scripts {
+    <script>
+        // $("#dropdownItem").on("change", () => {
+        //     alert("123")
+        //     if (dropdownItem.value != '-----請選擇-----') {
+        //         alert("123")
+        //         $.ajax({
+        //             type: "GET",
+        //             url: `@@Url.Action("Opening", "Home")/${dropdownItem.value}`
+        //         }).done(data => {
+        //             alert(JSON.stringify(data));
+        //             $("#TitleClass").html(data);
+        //             ====================
+        //             $("#orders").on("change", () => {
+        //                 if (customers.value != '--請選擇--') {
+        //                     $.ajax({
+        //                         type: "GET",
+        //                         url: `@@Url.Action("OrderDetails", "Customers")/${orders.value}`
+        //                     }).done(data => {
+        //                         //alert(JSON.stringify(data));
+        //                         $("#orderDetailsTable").html(data);
+        //                     }).fail(err => {
+        //                         alert(`${err.statusCode}:${err.statusText}`);
+        //                     });
+        //                 }
+        //                 else {
+        //                     $("#orderDetailsTable").html("");
+        //                 }
+
+        //             });
+        //             ====================
+        //         }).fail(err => {
+        //             alert(`${err.statusCode}:${err.statusText}`);
+        //         });
+        //     }
+        //     else {
+        //         $("#ordersSelect").html("");
+        //     }
+        // });
+    </script>
+}
