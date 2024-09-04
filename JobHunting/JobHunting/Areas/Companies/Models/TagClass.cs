@@ -9,7 +9,7 @@ public partial class TagClass
 {
     public int TagClassID { get; set; }
 
-    public string TagClass1 { get; set; }
+    public string TagClassName { get; set; }
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }
