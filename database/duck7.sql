@@ -21,7 +21,7 @@ GO
 CREATE TABLE Companies
 (
     CompanyID int primary key identity,
-	GUINumber int not null,
+	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
     CompanyName nvarchar(40) not null,
 	TitleClassID nchar(2)
@@ -186,7 +186,7 @@ CREATE TABLE CompanyOrders
 		references PricingPlans(PlanID)
 		on delete set null,
 	CompanyName nvarchar(40) not null,
-	GUINumber int not null,
+	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
 	Price money
 		CHECK(Price >= 0), 

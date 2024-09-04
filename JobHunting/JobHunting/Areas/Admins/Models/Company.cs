@@ -9,7 +9,7 @@ public partial class Company
 {
     public int CompanyID { get; set; }
 
-    public int GUINumber { get; set; }
+    public string GUINumber { get; set; }
 
     public string Password { get; set; }
 

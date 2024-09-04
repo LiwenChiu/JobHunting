@@ -11,25 +11,25 @@
     </style>
 }
 
-<div id="PricingOrderHistory">
+<div id="CompanyOrdersVue">
     <h3 class="text-center pt-2">訂單紀錄</h3>
 
     <div class="row py-2 px-1">
-        <div class="col-md-10">
+       @*  <div class="col-md-10">
             <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
-                <option :value="idx" v-for="items,idx in OptionDetail">{{items.Detail}}</option>
+                <option :value="idx" v-for="items,idx in OrderDetail">{{items.Detail}}</option>
             </select>
-            <select class="" style=" width:20%" id="OrdOpDetails" v-model="orderSelB">
-                <option value=0 v-if="orderSelA==0" v-for="item,idx in OptionDetails">{{item.name}}</option>
-                <option value=1 v-else-if="orderSelA==1" v-for="item,idx in OptionDetails">{{item.orderName}}</option>
-                <option value=2 v-else-if="orderSelA==2" v-for="item,idx in OptionDetails">{{item.orderDate}}</option>
-                <option value=3 v-else-if="orderSelA==3" v-for="item,idx in OptionDetails">{{item.expireDate}}</option>
-                <option value=4 v-else="orderSelA==4" v-for="item,idx in OptionDetails">{{item.paymentStatus}}</option>
+            <select class="" style=" width:20%" v-model="orderSelB">
+                <option value=0 v-if="orderSelA==0" v-for="item in CompanyOrders">{{item.companyName}}</option>
+                <option value=1 v-else-if="orderSelA==1" v-for="item in CompanyOrders">{{item.title}}</option>
+                <option value=2 v-else-if="orderSelA==2" v-for="item in CompanyOrders">{{item.orderDate}}</option>
+                <option value=3 v-else-if="orderSelA==3" v-for="item in CompanyOrders">{{item.duration}}</option>
+                <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
             </select>
-        </div>
+        </div> *@
         <div class="container-fluid row py-2">
             <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
-            <input type="text" id="filterCompanyOrders" class="col-md-8" v-model.trim="" />
+            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入篩選關鍵字" v-model.trim="filter" v-on:keyup="filterCompanyOrders" />
         </div>
     </div>
     
@@ -47,13 +47,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in OptionDetails">
+                <tr v-for="item in CompanyOrders">
                     <th scope="row">{{item.OrderID}}</th>
-                    <td>{{item.name}}</td>
-                    <td>{{item.orderName}}</td>
+                    <td>{{item.companyName}}</td>
+                    <td>{{item.title}}</td>
                     <td>{{item.orderDate}}</td>
-                    <td>{{item.expireDate}}</td>
-                    <td><button class="btn btn-light btn-sm">{{item.PaymentStatus}}</button></td>
+                    <td>{{item.duration}}</td>
+                    <td><button class="btn btn-light btn-sm">{{item.status}}</button></td>
                 </tr>
             </tbody>
         </table>
@@ -78,27 +78,23 @@
             data(){
                 return {
                     baseAddress: "https://localhost:7169",
+                    filter: "",
                     isShow:false,
                     orderSelA: "",
                     orderSelB: "",
-                    OptionDetails:
-                    [
-                        {OrderID:1,name:"你好好有限公司",OrderName:"1天",OrderDate:"昨日",ExpireDate:"2024/09/15",PaymentStatus:"尚未付款"},
-                        {OrderID:2,name:"你不好有限公司",OrderName:"30天",OrderDate:"昨日",ExpireDate:"2024/10/15",PaymentStatus:"尚未付款"},
-                        {OrderID:3,name:"我不好有限公司",OrderName:"15天",OrderDate:"昨日",ExpireDate:"2024/09/30",PaymentStatus:"已付款"},
-                    ],
-                    OptionDetail:
+                    CompanyOrders: [],
+                    OrderDetail:
                     [
                         {Detail: "公司名稱" },
                         {Detail: "方案名稱" },
                         {Detail: "訂購日期" },
-                        {Detail: "到期日" },
+                        {Detail: "方案天數" },
                         {Detail: "付款狀態" },
                     ],
                 };
             },
             computed:{
-                orderSelA: function (selval) {
+                orderSelAc: function (selval) {
                     this.orderSelB = selval
                 },
             },
@@ -106,8 +102,29 @@
                 filterCompanyOrders: function () {
                     let _this = this;
                     let request = {};
-                    request.
+                    request.OrderID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.CompanyName = request.GUINumber = request.Title = request.Intro = _this.filter;
+                    request.CompanyID = request.PlanID = request.Price = request.OrderDate = request.Duration = request.Status = null;
+                    axios.post(`${_this.baseAddress}/Admins/CompanyOrders/Filter`, request)
+                        .then(
+                            response => {
+                                _this.CompanyOrders = response.data;
+                                for (let i = 0; i < _this.CompanyOrders.length; i++) {
+                                    _this.CompanyOrders[i].Edit = false;
+                                }
+                            })
+                        .catch(err => {
+                            alert(err)
+                        });
                 },
+                // payStatus: function (status) {
+                //     if (status) {
+                //         return "已付款";
+                //     }
+                //     else {
+                //         return "尚未付款";
+                //     }
+                // }
             },
             watched:{
 
@@ -115,8 +132,8 @@
             mounted: function(){
                 let _this = this;
                 _this.filterCompanyOrders();
-            }
+            },
         };
-        let app = Vue.createApp(VueAppPricingOrderHistory).mount("#PricingOrderHistory");
+        let app = Vue.createApp(VueAppPricingOrderHistory).mount("#CompanyOrdersVue");
     </script>
 }

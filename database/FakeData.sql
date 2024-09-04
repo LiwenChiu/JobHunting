@@ -153,18 +153,6 @@ INSERT INTO ResumeOpeningRecords (ResumeID, OpeningID, CompanyID, CompanyName, O
 (9, 9, 9, 'Marketing Magic', 'Digital Marketing Specialist', '2024-08-09', 1, 1, 0),
 (10, 10, 10, 'Customer First', 'Customer Support Agent', '2024-08-10', 1, 0, 0);
 GO
-INSERT INTO ResumeOpeningRecords (ResumeID, OpeningID, CompanyID, CompanyName, OpeningTitle, ApplyDate, LikeYN, InterviewYN, HireYN) VALUES
-(1, 1, 1, 'Tech Solutions', 'Senior Software Engineer', '2024-08-01', 1, 1, 0),
-(2, 2, 2, 'Green Energy', 'Renewable Energy Consultant', '2024-08-02', 1, 0, 0),
-(3, 3, 3, 'Creative Designs', 'Graphic Designer', '2024-08-03', 1, 1, 0),
-(4, 4, 4, 'Healthcare Plus', 'Healthcare Administrator', '2024-08-04', 0, 0, 0),
-(5, 5, 5, 'Finance World', 'Financial Analyst', '2024-08-05', 1, 1, 1),
-(6, 6, 6, 'Tech Innovators', 'Junior IT Support Specialist', '2024-08-06', 1, 0, 0),
-(7, 7, 7, 'Legal Eagle', 'Paralegal', '2024-08-07', 0, 0, 0),
-(8, 8, 8, 'Sales Empire', 'Sales Executive', '2024-08-08', 1, 1, 0),
-(9, 9, 9, 'Marketing Magic', 'Digital Marketing Specialist', '2024-08-09', 1, 1, 0),
-(10, 10, 10, 'Customer First', 'Customer Support Agent', '2024-08-10', 1, 0, 0);
-GO
 INSERT INTO CompanyResumeRecords (CompanyID, ResumeID, LikeYN, InterviewYN, HireYN) VALUES
 (1, 1, 1, 1, 0),
 (2, 2, 1, 0, 0),
@@ -235,12 +223,12 @@ INSERT INTO ResumeTags (ResumeID, TagID) VALUES
 (10, 6);
 GO
 INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
-(N'7天方案', '7天方案', 7, 380, 1.00),
-(N'30天方案', '30天方案', 30, 4200, 1.00),
-(N'60天方案', '60天方案', 60, 6800, 1.00),
-(N'90天方案', '90天方案', 90, 8400, 1.00),
-(N'180天方案', '180天方案', 180, 15750, 1.00),
-(N'365天方案', '365天方案', 365, 31500, 1.00);
+(N'7天方案', N'7天方案', 7, 380, 1.00),
+(N'30天方案', N'30天方案', 30, 4200, 1.00),
+(N'60天方案', N'60天方案', 60, 6800, 1.00),
+(N'90天方案', N'90天方案', 90, 8400, 1.00),
+(N'180天方案', N'180天方案', 180, 15750, 1.00),
+(N'365天方案', N'365天方案', 365, 31500, 1.00);
 GO
 INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
 (1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),

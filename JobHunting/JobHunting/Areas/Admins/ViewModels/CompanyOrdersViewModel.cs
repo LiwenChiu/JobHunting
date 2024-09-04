@@ -13,7 +13,7 @@ namespace JobHunting.Areas.Admins.ViewModels
         
         public string CompanyName { get; set; }
 
-        public int GUINumber { get; set; }
+        public string GUINumber { get; set; }
 
         public string Title { get; set; }
 
@@ -22,6 +22,8 @@ namespace JobHunting.Areas.Admins.ViewModels
         public DateTime OrderDate { get; set; }
 
         public int Duration { get; set; }
+
+        //public DateTime ExpirationTime { get; set; }
 
         public string Intro { get; set; }
 
