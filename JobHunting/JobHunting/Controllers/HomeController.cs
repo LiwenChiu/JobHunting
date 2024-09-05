@@ -1,21 +1,15 @@
-using JobHunting.Areas.Candidates.ViewModels;
-using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
-using SQLitePCL;
-using System;
 using System.Diagnostics;
-using System.Net;
 
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-                         DuckContext _context;
+        DuckContext _context;
         public HomeController(ILogger<HomeController> logger, DuckContext context)
         {
             _logger = logger;
@@ -26,12 +20,13 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult IndexTest()
+        public IActionResult CompanyIndexList()
         {
             return Json(_context.Candidates.Select(c => new Candidate
             {
                 Name = c.Name,
                 Sex = c.Sex,
+                Birthday = c.Birthday,
                 Degree = c.Degree,
                 Address = c.Address,
             }));
@@ -42,26 +37,18 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        //public IActionResult CompanyIndex()
-        //{
-        //    return View();
-        //}
 
         public async Task<IActionResult> CompanyIndex()
         {
-            return View(await _context.Candidates.ToListAsync());
+            return View();
         }
         public async Task<IActionResult> TagList()
         {
-            var Tag = _context.Tags;
-            var TagClass = _context.TagClasses;
-
-            return View(Tag.Select(p => new ResumeViewModel
+            return Json(_context.Tags.Include(p => p.TagClass).Select(p => new ResumeViewModel
             {
                 TagName = p.TagName,
-                TagClass = TagClass.Where(s => s.TagClassID == p.TagClassID).Select(s => s.TagClass).Single(),
+                TagClassName = p.TagClass.TagClassName,
             }));
-
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -67,8 +67,8 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         public IActionResult Record()
         {
-            var TitleClasses = _context.TitleClasses;
-            var Openings = _context.Openings;
+            //var TitleClasses = _context.TitleClasses;
+            //var Openings = _context.Openings;
 
             return View(_context.ResumeOpeningRecords
                  .Include(c => c.Resume).Include(a => a.Opening).Select(p => new RecordViewmodel

@@ -13,7 +13,7 @@ public partial class Tag
 
     public string TagName { get; set; }
 
-    public virtual TagClasses TagClass { get; set; }
+    public virtual TagClass TagClass { get; set; }
 
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
