@@ -2,7 +2,9 @@
 
 
 <div class="container py-2" id="RecordApp">
+
     <div class="card mb-4">
+        
         <table class="table">
             <thead>
                 <tr>
@@ -15,17 +17,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <th>@Html.DisplayFor(modelItem => item.ResumeOpeningRecordID)</th>
-                        <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.OpeningTitle)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ApplyDate)</td>
-                        <td><partial name="_OpeningDetailBtnModal" /></td>
-                    </tr>
-                }
+
+                @* item後面帶入的參數要小寫 *@
+                <tr v-for="item in jobclass">
+                    <th>{{item.resumeOpeningRecordID}}</th>
+                    <td>{{item.companyName}}</td>
+                    <td>{{item.openingTitle}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.applyDate}}</td>
+                    <td><partial name="_OpeningDetailBtnModal" /></td>
+                </tr>
 
 
             </tbody>
@@ -63,12 +64,8 @@
                     perpage: 3, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
-                    jobclass: [
-                        { id: 1, companyName: "星宇航空", jobName: "軟體工程師", resume: "履歷1", data: "2024/10/02" },
-                        { id: 2, companyName: "台積電", jobName: "硬體工程師", resume: "履歷2", data: "2024/10/12" },
-                        { id: 3, companyName: "台達電", jobName: "作業員", resume: "履歷3", data: "2024/10/05" },
-                        { id: 4, companyName: "台大醫院", jobName: "護理師", resume: "履歷4", data: "2024/10/04" },
-                    ],
+                    jobclass: [], //從後端撈回來的資料存入這邊
+                    filter:"",
                     TagClasses: [
                         { TagClassID: 1, TagClass: "電腦科學"},
                         { TagClassID: 2, TagClass: "數學" },
@@ -120,7 +117,25 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+
+                //Fetch方式撈應徵記錄的資料
+                RecordData: function () {
+                    fetch("/candidates/home/recordresult", {
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        return this.jobclass = data
+                    }).catch(err => {
+                            alert(JSON.stringify(err))
+                    })
+                }
             },
+            //每次重新載入網頁時會自動初始化撈出資料
+            mounted() {
+                this.RecordData();
+            }
         };
         let app = Vue.createApp(VueApp).mount("#RecordApp");
     </script>
