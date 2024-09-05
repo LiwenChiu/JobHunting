@@ -1,96 +1,143 @@
-﻿@using JobHunting.Areas.Companies.ViewModel
+﻿    @using JobHunting.Areas.Companies.ViewModel
 @using JobHunting.Areas.Companies.Models;
 @model IEnumerable<JobHunting.Areas.Companies.ViewModel.ReceiveResumeViewModel>
 @{
     ViewData["Title"] = "會員中心";
 }
-<div class="col-10 mx-auto  mt-4">
-    <div class="row">
-        <div class="col-5">
-            <select id="dropdownItem" asp-items="@ViewBag.TitleClass" class="mt-1" style="width:40%;">
-                <option>-----請選擇-----</option>
-            </select>
-            <span id="TitleClass"></span>
+<div id="receiveResume">
+    <div class="col-10 mx-auto  mt-4">
+        <div class="row">
+            <div class="col-5">
+                <select class="" style="width:40%" id="OrderOpTitle2" v-model="orderSelA">
+                    <option :value="idx" v-for="item,idx in resumes">{{item.titleClassName}}</option>
+                </select>
+                <select class="" style=" width:60%" v-model="orderSelB">
+                    <option value=0 v-if="orderSelA==0" v-for="item in CompanyOrders">{{item.companyName}}</option>
+                    <option value=1 v-else-if="orderSelA==1" v-for="item in CompanyOrders">{{item.title}}</option>
+                    <option value=2 v-else-if="orderSelA==2" v-for="item in CompanyOrders">{{item.orderDate}}</option>
+                    <option value=3 v-else-if="orderSelA==3" v-for="item in CompanyOrders">{{item.duration}}</option>
+                    <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
+                </select>
+                <span id="TitleClass"></span>
+            </div>
+            <div class="col-7">
+                <h3 class="text-right" style="">應徵履歷</h3>
+            </div>
         </div>
-        <div class="col-7">
-            <h3 class="text-right" style="">應徵履歷</h3>
-        </div>
+    </div>
+
+
+    <div class="container tableOutside">
+        <table class="table table-striped" id="ChangePage" style="text-align: center">
+            <thead class="table-warning">
+                <tr>
+                    <th class="col">應徵日期</th>
+                    <th class="col">職缺類別</th>
+                    <th class="col">職缺名稱</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in resumes">
+                    <th>{{item.applyDate}}</th>
+                    <td>{{item.titleClassName}}</td>
+                    <td>{{item.title}}</td>
+                    <td><partial name="_ResumeBtnModal"></td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
-
-<div class="container tableOutside ">
-    <table class="table table-striped" id="ChangePage" style="text-align: center">
-        <thead class="table-warning">
-            <tr>
-                <th class="col">應徵日期</th>
-                <th class="col">職缺類別</th>
-                <th class="col">職缺名稱</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <th>@item.ApplyDate</th>
-                    <td>@item.Title</td>
-                    <td>@item.TitleClassName</td>
-                    <td><partial name="_ResumeBtnModal"></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination ">
-            <li class="page-item me-auto"><a class="page-link" href="#">上一頁</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
-            <li class="page-item ms-auto"><a class="page-link" href="#">下一頁</a></li>
-        </ul>
-    </nav>
-</div>
 @section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        // $("#dropdownItem").on("change", () => {
-        //     alert("123")
-        //     if (dropdownItem.value != '-----請選擇-----') {
-        //         alert("123")
-        //         $.ajax({
-        //             type: "GET",
-        //             url: `@@Url.Action("Opening", "Home")/${dropdownItem.value}`
-        //         }).done(data => {
-        //             alert(JSON.stringify(data));
-        //             $("#TitleClass").html(data);
-        //             ====================
-        //             $("#orders").on("change", () => {
-        //                 if (customers.value != '--請選擇--') {
-        //                     $.ajax({
-        //                         type: "GET",
-        //                         url: `@@Url.Action("OrderDetails", "Customers")/${orders.value}`
-        //                     }).done(data => {
-        //                         //alert(JSON.stringify(data));
-        //                         $("#orderDetailsTable").html(data);
-        //                     }).fail(err => {
-        //                         alert(`${err.statusCode}:${err.statusText}`);
-        //                     });
-        //                 }
-        //                 else {
-        //                     $("#orderDetailsTable").html("");
-        //                 }
+        let VueApp = {
+            data() {
+                return {
+                    pageStatus: 0,
+                    perpage: 3, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                    resumes: [], //從後端撈回來的資料存入這邊
+                    filter: "",
 
-        //             });
-        //             ====================
-        //         }).fail(err => {
-        //             alert(`${err.statusCode}:${err.statusText}`);
-        //         });
-        //     }
-        //     else {
-        //         $("#ordersSelect").html("");
-        //     }
-        // });
+                    baseAddress: "https://localhost:7169",
+                    filter: "",
+                    isShow: false,
+                    orderSelA: "",
+                    orderSelB: "",
+                    OrderDetail:
+                        [
+                            { Detail: "公司名稱" },
+                            { Detail: "方案名稱" },
+                            { Detail: "訂購日期" },
+                            { Detail: "方案天數" },
+                            { Detail: "付款狀態" },
+                        ],
+                };
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.resumes.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                }
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                receiveResumeData: function () {
+                    fetch("/companies/C_Resume/ReceiveResumeJson", {
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    })
+                        .then(data => {
+                            return this.resumes = data
+                        }).catch(err => {
+                            alert(JSON.stringify(err))
+                        })
+                }
+            },
+            watch: {
+                orderSelA: function (selval) {
+                    this.orderSelB = selval
+                },
+            },
+            //每次重新載入網頁時會自動初始化撈出資料
+            mounted() {
+                this.receiveResumeData();
+            }
+        };
+        let app = Vue.createApp(VueApp).mount("#receiveResume");
     </script>
 }
