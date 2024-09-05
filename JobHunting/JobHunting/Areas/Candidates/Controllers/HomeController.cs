@@ -23,6 +23,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             _context = context;
         }
 
+        /*-------------------------------畫面顯示-------------------------------*/
 
         // GET: Candidates
         public IActionResult Index()
@@ -67,10 +68,19 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         public IActionResult Record()
         {
+            return View();
+        }
+
+        /*-------------------------------------------------*/
+
+        // GET: Candidates/Home/Recordresult
+        [HttpGet]
+        public async Task<IActionResult> Recordresult()
+        {
             var TitleClasses = _context.TitleClasses;
             var Openings = _context.Openings;
 
-            return View(_context.ResumeOpeningRecords
+            var RecordData = await  _context.ResumeOpeningRecords
                  .Include(c => c.Resume).Include(a => a.Opening).Select(p => new RecordViewmodel
                  {
                      ResumeOpeningRecordID = p.ResumeOpeningRecordID,
@@ -78,12 +88,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                      CompanyName = p.CompanyName,
                      OpeningTitle = p.OpeningTitle,
                      Title = p.Resume.Title,
-                 }));
+                 }).ToListAsync();
 
+            return Json(RecordData);
         }
 
-
-
         
+
+
+
     }
 }

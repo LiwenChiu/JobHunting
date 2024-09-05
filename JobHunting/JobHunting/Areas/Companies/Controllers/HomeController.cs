@@ -5,6 +5,7 @@ using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Candidates.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Numerics;
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
@@ -16,7 +17,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -66,5 +67,25 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
+        
+        // GET: Companies/Home/IndexJson
+        [HttpGet]
+        public JsonResult IndexJson()
+        {
+            var Order = _context.CompanyOrders
+                .Select(p => new
+                {
+                    OrderID = p.OrderID,
+                    CompanyName = p.CompanyName,
+                    GUINumber = p.GUINumber,
+                    Title = p.Title,
+                    Price = p.Price,
+                    OrderDate = p.OrderDate,
+                    Status = p.Status
+                });
+
+            return Json(Order);
+        }
+
     }
 }
