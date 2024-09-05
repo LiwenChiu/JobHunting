@@ -29,7 +29,7 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         //Get
         [HttpGet]
-        public JsonResult ReceiveResume2()
+        public JsonResult ReceiveResumeJson()
         {
             var Openings = _context.Openings;
             var TitleClasses = _context.TitleClasses;
@@ -42,12 +42,12 @@ namespace JobHunting.Areas.Companies.Controllers
                 ApplyDate = ResumeOpeningRecords.Where(a => a.OpeningID == p.OpeningID).Select(a => a.ApplyDate).Single(),
             }));
         }
-        public IActionResult Opening(string id)
-        {
-            var Openings = _context.Openings;
-            ViewBag.Opening = new SelectList(Openings.Where(o => o.TitleClassID == id), "TitleClassID", "TitleClassName");
-            return PartialView("_Opening");
-        }
+        //public IActionResult Opening(string id)
+        //{
+        //    var Openings = _context.Openings;
+        //    ViewBag.Opening = new SelectList(Openings.Where(o => o.TitleClassID == id), "TitleClassID", "TitleClassName");
+        //    return PartialView("_Opening");
+        //}
     }
     
 }
