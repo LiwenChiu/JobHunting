@@ -23,11 +23,28 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
+        //GET:compaines/C_Resume/ResumeStorageJson
+        [HttpGet]
+        public JsonResult ResumeStorageJson()
+        {
+            var Candidate = _context.Candidates;
+            return Json(_context.Resumes.Select(p => new
+            {
+                jobTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeID == p.ResumeID).Select(ror => ror.OpeningTitle).Single(),
+                candidateName = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Name).Single(),
+                candidateSex = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Sex).Single(),
+                candidateDegree = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Degree).Single(),
+                candidateEmpStatus = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.EmploymentStatus).Single(),
+
+            }));
+        }
+        //GET:Compaines/C_Resume/ReceiveResume
+        [HttpGet]
         public IActionResult ReceiveResume()
         {
             return View();
         }
-        //Get
+        //GET:compaines/C_Resume/ReceiveResumeJson
         [HttpGet]
         public JsonResult ReceiveResumeJson()
         {
@@ -49,5 +66,5 @@ namespace JobHunting.Areas.Companies.Controllers
         //    return PartialView("_Opening");
         //}
     }
-    
+
 }

@@ -7,171 +7,128 @@
 
     </style>
 }
-
-<div class="container-fluid py-2">
-    <div class="letters row">
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title pb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 姓名 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 性別 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 學歷 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 就業狀態 :</p>
-                    <div class="text-center">
-                        <partial name="_ResumeBtnModal">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title pb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 錄取結果 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
+<div id="resumeStorage">
+    <div class="container-fluid py-2">
+        <div class="letters row">
+            <div class="col-md-3 mb-4" v-for="item in resumes">
+                <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-10">
+                                <span class="card-title pb-3">職缺:{{item.jobTitle}}</span>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn-close justify-content-end" disabled aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 姓名 :{{item.candidateName}}</p>
+                        <span class="card-text"><i class="fa-solid fa-caret-right"></i> 性別 :{{item.candidateSex}}</span>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 學歷 :{{item.candidateDegree}}</p>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 就業狀態 :{{item.candidateEmpStatus}}</p>
+                        <div class="text-center">
+                            <partial name="_ResumeBtnModal">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
+            <div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" v-on:click="setPage(currentPage-1)">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                            <a class="page-link" href="#">{{item}}</a>
+                        </li>
+                        <li class="page-item" v-on:click="setPage(currentPage+1)">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">履歷名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
 </div>
 
 
-@section Scripts
-{
 
+@section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        let VueApp = {
+            data() {
+                return {
+                    pageStatus: 0,
+                    perpage: 3, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+
+                    resumes: [], //從後端撈回來的資料存入這邊
+                    filter: "",
+
+                    baseAddress: "https://localhost:7169",
+
+                    isShow: false,
+                    orderSelA: "",
+                    orderSelB: "",
+                    OrderDetail:
+                        [
+                            { Detail: "公司名稱" },
+                            { Detail: "方案名稱" },
+                            { Detail: "訂購日期" },
+                            { Detail: "方案天數" },
+                            { Detail: "付款狀態" },
+                        ],
+                };
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.resumes.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                }
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                resumeStorageData: function () {
+                    fetch("/companies/C_Resume/ResumeStorageJson", {
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    })
+                        .then(data => {
+                            return this.resumes = data
+                        }).catch(err => {
+                            alert(JSON.stringify(err))
+                        })
+                }
+            },
+            watch: {
+                orderSelA: function (selval) {
+                    this.orderSelB = selval
+                },
+            },
+            //每次重新載入網頁時會自動初始化撈出資料
+            mounted() {
+                this.resumeStorageData();
+            }
+        };
+        let app = Vue.createApp(VueApp).mount("#resumeStorage");
+    </script>
 }
