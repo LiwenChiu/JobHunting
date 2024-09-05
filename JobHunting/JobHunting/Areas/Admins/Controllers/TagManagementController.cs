@@ -62,8 +62,10 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/CreateTag
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<string> CreateTag([FromBody][Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
+        public async Task<Array> CreateTag([FromBody][Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
         {
+            string[] returnStatus = new string[2];
+
             if (ModelState.IsValid)
             {
                 Tag tadd = new Tag
@@ -72,20 +74,33 @@ namespace JobHunting.Areas.Admins.Controllers
                     TagName = tvm.TagName,
                 };
 
+                var arr = await _context.Tags.Where(t => t.TagClassID == tadd.TagClassID).Where(t => t.TagName == tadd.TagName).ToArrayAsync();
+                if(arr.Length > 0)
+                {
+                    returnStatus = ["此類型已存在相同標籤","失敗"];
+                    return returnStatus;
+                }
+
+                returnStatus = ["新增標籤成功", "成功"];
                 _context.Tags.Add(tadd);
                 await _context.SaveChangesAsync();
-                return "新增標籤成功";
+                return returnStatus;
             }
-            return "新增標籤錯誤";
+
+            returnStatus = ["新增標籤失敗", "失敗"];
+            return returnStatus;
         }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<string> DeleteTags([FromBody]int[] arr)
+        public async Task<Array> DeleteTags([FromBody]int[] arr)
         {
+            string[] returnStatus = new string[2];
+
             if (arr.Length == 0)
             {
-                return "未選擇標籤";
+                returnStatus = ["未選擇標籤", "失敗"];
+                return returnStatus;
             }
 
             for (int i = 0; i < arr.Length; i++)
@@ -101,11 +116,14 @@ namespace JobHunting.Areas.Admins.Controllers
                 {
                     await _context.SaveChangesAsync();
                 }
-                catch(Exception ex){
-                    return $"刪除ID為{arr[i]}的關聯標籤失敗!";
+                catch(DbUpdateException ex){
+                    returnStatus = [$"刪除ID為{arr[i]}的關聯標籤失敗!", "失敗"];
+                    return returnStatus;
                 }
             }
-            return "刪除標籤成功";
+
+            returnStatus = ["刪除標籤成功", "成功"];
+            return returnStatus;
         }
 
         //    // GET: Admins/TagManagement/Details/5
