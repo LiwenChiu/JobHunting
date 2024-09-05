@@ -91,8 +91,8 @@
                         </select>
                     </div>
                     <div class="py-1">
-                        <label class="h5" >新增標籤名稱:  </label>
-                        <input type="text"  class="form-control" v-model.trim="TagName" />
+                        <label class="h5">新增標籤名稱:  </label>
+                        <input type="text" class="form-control" v-model.trim="TagName" />
                     </div>
                     @* 新增的Tag名稱:{{TagName}}
                     <br />
@@ -115,8 +115,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTag()"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="h5" >新增標籤類型名稱:  </label>
-                    <input type="text"  class="form-control" v-model.trim="TagClassName" />
+                    <label class="h5">新增標籤類型名稱:  </label>
+                    <input type="text" class="form-control" v-model.trim="TagClassName" />
                     @* 新增的TagClass名稱:{{TagClassName}} *@
                 </div>
                 <div class="modal-footer">
@@ -173,7 +173,7 @@
                         <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID" v-on:change="selectedTagID = null">
                             <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
                             <option value="0">其他</option>
-                            
+
                         </select>
                     </div>
                     <div class="py-1">
@@ -190,8 +190,8 @@
                         </template>
                     </div>
                     <div class="py-1">
-                        <label class="h5" >輸入修改名稱:</label>
-                        <input type="text"  class="form-control" v-model.trim="TagName" />
+                        <label class="h5">輸入修改名稱:</label>
+                        <input type="text" class="form-control" v-model.trim="TagName" />
                     </div>
                     @* 屬於TagClassID:{{selectedTagClassID}}，修改的TagID:{{selectedTagID}}
                     <br />
@@ -221,8 +221,8 @@
                         </select>
                     </div>
                     <div class="py-1">
-                        <label class="h5" >修改標籤名稱:  </label>
-                        <input type="text"  class="form-control" v-model.trim="TagClassName" />
+                        <label class="h5">修改標籤名稱:  </label>
+                        <input type="text" class="form-control" v-model.trim="TagClassName" />
                     </div>
                     @* 修改TagClassID:{{selectedTagClassID}}，新增的TagClass名稱:{{TagClassName}} *@
                 </div>
@@ -358,7 +358,7 @@
                     request.TagClassID = TagClassID;
                     request.TagName = TagName;
                     axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTag`, request, {
-                        headers: {'Content-Type':'application/json'}
+                        headers: { 'Content-Type': 'application/json' }
                     })
                         .then(response => {
                             this.alertText = response.data[0];
@@ -404,11 +404,12 @@
                 },
                 deleteTags: function (delArray) {
                     let _this = this;
-                    
-                    axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTags`,delArray,{
-                        headers:{
-                            'Content-Type':'application/json'
-                        }})
+
+                    axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTags`, delArray, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
                         .then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
