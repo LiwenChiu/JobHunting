@@ -92,5 +92,10 @@ namespace JobHunting.Areas.Candidates.Controllers
 
             return Json(RecordData);
         }
+
+        
+
+
+
     }
 }
