@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace JobHunting.Areas.Candidates.Models;
 
@@ -16,7 +15,6 @@ public partial class ResumeOpeningRecord
 
     public int CompanyID { get; set; }
 
-    
     public string CompanyName { get; set; }
 
     public string OpeningTitle { get; set; }

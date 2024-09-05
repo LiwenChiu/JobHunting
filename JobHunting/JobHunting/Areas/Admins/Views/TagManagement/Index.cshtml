@@ -1,5 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagManagementViewModel>
-
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagsViewModel>
 
 @{
     ViewData["Title"] = "標籤管理";
@@ -255,19 +254,45 @@
                     selectedTagClassID: null,
                     TagName: "",
                     TagClassName: "",
+                    test:[4]
                 };
             },
             methods: {
                 bootPage: function () {
-                    let _this = this;
+                    // let _this = this;
 
-                    axios.get(`${_this.baseAddress}/Admins/TagManagement/IndexTagClasses`).then(
-                        response => _this.TagClasses = response.data
+                    // axios.get(`${_this.baseAddress}/Admins/TagManagement/IndexTagManagement`)
+                    // .then(response => {
+                    //     for(let i=0;i<response.data.length;i++){
+                    //         let tagdata = {};
+                    //         let tagjson = [];
+                    //         let tagclassid = [];
+                    //         let tagclassdata = {};
+                    //         let tagclassjson = [];
+                            
+                    //         tagdata.tagID = response.data[i].tagID;
+                    //         tagdata.tagClassID = response.data[i].tagClassID;
+                    //         tagdata.tagName = response.data[i].tagName;
+                    //         tagjson.push(tagdata);
+                    //         tagclassid.push(response.data[i].tagClassID);
+                    //         if(!tagclassid.includes(response.data[i].tagClassID)){
+                    //             tagclassdata.tagClassID = response.data[i].tagClassID;
+                    //             tagclassdata.tagClassName = response.data[i].tagClassName;
+                    //             tagclassjson.push(tagclassdata);
+                    //         }
+
+                    //         _this.Tags = tagjson;
+                    //         _this.TagClasses = tagclassjson;
+                    //     }
+                    // }).catch(err => { alert(err) });
+
+                    axios.get(`${this.baseAddress}/Admins/TagManagement/IndexTagClasses`).then(
+                        response => this.TagClasses = response.data
                     ).catch(
                         err => { alert(err) });
 
-                    axios.get(`${_this.baseAddress}/Admins/TagManagement/IndexTags`).then(
-                        response => _this.Tags = response.data
+                    axios.get(`${this.baseAddress}/Admins/TagManagement/IndexTags`).then(
+                        response => this.Tags = response.data
                     ).catch(
                         err => { alert(err) });
                 },
@@ -306,17 +331,18 @@
                 addTag: function (TagClassID, TagName) {
                     let _this = this;
                     let request = {};
-                    // request.TagID = 0;
-                    request.TagClassID = (TagClassID == null ? 0 : TagClassID);
+                    request.TagID = 0;
+                    request.TagClassID = TagClassID;
                     request.TagName = TagName;
-
-                    axios.post(`${_this.baseAddress}/Admins/TagManagement/CreateTag`, request)
-                    .then(response => {
-                        alert(response);
-                        _this.bootPage();
-                        _this.selectedTagClassID = null;
-                        _this.TagName = "";
-                    }).catch(err => { alert(err) });
+                    axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTag`, request, {
+                        headers: {'Content-Type':'application/json'}
+                    })
+                        .then(response => {
+                            // alert(response.data);
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    _this.selectedTagClassID = null;
+                    _this.TagName = "";
                 },
                 addTagClass: function (TagClassName) {
                     let _this = this;
@@ -350,9 +376,17 @@
                         return item.tagID == id;
                     })[0].tagName;
                 },
-                deleteTags: function (Array) {
+                deleteTags: function (delArray) {
                     let _this = this;
-
+                    
+                    axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTags`,delArray,{
+                        headers:{
+                            'Content-Type':'application/json'
+                        }})
+                        .then(response => {
+                            // alert(response.data);
+                            this.bootPage();
+                        }).catch(err => {alert(err)});
                     _this.TagCheckedResume = [];
                 },
                 deleteTagClass: function (selectedTagClassID) {
@@ -364,7 +398,7 @@
             mounted: function () {
                 let _this = this;
                 // alert("mounted");
-                _this.bootPage();
+                this.bootPage();
             },
         };
         let app = Vue.createApp(VueAppTagManagement).mount("#TagManagement");
