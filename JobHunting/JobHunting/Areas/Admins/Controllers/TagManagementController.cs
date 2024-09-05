@@ -26,10 +26,22 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
+        // GET: Admins/TagManagement/IndexTagManagement
+        //public JsonResult IndexTagManagement()
+        //{
+        //    return Json(_context.Tags.Include(t => t.TagClass).Select(t => new TagManagementViewModel
+        //    {
+        //        TagClassID = t.TagClassID,
+        //        TagClassName = t.TagClass.TagClassName,
+        //        TagID = t.TagID,
+        //        TagName = t.TagName,
+        //    }));
+        //}
+
         // GET: Admins/TagManagement/IndexTags
         public JsonResult IndexTags()
         {
-            return Json(_context.Tags.Select(t => new TagsViewModel
+            return Json(_context.Tags.Select(t => new
             {
                 TagID = t.TagID,
                 TagClassID = t.TagClassID,
@@ -40,7 +52,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TagManagement/IndexTagClasses
         public JsonResult IndexTagClasses()
         {
-            return Json(_context.TagClasses.Where(t => t.TagClassID > 0).Select(t => new TagClassesViewModel
+            return Json(_context.TagClasses.Where(t => t.TagClassID > 0).Select(t => new
             {
                 TagClassID = t.TagClassID,
                 TagClassName = t.TagClassName,
@@ -48,9 +60,9 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
         //POST: Admins/TagManagement/CreateTag
-       [HttpPost]
-       [ValidateAntiForgeryToken]
-        public async Task<string> CreateTag([Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<string> CreateTag([FromBody][Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
         {
             if (ModelState.IsValid)
             {
@@ -68,20 +80,32 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<string> DeleteTags(Array arr)
+        //[ValidateAntiForgeryToken]
+        public async Task<string> DeleteTags([FromBody]int[] arr)
         {
             if (arr.Length == 0)
             {
                 return "未選擇標籤";
             }
 
-            TagsViewModel[] delarr = new TagsViewModel[arr.Length];
-            for (int i = 0; i < arr.Length; i++) { 
-                    
-            }
+            for (int i = 0; i < arr.Length; i++)
+            {
+                int id = arr[i];
+                var tag = await _context.Tags.FindAsync(id);
+                if(tag != null)
+                {
+                    _context.Tags.Remove(tag);
+                }
 
-            return "標籤刪除失敗";
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch(Exception ex){
+                    return $"刪除ID為{arr[i]}的關聯標籤失敗!";
+                }
+            }
+            return "刪除標籤成功";
         }
 
         //    // GET: Admins/TagManagement/Details/5
