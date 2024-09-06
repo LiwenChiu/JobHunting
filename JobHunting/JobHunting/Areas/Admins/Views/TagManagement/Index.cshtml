@@ -12,6 +12,7 @@
 }
 
 <div id="TagManagement" class="py-2 px-1" style="position: relative">
+    @* 通知 *@
     <template v-if="alertStatus == '成功'">
         <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute">
             <strong>{{alertText}}</strong>
@@ -24,6 +25,7 @@
             <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
         </div>
     </template>
+
     <div class="container text-center pt-2 py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:63vh">
         <template v-for="item in TagClasses">
             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameID(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameID(item)">
