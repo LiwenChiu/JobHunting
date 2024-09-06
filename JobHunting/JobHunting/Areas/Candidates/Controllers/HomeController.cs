@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
-using JobHunting.Areas.Admins.Models;
-using JobHunting.Areas.Companies.Models;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -28,9 +26,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         // GET: Candidates
         public IActionResult Index()
         {
-
             return View();
-
         }
         public IActionResult Login()
         {
@@ -40,16 +36,11 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             return View();
         }
-
         public IActionResult Home()
         {
             return View();
         }
         public IActionResult Member()
-        {
-            return View();
-        }
-        public IActionResult Resume()
         {
             return View();
         }
@@ -66,35 +57,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             return View();
         }
 
-        public IActionResult Record()
-        {
-            return View();
-        }
 
-        /*-------------------------------------------------*/
-
-        // GET: Candidates/Home/Recordresult
-        [HttpGet]
-        public async Task<IActionResult> Recordresult()
-        {
-            var TitleClasses = _context.TitleClasses;
-            var Openings = _context.Openings;
-
-            var RecordData = await  _context.ResumeOpeningRecords
-                 .Include(c => c.Resume).Include(a => a.Opening).Select(p => new RecordViewmodel
-                 {
-                     ResumeOpeningRecordID = p.ResumeOpeningRecordID,
-                     ApplyDate = p.ApplyDate,
-                     CompanyName = p.CompanyName,
-                     OpeningTitle = p.OpeningTitle,
-                     Title = p.Resume.Title,
-                 }).ToListAsync();
-
-            return Json(RecordData);
-        }
-
-        [HttpPost]
-        public async Task<IEnumerable<>>
 
 
 
