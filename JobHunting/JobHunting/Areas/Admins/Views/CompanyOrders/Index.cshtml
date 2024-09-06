@@ -12,7 +12,7 @@
 }
 
 <div id="CompanyOrdersVue">
-    <h3 class="text-center pt-2">訂單紀錄</h3>
+@*     <h3 class="text-center pt-2">訂單紀錄</h3> *@
 
     <div class="row py-2 px-1">
        @*  <div class="col-md-10">
@@ -35,7 +35,7 @@
     
 
     <div class="container tableOutside ">
-        <table class="table table-striped text-center mt-5" id="ChangePage" style="">
+        <table class="table table-striped text-center mt-1" id="ChangePage" style="">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">訂單ID</th>
@@ -48,7 +48,7 @@
             </thead>
             <tbody>
                 <tr v-for="item in CompanyOrders">
-                    <th scope="row">{{item.OrderID}}</th>
+                    <th scope="row">{{item.orderID}}</th>
                     <td>{{item.companyName}}</td>
                     <td>{{item.title}}</td>
                     <td>{{item.orderDate}}</td>
@@ -105,7 +105,9 @@
                     request.OrderID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
                     request.CompanyName = request.GUINumber = request.Title = request.Intro = _this.filter;
                     // request.CompanyID = request.PlanID = request.Price = request.OrderDate = request.Duration = request.Status = null;
-                    axios.post(`${_this.baseAddress}/Admins/CompanyOrders/Filter`, request)
+                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/Filter`, request, {
+                        Headers: {'Content-Type':'application/json'},
+                    })
                         .then(
                             response => {
                                 _this.CompanyOrders = response.data;

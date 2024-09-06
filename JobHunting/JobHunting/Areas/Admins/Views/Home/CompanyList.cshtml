@@ -4,9 +4,9 @@
     </style>
 }
 
-<div class="container py-2">
-    <div class="card mb-4">
-        <table class="table text-center">
+<div class="container py-2" id="app">
+    @* <button v-on:click="CompanyListData">Click</button> *@
+    <table class="table text-center table-striped table-hover">
             <thead>
                 <tr>
                     <td>公司ID</td>
@@ -18,17 +18,17 @@
                 </tr>
             </thead>
             <tbody id="CandidateOpeningRecords">
-                <tr class="overcard">
-                    <td>hihi</td>
-                    <td>sdgasfs</td>
-                    <td>itsdVDfsdme</td>
-                    <td>isdfSdffa</td>
-                    <td>srjsdzhr</td>
-                    <td>sfdsrfkiuytgy</td>
+                <tr v-for="item in companylist" class="overcard">
+                    <td>{{item.companyID}}</td>
+                    <td>{{item.companyName}}</td>
+                    <td>{{item.guiNumber}}</td>
+                    <td>{{item.contactName}}</td>
+                    <td>{{item.contactPhone}}</td>
+                    <td>{{item.contactEmail}}</td>
                 </tr>
             </tbody>
         </table>
-        <div>
+    <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
@@ -49,11 +49,34 @@
                 </ul>
             </nav>
         </div>
-    </div>
+    
 </div>
 
-@section Scripts {
+@section Scripts 
+{
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-
+        Vue.createApp({ 
+            data() {
+                return {
+                    companylist:[]
+                }
+            },
+            methods: {
+                CompanyListData: function () {
+                    // alert("AAA");
+                    fetch("/Admins/Home/IndexJson", {
+                        method:"GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                        return this.companylist=data
+                    }).catch(err => { 
+                        alert(JSON.stringify(err))
+                    })
+                }
+            },
+            mounted() { this.CompanyListData() },
+        }).mount("#app");
     </script>
 }

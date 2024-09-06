@@ -6,56 +6,30 @@
 }
 
 
-<div class="container py-2">
+<div class="container py-2" id="app">
     <div class="col-lg">
         <div class="card mb-1 mb-md-0 h-100">
             <div class="card-body text-center">
-                <h4>意見信件</h4>
-                <div class="row row-cols-1 row-cols-md-1 g-4">
-                    <div class="col">
-                        <div class="card overcard">
+                <h4 class="mb-3">意見信件</h4>
+                <div class="row row-cols-1 row-cols-md-1 g-4" >
+                    <div class="col">                        
+                        <div class="card-body">
+                            <div class="row bg-warning text-dark">
+                            <h5 class="col-2">意見類別</h5>
+                            <h5 class="col-8">主旨</h5>
+                            <h5 class="col-2">處理狀態</h5>
+                            </div>
+                        </div>
+                        <div class="card overcard mb-3"  v-for="item in opinionlist">                          
                             <div class="card-body">
                                 <div class="row" style="margin-bottom:0 !important;">
-                                    <h5 class="col-2">意見類別</h5>
-                                    <p class="col-8">主旨</p>
-                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">處理狀態</button></div>
+                                    <h5 class="col-2">{{item.class}}</h5>
+                                    <p class="col-8">{{item.subjectLine}}</p>
+                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">{{item.status}}</button></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="card overcard">
-                            <div class="card-body">
-                                <div class="row" style="margin-bottom:0 !important;">
-                                    <h5 class="col-2">意見類別</h5>
-                                    <p class="col-8">主旨</p>
-                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">處理狀態</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card overcard">
-                            <div class="card-body">
-                                <div class="row" style="margin-bottom:0 !important;">
-                                    <h5 class="col-2">意見類別</h5>
-                                    <p class="col-8">主旨</p>
-                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">處理狀態</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card overcard">
-                            <div class="card-body">
-                                <div class="row" style="margin-bottom:0 !important;">
-                                    <h5 class="col-2">意見類別</h5>
-                                    <p class="col-8">主旨</p>
-                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">處理狀態</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div>                                   
                 </div>
             </div>
             <nav aria-label="Page navigation example">
@@ -84,5 +58,29 @@
 
 @section Scripts
 {
-
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        Vue.createApp({ 
+            data() {
+                return {
+                    opinionlist:[]
+                }
+            },
+            methods: {
+                OpinionData: function () {
+                    // alert("AAA");
+                    fetch("/Admins/Home/IndexJson_opinionletter", {
+                        method:"GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                            return this.opinionlist=data
+                    }).catch(err => { 
+                        alert(JSON.stringify(err))
+                    })
+                }
+            },
+                    mounted() { this.OpinionData() },
+        }).mount("#app");
+    </script>
 }
