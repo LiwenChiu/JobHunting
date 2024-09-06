@@ -43,7 +43,26 @@ namespace JobHunting.Areas.Candidates.Controllers
                 Certification = a.Certification,
                 WorkExperience = a.WorkExperience,
                 Autobiography = a.Autobiography,
+                candidateid = a.CandidateID
             }));
         }
+
+
+        //[HttpPost]
+
+        //public async Task<IActionResult> CandidatesResumeDetail(int backid)
+        //{
+        //   var member = await _context.Candidates.Where(c => c.CandidateID == backid).FirstOrDefaultAsync();
+
+
+        //    if(member == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(member);
+
+
+        //}
     }
 }

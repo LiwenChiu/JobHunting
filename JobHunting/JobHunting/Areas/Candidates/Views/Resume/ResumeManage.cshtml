@@ -4,7 +4,7 @@
         
     </style>
 }
-
+@* 履歷新增 *@
 <div class="container-fluid py-2" id="ResumeApp">
     <div class="letters row">
         <div class="col-md-3 mb-4">
@@ -14,24 +14,160 @@
                 </div>
             </div>
         </div>
+
+        @* 履歷內容 *@
         <div class="col-md-3 mb-4" v-for="item in Resume.slice(pageStart,pageEnd)">
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body" style="border:1px solid red">
+                <div class="card-body" style="">
                     <div class="" style="text-align:right">
                          <button type="button" class="btn-close text-right"  aria-label="Close"></button>
                     </div>
                     <div class="">
                         <p class="card-title pb-3 text-center fs-2">{{item.resumeTitle.slice(1,15)}}</p>
                         </div>
-                    
+                    @* 職缺內容按鈕 *@
                     <div class="text-center">
-                        <partial name="../Partial/_ResumeBtnModal.cshtml" />
+                        <button type="button" data-bs-toggle="modal"
+                                :data-bs-target="odID" class="btn btn-primary">
+                            編輯履歷
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        
+
+       
+
+
+        @* 職缺內容Modal *@
+        <div class="modal fade"
+             id="modalId"
+             tabindex="-1"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
+             role="dialog"
+             aria-labelledby="modalTitleId"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                 role="document">
+                <div class="modal-content">
+                    <div class="card modal-body bg-warning">
+                        <div class="card-body container-fluid">
+                            <div class="modal-header" style="background-color: #f7d179;">
+                                <h5 class="modal-titl text-center" :id="odID" style="width:95% ;">
+                                    編輯履歷
+                                </h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                                </button>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label class="mb-2" size="10">姓名<input type="text" required></label>
+                                                </div>
+                                                <div>
+                                                    <label for="" class="mb-2">性別</label>
+                                                    <input type="radio" name="sex"><label>男</label>
+                                                    <input type="radio" name="sex"><label>女</label>
+                                                    <input type="radio" name="sex"><label>其他</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">生日</label>
+                                                    <input type="date">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">電話</label>
+                                                    <input type="tel" required>
+                                                    <label for="" class="mb-2">學歷</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">郵件</label>
+                                                    <input type="email" class="form-control" required>
+                                                </div>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label for="" class="mb-2">就業狀態</label>
+                                                    <input type="text">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="mb-2">上班時段: <input type="time"><input type="time"></label>
+                                                </div>
+                                                <div class="col">
+                                                    <label class="mb-2">希望職稱: <input type="text"></label>
+
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
+                                                </div>
+                                                <partial name="../Partial/_Tags.cshtml" />
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">自傳</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="" style="text-align:right">
+                                <button type="button" class="btn btn-success ">編輯完成</button>
+                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" v-on:click="TagCheckedResume = [];">取消</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        @* 分頁 *@
         <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -69,6 +205,7 @@
                     currentPage: 1,
                     MessageStatus: 1,
                     Resume: [],
+                    odID:"#"+"item.candidateid",
                     TagClasses: [
                         { TagClassID: 1, TagClass: "電腦科學"},
                         { TagClassID: 2, TagClass: "數學" },
@@ -121,7 +258,10 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
-                    ResumeInformation: function () {
+                OpeningDetail: function(){
+                     
+                },
+                ResumeInformation: function () {
                     fetch("/Candidates/Resume/ResumeResult", {
                         method:"POST",
                     }).then(response=>{

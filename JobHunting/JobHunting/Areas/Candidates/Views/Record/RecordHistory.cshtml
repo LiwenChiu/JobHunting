@@ -1,9 +1,11 @@
-﻿
+﻿@model IEnumerable<JobHunting.Areas.Candidates.ViewModels.RecordViewmodel>
 
 <div class="container py-2" id="RecordApp">
-
+    <label>篩選關鍵字：
+        <input type="text" class="form-control" :key="" v-model="filter" v-on:keyup="filterRecord">
+     </label>
     <div class="card mb-4">
-        @* <label>篩選關鍵字<input type="text" :key="" v-model="filter" v-on:keyup="filterRecord()"></label> *@
+        
         <table class="table">
             <thead>
                 <tr>
@@ -60,15 +62,13 @@
         let VueApp = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
                     pageStatus: 0,
                     perpage: 6, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
                     jobclass: [], //從後端撈回來的資料存入這邊
                     filter:"",
-                    ApplyDate:"",
-                    CompanyName:"",
-                    OpeningTitle:"",
                     Title:"",
                     TagClasses: [
                         { TagClassID: 1, TagClass: "電腦科學"},
@@ -129,17 +129,18 @@
                 filterRecord: function () {
                     let _this = this;
                     var request = {};
-                    ResumeOpeningRecordID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
-                    CompanyName = ApplyDate = OpeningTitle = Title = _this.filter;
-                    fetch("/Candidates/Record/Recorresult", {
-                        method: "POST",
+                    request.ResumeOpeningRecordID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.CompanyName = request.OpeningTitle = request.Title = _this.filter;
+                    
+                    axios.post(`${this.baseAddress}/Candidates/Record/filter`,request,
+                    {   Headers: {'Content-Type':'application/json'},
                     }).then(response => {
-                        return response.json();
-                    })
-                        .then(data => {
-                            return this.jobclass = data
+                        _this.jobclass = response.data
+                           for (let i = 0; i < _this.jobclass.length; i++) {
+                               _this.jobclass[i].Edit = false;
+                           }
                         }).catch(err => {
-                            alert(JSON.stringify(err))
+                                console.log(JSON.stringify(err))
                         });
                 },
 

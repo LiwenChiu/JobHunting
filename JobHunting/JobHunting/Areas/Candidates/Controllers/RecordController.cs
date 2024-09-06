@@ -27,7 +27,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         /*-------------------------------------------------*/
 
-        // GET: Candidates/Home/Applyresult
+        // POST: Candidates/Home/Applyresult
         [HttpPost]
         public JsonResult Recorresult()
         {
@@ -42,5 +42,41 @@ namespace JobHunting.Areas.Candidates.Controllers
                      Title = p.Resume.Title,
                  }));
         }
+
+
+
+
+        //Post: Candidates/Record/Recordfilter
+        [HttpPost]
+        public async Task<IEnumerable<RecordViewmodel>> filter([FromBody] RecordViewmodel rv)
+        {
+
+            return (_context.ResumeOpeningRecords
+                 .Include(c => c.Resume).Include(a => a.Opening)
+                 .Where(rvfilter => rvfilter.ResumeOpeningRecordID == rv.ResumeOpeningRecordID ||
+                           rvfilter.CompanyName.Contains(rv.CompanyName) ||
+                           rvfilter.ApplyDate==rv.ApplyDate ||
+                           rvfilter.OpeningTitle.Contains(rv.OpeningTitle) ||
+                           rvfilter.Resume.Title.Contains(rv.Title))
+                 .Select(p => new RecordViewmodel
+                 {
+                     ResumeOpeningRecordID = p.ResumeOpeningRecordID,
+                     ApplyDate = p.ApplyDate,
+                     CompanyName = p.CompanyName,
+                     OpeningTitle = p.OpeningTitle,
+                     Title = p.Resume.Title,
+
+                 }));
+
+             
+
+        }
+
     }
+
+
+
+
+
+
 }
