@@ -8,16 +8,23 @@
     <div class="col-10 mx-auto  mt-4">
         <div class="row">
             <div class="col-5">
-                <select class="" style="width:40%" id="OrderOpTitle2" v-model="orderSelA">
-                    <option :value="idx" v-for="item,idx in resumes">{{item.titleClassName}}</option>
+                <select class="" style="width:40%" id="OpTitleClass" v-model="selectedOpClassTitleId" v-on:change="selectedOpTitleId=null">
+                    <option value="" selected>----職缺類別----</option>
+                    <option v-for="item in resumes" v-bind:value="item.titleClassId">{{item.titleClassName}}</option>
                 </select>
-                <select class="" style=" width:60%" v-model="orderSelB">
-                    <option value=0 v-if="orderSelA==0" v-for="item in CompanyOrders">{{item.companyName}}</option>
-                    <option value=1 v-else-if="orderSelA==1" v-for="item in CompanyOrders">{{item.title}}</option>
-                    <option value=2 v-else-if="orderSelA==2" v-for="item in CompanyOrders">{{item.orderDate}}</option>
-                    <option value=3 v-else-if="orderSelA==3" v-for="item in CompanyOrders">{{item.duration}}</option>
-                    <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
-                </select>
+                <template v-if="selectedOpClassTitleId">
+                    <select class="" style=" width:60%" v-model="selectedOpTitleId">
+                        <option value="" selected>----職缺名稱----</option>
+                        <option v-for="item in filteredResumes" v-bind:value="item.titleId">{{item.title}}</option>
+                    </select>
+                </template>
+                <template v-else>
+                    <select class="" style=" width:60%" v-model="selectedOpTitleId">
+                        <option value="" selected>----職缺名稱----</option>
+                        <option v-for="item in resumes" v-bind:value="item.titleId">{{item.title}}</option>
+                    </select>
+                </template>
+
                 <span id="TitleClass"></span>
             </div>
             <div class="col-7">
@@ -38,7 +45,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in resumes">
+                <tr v-for="item in displayedResumes.slice(pageStart,pageEnd)">
                     <th>{{item.applyDate}}</th>
                     <td>{{item.titleClassName}}</td>
                     <td>{{item.title}}</td>
@@ -72,18 +79,18 @@
         let VueApp = {
             data() {
                 return {
-                    pageStatus: 0,
-                    perpage: 3, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
+                    baseAddress: "https://localhost:7169",
                     resumes: [], //從後端撈回來的資料存入這邊
+
+                    pageStatus: 0,
+                    perpage: 5, //一頁的資料數
+                    currentPage: 1,
                     filter: "",
 
-                    baseAddress: "https://localhost:7169",
-                    filter: "",
-                    isShow: false,
-                    orderSelA: "",
-                    orderSelB: "",
+                    OpClassTitle: [],
+                    OpTitle: [],
+                    selectedOpClassTitleId: '',
+                    selectedOpTitleId: '',
                     OrderDetail:
                         [
                             { Detail: "公司名稱" },
@@ -106,6 +113,21 @@
                 pageEnd() {
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
+                },
+                filteredResumes() {
+                    return this.resumes.filter(item => item.titleClassId == this.selectedOpClassTitleId)
+                },
+                displayedResumes() {
+                    if (!this.selectedOpClassTitleId && !this.selectedOpTitleId) {
+                        return this.resumes;
+                    } else if (this.selectedOpClassTitleId && !this.selectedOpTitleId) {
+                        return this.filteredResumes;
+                    } else if (!this.selectedOpClassTitleId && this.selectedOpTitleId) {
+                        return this.resumes.filter(item => item.titleId == this.selectedOpTitleId)
+                    } else if (this.selectedOpClassTitleId && this.selectedOpTitleId) {
+                        return this.filteredResumes.filter(item => item.titleId == this.selectedOpTitleId)
+                    }
+                    return this.resumes;
                 }
             },
             methods: {
@@ -125,8 +147,22 @@
                             return this.resumes = data
                         }).catch(err => {
                             alert(JSON.stringify(err))
-                        })
-                }
+                        });
+
+                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
+                        res => this.OpClassTitle = res.data
+                    ).catch(
+                        err => { alert(err) }
+                    );
+
+                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpTitle`).then(
+                        res => this.OpTitle = res.data
+                    ).catch(
+                        err => { alert(err) }
+                    );
+                },
+
+
             },
             watch: {
                 orderSelA: function (selval) {
