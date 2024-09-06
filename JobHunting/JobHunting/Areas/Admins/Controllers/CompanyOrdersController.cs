@@ -74,8 +74,8 @@ namespace JobHunting.Areas.Admins.Controllers
 
         //POST: Admins/CompanyOrders/Filter
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IEnumerable<CompanyOrdersViewModel>> Filter(CompanyOrdersViewModel covm)
+        //[ValidateAntiForgeryToken]
+        public async Task<IEnumerable<CompanyOrdersViewModel>> Filter([FromBody]CompanyOrdersViewModel covm)
         {
             return _context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
@@ -94,21 +94,21 @@ namespace JobHunting.Areas.Admins.Controllers
                                     covmfilter.CompanyName.Contains(covm.CompanyName) ||
                                     covmfilter.GUINumber.Contains(covm.GUINumber) ||
                                     covmfilter.Title.Contains(covm.Title) ||
-                                    covmfilter.Intro.Contains(covm.Intro));
-              //.Select(co => new CompanyOrdersViewModel
-              //{
-              //    OrderID = co.OrderID,
-              //    CompanyID = co.CompanyID,
-              //    PlanID = co.PlanID,
-              //    CompanyName = co.CompanyName,
-              //    GUINumber = co.GUINumber,
-              //    Title = co.Title,
-              //    Price = co.Price,
-              //    OrderDate = co.OrderDate,
-              //    Duration = co.Duration,
-              //    Intro = co.Intro,
-              //    Status = co.Status,
-              //});
+                                    covmfilter.Intro.Contains(covm.Intro))
+              .Select(co => new CompanyOrdersViewModel
+               {
+                   OrderID = co.OrderID,
+                   CompanyID = co.CompanyID,
+                   PlanID = co.PlanID,
+                   CompanyName = co.CompanyName,
+                   GUINumber = co.GUINumber,
+                   Title = co.Title,
+                   Price = co.Price,
+                   OrderDate = co.OrderDate,
+                   Duration = co.Duration,
+                   Intro = co.Intro,
+                   Status = co.Status,
+               });
         }
 
 
