@@ -65,23 +65,23 @@
             <button type="button" class="btn btn-warning col-md-2 text-light" data-bs-toggle="modal" data-bs-target="#moveTags">移動</button>
         </div>
         <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;">
-            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#addTags">新增</button>
+            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTag">新增</button>
             <button type="button" class="btn btn-success col-md-2" data-bs-toggle="modal" data-bs-target="#editTags">修改</button>
             <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deleteTags">刪除</button>
         </div>
         <div class="container-fluid row pt-2" style="display:flex;align-items: center;justify-content: center;">
-            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#addTagClass">新增類型</button>
+            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTagClass">新增類型</button>
             <button type="button" class="btn btn-success col-md-2" data-bs-toggle="modal" data-bs-target="#editTagClass">修改類型</button>
             <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deleteTagClass">刪除類型</button>
         </div>
     </footer>
 
     @* 新增標籤 *@
-    <div class="modal fade" id="addTags" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTagsLabel" aria-hidden="true">
+    <div class="modal fade" id="createTag" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createTagLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h3 class="modal-title text-light" id="addTagsLabel">新增標籤</h3>
+                    <h3 class="modal-title text-light" id="createTagLabel">新增標籤</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTag()"></button>
                 </div>
                 <div class="modal-body">
@@ -101,7 +101,7 @@
                     加入的TagClassID:{{selectedTagClassID}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="addTag(selectedTagClassID,TagName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTag(selectedTagClassID,TagName);alertOut();">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -109,11 +109,11 @@
     </div>
 
     @* 新增標籤類型 *@
-    <div class="modal fade" id="addTagClass" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTagClassLabel" aria-hidden="true">
+    <div class="modal fade" id="createTagClass" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createTagClassLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h3 class="modal-title text-light" id="addTagClassLabel">新增標籤類型</h3>
+                    <h3 class="modal-title text-light" id="createTagClassLabel">新增標籤類型</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTag()"></button>
                 </div>
                 <div class="modal-body">
@@ -122,7 +122,7 @@
                     @* 新增的TagClass名稱:{{TagClassName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="addTagClass(TagClassName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTagClass(TagClassName);alertOut();">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -175,7 +175,6 @@
                         <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID" v-on:change="selectedTagID = null">
                             <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
                             <option value="0">其他</option>
-
                         </select>
                     </div>
                     <div class="py-1">
@@ -353,44 +352,116 @@
                     _this.TagName = "";
                     _this.TagClassName = "";
                 },
-                addTag: function (TagClassID, TagName) {
+                createTag: function (TagClassID, TagName) {
                     let _this = this;
-                    let request = {};
-                    request.TagID = 0;
-                    request.TagClassID = TagClassID;
-                    request.TagName = TagName;
-                    axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTag`, request, {
-                        headers: { 'Content-Type': 'application/json' }
-                    })
-                        .then(response => {
+                    if (TagName == "") {
+                        this.alertText = "請輸入欲新增標籤名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.TagID = 0;
+                        request.TagClassID = TagClassID;
+                        request.TagName = TagName;
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTag`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                this.alertText = response.data[0];
+                                this.alertStatus = response.data[1];
+                                this.bootPage();
+                            }).catch(err => { alert(err) });
+                    }
+                    _this.selectedTagClassID = null;
+                    _this.TagName = "";
+                },
+                createTagClass: function (TagClassName) {
+                    let _this = this;
+                    if (TagClassName == "") {
+                        this.alertText = "請輸入欲新增標籤類型名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else {
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTagClass`, TagClassName, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
                             this.bootPage();
                         }).catch(err => { alert(err) });
-                    _this.selectedTagClassID = null;
-                    _this.TagName = "";
-                },
-                addTagClass: function (TagClassName) {
-                    let _this = this;
-
+                    }
                     _this.TagClassName = "";
                 },
                 moveTags:function(selectedTagClassID,TagChecked){
                     let _this = this;
-
+                    if (TagChecked.length == 0) {
+                        this.alertText = "請選擇欲移動標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else {
+                        let request = {};
+                        request.TagClassID = (selectedTagClassID == null ? 0 : selectedTagClassID);
+                        request.TagChecked = TagChecked;
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/MoveTags`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
                     _this.selectedTagClassID = null;
                     _this.TagChecked = [];
                 },
                 editTag: function (selectedTagClassID, selectedTagID, TagName) {
                     let _this = this;
-
+                    if (selectedTagID == null) {
+                        this.alertText = "請選擇欲修改標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else if(TagName == ""){
+                        this.alertText = "請輸入欲修改標籤名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.TagID = selectedTagID;
+                        request.TagClassID = (selectedTagClassID == null ? 0 : selectedTagClassID);
+                        request.TagName = TagName;
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/EditTag`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
                     _this.selectedTagClassID = null;
                     _this.selectedTagID = null;
                     _this.TagName = "";
                 },
                 editTagClass: function (selectedTagClassID, TagClassName) {
                     let _this = this;
-
+                    if (selectedTagClassID == null){
+                        this.alertText = "請選擇欲修改標籤類型";
+                        this.alertStatus = "失敗";
+                    }
+                    else if (TagClassName == ""){
+                        this.alertText = "請輸入欲修改標籤類型名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.TagClassID = selectedTagClassID;
+                        request.TagClassName = TagClassName;
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/EditTagClass`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
                     _this.selectedTagClassID = null;
                     _this.TagClassName = null;
                 },
@@ -406,22 +477,41 @@
                 },
                 deleteTags: function (delArray) {
                     let _this = this;
-
-                    axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTags`, delArray, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                        .then(response => {
-                            this.alertText = response.data[0];
-                            this.alertStatus = response.data[1];
-                            this.bootPage();
-                        }).catch(err => {alert(err)});
+                    if (delArray.length == 0){
+                        this.alertText = "請選擇欲刪除標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTags`, delArray, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                this.alertText = response.data[0];
+                                this.alertStatus = response.data[1];
+                                this.bootPage();
+                            }).catch(err => { alert(err) });
+                    }
                     _this.TagChecked = [];
                 },
                 deleteTagClass: function (selectedTagClassID) {
                     let _this = this;
-
+                    if (selectedTagClassID == null) {
+                        this.alertText = "請選擇欲刪除標籤類型";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTagClass`, selectedTagClassID, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
                     _this.selectedTagClassID = null;
                 },
                 alertOut:function(){
