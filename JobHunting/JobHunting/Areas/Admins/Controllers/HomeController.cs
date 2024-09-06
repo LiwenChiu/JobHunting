@@ -66,7 +66,18 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return View();
         }
-
+        //GET:Admins/Home/IndexJson_opinionletter
+        [HttpGet]
+        public JsonResult IndexJson_opinionletter()
+        {
+            var opinionletter = _context.OpinionLetters.Select(p => new
+            {
+                Class= p.Class,
+                SubjectLine= p.SubjectLine,
+                Status= p.Status,
+            });
+            return Json(opinionletter);
+        }
         public IActionResult PricingPlansManagement()
         {
             return View();
