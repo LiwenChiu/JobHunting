@@ -37,7 +37,7 @@
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" />
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model="keyword" />
             </div>
             <div class="col-2 mb-0">
                 <button class="btn btn-warning">搜尋</button>
@@ -63,13 +63,13 @@
                 
             </thead>
             <tbody align="center"> 
-                <tr v-for="(item,index) in candidates.slice(pageStart,pageEnd)">
+                <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
                     <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.name}}</a></td>
                     <td>{{getAge(item.birthday)}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
                     <td>{{item.address}}</td>
-                    <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalId">預覽</button></td>
+                    <td><button class="btn btn-info" data-bs-toggle="modal" :data-bs-target="'#'+mergeID(item)">預覽</button></td>
                 </tr>
             </tbody>
         </table>
@@ -93,8 +93,8 @@
             </nav>
         </div>
     </div>
-    <div class="modal fade"
-         id="modalId"
+    <div v-for="item in resumes" class="modal fade"
+         :id="mergeID(item)"
          tabindex="-1"
          data-bs-backdrop="static"
          data-bs-keyboard="false"
@@ -114,27 +114,32 @@
                 <div class="modal-body "style="background-color: #f7d179">
                     <div class="row">
                         <div class="col-sm-5 ">
-                            <div class="row">
-                                <h5 class="text-center">個人資料</h5>
+                            <div class="row text-center">
+                                <h5>個人資料</h5>
                                 <div class="col-12 col-sm-12">
-                                    <label>姓名:</label>
+                                    <label>{{item.name}}</label>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label>性別:</label>
+                                    <label >性別:{{selectSex(item.sex)}}</label>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label>學歷:</label>
+                                    <label >學歷:{{item.degree}}</label>
                                 </div>
                                 <h5 class="text-center">專業技能</h5>
                                 <div class="col-12 col-sm-12">
-                                    <label>C#、Java</label>
+                                    <label class="text-center">C#、Java</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-7 ">
                             <div class="row">
+                                <h5 class="text-center">簡介</h5>
                                 <div class="col-12 col-sm-12">
-                                    <p>工作經驗詳述</p>
+                                    <p>{{item.intro}}</p>
+                                </div>
+                                <h5 class="text-center">工作經驗</h5>
+                                <div class="col-12 col-sm-12">
+                                    <p>{{item.workExperience}}</p>
                                 </div>
                             </div>
                         </div>
@@ -157,16 +162,17 @@
         let vueList = {
             data() {
                 return {
-                    candidates: [],
+                    resumes: [],
+                    tags: [],
                     tagClasses: [],
-                    in: 1,
+                    keyword: "",
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
                 };
             },
             computed: {
                 totalPage() {
-                    return Math.ceil(this.candidates.length / this.perpage)
+                    return Math.ceil(this.resumes.length / this.perpage)
                     //Math.ceil()取最小整數
                 },
                 pageStart() {
@@ -177,6 +183,9 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
+                // filterList(){
+                //     return this.candidates.filter(item => item.includes(this.keyword))
+                // },
             },
             methods: {
                 setPage(page) {
@@ -197,8 +206,19 @@
                     let age = today - birth;
                     return age;
                 },
+                mergeID(item){
+                    let str = item.name.replace(/\s/g, "");
+                    let num = item.resumeID;
+                    strID = str + num;
+                    return strID;
+                },
+                filterTagClass(ClassID) {
+                    let _this = this;
+                    return _this.candidates.filter(function (item) {
+                        return item.name == ClassID;
+                    });
+                },
                 getTag() {
-                    let url = 'https://localhost:7169/Home/TagList';
                     let request = {
                         method: 'GET',
                         cache: 'no-cache',
@@ -206,7 +226,17 @@
                             'Content-Type': 'application/json'
                         })
                     };
-                    fetch(url, request)
+                    fetch('https://localhost:7169/Home/Tags', request)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(model => {
+                            return this.tags = model
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    fetch('https://localhost:7169/Home/TagClasses', request)
                         .then(response => {
                             return response.json();
                         })
@@ -218,7 +248,6 @@
                         });
                 },
                 getList() {
-                    let url = 'https://localhost:7169/Home/CompanyIndexList';
                     let request = {
                         method: 'GET',
                         cache: 'no-cache',
@@ -226,12 +255,12 @@
                             'Content-Type': 'application/json'
                         })
                     };
-                    fetch(url, request)
+                    fetch('https://localhost:7169/Home/CompanyIndexList', request)
                         .then(response => {
                             return response.json();
                         })
                         .then(model => {
-                            return this.candidates = model
+                            return this.resumes = model;
                         })
                         .catch(error => {
                             console.error(error);

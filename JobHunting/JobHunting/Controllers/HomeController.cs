@@ -22,13 +22,23 @@ namespace JobHunting.Controllers
         }
         public IActionResult CompanyIndexList()
         {
-            return Json(_context.Candidates.Select(c => new Candidate
+            return Json(_context.Resumes.Include(c => c.Candidate).Select(c => new ResumeViewModel
             {
-                Name = c.Name,
-                Sex = c.Sex,
-                Birthday = c.Birthday,
-                Degree = c.Degree,
-                Address = c.Address,
+                ResumeID = c.ResumeID,
+                CandidateID = c.CandidateID,
+                Title = c.Title,
+                TitleClassID = c.TitleClassID,
+                Intro = c.Intro,
+                Autobiography = c.Autobiography,
+                WorkExperience = c.WorkExperience,
+                Certification = c.Certification,
+                Time = c.Time,
+                WishAddress = c.Address,
+                Name = c.Candidate.Name,
+                Sex = c.Candidate.Sex,
+                Birthday = c.Candidate.Birthday,
+                Degree = c.Candidate.Degree,
+                Address = c.Candidate.Address,
             }));
 
         }
@@ -42,12 +52,21 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> TagList()
+        public async Task<IActionResult> Tags()
         {
-            return Json(_context.Tags.Include(p => p.TagClass).Select(p => new ResumeViewModel
+            return Json(_context.Tags.Select(p => new 
             {
+                TagID = p.TagID,
+                TagClassID = p.TagClassID,
                 TagName = p.TagName,
-                TagClassName = p.TagClass.TagClassName,
+            }));
+        }
+        public async Task<IActionResult> TagClasses()
+        {
+            return Json(_context.TagClasses.Select(p => new
+            {
+                TagClassID = p.TagClassID,
+                TagClassName = p.TagClassName,
             }));
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
