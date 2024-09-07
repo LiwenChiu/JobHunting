@@ -28,15 +28,15 @@
 
     <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:77vh">
         <template v-for="item in TagClasses">
-            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameID(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameID(item)">
+            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
                 {{item.tagClassName}}
-                    <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassID,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassID,TagChecked)}}</span>
+                    <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
             </button>
-            <div class="collapse" v-bind:id="ReturnClassNameID(item)">
+            <div class="collapse" v-bind:id="ReturnClassNameId(item)">
                 <div class="row">
-                    <div class="col-2" v-for="Tag in filterTagClass(item.tagClassID)">
-                        <input type="checkbox" v-bind:id="ReturnNameID(Tag)" v-bind:value="Tag.tagID" v-model="TagChecked" />
-                        <label v-bind:for="ReturnNameID(Tag)">{{Tag.tagName}}</label>
+                    <div class="col-2" v-for="Tag in filterTagClass(item.tagClassId)">
+                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                        <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                     </div>
                 </div>
             </div>
@@ -49,8 +49,8 @@
         <div class="collapse" id="otherClass">
             <div class="row">
                 <div class="col-2" v-for="Tag in filterTagClass(0)">
-                    <input type="checkbox" v-bind:id="ReturnNameID(Tag)" v-bind:value="Tag.tagID" v-model="TagChecked" />
-                    <label v-bind:for="ReturnNameID(Tag)">{{Tag.tagName}}</label>
+                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                    <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                 </div>
             </div>
         </div>
@@ -58,12 +58,6 @@
     </div>
     @* <p>checked:{{TagChecked}}</p> *@
     <footer>
-        @* <div class="d-grid pb-2">
-            <button type="button" class="btn btn-warning text-light" v-on:click="TagChecked=[];">清空</button>
-        </div> *@
-        @* <div class="container-fluid row pb-2" style="display:flex;align-items: center;justify-content: center;">
-            <button type="button" class="btn btn-warning col-md-2 text-light" data-bs-toggle="modal" data-bs-target="#moveTags">移動標籤</button>
-        </div> *@
         <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;">
             <button type="button" class="btn btn-warning text-light col-md-2" v-on:click="TagChecked=[];">清空</button>
             <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTag">新增</button>
@@ -89,21 +83,21 @@
                 <div class="modal-body">
                     <div class="py-1">
                         <label class="h5">加入標籤類型:  </label>
-                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID">
-                            <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassId">
+                            <option v-for="item in TagClasses" v-bind:value="item.tagClassId">{{item.tagClassName}}</option>
                             <option value="0">其他</option>
                         </select>
                     </div>
                     <div class="py-1">
                         <label class="h5">新增標籤名稱:  </label>
-                        <input type="text" class="form-control" v-model.trim="TagName" />
+                        <input type="text" class="form-control" v-model.trim="tagName" />
                     </div>
-                    @* 新增的Tag名稱:{{TagName}}
+                    @* 新增的Tag名稱:{{tagName}}
                     <br />
-                    加入的TagClassID:{{selectedTagClassID}} *@
+                    加入的TagClassId:{{selectedTagClassId}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTag(selectedTagClassID,TagName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTag(selectedTagClassId,tagName);alertOut();">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -120,11 +114,11 @@
                 </div>
                 <div class="modal-body">
                     <label class="h5">新增標籤類型名稱:  </label>
-                    <input type="text" class="form-control" v-model.trim="TagClassName" />
-                    @* 新增的TagClass名稱:{{TagClassName}} *@
+                    <input type="text" class="form-control" v-model.trim="tagClassName" />
+                    @* 新增的TagClass名稱:{{tagClassName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTagClass(TagClassName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTagClass(tagClassName);alertOut();">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -137,27 +131,27 @@
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h3 class="modal-title text-light" id="moveTagsLabel">移動標籤 - 請點選上方標籤</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTagClassID = null"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTagClassId = null"></button>
                 </div>
                 <div class="modal-body">
                     <div class="py-1">
                         <label class="h5">移動至標籤類型:  </label>
-                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID">
-                            <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassId">
+                            <option v-for="item in TagClasses" v-bind:value="item.tagClassId">{{item.tagClassName}}</option>
                             <option value="0">其他</option>
                         </select>
                     </div>
                     <h5>請問是否要移動標籤(已選{{TagChecked.length}}個標籤):</h5>
                     <div class="row">
                         <template v-for="id in TagChecked">
-                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTag(id)">{{tagIDToName(id)}}</button>
+                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTag(id)">{{tagIdToName(id)}}</button>
                         </template>
                     </div>
                     @* 要移動的標籤:{{TagChecked}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="moveTags(selectedTagClassID,TagChecked);alertOut();">移動</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassID = null">取消</button>
+                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="moveTags(selectedTagClassId,TagChecked);alertOut();">移動</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassId = null">取消</button>
                 </div>
             </div>
         </div>
@@ -174,34 +168,34 @@
                 <div class="modal-body">
                     <div class="py-1">
                         <label class="h5">修改標籤類型:  </label>
-                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID" v-on:change="selectedTagID = null">
-                            <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassId" v-on:change="selectedTagId = null">
+                            <option v-for="item in TagClasses" v-bind:value="item.tagClassId">{{item.tagClassName}}</option>
                             <option value="0">其他</option>
                         </select>
                     </div>
                     <div class="py-1">
                         <label class="h5">欲修改標籤:  </label>
-                        <template v-if="selectedTagClassID != null">
-                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTagID">
-                                <option v-for="item in filterTagClass(selectedTagClassID)" v-bind:value="item.tagID">{{item.tagName}}</option>
+                        <template v-if="selectedTagClassId != null">
+                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTagId">
+                                <option v-for="item in filterTagClass(selectedTagClassId)" v-bind:value="item.tagId">{{item.tagName}}</option>
                             </select>
                         </template>
                         <template v-else>
-                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTagID">
-                                <option v-for="item in Tags" v-bind:value="item.tagID">{{item.tagName}}</option>
+                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTagId">
+                                <option v-for="item in Tags" v-bind:value="item.tagId">{{item.tagName}}</option>
                             </select>
                         </template>
                     </div>
                     <div class="py-1">
                         <label class="h5">輸入修改名稱:</label>
-                        <input type="text" class="form-control" v-model.trim="TagName" />
+                        <input type="text" class="form-control" v-model.trim="tagName" />
                     </div>
-                    @* 屬於TagClassID:{{selectedTagClassID}}，修改的TagID:{{selectedTagID}}
+                    @* 屬於TagClassId:{{selectedTagClassId}}，修改的TagId:{{selectedTagId}}
                     <br />
-                    修改名稱:{{TagName}} *@
+                    修改名稱:{{tagName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTag(selectedTagClassID,selectedTagID,TagName);alertOut();">修改</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTag(selectedTagClassId,selectedTagId,tagName);alertOut();">修改</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -219,18 +213,18 @@
                 <div class="modal-body">
                     <div class="py-1">
                         <label class="h5">修改標籤類型:  </label>
-                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID">
-                            <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassId">
+                            <option v-for="item in TagClasses" v-bind:value="item.tagClassId">{{item.tagClassName}}</option>
                         </select>
                     </div>
                     <div class="py-1">
                         <label class="h5">修改標籤名稱:  </label>
-                        <input type="text" class="form-control" v-model.trim="TagClassName" />
+                        <input type="text" class="form-control" v-model.trim="tagClassName" />
                     </div>
-                    @* 修改TagClassID:{{selectedTagClassID}}，新增的TagClass名稱:{{TagClassName}} *@
+                    @* 修改TagClassId:{{selectedTagClassId}}，新增的TagClass名稱:{{tagClassName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTagClass(selectedTagClassID,TagClassName);alertOut();">修改</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTagClass(selectedTagClassId,tagClassName);alertOut();">修改</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -249,7 +243,7 @@
                     <h5>請問是否要刪除標籤(已選{{TagChecked.length}}個標籤):</h5>
                     <div class="row">
                         <template v-for="id in TagChecked">
-                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTag(id)">{{tagIDToName(id)}}</button>
+                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTag(id)">{{tagIdToName(id)}}</button>
                         </template>
                     </div>
                     @* 要刪除的標籤:{{TagChecked}} *@
@@ -268,18 +262,18 @@
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h3 class="modal-title text-light" id="deleteTagClassLabel">刪除標籤類型</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTagClassID = null"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTagClassId = null"></button>
                 </div>
                 <div class="modal-body">
                     <h5>請問選擇欲刪除的標籤類型:</h5>
-                    <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassID">
-                        <option v-for="item in TagClasses" v-bind:value="item.tagClassID">{{item.tagClassName}}</option>
+                    <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTagClassId">
+                        <option v-for="item in TagClasses" v-bind:value="item.tagClassId">{{item.tagClassName}}</option>
                     </select>
-                    @* 被選中的TagClassID是:{{selectedTagClassID}} *@
+                    @* 被選中的TagClassId是:{{selectedTagClassId}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTagClass(selectedTagClassID);alertOut();">刪除</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassID = null">取消</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTagClass(selectedTagClassId);alertOut();">刪除</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassId = null">取消</button>
                 </div>
             </div>
         </div>
@@ -300,10 +294,10 @@
                     TagClasses: [],
                     Tags: [],
                     TagChecked: [],
-                    selectedTagID: null,
-                    selectedTagClassID: null,
-                    TagName: "",
-                    TagClassName: "",
+                    selectedTagId: null,
+                    selectedTagClassId: null,
+                    tagName: "",
+                    tagClassName: "",
                     alertText: "",
                     alertStatus: "",
                 };
@@ -320,51 +314,51 @@
                     ).catch(
                         err => { alert(err) });
                 },
-                ReturnNameID: function (item) {
-                    let NameID = `${item.tagName}${item.tagID}`;
-                    return NameID.replace(" ", "");
+                ReturnNameId: function (item) {
+                    let NameId = `${item.tagName}${item.tagId}`;
+                    return NameId.replace(" ", "");
                 },
-                filterTagClass: function (ClassID) {
+                filterTagClass: function (ClassId) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
-                        return item.tagClassID == ClassID;
+                        return item.tagClassId == ClassId;
                     });
                 },
-                selectedFilterTagClass: function (ClassID, TagChecked) {
+                selectedFilterTagClass: function (ClassId, TagChecked) {
                     let _this = this;
                     let counter = 0;
                     for(let i=0;i<TagChecked.length;i++){
-                        if(this.filterTagClass(ClassID).filter(function(item){
-                            return item.tagID == TagChecked[i];
+                        if(this.filterTagClass(ClassId).filter(function(item){
+                            return item.tagId == TagChecked[i];
                         }).length > 0){counter++;}
                     }
                     return counter;
                 },
-                ReturnClassNameID: function (item) {
-                    let ClassNameID = `${item.tagClassName}${item.tagClassID}`;
-                    return ClassNameID.replace(" ", "");
+                ReturnClassNameId: function (item) {
+                    let ClassNameId = `${item.tagClassName}${item.tagClassId}`;
+                    return ClassNameId.replace(" ", "");
                 },
                 Returnhashtag: function (item) {
                     return `#${item}`;
                 },
                 clearAllSelectedTag: function () {
                     let _this = this;
-                    _this.selectedTagID = null;
-                    _this.selectedTagClassID = null;
-                    _this.TagName = "";
-                    _this.TagClassName = "";
+                    _this.selectedTagId = null;
+                    _this.selectedTagClassId = null;
+                    _this.tagName = "";
+                    _this.tagClassName = "";
                 },
-                createTag: function (TagClassID, TagName) {
+                createTag: function (TagClassId, tagName) {
                     let _this = this;
-                    if (TagName == "") {
+                    if (tagName == "") {
                         this.alertText = "請輸入欲新增標籤名稱";
                         this.alertStatus = "失敗";
                     }
                     else{
                         let request = {};
-                        request.TagID = 0;
-                        request.TagClassID = TagClassID;
-                        request.TagName = TagName;
+                        request.TagId = 0;
+                        request.TagClassId = TagClassId;
+                        request.tagName = tagName;
                         axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTag`, request, {
                             headers: { 'Content-Type': 'application/json' }
                         })
@@ -374,17 +368,25 @@
                                 this.bootPage();
                             }).catch(err => { alert(err) });
                     }
-                    _this.selectedTagClassID = null;
-                    _this.TagName = "";
+                    _this.selectedTagClassId = null;
+                    _this.tagName = "";
                 },
-                createTagClass: function (TagClassName) {
+                createTagClass: function (tagClassName) {
                     let _this = this;
-                    if (TagClassName == "") {
+                    if (tagClassName == "") {
                         this.alertText = "請輸入欲新增標籤類型名稱";
                         this.alertStatus = "失敗";
                     }
                     else {
-                        axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTagClass`, TagClassName, {
+                        let request = {};
+                        request.tagClassName = tagClassName;
+                        // if (isNaN(tagClassName)) {
+                        //     tagClassNameString = tagClassName;
+                        // }
+                        // else {
+                        //     tagClassNameString = tagClassName.toString();
+                        // }
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTagClass`, request, {
                             headers: { 'Content-Type': 'application/json' }
                         }).then(response => {
                             this.alertText = response.data[0];
@@ -392,9 +394,9 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
-                    _this.TagClassName = "";
+                    _this.tagClassName = "";
                 },
-                moveTags:function(selectedTagClassID,TagChecked){
+                moveTags:function(selectedTagClassId,TagChecked){
                     let _this = this;
                     if (TagChecked.length == 0) {
                         this.alertText = "請選擇欲移動標籤";
@@ -402,7 +404,7 @@
                     }
                     else {
                         let request = {};
-                        request.TagClassID = (selectedTagClassID == null ? 0 : selectedTagClassID);
+                        request.TagClassId = (selectedTagClassId == null ? 0 : selectedTagClassId);
                         request.TagChecked = TagChecked;
                         axios.post(`${this.baseAddress}/Admins/TagManagement/MoveTags`, request, {
                             headers: { 'Content-Type': 'application/json' }
@@ -412,24 +414,24 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
-                    _this.selectedTagClassID = null;
+                    _this.selectedTagClassId = null;
                     _this.TagChecked = [];
                 },
-                editTag: function (selectedTagClassID, selectedTagID, TagName) {
+                editTag: function (selectedTagClassId, selectedTagId, tagName) {
                     let _this = this;
-                    if (selectedTagID == null) {
+                    if (selectedTagId == null) {
                         this.alertText = "請選擇欲修改標籤";
                         this.alertStatus = "失敗";
                     }
-                    else if(TagName == ""){
+                    else if (tagName == "") {
                         this.alertText = "請輸入欲修改標籤名稱";
                         this.alertStatus = "失敗";
                     }
                     else{
                         let request = {};
-                        request.TagID = selectedTagID;
-                        request.TagClassID = (selectedTagClassID == null ? 0 : selectedTagClassID);
-                        request.TagName = TagName;
+                        request.TagId = selectedTagId;
+                        request.TagClassId = (selectedTagClassId == null ? 0 : selectedTagClassId);
+                        request.tagName = tagName;
                         axios.post(`${this.baseAddress}/Admins/TagManagement/EditTag`, request, {
                             headers: { 'Content-Type': 'application/json' }
                         }).then(response => {
@@ -438,24 +440,24 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
-                    _this.selectedTagClassID = null;
-                    _this.selectedTagID = null;
-                    _this.TagName = "";
+                    _this.selectedTagClassId = null;
+                    _this.selectedTagId = null;
+                    _this.tagName = "";
                 },
-                editTagClass: function (selectedTagClassID, TagClassName) {
+                editTagClass: function (selectedTagClassId, tagClassName) {
                     let _this = this;
-                    if (selectedTagClassID == null){
+                    if (selectedTagClassId == null){
                         this.alertText = "請選擇欲修改標籤類型";
                         this.alertStatus = "失敗";
                     }
-                    else if (TagClassName == ""){
+                    else if (tagClassName == "") {
                         this.alertText = "請輸入欲修改標籤類型名稱";
                         this.alertStatus = "失敗";
                     }
                     else{
                         let request = {};
-                        request.TagClassID = selectedTagClassID;
-                        request.TagClassName = TagClassName;
+                        request.TagClassId = selectedTagClassId;
+                        request.tagClassName = tagClassName;
                         axios.post(`${this.baseAddress}/Admins/TagManagement/EditTagClass`, request, {
                             headers: { 'Content-Type': 'application/json' }
                         }).then(response => {
@@ -464,17 +466,17 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
-                    _this.selectedTagClassID = null;
-                    _this.TagClassName = null;
+                    _this.selectedTagClassId = null;
+                    _this.tagClassName = null;
                 },
                 removeChooseTag: function (id) {
                     let _this = this;
                     _this.TagChecked.splice(jQuery.inArray(id, _this.TagChecked), 1);
                 },
-                tagIDToName: function (id) {
+                tagIdToName: function (id) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
-                        return item.tagID == id;
+                        return item.tagId == id;
                     })[0].tagName;
                 },
                 deleteTags: function (delArray) {
@@ -497,14 +499,14 @@
                     }
                     _this.TagChecked = [];
                 },
-                deleteTagClass: function (selectedTagClassID) {
+                deleteTagClass: function (selectedTagClassId) {
                     let _this = this;
-                    if (selectedTagClassID == null) {
+                    if (selectedTagClassId == null) {
                         this.alertText = "請選擇欲刪除標籤類型";
                         this.alertStatus = "失敗";
                     }
                     else{
-                        axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTagClass`, selectedTagClassID, {
+                        axios.post(`${this.baseAddress}/Admins/TagManagement/DeleteTagClass`, selectedTagClassId, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
@@ -514,7 +516,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
-                    _this.selectedTagClassID = null;
+                    _this.selectedTagClassId = null;
                 },
                 alertOut:function(){
                     let time = window.setTimeout(( () => this.alertStatus = ""),5000);

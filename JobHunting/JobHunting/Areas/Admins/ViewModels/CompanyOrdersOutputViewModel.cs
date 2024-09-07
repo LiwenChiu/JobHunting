@@ -5,11 +5,11 @@ namespace JobHunting.Areas.Admins.ViewModels
     public class CompanyOrdersOutputViewModel
     {
         [Key]
-        public int OrderID { get; set; }
+        public int OrderId { get; set; }
 
-        public int? CompanyID { get; set; }
+        public int? CompanyId { get; set; }
 
-        public int? PlanID { get; set; }
+        public int? PlanId { get; set; }
 
         public string CompanyName { get; set; }
 

@@ -40,21 +40,21 @@
                 </div>
             </div>
             <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
-                <div class="col-11 pt-sm-1" role="button" v-on:click="clickedID = plan.planID">
+                <div class="col-11 pt-sm-1" role="button" v-on:click="clickedId = plan.planId">
                     <div class="card overcard">
                         <div class="card-body">
                             <div class="row row-cols-2 align-items-center">
                                 <template v-if="plan.status == true">
                                     <template v-if="plan.edit == false">
                                         <p class="col-sm-2">方案: {{plan.title}}</p>
-                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroID = plan.planID;">簡介</button>
+                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                         <p class="col-sm-2">天數: {{plan.duration}}</p>
                                         <p class="col-sm-2">售價: ${{plan.price}}</p>
                                         <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
                                     </template>
                                     <template v-else>
                                         <label class="col-sm-2">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
-                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroID = plan.planID;">簡介</button>
+                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                         <label class="col-sm-2">天數:<input type="text" name="duration" v-model.trim="plan.duration" /></label>
                                         <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim="plan.price" /></label>
                                         <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim="plan.discount" /></label>
@@ -122,7 +122,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="editIntroModal = false">關閉</button>
                     </template>
                     <template v-else>
-                        <button type="button" class="btn btn-outline-warning" v-on:click="editIntro(clickedPlanIntroID,clickedPlanIntro)">儲存</button>
+                        <button type="button" class="btn btn-outline-warning" v-on:click="editIntro(clickedPlanIntroId,clickedPlanIntro)">儲存</button>
                         <button type="button" class="btn btn-secondary" v-on:click="editIntroModal = false">取消</button>
                     </template>
                 </div>
@@ -177,7 +177,7 @@
                     alertText: "",
                     alertStatus: "",
                     pricingPlans: [],
-                    clickedPlanIntroID: null,
+                    clickedPlanIntroId: null,
                     clickedPlanIntro: "",
                     clickedPlanIntroOld: "",
                     editIntroModal: false,
@@ -190,11 +190,11 @@
                     ).catch(
                         err => { alert(err) });
                 },
-                planIDTitle:function(plan){
-                    return `${plan.planID}${plan.Title}`;
+                planIdTitle:function(plan){
+                    return `${plan.planId}${plan.Title}`;
                 },
-                planIDToID:function(planID){
-                    return `${planID}EditIntro`;
+                planIdToId:function(planId){
+                    return `${planId}EditIntro`;
                 },
                 editPricingPlans: function (plan) {
                     let str = "";
@@ -233,7 +233,7 @@
                     }
                     else {
                         let request = {};
-                        request.PlanID = plan.planID;
+                        request.PlanId = plan.planId;
                         request.Title = plan.title;
                         request.Duration = plan.duration;
                         request.Price = plan.price;
@@ -252,7 +252,7 @@
                         plan.edit = false;
                     }
                 },
-                editIntro: function (clickedPlanIntroID,clickedPlanIntro) {
+                editIntro: function (clickedPlanIntroId,clickedPlanIntro) {
                     if (clickedPlanIntro == ""){
                         this.alertText = "方案介紹不可為空";
                         this.alertStatus = "失敗";
@@ -260,7 +260,7 @@
                     }
                     else{
                         let request = {};
-                        request.PlanID = clickedPlanIntroID;
+                        request.PlanId = clickedPlanIntroId;
                         request.Intro = clickedPlanIntro;
                         axios.post(`${this.baseAddress}/Admins/PricingPlans/EditIntro`, request, {
                             headers: {
@@ -278,7 +278,7 @@
                     this.alertOut();
                 },
                 planStatusFalse:function(plan){
-                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusFalse`, plan.planID, {
+                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusFalse`, plan.planId, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -286,13 +286,13 @@
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
                         this.bootPage();
-                        $(`#${this.planIDTitle(plan)}ID`).removeAttr("style");
-                        $(`#${this.planIDTitle(plan)}ID`).attr("style", "background-color: #e6e6e6");
+                        $(`#${this.planIdTitle(plan)}Id`).removeAttr("style");
+                        $(`#${this.planIdTitle(plan)}Id`).attr("style", "background-color: #e6e6e6");
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },
                 planStatusTrue:function(plan){
-                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusTrue`, plan.planID, {
+                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusTrue`, plan.planId, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -300,8 +300,8 @@
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
                         this.bootPage();
-                        $(`#${this.planIDTitle(plan)}ID`).removeAttr("style");
-                        $(`#${this.planIDTitle(plan)}ID`).attr("style", "background-color: white");
+                        $(`#${this.planIdTitle(plan)}Id`).removeAttr("style");
+                        $(`#${this.planIdTitle(plan)}Id`).attr("style", "background-color: white");
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },

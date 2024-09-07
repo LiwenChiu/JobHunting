@@ -38,9 +38,9 @@ namespace JobHunting.Areas.Admins.Controllers
 
             return View(_context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
-                OrderID = co.OrderID,
-                CompanyID = co.CompanyID,
-                PlanID = co.PlanID,
+                OrderId = co.OrderId,
+                CompanyId = co.CompanyId,
+                PlanId = co.PlanId,
                 CompanyName = co.CompanyName,
                 GUINumber = co.GUINumber,
                 Title = co.Title,
@@ -58,9 +58,9 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return Json(_context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
-                OrderID = co.OrderID,
-                CompanyID = co.CompanyID,
-                PlanID = co.PlanID,
+                OrderId = co.OrderId,
+                CompanyId = co.CompanyId,
+                PlanId = co.PlanId,
                 CompanyName = co.CompanyName,
                 GUINumber = co.GUINumber,
                 Title = co.Title,
@@ -79,9 +79,9 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return _context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
-                OrderID = co.OrderID,
-                CompanyID = co.CompanyID,
-                PlanID = co.PlanID,
+                OrderId = co.OrderId,
+                CompanyId = co.CompanyId,
+                PlanId = co.PlanId,
                 CompanyName = co.CompanyName,
                 GUINumber = co.GUINumber,
                 Title = co.Title,
@@ -90,7 +90,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 Duration = co.Plan.Duration,
                 Intro = co.Plan.Intro,
                 Status = co.Status,
-            }).Where(covmfilter => covmfilter.OrderID == covm.OrderID ||
+            }).Where(covmfilter => covmfilter.OrderId == covm.OrderId ||
                                     covmfilter.CompanyName.Contains(covm.CompanyName) ||
                                     covmfilter.GUINumber.Contains(covm.GUINumber) ||
                                     covmfilter.Title.Contains(covm.Title) ||
@@ -99,9 +99,9 @@ namespace JobHunting.Areas.Admins.Controllers
             .Where(covmfilter => covmfilter.OrderDate.ToString() == covm.OrderDate.ToString())
               .Select(co => new CompanyOrdersOutputViewModel
                {
-                   OrderID = co.OrderID,
-                   CompanyID = co.CompanyID,
-                   PlanID = co.PlanID,
+                   OrderId = co.OrderId,
+                   CompanyId = co.CompanyId,
+                   PlanId = co.PlanId,
                    CompanyName = co.CompanyName,
                    GUINumber = co.GUINumber,
                    Title = co.Title,
@@ -116,7 +116,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
         private bool CompanyOrderExists(int id)
         {
-            return _context.CompanyOrders.Any(e => e.OrderID == id);
+            return _context.CompanyOrders.Any(e => e.OrderId == id);
         }
     }
 }

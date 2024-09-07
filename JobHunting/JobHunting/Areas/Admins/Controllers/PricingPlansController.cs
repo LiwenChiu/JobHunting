@@ -31,7 +31,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return Json(_context.PricingPlans.Select(pp => new
             {
-                planID = pp.PlanID,
+                planId = pp.PlanId,
                 title = pp.Title,
                 intro = pp.Intro,
                 duration = pp.Duration,
@@ -45,7 +45,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // POST: Admins/PricingPlans/EditPricingPlans
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanID,Title,Duration,Price,Discount,Status")] PricingPlanViewModel ppvm)
+        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanViewModel ppvm)
         {
             string[] returnStatus = new string[2];
             
@@ -55,7 +55,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var pricingPlan = await _context.PricingPlans.FindAsync(ppvm.PlanID);
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppvm.PlanId);
             pricingPlan.Title = ppvm.Title;
             pricingPlan.Duration = ppvm.Duration;
             pricingPlan.Price = ppvm.Price;
@@ -73,14 +73,14 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"修改方案ID:{pricingPlan.PlanID}成功", "成功"];
+            returnStatus = [$"修改方案ID:{pricingPlan.PlanId}成功", "成功"];
             return returnStatus;
         }
 
         // POST: Admins/PricingPlans/EditIntro
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditIntro([FromBody][Bind("PlanID,Intro")] PricingPlanIntroViewModel ppivm)
+        public async Task<Array> EditIntro([FromBody][Bind("PlanId,Intro")] PricingPlanIntroViewModel ppivm)
         {
             string[] returnStatus = new string[2];
 
@@ -96,7 +96,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var pricingPlan = await _context.PricingPlans.FindAsync(ppivm.PlanID);
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppivm.PlanId);
             pricingPlan.Intro = ppivm.Intro;
 
             _context.Entry(pricingPlan).State = EntityState.Modified;
@@ -110,7 +110,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"修改方案介紹ID:{pricingPlan.PlanID}成功", "成功"];
+            returnStatus = [$"修改方案介紹ID:{pricingPlan.PlanId}成功", "成功"];
             return returnStatus;
         }
 
@@ -186,137 +186,6 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<Array> 
-
-        //// GET: Admins/PricingPlans/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pricingPlan = await _context.PricingPlans
-        //        .FirstOrDefaultAsync(m => m.PlanID == id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(pricingPlan);
-        //}
-
-        //// GET: Admins/PricingPlans/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Admins/PricingPlans/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("PlanID,Title,Intro,Duration,Price,Discount")] PricingPlan pricingPlan)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(pricingPlan);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(pricingPlan);
-        //}
-
-        //// GET: Admins/PricingPlans/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pricingPlan = await _context.PricingPlans.FindAsync(id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(pricingPlan);
-        //}
-
-        //// POST: Admins/PricingPlans/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("PlanID,Title,Intro,Duration,Price,Discount")] PricingPlan pricingPlan)
-        //{
-        //    if (id != pricingPlan.PlanID)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(pricingPlan);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!PricingPlanExists(pricingPlan.PlanID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(pricingPlan);
-        //}
-
-        //// GET: Admins/PricingPlans/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pricingPlan = await _context.PricingPlans
-        //        .FirstOrDefaultAsync(m => m.PlanID == id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(pricingPlan);
-        //}
-
-        //// POST: Admins/PricingPlans/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var pricingPlan = await _context.PricingPlans.FindAsync(id);
-        //    if (pricingPlan != null)
-        //    {
-        //        _context.PricingPlans.Remove(pricingPlan);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool PricingPlanExists(int id)
-        //{
-        //    return _context.PricingPlans.Any(e => e.PlanID == id);
-        //}
+        
     }
 }

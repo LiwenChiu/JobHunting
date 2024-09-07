@@ -52,7 +52,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult TagManagement([Bind("TagClassID,TagClass,TagID,TagName")]TagManagementViewModel tmvm)
+        public IActionResult TagManagement([Bind("TagClassId,TagClass,TagId,TagName")]TagManagementViewModel tmvm)
         {
             if (ModelState.IsValid)
             {
