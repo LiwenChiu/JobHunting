@@ -36,7 +36,7 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         public JsonResult OpeningJson()
         {
-            return Json(_context.Openings.Include(c=>_context.TitleClasses).Select(o => new
+            return Json(_context.Openings.Select(o => new
             {
                 JobId=o.OpeningID,
                 JobName=o.Title,
@@ -48,8 +48,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 SalaryMin=o.SalaryMin,
                 WorkingTime=o.Time,
                 JobDescription=o.Description,
-                TitleClassName=o.TitleClass.TitleClassName
-
+                TitleClassName=o.TitleClass.TitleClassName,
+                OpBenefits=o.Address
             }));
         }
         public IActionResult Resume()
