@@ -49,7 +49,7 @@ public partial class DuckContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminID).HasName("PK__Admins__719FE4E8820EE8CD");
+            entity.HasKey(e => e.AdminId).HasName("PK__Admins__719FE4E8820EE8CD");
 
             entity.Property(e => e.AdminId).HasColumnName("AdminID");
             entity.Property(e => e.Email).HasMaxLength(320);
@@ -59,7 +59,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Candidate>(entity =>
         {
-            entity.HasKey(e => e.CandidateID).HasName("PK__Candidat__DF539BFC26C08296");
+            entity.HasKey(e => e.CandidateId).HasName("PK__Candidat__DF539BFC26C08296");
 
             entity.Property(e => e.CandidateId).HasColumnName("CandidateID");
             entity.Property(e => e.Address).HasMaxLength(100);
@@ -78,7 +78,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasKey(e => e.CompanyID).HasName("PK__Companie__2D971C4C3C587FA7");
+            entity.HasKey(e => e.CompanyId).HasName("PK__Companie__2D971C4C3C587FA7");
 
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.Address).HasMaxLength(100);
@@ -107,7 +107,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<CompanyOrder>(entity =>
         {
-            entity.HasKey(e => e.OrderID).HasName("PK__CompanyO__C3905BAFA49D2453");
+            entity.HasKey(e => e.OrderId).HasName("PK__CompanyO__C3905BAFA49D2453");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
@@ -134,7 +134,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<CompanyResumeRecord>(entity =>
         {
-            entity.HasKey(e => new { e.CompanyID, e.ResumeID }).HasName("PK__CompanyR__40EA667DACA8BDB6");
+            entity.HasKey(e => new { e.CompanyId, e.ResumeId }).HasName("PK__CompanyR__40EA667DACA8BDB6");
 
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.ResumeId).HasColumnName("ResumeID");
@@ -153,7 +153,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationID).HasName("PK__Notifica__20CF2E32AA267DB8");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32AA267DB8");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.AppointmentTime).HasColumnType("datetime");
@@ -177,7 +177,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Opening>(entity =>
         {
-            entity.HasKey(e => e.OpeningID).HasName("PK__Openings__808F87138AD1AE6F");
+            entity.HasKey(e => e.OpeningId).HasName("PK__Openings__808F87138AD1AE6F");
 
             entity.Property(e => e.OpeningId).HasColumnName("OpeningID");
             entity.Property(e => e.Address).HasMaxLength(100);
@@ -232,7 +232,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<OpinionLetter>(entity =>
         {
-            entity.HasKey(e => e.LetterID).HasName("PK__OpinionL__AE46E811B1F3A15F");
+            entity.HasKey(e => e.LetterId).HasName("PK__OpinionL__AE46E811B1F3A15F");
 
             entity.Property(e => e.LetterId).HasColumnName("LetterID");
             entity.Property(e => e.AdminId).HasColumnName("AdminID");
@@ -259,7 +259,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<PricingPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanID).HasName("PK__PricingP__755C22D7B9409A5E");
+            entity.HasKey(e => e.PlanId).HasName("PK__PricingP__755C22D7B9409A5E");
 
             entity.Property(e => e.PlanId).HasColumnName("PlanID");
             entity.Property(e => e.Discount)
@@ -275,7 +275,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Resume>(entity =>
         {
-            entity.HasKey(e => e.ResumeID).HasName("PK__Resumes__D7D7A3174E04D12B");
+            entity.HasKey(e => e.ResumeId).HasName("PK__Resumes__D7D7A3174E04D12B");
 
             entity.Property(e => e.ResumeId).HasColumnName("ResumeID");
             entity.Property(e => e.Address).HasMaxLength(100);
@@ -320,7 +320,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<ResumeOpeningRecord>(entity =>
         {
-            entity.HasKey(e => e.ResumeOpeningRecordID).HasName("PK__ResumeOp__CD5B6F3A435A8ED9");
+            entity.HasKey(e => e.ResumeOpeningRecordId).HasName("PK__ResumeOp__CD5B6F3A435A8ED9");
 
             entity.Property(e => e.ResumeOpeningRecordId).HasColumnName("ResumeOpeningRecordID");
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
@@ -345,7 +345,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<Tag>(entity =>
         {
-            entity.HasKey(e => e.TagID).HasName("PK__Tags__657CFA4C30210516");
+            entity.HasKey(e => e.TagId).HasName("PK__Tags__657CFA4C30210516");
 
             entity.Property(e => e.TagId).HasColumnName("TagID");
             entity.Property(e => e.TagClassId)
@@ -360,7 +360,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<TagClass>(entity =>
         {
-            entity.HasKey(e => e.TagClassID).HasName("PK__TagClass__94933B002831295A");
+            entity.HasKey(e => e.TagClassId).HasName("PK__TagClass__94933B002831295A");
 
             entity.Property(e => e.TagClassId).HasColumnName("TagClassID");
             entity.Property(e => e.TagClassName).HasMaxLength(30);
@@ -368,7 +368,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<TitleCategory>(entity =>
         {
-            entity.HasKey(e => e.TitleCategoryID).HasName("PK__TitleCat__079D34D85B7514A6");
+            entity.HasKey(e => e.TitleCategoryId).HasName("PK__TitleCat__079D34D85B7514A6");
 
             entity.Property(e => e.TitleCategoryId)
                 .HasMaxLength(1)
@@ -379,7 +379,7 @@ public partial class DuckContext : DbContext
 
         modelBuilder.Entity<TitleClass>(entity =>
         {
-            entity.HasKey(e => e.TitleClassID).HasName("PK__TitleCla__7CC2BED94F2BBF32");
+            entity.HasKey(e => e.TitleClassId).HasName("PK__TitleCla__7CC2BED94F2BBF32");
 
             entity.Property(e => e.TitleClassId)
                 .HasMaxLength(2)
