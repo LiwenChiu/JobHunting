@@ -75,7 +75,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/CompanyOrders/Filter
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<CompanyOrdersViewModel>> Filter([FromBody]CompanyOrdersViewModel covm)
+        public async Task<IEnumerable<CompanyOrdersOutputViewModel>> Filter([FromBody]CompanyOrdersViewModel covm)
         {
             return _context.CompanyOrders.Include(co => co.Plan).Select(co => new CompanyOrdersViewModel
             {
@@ -95,7 +95,9 @@ namespace JobHunting.Areas.Admins.Controllers
                                     covmfilter.GUINumber.Contains(covm.GUINumber) ||
                                     covmfilter.Title.Contains(covm.Title) ||
                                     covmfilter.Intro.Contains(covm.Intro))
-              .Select(co => new CompanyOrdersViewModel
+            .ToList()
+            .Where(covmfilter => covmfilter.OrderDate.ToString() == covm.OrderDate.ToString())
+              .Select(co => new CompanyOrdersOutputViewModel
                {
                    OrderID = co.OrderID,
                    CompanyID = co.CompanyID,

@@ -19,6 +19,8 @@ public partial class Opening
 
     public string Description { get; set; }
 
+    public string Degree { get; set; }
+
     public string Benefits { get; set; }
 
     public bool InterviewYN { get; set; }
