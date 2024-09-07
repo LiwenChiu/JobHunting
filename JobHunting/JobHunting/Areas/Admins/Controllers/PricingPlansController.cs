@@ -25,11 +25,24 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        // GET: Admins/TagManagement/IndexPricingPlans
-        //public JsonResult IndexPricingPlans()
-        //{
-        //    return Json(_context.PricingPlans.)
-        //}
+        // GET: Admins/PricingPlans/IndexPricingPlans
+        public JsonResult IndexPricingPlans()
+        {
+            return Json(_context.PricingPlans.Select(pp => new
+            {
+                planID = pp.PlanID,
+                title = pp.Title,
+                intro = pp.Intro,
+                duration = pp.Duration,
+                price = pp.Price,
+                discount = pp.Discount,
+                status = pp.Status,
+            }));
+        }
+
+        //[HttpPost]
+        ////[ValidateAntiForgeryToken]
+        //public async Task<Array> 
 
         //// GET: Admins/PricingPlans/Details/5
         //public async Task<IActionResult> Details(int? id)

@@ -19,5 +19,7 @@ public partial class PricingPlan
 
     public decimal? Discount { get; set; }
 
+    public bool Status { get; set; }
+
     public virtual ICollection<CompanyOrder> CompanyOrders { get; set; } = new List<CompanyOrder>();
 }
