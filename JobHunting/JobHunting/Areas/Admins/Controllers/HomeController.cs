@@ -24,25 +24,11 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        public IActionResult CompanyList()
-        {
-            return View();
-        }
-        //GET:Admins/Home/IndexJson
-        [HttpGet]
-        public JsonResult IndexJson() 
-        {
-            var companyList = _context.Companies.Select(p => new
-            {
-                CompanyID = p.CompanyID,
-                CompanyName = p.CompanyName,
-                GUINumber = p.GUINumber,
-                ContactName = p.ContactName,
-                ContactPhone = p.ContactPhone,
-                ContactEmail = p.ContactEmail
-            });
-            return Json(companyList);
-        }
+        
+
+        
+
+
         public IActionResult CandidateList()
         {
             return View();
