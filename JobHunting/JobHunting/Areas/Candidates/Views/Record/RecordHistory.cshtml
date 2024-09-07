@@ -20,7 +20,7 @@
             <tbody>
 
                 @* item後面帶入的參數要小寫 *@
-                <tr v-for="item in jobclass.slice(pageStart,pageEnd)">
+                <tr v-for="item,idx in jobclass.slice(pageStart,pageEnd)">
                     <th>{{item.resumeOpeningRecordID}}</th>
                     <td>{{item.companyName}}</td> 
                     <td>{{item.openingTitle}}</td>

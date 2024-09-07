@@ -12,6 +12,7 @@
         職缺內容
     </button>
 </div>
+
 <div class="modal fade scrollbar"
      id="modalId"
      tabindex="-1"
@@ -50,7 +51,12 @@
                                 <label class="">電子郵件:</label>
                                 <input type="text" v-model="contactEmial" class="form-control" />
                                 <label class="">薪資條件:</label>
-                                <input type="text" v-model="salary" class="form-control" />
+                                <div class="">
+                                    <input type="text" v-model="salaryMin" class="text-center" placeholder="最低薪資" />
+                                    <span> -- </span>
+                                    <input type="text" v-model="salaryMax" class="text-center" placeholder="最高薪資" />
+                                </div>
+
                                 <label class="">上班時段:</label>
                                 <input type="text" v-model="time" class="form-control" />
                             </div>

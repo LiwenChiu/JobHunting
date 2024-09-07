@@ -2,6 +2,7 @@
 using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -65,13 +66,32 @@ namespace JobHunting.Areas.Candidates.Controllers
                      CompanyName = p.CompanyName,
                      OpeningTitle = p.OpeningTitle,
                      Title = p.Resume.Title,
-
                  });
-
-             
-
         }
 
+
+        [HttpPost]
+        public async Task<IEnumerable<OpeningDetail_Outputmodel>> OpeningDetail([FromBody] OpeningDetail_inputmodel OP)
+        {
+            return _context.Openings.Include(i => i.Company)
+                    .Where(opi => opi.CompanyID == OP.CompanyID ||
+                           opi.OpeningID == OP.OpeningID)
+                    .Select(p => new OpeningDetail_Outputmodel
+                    {
+                        CompanyName = p.Company.CompanyName,
+                        OpeningID = p.OpeningID,
+                        CompanyID = p.CompanyID,
+                        Title = p.Title,
+                        Address = p.Address,
+                        ContactPhone = p.ContactPhone,
+                        ContactEmail = p.ContactEmail,
+                        Time = p.Time,
+                        SalaryMax = p.SalaryMax,
+                        SalaryMin = p.SalaryMin,
+                        Description = p.Description,
+                        Benefits = p.Benefits,
+                    });
+        }
     }
 
 
