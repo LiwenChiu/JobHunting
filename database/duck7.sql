@@ -4,18 +4,18 @@ CREATE DATABASE [Duck]
 GO
 USE [Duck]
 GO
-CREATE TABLE TitleCategories
+CREATE TABLE CompanyCategories
 (
-	TitleCategoryID nchar(1) primary key,
-	TitleCategoryName nvarchar(40) not null
+	CompanyCategoryID nchar(1) primary key,
+	CompanyCategoryName nvarchar(40) not null
 )
 GO
-CREATE TABLE TitleClasses
+CREATE TABLE CompanyClasses
 (
-	TitleClassID nchar(2) primary key,
-	TitleCategoryID nchar(1) not null
-		references TitleCategories(TitleCategoryID),
-	TitleClassName nvarchar(40) not null
+	CompanyClassID nchar(2) primary key,
+	CompanyCategoryID nchar(1) not null
+		references CompanyCategories(CompanyCategoryID),
+	CompanyClassName nvarchar(40) not null
 )
 GO
 CREATE TABLE Companies
@@ -24,8 +24,8 @@ CREATE TABLE Companies
 	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
     CompanyName nvarchar(40) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
+	CompanyClassID nchar(2)
+		references CompanyClasses(CompanyClassID)
 		on delete set null,
 	[Address] nvarchar(100),
     Intro nvarchar(200),
@@ -38,6 +38,21 @@ CREATE TABLE Companies
 	[Date] datetime not null
 )
 GO
+CREATE TABLE TitleCategories
+(
+	TitleCategoryID int primary key identity(0,1),
+	TitleCategoryName nvarchar(30) not null,
+)
+Go
+CREATE TABLE TitleClasses
+(
+	TitleClassID int primary key identity,
+	TitleCategoryID int default(0)
+		references TitleCategories(TitleCategoryID)
+		on delete set null,
+	TitleClassName nvarchar(30) not null,
+)
+GO
 CREATE TABLE Openings
 (
 	OpeningID int primary key identity,
@@ -45,9 +60,6 @@ CREATE TABLE Openings
 		references Companies(CompanyID)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
-		on delete set null,
 	[Address] nvarchar(100),
 	[Description] nvarchar(300) not null,
 	Degree nvarchar(20),
@@ -62,6 +74,17 @@ CREATE TABLE Openings
 	ReleaseYN bit not null default(0),
 )
 GO
+CREATE TABLE OpeningTitleClasses
+(
+	OpeningID int
+		references Openings(OpeningID)
+		on delete cascade,
+	TitleClassID int
+		references TitleClasses(TitleClassID)
+		on delete cascade,
+	primary key(OpeningID,TitleClassID)
+)
+GO
 CREATE TABLE Candidates
 (
 	CandidateID int primary key identity,
@@ -71,12 +94,12 @@ CREATE TABLE Candidates
 	[Name] nvarchar(30),
 	Sex bit,
 	Birthday date,
+	Headshot varbinary(Max),
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),
 	EmploymentStatus nvarchar(20),
 	MilitaryService nvarchar(20),
-	Headshot varbinary(max),
 )
 CREATE TABLE Resumes
 (
@@ -85,16 +108,25 @@ CREATE TABLE Resumes
 		references Candidates(CandidateID)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
-		on delete set null,
 	Intro nvarchar(200),
+	Headshot varbinary(Max),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
 	Certification varbinary(Max),
 	[Time] nvarchar(60),
 	[Address] nvarchar(100),
 	ReleaseYN bit not null default(1),
+)
+GO
+CREATE TABLE ResumeTitleClasses
+(
+	ResumeID int
+		references Resumes(ResumeID)
+		on delete cascade,
+	TitleClassID int
+		references TitleClasses(TitleClassID)
+		on delete cascade,
+	primary key(ResumeID,TitleClassID)
 )
 GO
 CREATE TABLE ResumeOpeningRecords

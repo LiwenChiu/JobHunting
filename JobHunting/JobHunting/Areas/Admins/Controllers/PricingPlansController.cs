@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Admins.Models;
+using JobHunting.Areas.Admins.ViewModels;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -39,6 +40,150 @@ namespace JobHunting.Areas.Admins.Controllers
                 status = pp.Status,
                 edit = false,
             }));
+        }
+
+        // POST: Admins/PricingPlans/EditPricingPlans
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanID,Title,Duration,Price,Discount,Status")] PricingPlanViewModel ppvm)
+        {
+            string[] returnStatus = new string[2];
+            
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["修改方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppvm.PlanID);
+            pricingPlan.Title = ppvm.Title;
+            pricingPlan.Duration = ppvm.Duration;
+            pricingPlan.Price = ppvm.Price;
+            pricingPlan.Discount = ppvm.Discount;
+            pricingPlan.Status = ppvm.Status;
+
+            _context.Entry(pricingPlan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["修改方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"修改方案ID:{pricingPlan.PlanID}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/EditIntro
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> EditIntro([FromBody][Bind("PlanID,Intro")] PricingPlanIntroViewModel ppivm)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["修改方案介紹失敗", "失敗"];
+                return returnStatus;
+            }
+
+            if (ppivm.Intro == null)
+            {
+                returnStatus = ["方案介紹不可為空", "失敗"];
+                return returnStatus;
+            }
+
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppivm.PlanID);
+            pricingPlan.Intro = ppivm.Intro;
+
+            _context.Entry(pricingPlan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["修改方案介紹失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"修改方案介紹ID:{pricingPlan.PlanID}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/PlanStatusFalse
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> PlanStatusFalse([FromBody]int planID)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["停用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var plan = await _context.PricingPlans.FindAsync(planID);
+            if(plan == null)
+            {
+                returnStatus = ["資料庫不存在此方案", "失敗"];
+                return returnStatus;
+            }
+            plan.Status = false;
+
+            _context.Entry(plan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["停用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"停用方案ID:{planID}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/PlanStatusTrue
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> PlanStatusTrue([FromBody] int planID)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["啟用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var plan = await _context.PricingPlans.FindAsync(planID);
+            if (plan == null)
+            {
+                returnStatus = ["資料庫不存在此方案", "失敗"];
+                return returnStatus;
+            }
+            plan.Status = true;
+
+            _context.Entry(plan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["啟用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"啟用方案ID:{planID}成功", "成功"];
+            return returnStatus;
         }
 
         //[HttpPost]
