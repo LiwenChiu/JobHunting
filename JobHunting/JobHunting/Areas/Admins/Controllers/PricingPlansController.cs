@@ -37,6 +37,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 price = pp.Price,
                 discount = pp.Discount,
                 status = pp.Status,
+                edit = false,
             }));
         }
 
