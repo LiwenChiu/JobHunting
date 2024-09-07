@@ -23,45 +23,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return View();
         }
-
-        public IActionResult CompanyList()
-        {
-            return View();
-        }
-        //GET:Admins/Home/IndexJson
-        [HttpGet]
-        public JsonResult IndexJson() 
-        {
-            var companyList = _context.Companies.Select(p => new
-            {
-                CompanyID = p.CompanyID,
-                CompanyName = p.CompanyName,
-                GUINumber = p.GUINumber,
-                ContactName = p.ContactName,
-                ContactPhone = p.ContactPhone,
-                ContactEmail = p.ContactEmail
-            });
-            return Json(companyList);
-        }
-        public IActionResult CandidateList()
-        {
-            return View();
-        }
-        //GET:Admins/Home/IndexJson_candidate
-        [HttpGet]
-        public JsonResult IndexJson_candidate()
-        {
-            var candidateList = _context.Candidates.Select(p => new
-            {
-                CandidateID= p.CandidateID,
-                Name= p.Name,
-                Sex= p.Sex,
-                Birthday= p.Birthday,
-                Degree= p.Degree,
-                Address= p.Address,
-            });
-            return Json(candidateList);
-        }
+        
         public IActionResult ClientServiceCenter()
         {
             return View();

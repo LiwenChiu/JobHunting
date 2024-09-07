@@ -20,9 +20,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult CompanyIndexList()
+        [HttpPost]
+        public async Task<IEnumerable<ResumeViewModel>> CompanyIndexList([FromBody] ResumeViewModel resume)
         {
-            return Json(_context.Resumes.Include(c => c.Candidate).Select(c => new ResumeViewModel
+            return _context.Resumes.Include(a => a.Candidate).Select(c => new ResumeViewModel
             {
                 ResumeID = c.ResumeId,
                 CandidateID = c.CandidateId,
@@ -39,10 +40,30 @@ namespace JobHunting.Controllers
                 Birthday = c.Candidate.Birthday,
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
-            }));
-
+            }).Where(b =>
+                    b.Sex == resume.Sex ||
+                    b.Name.Contains(resume.Name) ||
+                    b.Address.Contains(resume.Address) ||
+                    b.Degree.Contains(resume.Degree)
+                ).Select(c => new ResumeViewModel
+                {
+                    ResumeID = c.ResumeID,
+                    CandidateID = c.CandidateID,
+                    Title = c.Title,
+                    TitleClassID = c.TitleClassID,
+                    Intro = c.Intro,
+                    Autobiography = c.Autobiography,
+                    WorkExperience = c.WorkExperience,
+                    Certification = c.Certification,
+                    Time = c.Time,
+                    WishAddress = c.Address,
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Degree = c.Degree,
+                    Address = c.Address,
+                });
         }
-
         public IActionResult Privacy()
         {
             return View();

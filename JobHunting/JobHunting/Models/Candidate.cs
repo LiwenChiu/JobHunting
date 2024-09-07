@@ -31,6 +31,8 @@ public partial class Candidate
 
     public byte[]? Headshot { get; set; }
 
+    public byte[] Headshot { get; set; }
+
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();

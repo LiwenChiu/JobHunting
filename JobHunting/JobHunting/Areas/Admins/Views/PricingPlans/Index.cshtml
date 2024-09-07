@@ -1,0 +1,80 @@
+﻿@model IEnumerable<JobHunting.Areas.Admins.Models.PricingPlan>
+
+@{
+    ViewData["Title"] = "方案管理";
+}
+
+@section Styles
+{
+    <style>
+
+    </style>
+}
+
+<div id="PricingPlans" class="pt-2">
+    <h3 align="center">方案管理</h3>
+    <div style="background-color:blanchedalmond">
+        <div class="row" v-for="plan in pricingPlans">
+            <div class="col-10 pb-sm-2">
+                <div class="card overcard">
+                    <div class="card-body">
+                        <div class="row row-cols-2 align-items-center">
+                            <template v-if="plan.edit == false">
+                                <p class="col-sm-2">方案: {{plan.title}}</p>
+                                <p class="col-sm-2">天數: {{plan.duration}}</p>
+                                <p class="col-sm-2">售價: ${{plan.price}}</p>
+                                <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
+                            </template>
+                            <template v-else>
+                                <input type="text" class="col-sm-2" name="title" v-bind:value="plan.title" />
+                                input
+                            </template>
+                            <template v-if="plan.edit == false">
+                                <button type="button" class="col-sm-2 btn btn-warning" v-model="">編輯</button>
+                            </template>
+                            <template v-else>
+                                <button type="button" class="col-sm-2 btn btn-warning" v-model="">儲存</button>
+                            </template>
+                            <template v-if="plan.status == true">
+                                <button type="button" class="col-sm-2 btn btn-danger" v-on:click="plan.edit = false;">停用</button>
+                            </template>
+                            <template v-else>
+                                <button type="button" class="col-sm-2 btn btn-primary" v-on:click="">啟用</button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:center;">
+        <button class="btn btn-primary mt-2 mx-1 px-lg-3" type="submit">新增</button>
+        <button class="btn btn-secondary mt-2 mx-1 px-lg-3" type="submit">刪除</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        let vueAppPricingPlans = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    pricingPlans: [],
+                };
+            },
+            methods: {
+                bootPage: function(){
+                    axios.get(`${this.baseAddress}/Admins/PricingPlans/IndexPricingPlans`).then(
+                        response => this.pricingPlans = response.data
+                    ).catch(
+                        err => { alert(err) });
+                },
+            },
+            mounted: function () {
+                this.bootPage();
+            },
+        }
+        let app = Vue.createApp(vueAppPricingPlans).mount("#PricingPlans");
+    </script>
+}
