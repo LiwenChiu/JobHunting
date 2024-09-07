@@ -50,6 +50,7 @@ CREATE TABLE Openings
 		on delete set null,
 	[Address] nvarchar(100),
 	[Description] nvarchar(300) not null,
+	Degree nvarchar(20),
 	Benefits nvarchar(200),
 	InterviewYN bit not null default(0),
 	SalaryMax money,
@@ -75,6 +76,7 @@ CREATE TABLE Candidates
 	Degree nvarchar(30),
 	EmploymentStatus nvarchar(20),
 	MilitaryService nvarchar(20),
+	Headshot varbinary(max),
 )
 CREATE TABLE Resumes
 (
