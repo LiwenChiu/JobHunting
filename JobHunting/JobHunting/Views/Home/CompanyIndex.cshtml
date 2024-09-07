@@ -1,6 +1,6 @@
 ﻿@section Styles {
     @* ViewData["Title"] = "Home Page"; *@
-   
+
     <style>
 
     </style>
@@ -12,7 +12,7 @@
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">選擇地區</label>
-                <select class="select" name="" id="" style="width:150px;height:30px">
+                <select class="select" v-model="area" style="width:150px;height:30px">
                     <option value="A">A</option>
                     <option value="B">B</option>
                     <option value="C">C</option>
@@ -20,15 +20,15 @@
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">技能類別</label>
-                <select>
+                <select v-model="skill">
                     <optgroup v-for="(item,index) in tagClasses" :label="item.tagClassName">
-                        <option>{{item.tagName}}</option>
+                        <option v-for="tag in tagClasses[index].tagObj" :value="tag.tagId">{{tag.tagName}}</option>
                     </optgroup>
                 </select>
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">學歷</label>
-                <select class="select" name="" id="" style="width:150px;height:30px">
+                <select class="select" v-model="edu" style="width:150px;height:30px">
                     <option value="A">A</option>
                     <option value="B">B</option>
                     <option value="C">C</option>
@@ -37,7 +37,7 @@
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model.lazy="filter" v-on:keyup="filterResumes" />
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model.lazy="filter"/>
             </div>
             <div class="col-2 mb-0">
                 <button class="btn btn-warning" v-on:click="filterResumes">搜尋</button>
@@ -60,15 +60,16 @@
                     <td>技能</td>
                     <td></td>
                 </tr>
-                
+
             </thead>
-            <tbody id="listItem" align="center"> 
+            <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
                     <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.name}}</a></td>
-                    <td>{{getAge(item.birthday)}}歲</td>
+                    <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
                     <td>{{item.address}}</td>
+                    <td>{{selectTagName(item.tagObj)}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" :data-bs-target="'#'+mergeID(item)">預覽</button></td>
                 </tr>
             </tbody>
@@ -77,15 +78,15 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" v-on:click="setPage(currentPage-1)">
-                        <a class="page-link" href="#" aria-label="Previous">
+                        <a class="page-link" href="#homeList" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                        <a class="page-link" href="#">{{item}}</a>
+                        <a class="page-link" href="#homeList">{{item}}</a>
                     </li>
                     <li class="page-item" v-on:click="setPage(currentPage+1)">
-                        <a class="page-link" href="#" aria-label="Next">
+                        <a class="page-link" href="#homeList" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -111,7 +112,7 @@
                             style="width:5% ;">
                     </button>
                 </div>
-                <div class="modal-body "style="background-color: #f7d179">
+                <div class="modal-body " style="background-color: #f7d179">
                     <div class="row">
                         <div class="col-sm-5 ">
                             <div class="row text-center">
@@ -120,14 +121,14 @@
                                     <label>{{item.name}}</label>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label >性別:{{selectSex(item.sex)}}</label>
+                                    <label>性別:{{selectSex(item.sex)}}</label>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label >學歷:{{item.degree}}</label>
+                                    <label>學歷:{{item.degree}}</label>
                                 </div>
                                 <h5 class="text-center">專業技能</h5>
                                 <div class="col-12 col-sm-12">
-                                    <label class="text-center">C#、Java</label>
+                                    <label class="text-center">{{selectTagName(item.tagObj)}}</label>
                                 </div>
                             </div>
                         </div>
@@ -163,11 +164,12 @@
         let vueList = {
             data() {
                 return {
+                    area: "A",
+                    skill: "1",
+                    edu: "A", 
+                    filter: "",
                     resumes: [],
-                    filter:"",
-                    tags: [],
                     tagClasses: [],
-                    keyword: "",
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
                 };
@@ -185,6 +187,7 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
+                
             },
             methods: {
                 setPage(page) {
@@ -196,34 +199,52 @@
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
-                getAge(item){
-                    let today = new Date().getFullYear();
-                    let birth = new Date(item).getFullYear();
-                    let age = today - birth;
-                    return age;
+                selectTagName(item){
+                    let s = "";
+                    for (let i = 0; i < item.length; i++) {
+                        s += `${i+1}.${item[i].tagName} `;
+                    }
+                    return s
                 },
-                mergeID(item){
+                // getAge(dateString) {
+                //     // 解析日期字符串
+                //     const birthDate = new Date(dateString);
+                //     const today = new Date();
+
+                //     // 計算年齡
+                //     let age = today.getFullYear() - birthDate.getFullYear();
+                //     const monthDifference = today.getMonth() - birthDate.getMonth();
+
+                //     // 調整年齡如果生日還沒到
+                //     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                //         age--;
+                //     }
+                //     return age;
+                // },
+                mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeID;
                     strID = str + num;
                     return strID;
                 },
                 filterResumes() {
-                    let _this = this;
-                    var request = {};
-                    if (_this.filter == "男")
-                        request.sex = true;
-                    else if (_this.filter == "女")
-                        request.sex = false;
-                    request.name = request.address = request.degree = _this.filter;
-                    axios.post('https://localhost:7169/Home/CompanyIndexList', request, {
-                        Headers: {'Content-Type': 'application/json'},
-                    }).then(res => {
-                        _this.resumes = res.data
-                        for (var n = 0; n < _this.resumes.length; n++) {
-                            _this.resumes[n].edit = false;
-                        }
-                    }).catch(err => JSON.stringify(err))
+                    let self = this;
+                    let today = new Date().getFullYear();
+                    var request = {
+                        sex: self.filter == "男",
+                        serchText: self.filter,
+                        area: self.area,
+                        edu: self.edu,
+                        skill: self.skill
+                    };
+                        axios.post('https://localhost:7169/Home/CompanyIndexList', request, {
+                            Headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                             self.resumes = res.data
+                        for (var n = 0; n < self.resumes.length; n++) {
+                            self.resumes[n].edit = false;
+                            }
+                        }).catch(err => JSON.stringify(err))
                 },
                 getTag() {
                     let request = {
@@ -233,16 +254,6 @@
                             'Content-Type': 'application/json'
                         })
                     };
-                    fetch('https://localhost:7169/Home/Tags', request)
-                        .then(response => {
-                            return response.json();
-                        })
-                        .then(model => {
-                            return this.tags = model
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
                     fetch('https://localhost:7169/Home/TagClasses', request)
                         .then(response => {
                             return response.json();
