@@ -1,13 +1,14 @@
-﻿<!-- Button trigger modal -->
-    <button type="button" data-bs-toggle="modal"
-            data-bs-target="#modalId" class="btn btn-primary">
-        查看履歷
-    </button>
+﻿
+<!-- Button trigger modal -->
+<button type="button" data-bs-toggle="modal"
+        data-bs-target="#modalId" class="btn btn-primary">
+    查看履歷
+</button>
 
 <!-- Modal -->
 <div class="modal fade"
      id="modalId"
-     tabindex="-1" 
+     tabindex="-1"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      role="dialog"
@@ -20,10 +21,10 @@
                 <h3 class="modal-title text-center" id="modalTitleId" style="width:95%">
                     履歷
                 </h3>
-                <button type="button" 
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container mb-3">
@@ -32,30 +33,30 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                        <div class="card-body" style="height:200px">
+                                            <h5 class="card-title" style="font-weight:bold">個人資料</h5>
                                             <p class="card-text">
-                                                <div class="col">
-                                                    <label for="" class="mb-2" size="10">姓名</label>
-                                                    <input type="text">
-                                                    <label for="" class="mb-2">性別</label>
-                                                    <input type="radio" name="sex"><label>男</label>
-                                                    <input type="radio" name="sex"><label>女</label>
-                                                    <input type="radio" name="sex"><label>其他</label>
+                                                <div class="row text-start">
+                                                    <div class="col-4">
+                                                        <p>姓名 : XXX</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>性別 : 女</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>生日 : 2024/9/6</p>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">生日</label>
-                                                    <input type="date">
+                                                <div class="row text-start">
+                                                    <div class="col-4">
+                                                        <p>電話 : 0912345678</p>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <p>學歷 : 碩士</p>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">電話</label>
-                                                    <input type="tel">
-                                                    <label for="" class="mb-2">學歷</label>
-                                                    <input type="text">
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">郵件</label>
-                                                    <input type="email" class="form-control">
+                                                <div class="col text-start">
+                                                    <p>電子郵件 : abcde@gmail.com</p>
                                                 </div>
                                             </p>
 
@@ -64,10 +65,10 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                            <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                        <div class="card-body" style="height:200px">
+                                            <h5 class="card-title" style="font-weight:bold">工作經驗</h5>
+                                            <p class="card-text text-start">
+                                                123123123
                                             </p>
                                         </div>
                                     </div>
@@ -78,23 +79,22 @@
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                            <h5 class="card-title" style="font-weight:bold">求職條件</h5>
                                             <p class="card-text">
-                                                <div class="col">
-                                                    <label for="" class="mb-2">就業狀態</label>
-                                                    <input type="text">
+                                                <div class="row text-start">
+                                                    <div class="col-6">
+                                                        <p>就業狀態 : 待業中</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p>上班時段 : 早班</p>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">上班時段</label>
-                                                    <input type="text">
+                                                <div class="col text-start">
+                                                    <p>希望職稱 : 全端工程師</p>
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">希望職稱</label>
-                                                    <input type="text">
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">能力標籤 / 證照</label>
-                                                    <textarea name="" id="" class="form-control" rows="3"></textarea>
+                                                <div class="col text-start">
+                                                    <p>能力標籤 / 證照 :</p>
+                                                    <p>C# PHP HTML</p>
                                                 </div>
                                             </p>
 
@@ -103,11 +103,18 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">自傳</h5>
-                                            <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8"></textarea>
+                                        <div class="card-body" style="height:230px">
+                                            <h5 class="card-title" style="font-weight:bold">自傳</h5>
+                                            <p class="card-text text-start">
+                                                我的家庭真可愛，整潔美滿又安康
                                             </p>
+                                            <div class="container mt-4">
+                                                <div class="scrollable-div border p-3">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque elit at libero hendrerit, ac volutpat tortor posuere. Fusce euismod, ligula id dapibus faucibus, justo metus vehicula urna, sit amet fermentum nisi risus nec elit. Suspendisse potenti. Morbi in magna a libero congue cursus vitae ut quam. Phasellus et erat risus. Nam nec arcu eget urna facilisis dignissim.</p>
+                                                    <p>Additional text...</p>
+                                                    <!-- 這裡可以放更多的內容 -->
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

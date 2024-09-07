@@ -8,164 +8,185 @@
         }
     </style>
 }
+<div id="createOpening">
+    <div class="container-fluid py-1 mt-5">
+        <div class="letters row">
+            <div class="col-md-3 mb-4">
+                <div class="card" style="width: 16rem; height: 16rem;">
+                    <div class="card-body text-center">
+                        <h2 class="text-center">新增<br />職缺</h2>
+                        <button><i class="fa-solid fa-plus fa-5x"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4" v-for="item in openings">
+                <div class="card" style="width: 16rem; height: 16rem;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-10">
+                                <span class="card-title mb-3">{{item.jobName}}</span>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn-close" disabled aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.opAddress}}</p>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.workingTime}}</p>
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <button type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="modalID"
+                                        class="btn btn-primary">
+                                    職缺編輯
+                                </button>
+                            </div>
+                            <div class="modal fade"
+                                 id="modalId"
+                                 tabindex="-1"
+                                 data-bs-backdrop="static"
+                                 data-bs-keyboard="false"
+                                 role="dialog"
+                                 aria-labelledby="modalTitleId"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                                     role="document">
+                                    <div class="modal-content col-md-4">
+                                        <div class="modal-header" style="background-color: #f7d179;">
+                                            <h5 class="modal-titl text-center" id="modalTitleId" style="width:95% ;">
+                                                {{item.jobName}}
+                                            </h5>
+                                            <button type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"
+                                                    style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row"> 
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="">職缺名稱:</label>
+                                                            <input type="text" v-model="title" class="form-control" />
+                                                            <label class="">公司名稱:</label>
+                                                            <input type="text" v-model="companyName" class="form-control" />
+                                                            <label class="">工作地點:</label>
+                                                            <input type="text" v-model="address" class="form-control" />
+                                                            <label class="">連絡電話:</label>
+                                                            <input type="text" v-model="contactPhone" class="form-control" />
+                                                            <label class="">電子郵件:</label>
+                                                            <input type="text" v-model="contactEmial" class="form-control" />
+                                                            <label class="">薪資條件:</label>
+                                                            <input type="text" v-model="salary" class="form-control" />
+                                                            <label class="">上班時段:</label>
+                                                            <input type="text" v-model="time" class="form-control" />
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="">職缺類別:</label>
+                                                            <select>
+                                                                <optgroup label="資訊科技">
+                                                                    <option>前端工程師</option>
+                                                                    <option>全端工程師</option>
+                                                                </optgroup>
+                                                                <optgroup label="醫療保健">
+                                                                    <option>醫師</option>
+                                                                    <option>護理師</option>
+                                                                </optgroup>
+                                                            </select>
+                                                            <label class="">學歷要求:</label>
+                                                            <select>
+                                                                <option>大學</option>
+                                                                <option>國中</option>
+                                                                <option>高中</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <p>
+                                                                <label>
+                                                                    <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                                    check: {{TagCheckedResume}}<label><span class="badge bg-primary" v-for="item in "></span></label>
+                                                                </label>
+                                                            </p>
+                                                            <div class="collapse" id="TagsCollapse">
+                                                                <div class="card card-body">
+                                                                    <template v-for="(item,index) in TagClasses">
+                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
+                                                                        <div class="collapse" v-bind:id="item.TagClass">
+                                                                            <div>
+                                                                                <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
+                                                                                    <input type="checkbox" v-bind:id="changeTagNameTo(Tag.TagName)" v-bind:value="Tag.TagID" v-model="TagCheckedResume" />
+                                                                                    <label v-bind:for="changeTagNameTo(Tag.TagName)">{{Tag.TagName}}</label>
+                                                                                </template>
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr />
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="form-textarea" class="col-form-label">福利:</label>
+                                                            <textarea class="form-control" id="benefits" style="height:100px"></textarea>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                                            <textarea class="form-control" id="description" style="height:300px"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button id="insert" type="button"
+                                                    class="btn btn-primary"
+                                                    data-bs-dismiss="modal"
+                                                    v-on:click="insert">
+                                                儲存
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-warning"
+                                                    data-bs-dismiss="modal" v-on:click="TagCheckedResume=[]">
+                                                取消
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-<div class="selectbutton align-self-center py-2">
-    <button type="button" class="btn btn-outline-danger btn-md">面試邀約</button>
-    <button type="button" class="btn btn-outline-danger btn-md">結果通知</button>
-    <button type="button" class="btn btn-outline-danger btn-md">意見信件</button>
-</div>
-<div class="container-fluid py-1">
-    <div class="letters row">
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <h2 class="text-center">新增<br />職缺</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">職缺名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        <partial name="_OpeningBtnModal" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">職缺名稱</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 時間 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 回覆狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">信件標題</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">信件標題</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">信件標題</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">信件標題</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <div class="text-center">
-                        <span class="card-title mb-3 ms-5">信件標題</span>
-                        <button type="button" class="btn-close ms-5" disabled aria-label="Close"></button>
-                    </div>
-                    <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 類別 :</p>
-                    <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件人 :</span>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 內容 :</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 處理狀態 :</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-info">查看</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
+            <div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
 
-            </nav>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
+
 @section Scripts
 {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -173,7 +194,14 @@
         let VueApp = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
+                    openings:[],
+
                     pageStatus: 0,
+                    perpage: 5, //一頁的資料數
+                    currentPage: 1,
+                    filter: "",
+
                     ResumeStatus: 1,
                     MessageStatus: 1,
                     TagClasses: [
@@ -193,7 +221,27 @@
                     TagCheckedResume: [],
                 };
             },
-            methods:{
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.resumes.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                },
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
                 changeTagNameTo: function (TagName) {
                     let _this = this;
                     return `${TagName}BindID`;
@@ -207,15 +255,37 @@
                 ReturnhashtagID: function (item) {
                     return `#${item.TagClass}`;
                 },
+                ReceiveOpeningData() {
+                    fetch("/companies/Home/OpeningJson", {
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    })
+                        .then(data => {
+                            return this.openings = data
+                        }).catch(err => {
+                            alert(JSON.stringify(err))
+                        });
+
+                    // axios.get(`${this.baseAddress}/Companies/C_Resume/OpeningJson`).then(
+                    //     res => this.openings = res.data
+                    // ).catch(
+                    //     err => { alert(err) }
+                    // );
+                },
+                
+            },
+            mounted() {
+                this.ReceiveOpeningData();
             },
         };
 
-        let app = Vue.createApp(VueApp).mount("#app");
+        let app = Vue.createApp(VueApp).mount("#createOpening");
 
     </script>
 
 }
-   
+
 
 
 
