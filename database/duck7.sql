@@ -173,7 +173,8 @@ CREATE TABLE PricingPlans
 	Price money
 		CHECK(Price >= 0),
 	Discount decimal(5,4) default(1)
-		CHECK((Discount <= 1) AND (Discount > 0))
+		CHECK((Discount <= 1) AND (Discount > 0)),
+	[Status] bit not null default(1),
 )
 GO
 CREATE TABLE CompanyOrders
