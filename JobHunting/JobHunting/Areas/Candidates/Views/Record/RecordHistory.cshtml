@@ -67,7 +67,8 @@
                     perpage: 6, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
-                    jobclass: [], //從後端撈回來的資料存入這邊
+                    jobclass: [], //應徵過的職缺
+                    jobDetail:[],
                     filter:"",
                     Title:"",
                     TagClasses: [
@@ -121,6 +122,7 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+                //篩選關鍵字的方法
                 filterRecord: function () {
                     let _this = this;
                     var request = {};
@@ -146,7 +148,8 @@
                             alert(JSON.stringify(err))
                         })
 
-                }
+                },
+
 
 
             },

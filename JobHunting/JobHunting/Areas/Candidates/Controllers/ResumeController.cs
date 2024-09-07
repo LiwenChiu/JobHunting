@@ -53,32 +53,37 @@ namespace JobHunting.Areas.Candidates.Controllers
             }));
         }
 
-        //[HttpPost]
+        [HttpPost]
 
-        //public async Task<IActionResult> CreateReasumes (addResumeViewModel Creatr)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        addResumeViewModel insert = new addResumeViewModel()
-        //        {
-        //            Name = Creatr.Name,
-        //            Address = Creatr.Address,
-        //            Sex = Creatr.Sex,
-        //            Birthday = Creatr.Birthday,
-        //            Phone = Creatr.Phone,
-        //            Degree = Creatr.Degree,
-        //            Email = Creatr.Email,
-        //            EmploymentStatus = Creatr.EmploymentStatus,
-        //            Time = Creatr.Time,
-        //            Title = Creatr.Title,
-        //            TitleClassID = Creatr.TitleClassID,
-        //            Certification = Creatr.Certification,
-        //            WorkExperience = Creatr.WorkExperience,
-        //            Autobiography = Creatr.Autobiography,
-        //            CandidateID = Creatr.CandidateID
-        //        };
-        //        _context.
-        //    }
+        public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
+        {
+            if (ModelState.IsValid)
+            {
+
+                addResumeInputModel insert = new addResumeInputModel()
+                {
+                    Name = Creatr.Name,
+                    Address = Creatr.Address,
+                    Sex = Creatr.Sex,
+                    Birthday = Creatr.Birthday,
+                    Phone = Creatr.Phone,
+                    Degree = Creatr.Degree,
+                    Email = Creatr.Email,
+                    EmploymentStatus = Creatr.EmploymentStatus,
+                    Time = Creatr.Time,
+                    Title = Creatr.Title,
+                    TitleClassID = Creatr.TitleClassID,
+                    Certification = Creatr.Certification,
+                    WorkExperience = Creatr.WorkExperience,
+                    Autobiography = Creatr.Autobiography,
+                    CandidateID = Creatr.CandidateID
+                };
+
+                _context.Add(insert);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ResumeManage));
+            }
+            return View(Creatr);
         }
 
 
@@ -106,5 +111,5 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
         //}
-    //}
+    }
 }
