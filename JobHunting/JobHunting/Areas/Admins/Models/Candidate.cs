@@ -7,9 +7,9 @@ namespace JobHunting.Areas.Admins.Models;
 
 public partial class Candidate
 {
-    public int CandidateID { get; set; }
+    public int CandidateId { get; set; }
 
-    public string NationalID { get; set; }
+    public string NationalId { get; set; }
 
     public string Email { get; set; }
 
@@ -20,6 +20,8 @@ public partial class Candidate
     public bool? Sex { get; set; }
 
     public DateOnly? Birthday { get; set; }
+
+    public byte[] Headshot { get; set; }
 
     public string Phone { get; set; }
 

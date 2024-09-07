@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Admins.Models;
 
 public partial class PricingPlan
 {
-    public int PlanID { get; set; }
+    public int PlanId { get; set; }
 
     public string Title { get; set; }
 
@@ -18,6 +18,8 @@ public partial class PricingPlan
     public decimal? Price { get; set; }
 
     public decimal? Discount { get; set; }
+
+    public bool Status { get; set; }
 
     public virtual ICollection<CompanyOrder> CompanyOrders { get; set; } = new List<CompanyOrder>();
 }

@@ -29,10 +29,11 @@
         </div> *@
         <div class="container-fluid row py-2">
             <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
-            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入篩選關鍵字" v-model.trim="filter" v-on:keyup="filterCompanyOrders" />
+            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入篩選關鍵字" v-model.trim.lazy="filter" v-on:keyup="filterCompanyOrders" />
         </div>
     </div>
     
+
 
     <div class="container tableOutside ">
         <table class="table table-striped text-center mt-1" id="ChangePage" style="">

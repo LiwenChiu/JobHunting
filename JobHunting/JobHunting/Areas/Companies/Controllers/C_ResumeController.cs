@@ -61,26 +61,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 ApplyDate = ResumeOpeningRecords.Where(a => a.OpeningID == p.OpeningID).Select(a => a.ApplyDate).Single(),
             }));
         }
-        //GET:compaines/C_Resume/ResumeOpClassTitle
-        [HttpGet]
-        public JsonResult OpClassTitle()
-        {
-            return Json(_context.TitleClasses.Select(t => new
-            {
-                titleClassID = t.TitleClassID,
-                titleClassName = t.TitleClassName
-            }));
-        }
-
-        public JsonResult OpTitle()
-        {
-            return Json(_context.Openings.Select(o => new
-            {
-                OpID = o.OpeningID,
-                OpTitle = o.Title,
-                titleClassID=o.TitleClassID
-            }));
-        }
     }
 
 }

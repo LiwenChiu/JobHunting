@@ -1,4 +1,5 @@
 ﻿using JobHunting.Areas.Candidates.Models;
+using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -16,6 +17,11 @@ namespace JobHunting.Areas.Candidates.Controllers
             _context = context;
         }
         public IActionResult ResumeManage()
+        {
+            return View();
+        }
+
+        public IActionResult CreateReasume()
         {
             return View();
         }
@@ -46,6 +52,47 @@ namespace JobHunting.Areas.Candidates.Controllers
                 candidateid = a.CandidateID
             }));
         }
+
+        [HttpPost]
+
+        public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
+        {
+            if (ModelState.IsValid)
+            {
+
+                addResumeInputModel insert = new addResumeInputModel()
+                {
+                    Name = Creatr.Name,
+                    Address = Creatr.Address,
+                    Sex = Creatr.Sex,
+                    Birthday = Creatr.Birthday,
+                    Phone = Creatr.Phone,
+                    Degree = Creatr.Degree,
+                    Email = Creatr.Email,
+                    EmploymentStatus = Creatr.EmploymentStatus,
+                    Time = Creatr.Time,
+                    Title = Creatr.Title,
+                    TitleClassID = Creatr.TitleClassID,
+                    Certification = Creatr.Certification,
+                    WorkExperience = Creatr.WorkExperience,
+                    Autobiography = Creatr.Autobiography,
+                    CandidateID = Creatr.CandidateID
+                };
+
+                _context.Add(insert);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ResumeManage));
+            }
+            return View(Creatr);
+        }
+
+
+
+
+
+
+
+
 
 
         //[HttpPost]

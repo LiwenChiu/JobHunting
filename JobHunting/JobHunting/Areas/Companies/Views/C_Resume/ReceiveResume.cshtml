@@ -4,23 +4,32 @@
 @{
     ViewData["Title"] = "會員中心";
 }
+@section Styles {
+    <style>
+        .scrollable-div {
+            height: 200px; /* 固定高度 */
+            overflow-y: auto; /* 當內容超出時，顯示垂直捲軸 */
+        }
+    </style>
+}
+
 <div id="receiveResume">
     <div class="col-10 mx-auto  mt-4">
         <div class="row">
             <div class="col-5">
                 <select class="" style="width:40%" id="OpTitleClass" v-model="selectedOpClassTitleId" v-on:change="selectedOpTitleId=null">
-                    <option value="" selected>----職缺類別----</option>
+                    <option value="" selected>-----職缺類別-----</option>
                     <option v-for="item in resumes" v-bind:value="item.titleClassId">{{item.titleClassName}}</option>
                 </select>
                 <template v-if="selectedOpClassTitleId">
                     <select class="" style=" width:60%" v-model="selectedOpTitleId">
-                        <option value="" selected>----職缺名稱----</option>
+                        <option value="" selected>-----職缺名稱-----</option>
                         <option v-for="item in filteredResumes" v-bind:value="item.titleId">{{item.title}}</option>
                     </select>
                 </template>
                 <template v-else>
                     <select class="" style=" width:60%" v-model="selectedOpTitleId">
-                        <option value="" selected>----職缺名稱----</option>
+                        <option value="" selected>-----------職缺名稱-----------</option>
                         <option v-for="item in resumes" v-bind:value="item.titleId">{{item.title}}</option>
                     </select>
                 </template>
@@ -49,7 +58,227 @@
                     <th>{{item.applyDate}}</th>
                     <td>{{item.titleClassName}}</td>
                     <td>{{item.title}}</td>
-                    <td><partial name="_ResumeBtnModal"></td>
+                    <td>
+                        <!-- Button trigger modal --> @* 查看履歷modal *@
+                        <button type="button" data-bs-toggle="modal"
+                                data-bs-target="#modalId" class="btn btn-primary">
+                            查看履歷
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade"
+                             id="modalId"
+                             tabindex="-1"
+                             data-bs-backdrop="static"
+                             data-bs-keyboard="false"
+                             role="dialog"
+                             aria-labelledby="modalTitleId"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                                 role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h3 class="modal-title text-center" id="modalTitleId" style="width:95%">
+                                            履歷
+                                        </h3>
+                                        <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container mb-3">
+                                            <div class="card bg-warning">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="card mb-3">
+                                                                <div class="card-body" style="height:200px">
+                                                                    <h5 class="card-title" style="font-weight:bold">個人資料</h5>
+                                                                    <p class="card-text">
+                                                                        <div class="row text-start">
+                                                                            <div class="col-4">
+                                                                                <p>姓名 : XXX</p>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <p>性別 : 女</p>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <p>生日 : 2024/9/6</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row text-start">
+                                                                            <div class="col-4">
+                                                                                <p>電話 : 0912345678</p>
+                                                                            </div>
+                                                                            <div class="col-8">
+                                                                                <p>學歷 : 碩士</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col text-start">
+                                                                            <p>電子郵件 : abcde@gmail.com</p>
+                                                                        </div>
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="card mb-3">
+                                                                <div class="card-body" style="height:200px">
+                                                                    <h5 class="card-title" style="font-weight:bold">工作經驗</h5>
+                                                                    <p class="card-text text-start">
+                                                                        123123123
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="card mb-3">
+                                                                <div class="card-body" style="height:300px">
+                                                                    <h5 class="card-title" style="font-weight:bold">求職條件</h5>
+                                                                    <p class="card-text">
+                                                                        <div class="row text-start">
+                                                                            <div class="col-6">
+                                                                                <p>就業狀態 : 待業中</p>
+                                                                            </div>
+                                                                            <div class="col-6">
+                                                                                <p>上班時段 : 早班</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col text-start">
+                                                                            <p>希望職稱 : 全端工程師</p>
+                                                                        </div>
+                                                                        <div class="col text-start">
+                                                                            <p>能力標籤 / 證照 :</p>
+                                                                            <p>C# PHP HTML</p>
+                                                                        </div>
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="card mb-3">
+                                                                <div class="card-body" style="height:300px">
+                                                                    <h5 class="card-title" style="font-weight:bold">自傳</h5>
+                                                                    <div class="container mt-4">
+                                                                        <div class="scrollable-div border p-3 text-start">
+                                                                            <p >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque elit at libero hendrerit, ac volutpat tortor posuere. Fusce euismod, ligula id dapibus faucibus, justo metus vehicula urna, sit amet fermentum nisi risus nec elit. Suspendisse potenti. Morbi in magna a libero congue cursus vitae ut quam. Phasellus et erat risus. Nam nec arcu eget urna facilisis dignissim.</p>
+                                                                            <p>Additional text...</p>
+                                                                            <!-- 這裡可以放更多的內容 -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success">暫存</button>
+                                        @* 發送面試通知按鈕 *@
+                                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                                                data-bs-target="#interviewMailBtn">
+                                            面試
+                                        </button>
+                                        @* 發送錄取通知按鈕 *@
+                                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                                                data-bs-target="#OfferMailBtn">
+                                            錄取
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* 發送錄取通知 *@
+
+                        <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+                             aria-labelledby="modalTitleId " aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                                            <div class="inputOutAreas">
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                                    <input type="date" class="form-control inputDate">
+                                                </div>
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                                    <input type="time" class="form-control inputTime">
+                                                </div>
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                                    <input type="text" class="form-control inputPlace">
+                                                </div>
+
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                                    <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-warning">
+                                        <button type="submit" class="btn btn-outline-secondary">發送</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* 發送面試通知 *@
+
+                        <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+                             aria-labelledby="modalTitleId " aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                                            <div class="inputOutAreas">
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                                    <input type="date" class="form-control inputDate">
+                                                </div>
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                                    <input type="time" class="form-control inputTime">
+                                                </div>
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                                    <input type="text" class="form-control inputPlace">
+                                                </div>
+
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                                    <textarea class="form-control " style="height:150px" name="錄用通知訊息"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-warning">
+                                        <button type="submit" class="btn btn-outline-secondary">發送</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td> @* 查看履歷modal *@
                 </tr>
             </tbody>
         </table>
@@ -87,18 +316,8 @@
                     currentPage: 1,
                     filter: "",
 
-                    OpClassTitle: [],
-                    OpTitle: [],
                     selectedOpClassTitleId: '',
                     selectedOpTitleId: '',
-                    OrderDetail:
-                        [
-                            { Detail: "公司名稱" },
-                            { Detail: "方案名稱" },
-                            { Detail: "訂購日期" },
-                            { Detail: "方案天數" },
-                            { Detail: "付款狀態" },
-                        ],
                 };
             },
             computed: {
@@ -149,25 +368,17 @@
                             alert(JSON.stringify(err))
                         });
 
-                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
-                        res => this.OpClassTitle = res.data
-                    ).catch(
-                        err => { alert(err) }
-                    );
-
-                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpTitle`).then(
-                        res => this.OpTitle = res.data
-                    ).catch(
-                        err => { alert(err) }
-                    );
+                    // axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
+                    //     res => this.OpClassTitle = res.data
+                    // ).catch(
+                    //     err => { alert(err) }
+                    // );
                 },
 
 
             },
             watch: {
-                orderSelA: function (selval) {
-                    this.orderSelB = selval
-                },
+                
             },
             //每次重新載入網頁時會自動初始化撈出資料
             mounted() {

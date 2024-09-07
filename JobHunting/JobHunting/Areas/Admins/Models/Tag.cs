@@ -2,16 +2,14 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace JobHunting.Areas.Admins.Models;
 
 public partial class Tag
 {
-    [Key]
-    public int TagID { get; set; }
+    public int TagId { get; set; }
 
-    public int? TagClassID { get; set; }
+    public int? TagClassId { get; set; }
 
     public string TagName { get; set; }
 
