@@ -1,0 +1,75 @@
+﻿@model IEnumerable<JobHunting.Areas.Admins.Models.PricingPlan>
+
+@{
+    ViewData["Title"] = "方案管理";
+}
+
+@section Styles
+{
+
+}
+
+<div id="PricingPlans" class="row justify-content-center align-items-center">
+    <div class="col-md-11">
+        <div class="card mb-4 mb-md-0 h-100">
+            <div class="card-body" style="background-color:blanchedalmond">
+                <h4 align="center">方案管理</h4>
+                <div class="row row-cols-1 row-cols-md-1 g-3 mb-2">
+
+                    <template v-for="plan in pricingPlans">
+                        <button type="button" class="btn btn-outline-warning">
+                            <div class="col">
+                                <div class="card overcard" style="height:50px">
+                                    <div class="card-body">
+                                        <div class="row row-cols-2 align-items-center">
+                                            <p class="col-sm-2">{{plan.}}</p>
+                                            <p class="col-sm-2"></p>
+                                            <p class="col-sm-2">售價：$380</p>
+                                            <p class="col-sm-2"></p>
+                                            <button></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </template>
+
+                </div>
+                <div style="text-align:center;">
+                    <partial name="_EditPricingPlanPartial" class="mt-2" />
+                    <button class="btn btn-primary mt-2" type="submit">新增</button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-secondary mt-2" type="submit">刪除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script>
+        let vueAppPricingPlans = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    pricingPlans: [],
+                };
+            },
+            methods: {
+                bootPage: function(){
+                    axios.get(`${this.baseAddress}/Admins/PricingPlans/IndexPricingPlans`).then(
+                        response => this.pricingPlans = response.data
+                    ).catch(
+                        err => { alert(err) });
+                },
+            },
+            mounted: function () {
+                this.bootPage();
+            },
+        }
+        let app = Vue.createApp(vueAppPricingPlans).mount("#PricingPlans");
+    </script>
+}
