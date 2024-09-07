@@ -18,18 +18,18 @@
         <div class="row">
             <div class="col-5">
                 <select class="" style="width:40%" id="OpTitleClass" v-model="selectedOpClassTitleId" v-on:change="selectedOpTitleId=null">
-                    <option value="" selected>----職缺類別----</option>
+                    <option value="" selected>-----職缺類別-----</option>
                     <option v-for="item in resumes" v-bind:value="item.titleClassId">{{item.titleClassName}}</option>
                 </select>
                 <template v-if="selectedOpClassTitleId">
                     <select class="" style=" width:60%" v-model="selectedOpTitleId">
-                        <option value="" selected>----職缺名稱----</option>
+                        <option value="" selected>-----職缺名稱-----</option>
                         <option v-for="item in filteredResumes" v-bind:value="item.titleId">{{item.title}}</option>
                     </select>
                 </template>
                 <template v-else>
                     <select class="" style=" width:60%" v-model="selectedOpTitleId">
-                        <option value="" selected>----職缺名稱----</option>
+                        <option value="" selected>-----------職缺名稱-----------</option>
                         <option v-for="item in resumes" v-bind:value="item.titleId">{{item.title}}</option>
                     </select>
                 </template>
@@ -316,8 +316,6 @@
                     currentPage: 1,
                     filter: "",
 
-                    OpClassTitle: [],
-                    OpTitle: [],
                     selectedOpClassTitleId: '',
                     selectedOpTitleId: '',
                 };
@@ -370,17 +368,11 @@
                             alert(JSON.stringify(err))
                         });
 
-                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
-                        res => this.OpClassTitle = res.data
-                    ).catch(
-                        err => { alert(err) }
-                    );
-
-                    axios.get(`${this.baseAddress}/Companies/C_Resume/OpTitle`).then(
-                        res => this.OpTitle = res.data
-                    ).catch(
-                        err => { alert(err) }
-                    );
+                    // axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
+                    //     res => this.OpClassTitle = res.data
+                    // ).catch(
+                    //     err => { alert(err) }
+                    // );
                 },
 
 
