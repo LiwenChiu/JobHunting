@@ -25,10 +25,10 @@ namespace JobHunting.Controllers
         {
             return _context.Resumes.Include(a => a.Candidate).Select(c => new ResumeViewModel
             {
-                ResumeID = c.ResumeID,
-                CandidateID = c.CandidateID,
+                ResumeID = c.ResumeId,
+                CandidateID = c.CandidateId,
                 Title = c.Title,
-                TitleClassID = c.TitleClassID,
+                TitleClassID = c.TitleClassId,
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
@@ -77,8 +77,8 @@ namespace JobHunting.Controllers
         {
             return Json(_context.Tags.Select(p => new 
             {
-                TagID = p.TagID,
-                TagClassID = p.TagClassID,
+                TagID = p.TagId,
+                TagClassID = p.TagClassId,
                 TagName = p.TagName,
             }));
         }
@@ -86,7 +86,7 @@ namespace JobHunting.Controllers
         {
             return Json(_context.TagClasses.Select(p => new
             {
-                TagClassID = p.TagClassID,
+                TagClassID = p.TagClassId,
                 TagClassName = p.TagClassName,
             }));
         }

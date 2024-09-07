@@ -34,6 +34,24 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
+        public JsonResult OpeningJson()
+        {
+            return Json(_context.Openings.Include(c=>_context.TitleClasses).Select(o => new
+            {
+                JobId=o.OpeningID,
+                JobName=o.Title,
+                CompanyName=o.Company.CompanyName,
+                OpAddress=o.Address,
+                ContactNumber=o.ContactPhone,
+                ContactEmail=o.ContactEmail,
+                SalaryMax=o.SalaryMax,
+                SalaryMin=o.SalaryMin,
+                WorkingTime=o.Time,
+                JobDescription=o.Description,
+                TitleClassName=o.TitleClass.TitleClassName
+
+            }));
+        }
         public IActionResult Resume()
         {
             return View();

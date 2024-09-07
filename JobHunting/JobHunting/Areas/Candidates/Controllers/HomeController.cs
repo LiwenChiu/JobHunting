@@ -44,10 +44,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             return View();
         }
-        public IActionResult Opening()
-        {
-            return View();
-        }
+
         public IActionResult Notifications()
         {
             return View();
