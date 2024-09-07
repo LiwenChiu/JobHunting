@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<JobHunting.Areas.Admins.Models.PricingPlan>
+
+@{
     ViewData["Title"] = "方案管理";
 }
 
@@ -7,7 +9,7 @@
 
 }
 
-<div class="row  justify-content-center align-items-center">
+<div id="PricingPlans" class="row justify-content-center align-items-center">
     <div class="col-md-11">
         <div class="card mb-4 mb-md-0 h-100">
             <div class="card-body" style="background-color:blanchedalmond">
@@ -87,7 +89,7 @@
                     </button>
                 </div>
                 <div style="text-align:center;">
-                    <partial name="_EditPricingPlanBtn" class="mt-2"/>
+                    <partial name="_EditPricingPlanPartial" class="mt-2" />
                     <button class="btn btn-primary mt-2" type="submit">新增</button>
                     &nbsp;&nbsp;
                     <button class="btn btn-secondary mt-2" type="submit">刪除</button>
@@ -102,6 +104,19 @@
 @section Scripts
 {
     <script>
-        let 
+        let vueAppPricingPlans = {
+            data() {
+                return {
+                    pricingPlans: [],
+                };
+            },
+            methods: {
+
+            },
+            mounted: function () {
+
+            },
+        }
+        let app = Vue.createApp(vueAppPricingPlans).mount("#PricingPlans");
     </script>
 }
