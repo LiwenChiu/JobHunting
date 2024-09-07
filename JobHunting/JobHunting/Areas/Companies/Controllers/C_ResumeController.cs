@@ -55,16 +55,32 @@ namespace JobHunting.Areas.Companies.Controllers
             return Json(Openings.Select(p => new
             {
                 Title = p.Title,
+                TitleId=p.OpeningID,
                 TitleClassName = TitleClasses.Where(s => s.TitleClassID == p.TitleClassID).Select(s => s.TitleClassName).Single(),
+                TitleClassId = TitleClasses.Where(s => s.TitleClassID == p.TitleClassID).Select(s => s.TitleClassID).Single(),
                 ApplyDate = ResumeOpeningRecords.Where(a => a.OpeningID == p.OpeningID).Select(a => a.ApplyDate).Single(),
             }));
         }
-        //public IActionResult Opening(string id)
-        //{
-        //    var Openings = _context.Openings;
-        //    ViewBag.Opening = new SelectList(Openings.Where(o => o.TitleClassID == id), "TitleClassID", "TitleClassName");
-        //    return PartialView("_Opening");
-        //}
+        //GET:compaines/C_Resume/ResumeOpClassTitle
+        [HttpGet]
+        public JsonResult OpClassTitle()
+        {
+            return Json(_context.TitleClasses.Select(t => new
+            {
+                titleClassID = t.TitleClassID,
+                titleClassName = t.TitleClassName
+            }));
+        }
+
+        public JsonResult OpTitle()
+        {
+            return Json(_context.Openings.Select(o => new
+            {
+                OpID = o.OpeningID,
+                OpTitle = o.Title,
+                titleClassID=o.TitleClassID
+            }));
+        }
     }
 
 }
