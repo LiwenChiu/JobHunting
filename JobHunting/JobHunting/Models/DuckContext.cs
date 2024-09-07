@@ -43,6 +43,11 @@ public partial class DuckContext : DbContext
 
     public virtual DbSet<TitleClass> TitleClasses { get; set; }
 
+    public virtual DbSet<OpeningTag> OpeningTags { get; set; }
+
+    public virtual DbSet<ResumeTag> ResumeTags { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Admin>(entity =>
@@ -391,6 +396,16 @@ public partial class DuckContext : DbContext
                 .HasForeignKey(d => d.TitleCategoryID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__TitleClas__Title__267ABA7A");
+        });
+
+        modelBuilder.Entity<OpeningTag>(entity =>
+        {
+            entity.HasKey(e => new { e.OpeningID, e.TagID }).HasName("PK__OpeningT__56D848B726904916");
+        });
+
+        modelBuilder.Entity<ResumeTag>(entity =>
+        {
+            entity.HasKey(e => new { e.ResumeID, e.TagID }).HasName("PK__ResumeTa__01806CB3E57C5434");
         });
 
         OnModelCreatingPartial(modelBuilder);

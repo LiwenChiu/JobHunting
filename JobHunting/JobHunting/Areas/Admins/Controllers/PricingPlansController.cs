@@ -26,10 +26,10 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
         // GET: Admins/TagManagement/IndexPricingPlans
-        public JsonResult IndexPricingPlans()
-        {
-            return Json(_context.PricingPlans.)
-        }
+        //public JsonResult IndexPricingPlans()
+        //{
+        //    return Json(_context.PricingPlans.)
+        //}
 
         //// GET: Admins/PricingPlans/Details/5
         //public async Task<IActionResult> Details(int? id)
