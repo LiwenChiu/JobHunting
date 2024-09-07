@@ -2,7 +2,7 @@
 {
     public class PricingPlanViewModel
     {
-        public int PlanID { get; set; }
+        public int PlanId { get; set; }
 
         public string? Title { get; set; }
 

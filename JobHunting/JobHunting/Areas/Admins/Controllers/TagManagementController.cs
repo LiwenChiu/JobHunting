@@ -31,8 +31,8 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return Json(_context.Tags.Select(t => new
             {
-                TagID = t.TagID,
-                TagClassID = t.TagClassID,
+                TagId = t.TagId,
+                TagClassId = t.TagClassId,
                 TagName = t.TagName,
             }));
         }
@@ -40,9 +40,9 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TagManagement/IndexTagClasses
         public JsonResult IndexTagClasses()
         {
-            return Json(_context.TagClasses.Where(t => t.TagClassID > 0).Select(t => new
+            return Json(_context.TagClasses.Where(t => t.TagClassId > 0).Select(t => new
             {
-                TagClassID = t.TagClassID,
+                TagClassId = t.TagClassId,
                 TagClassName = t.TagClassName,
             }));
         }
@@ -50,7 +50,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/CreateTag
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CreateTag([FromBody][Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
+        public async Task<Array> CreateTag([FromBody][Bind("TagId,TagClassId,TagName")] TagsViewModel tvm)
         {
             string[] returnStatus = new string[2];
 
@@ -64,11 +64,11 @@ namespace JobHunting.Areas.Admins.Controllers
 
                 Tag tadd = new Tag
                 {
-                    TagClassID = tvm.TagClassID,
+                    TagClassId = tvm.TagClassId,
                     TagName = tvm.TagName,
                 };
 
-                var arr = await _context.Tags.Where(t => t.TagClassID == tadd.TagClassID).Where(t => t.TagName == tadd.TagName).ToArrayAsync();
+                var arr = await _context.Tags.Where(t => t.TagClassId == tadd.TagClassId).Where(t => t.TagName == tadd.TagName).ToArrayAsync();
                 if(arr.Length > 0)
                 {
                     returnStatus = [$"此類型已存在相同標籤{tadd.TagName}","失敗"];
@@ -88,13 +88,13 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/CreateTagClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CreateTagClass([FromBody]string tagClassName)
+        public async Task<Array> CreateTagClass([FromBody] TagClassNameViewModel tagClassName)
         {
             string[] returnStatus = new string[2];
 
             if (ModelState.IsValid)
             {
-                if(tagClassName == "")
+                if(tagClassName.TagClassName == "")
                 {
                     returnStatus = ["標籤類型名稱不可為空", "失敗"];
                     return returnStatus;
@@ -102,7 +102,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
                 TagClass tcadd = new TagClass
                 {
-                    TagClassName = tagClassName,
+                    TagClassName = tagClassName.TagClassName,
                 };
 
                 var arr = await _context.TagClasses.Where(tc => tc.TagClassName == tcadd.TagClassName).ToArrayAsync();
@@ -122,17 +122,10 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        public class moveTagsModel
-        {
-            public int TagClassID { get; set; }
-
-            public int[] TagChecked { get; set; }
-        }
-
         //POST: Admins/TagManagement/MoveTags
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> MoveTags([FromBody][Bind("TagClassID,TagChecked")] moveTagsModel mtm)
+        public async Task<Array> MoveTags([FromBody][Bind("TagClassId,TagChecked")] MoveTagsViewModel mtvm)
         {
             string[] returnStatus = new string[2];
             string str = "";
@@ -143,20 +136,20 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            if (mtm.TagChecked.Length == 0)
+            if (mtvm.TagChecked.Length == 0)
             {
                 returnStatus = ["未選擇標籤", "失敗"];
                 return returnStatus;
             }
 
-            for (int i = 0; i < mtm.TagChecked.Length; i++)
+            for (int i = 0; i < mtvm.TagChecked.Length; i++)
             {
-                int id = mtm.TagChecked[i];
+                int id = mtvm.TagChecked[i];
                 var tag = await _context.Tags.FindAsync(id);
                 if (tag != null)
                 {
-                    tag.TagClassID = mtm.TagClassID;
-                    if (i != mtm.TagChecked.Length - 1)
+                    tag.TagClassId = mtvm.TagClassId;
+                    if (i != mtvm.TagChecked.Length - 1)
                     {
                         str += $"{tag.TagName}, ";
                     }
@@ -172,7 +165,7 @@ namespace JobHunting.Areas.Admins.Controllers
                     }
                     catch (DbUpdateException ex)
                     {
-                        returnStatus = [$"移動ID為{mtm.TagChecked[i]}的關聯標籤失敗!", "失敗"];
+                        returnStatus = [$"移動ID為{mtvm.TagChecked[i]}的關聯標籤失敗!", "失敗"];
                         return returnStatus;
                     }
                 }
@@ -185,7 +178,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/EditTag
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditTag([FromBody][Bind("TagID,TagClassID,TagName")] TagsViewModel tvm)
+        public async Task<Array> EditTag([FromBody][Bind("TagId,TagClassId,TagName")] TagsViewModel tvm)
         {
             string[] returnStatus = new string[2];
 
@@ -195,7 +188,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            if(tvm.TagID == null)
+            if(tvm.TagId == null)
             {
                 returnStatus = ["請選擇欲修改標籤", "失敗"];
                 return returnStatus;
@@ -207,14 +200,14 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var arr = await _context.Tags.Where(t => t.TagClassID == tvm.TagClassID).Where(t => t.TagName == tvm.TagName).ToArrayAsync();
+            var arr = await _context.Tags.Where(t => t.TagClassId == tvm.TagClassId).Where(t => t.TagName == tvm.TagName).ToArrayAsync();
             if (arr.Length > 0)
             {
                 returnStatus = [$"此類型已存在相同標籤{tvm.TagName}", "失敗"];
                 return returnStatus;
             }
 
-            var tag = await _context.Tags.FindAsync(tvm.TagID);
+            var tag = await _context.Tags.FindAsync(tvm.TagId);
             if (tag == null)
             {
                 returnStatus = [$"不存在可修改標籤", "失敗"];
@@ -233,14 +226,14 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"修改標籤ID:{tvm.TagID}為{tvm.TagName}成功", "成功"];
+            returnStatus = [$"修改標籤ID:{tvm.TagId}為{tvm.TagName}成功", "成功"];
             return returnStatus;
         }
 
         //POST: Admins/TagManagement/EditTagClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditTagClass([FromBody][Bind("TagClassID,TagClassName")] TagClassesViewModel tcvm)
+        public async Task<Array> EditTagClass([FromBody][Bind("TagClassId,TagClassName")] TagClassesViewModel tcvm)
         {
             string[] returnStatus = new string[2];
 
@@ -250,7 +243,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            if (tcvm.TagClassID == null)
+            if (tcvm.TagClassId == null)
             {
                 returnStatus = ["請選擇欲修改標籤類型", "失敗"];
                 return returnStatus;
@@ -269,7 +262,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var tagClass = await _context.TagClasses.FindAsync(tcvm.TagClassID);
+            var tagClass = await _context.TagClasses.FindAsync(tcvm.TagClassId);
             if (tagClass == null)
             {
                 returnStatus = [$"不存在可修改標籤類型", "失敗"];
@@ -288,7 +281,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"修改標籤類型ID:{tcvm.TagClassID}為{tcvm.TagClassName}成功", "成功"];
+            returnStatus = [$"修改標籤類型ID:{tcvm.TagClassId}為{tcvm.TagClassName}成功", "成功"];
             return returnStatus;
         }
 
@@ -345,7 +338,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/DeleteTagClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> DeleteTagClass([FromBody] int tagClassID)
+        public async Task<Array> DeleteTagClass([FromBody] int tagClassId)
         {
             string[] returnStatus = new string[2];
 
@@ -355,7 +348,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var tagClass = await _context.TagClasses.FindAsync(tagClassID);
+            var tagClass = await _context.TagClasses.FindAsync(tagClassId);
             if (tagClass != null) { 
                 _context.TagClasses.Remove(tagClass);
             }
@@ -366,7 +359,7 @@ namespace JobHunting.Areas.Admins.Controllers
             }
             catch (DbUpdateException ex) 
             {
-                returnStatus = [$"刪除ID為{tagClassID}的關聯標籤類型失敗!", "失敗"];
+                returnStatus = [$"刪除ID為{tagClassId}的關聯標籤類型失敗!", "失敗"];
                 return returnStatus;
             }
 
