@@ -2,7 +2,7 @@
 
 <div class="container py-2" id="RecordApp">
     <label>篩選關鍵字：
-        <input type="text" class="form-control" :key="" v-model="filter" v-on:keyup="filterRecord">
+        <input type="text" class="form-control" :key="" v-model.lazy="filter" v-on:keyup.enter="filterRecord">
      </label>
     <div class="card mb-4">
         
@@ -100,11 +100,6 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
-                filterKW(){
-                    
-                    
-
-                }
             },
             methods: {
                 setPage(page) {
@@ -130,19 +125,28 @@
                     let _this = this;
                     var request = {};
                     request.ResumeOpeningRecordID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
-                    request.CompanyName = request.OpeningTitle = request.Title = _this.filter;
-                    
-                    axios.post(`${this.baseAddress}/Candidates/Record/filter`,request,
-                    {   Headers: {'Content-Type':'application/json'},
-                    }).then(response => {
-                        _this.jobclass = response.data
-                           for (let i = 0; i < _this.jobclass.length; i++) {
-                               _this.jobclass[i].Edit = false;
-                           }
-                        }).catch(err => {
-                                console.log(JSON.stringify(err))
-                        });
-                },
+                    request.CompanyName = request.ApplyDate = request.OpeningTitle = request.Title = _this.filter;
+                    fetch("/Candidates/Record/filter", {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                        },
+                        body: JSON.stringify(request)  //將 JavaScript 對象 request 序列化為 JSON 字符串發送。
+                    })
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(data => {
+                            return _this.jobclass = data
+                            for (let i = 0; i < _this.jobclass.length; i++) {
+                                _this.jobclass[i].Edit = false;
+                            }
+                        })
+                        .catch(err => {
+                            alert(JSON.stringify(err))
+                        })
+
+                }
 
 
             },

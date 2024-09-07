@@ -48,17 +48,17 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //Post: Candidates/Record/Recordfilter
         [HttpPost]
-        public async Task<IEnumerable<RecordViewmodel>> filter([FromBody] RecordViewmodel rv)
+        public async Task<IEnumerable<RecordOutputmodel>> filter([FromBody] RecordViewmodel rv)
         {
 
-            return (_context.ResumeOpeningRecords
-                 .Include(c => c.Resume).Include(a => a.Opening)
+           return  _context.ResumeOpeningRecords
+                 .Include(c => c.Resume).Include(a => a.Opening).ToList()
                  .Where(rvfilter => rvfilter.ResumeOpeningRecordID == rv.ResumeOpeningRecordID ||
                            rvfilter.CompanyName.Contains(rv.CompanyName) ||
-                           rvfilter.ApplyDate==rv.ApplyDate ||
+                           rvfilter.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                            rvfilter.OpeningTitle.Contains(rv.OpeningTitle) ||
                            rvfilter.Resume.Title.Contains(rv.Title))
-                 .Select(p => new RecordViewmodel
+                 .Select(p => new RecordOutputmodel
                  {
                      ResumeOpeningRecordID = p.ResumeOpeningRecordID,
                      ApplyDate = p.ApplyDate,
@@ -66,7 +66,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                      OpeningTitle = p.OpeningTitle,
                      Title = p.Resume.Title,
 
-                 }));
+                 });
 
              
 

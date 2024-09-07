@@ -8,36 +8,39 @@
 <div class="container-fluid py-2" id="ResumeApp">
     <div class="letters row">
         <div class="col-md-3 mb-4">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body">
-                    <h2 class="text-center">新增<br />履歷</h2>
-                </div>
-            </div>
+            <partial name="CreateReasume"/>
         </div>
 
-        @* 履歷內容 *@
-        <div class="col-md-3 mb-4" v-for="item in Resume.slice(pageStart,pageEnd)">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body" style="">
-                    <div class="" style="text-align:right">
-                         <button type="button" class="btn-close text-right"  aria-label="Close"></button>
-                    </div>
-                    <div class="">
-                        <p class="card-title pb-3 text-center fs-2">{{item.resumeTitle.slice(1,15)}}</p>
+
+
+
+
+            @* 履歷職缺內容card *@
+            <div class="col-md-3 mb-4" v-for="item in Resume.slice(pageStart,pageEnd)">
+                <div class="card rounded-5" style="width: 15rem; height: 15rem;">
+                    <div class="card-body" style="">
+                        <div class="" style="text-align:right">
+                            <button type="button" class="btn-close text-right" aria-label="Close"></button>
                         </div>
-                    @* 職缺內容按鈕 *@
-                    <div class="text-center">
-                        <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="odID" class="btn btn-primary">
-                            編輯履歷
-                        </button>
+                        <div class="">
+                            <span class="fs-6">履歷名稱：</span>
+                            <p :id="resumevalue" class="card-title pb-3 text-center fs-3" :key="item.candidateid" :value="item.candidateid">{{item.resumeTitle.slice(1,15)}}</p>
+                        </div>
+                        @* 職缺內容按鈕 *@
+                        <template v-if="">
+                            <div class="text-center">
+                                <button type="button" data-bs-toggle="modal"
+                                        data-bs-target="#modalId" class="btn btn-primary">
+                                    編輯履歷
+                                </button>
+                            </div>
+                        </template>
+
                     </div>
                 </div>
             </div>
-        </div>
 
-
-       
+        
 
 
         @* 職缺內容Modal *@
@@ -55,8 +58,8 @@
                     <div class="card modal-body bg-warning">
                         <div class="card-body container-fluid">
                             <div class="modal-header" style="background-color: #f7d179;">
-                                <h5 class="modal-titl text-center" :id="odID" style="width:95% ;">
-                                    編輯履歷
+                                <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
+                                    履歷名稱
                                 </h5>
                                 <button type="button"
                                         class="btn-close"
@@ -73,7 +76,7 @@
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2" size="10">姓名<input type="text" required></label>
+                                                    <label class="mb-2" size="10">{{Resume.name}}<input type="text" required></label>
                                                 </div>
                                                 <div>
                                                     <label for="" class="mb-2">性別</label>
@@ -204,8 +207,9 @@
                     perpage: 7, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
+                    resumevalue:"resumevalue",
                     Resume: [],
-                    odID:"#"+"item.candidateid",
+                    odID:"",
                     TagClasses: [
                         { TagClassID: 1, TagClass: "電腦科學"},
                         { TagClassID: 2, TagClass: "數學" },
@@ -235,6 +239,8 @@
                 pageEnd() {
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
+                },
+                ResumeAll() {
                 }
             },
             methods: {
@@ -258,9 +264,6 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
-                OpeningDetail: function(){
-                     
-                },
                 ResumeInformation: function () {
                     fetch("/Candidates/Resume/ResumeResult", {
                         method:"POST",
@@ -272,6 +275,9 @@
                         alert(JSON.stringify(err))
                     })
                 },
+            },
+            watch:{
+
             },
             mounted:function(){
                 this.ResumeInformation();
