@@ -23,31 +23,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return View();
         }
-
         
-
-        
-
-
-        public IActionResult CandidateList()
-        {
-            return View();
-        }
-        //GET:Admins/Home/IndexJson_candidate
-        [HttpGet]
-        public JsonResult IndexJson_candidate()
-        {
-            var candidateList = _context.Candidates.Select(p => new
-            {
-                CandidateID= p.CandidateID,
-                Name= p.Name,
-                Sex= p.Sex,
-                Birthday= p.Birthday,
-                Degree= p.Degree,
-                Address= p.Address,
-            });
-            return Json(candidateList);
-        }
         public IActionResult ClientServiceCenter()
         {
             return View();

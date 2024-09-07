@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody id="CandidateOpeningRecords">
-            <tr v-for="item in candidatelist" class="overcard">
+            <tr v-for="item in candidateList" class="overcard">
                 <td>{{item.candidateID}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.sex}}</td>
@@ -57,12 +57,12 @@
         Vue.createApp({
             data() {
                 return {
-                    candidatelist:[],
+                    candidateList: [],
                 }
             }, methods: {
                 CandidateListData: function () {
                     // alert("AAA");
-                    fetch("/Admins/Home/IndexJson_candidate", {
+                    fetch("/Admins/CandidateList/IndexJson_candidate", {
                         method:"GET"
                     }).then(response => { 
                         return response.json();
