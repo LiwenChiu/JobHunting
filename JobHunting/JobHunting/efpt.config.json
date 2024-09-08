@@ -27,6 +27,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[CompanyCategories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CompanyClasses]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CompanyOrders]",
          "ObjectType": 0
       },
@@ -47,6 +55,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[OpeningTitleClasses]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[OpinionLetters]",
          "ObjectType": 0
       },
@@ -64,6 +76,10 @@
       },
       {
          "Name": "[dbo].[ResumeTags]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ResumeTitleClasses]",
          "ObjectType": 0
       },
       {

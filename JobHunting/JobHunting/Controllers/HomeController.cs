@@ -21,14 +21,15 @@ namespace JobHunting.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IEnumerable<ResumeViewModel>> CompanyIndexList([FromBody] ResumeViewModel resume)
+        public async Task<IEnumerable<ResumesOutput>> CompanyIndexList([FromBody] ResumeInputModel resume)
         {
-            return _context.Resumes.Include(a => a.Candidate).Select(c => new ResumeViewModel
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).ToList();
+            var temp = source.Select(c => new
             {
                 ResumeID = c.ResumeId,
                 CandidateID = c.CandidateId,
                 Title = c.Title,
-                TitleClassID = c.TitleClassId,
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
@@ -40,29 +41,46 @@ namespace JobHunting.Controllers
                 Birthday = c.Candidate.Birthday,
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
+                skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
             }).Where(b =>
+                    b.Age.ToString().Contains(resume.serchText) ||
                     b.Sex == resume.Sex ||
-                    b.Name.Contains(resume.Name) ||
-                    b.Address.Contains(resume.Address) ||
-                    b.Degree.Contains(resume.Degree)
-                ).Select(c => new ResumeViewModel
-                {
-                    ResumeID = c.ResumeID,
-                    CandidateID = c.CandidateID,
-                    Title = c.Title,
-                    TitleClassID = c.TitleClassID,
-                    Intro = c.Intro,
-                    Autobiography = c.Autobiography,
-                    WorkExperience = c.WorkExperience,
-                    Certification = c.Certification,
-                    Time = c.Time,
-                    WishAddress = c.Address,
-                    Name = c.Name,
-                    Sex = c.Sex,
-                    Birthday = c.Birthday,
-                    Degree = c.Degree,
-                    Address = c.Address,
-                });
+                    b.Name.Contains(resume.serchText) ||
+                    b.Address.Contains(resume.Area) ||
+                    b.Degree.Contains(resume.Edu) ||
+                    b.skill.Any(z => z.TagId == resume.Skill))
+                    .Select(x => new ResumesOutput
+                    {
+                        ResumeID = x.ResumeID,
+                        CandidateID = x.CandidateID,
+                        Title = x.Title,
+                        Intro = x.Intro,
+                        Autobiography = x.Autobiography,
+                        WorkExperience = x.WorkExperience,
+                        Certification = x.Certification,
+                        Time = x.Time,
+                        Address = x.Address,
+                        Name = x.Name,
+                        Sex = x.Sex,
+                        Age = x.Age,
+                        WishAddress = x.WishAddress,
+                        Degree = x.Degree,
+                        TagObj = x.skill
+                    });
+            return temp;
+        }
+
+
+        [NonAction]
+        static int CalculateAge(DateOnly birthday, DateOnly today)
+        {
+            int age = today.Year - birthday.Year;
+            if (today < new DateOnly(today.Year, birthday.Month, birthday.Day))
+            {
+                age--;
+            }
+            return age;
         }
         public IActionResult Privacy()
         {
@@ -73,21 +91,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> Tags()
-        {
-            return Json(_context.Tags.Select(p => new 
-            {
-                TagID = p.TagId,
-                TagClassID = p.TagClassId,
-                TagName = p.TagName,
-            }));
-        }
+       
         public async Task<IActionResult> TagClasses()
         {
-            return Json(_context.TagClasses.Select(p => new
+            return Json(_context.TagClasses.Include(a => a.Tags).Select(p => new TagSelectList
             {
-                TagClassID = p.TagClassId,
+                TagClassId = p.TagClassId,
                 TagClassName = p.TagClassName,
+                TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

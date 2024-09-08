@@ -23,7 +23,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var candidateList = _context.Candidates.Select(p => new
             {
-                CandidateID = p.CandidateID,
+                CandidateID = p.CandidateId,
                 Name = p.Name,
                 Sex = p.Sex,
                 Degree = p.Degree,
@@ -39,14 +39,14 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return _context.Candidates
             .Where(cdfilter =>
-                cdfilter.CandidateID == cdvm.CandidateID ||
+                cdfilter.CandidateId == cdvm.CandidateId ||
                 cdfilter.Name.Contains(cdvm.Name) ||
                 cdfilter.Sex == cdvm.Sex ||
                 cdfilter.Degree.Contains(cdvm.Degree) ||
                 cdfilter.Address.Contains(cdvm.Address))
             .Select(p => new CandidateListViewModel
             {
-                CandidateID = p.CandidateID,
+                CandidateId = p.CandidateId,
                 Sex = p.Sex,
                 Name = p.Name,
                 Degree = p.Degree,

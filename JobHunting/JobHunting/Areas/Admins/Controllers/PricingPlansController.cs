@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Admins.Models;
+using JobHunting.Areas.Admins.ViewModels;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -30,7 +31,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return Json(_context.PricingPlans.Select(pp => new
             {
-                planID = pp.PlanID,
+                planId = pp.PlanId,
                 title = pp.Title,
                 intro = pp.Intro,
                 duration = pp.Duration,
@@ -41,137 +42,150 @@ namespace JobHunting.Areas.Admins.Controllers
             }));
         }
 
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<Array> 
-
-        //// GET: Admins/PricingPlans/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pricingPlan = await _context.PricingPlans
-        //        .FirstOrDefaultAsync(m => m.PlanID == id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(pricingPlan);
-        //}
-
-        //// GET: Admins/PricingPlans/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Admins/PricingPlans/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
+        // POST: Admins/PricingPlans/EditPricingPlans
+        [HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("PlanID,Title,Intro,Duration,Price,Discount")] PricingPlan pricingPlan)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(pricingPlan);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(pricingPlan);
-        //}
+        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanViewModel ppvm)
+        {
+            string[] returnStatus = new string[2];
+            
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["修改方案失敗", "失敗"];
+                return returnStatus;
+            }
 
-        //// GET: Admins/PricingPlans/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppvm.PlanId);
+            pricingPlan.Title = ppvm.Title;
+            pricingPlan.Duration = ppvm.Duration;
+            pricingPlan.Price = ppvm.Price;
+            pricingPlan.Discount = ppvm.Discount;
+            pricingPlan.Status = ppvm.Status;
 
-        //    var pricingPlan = await _context.PricingPlans.FindAsync(id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(pricingPlan);
-        //}
+            _context.Entry(pricingPlan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["修改方案失敗", "失敗"];
+                return returnStatus;
+            }
 
-        //// POST: Admins/PricingPlans/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
+            returnStatus = [$"修改方案ID:{pricingPlan.PlanId}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/EditIntro
+        [HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("PlanID,Title,Intro,Duration,Price,Discount")] PricingPlan pricingPlan)
-        //{
-        //    if (id != pricingPlan.PlanID)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<Array> EditIntro([FromBody][Bind("PlanId,Intro")] PricingPlanIntroViewModel ppivm)
+        {
+            string[] returnStatus = new string[2];
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(pricingPlan);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!PricingPlanExists(pricingPlan.PlanID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(pricingPlan);
-        //}
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["修改方案介紹失敗", "失敗"];
+                return returnStatus;
+            }
 
-        //// GET: Admins/PricingPlans/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (ppivm.Intro == null)
+            {
+                returnStatus = ["方案介紹不可為空", "失敗"];
+                return returnStatus;
+            }
 
-        //    var pricingPlan = await _context.PricingPlans
-        //        .FirstOrDefaultAsync(m => m.PlanID == id);
-        //    if (pricingPlan == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppivm.PlanId);
+            pricingPlan.Intro = ppivm.Intro;
 
-        //    return View(pricingPlan);
-        //}
+            _context.Entry(pricingPlan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["修改方案介紹失敗", "失敗"];
+                return returnStatus;
+            }
 
-        //// POST: Admins/PricingPlans/Delete/5
-        //[HttpPost, ActionName("Delete")]
+            returnStatus = [$"修改方案介紹ID:{pricingPlan.PlanId}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/PlanStatusFalse
+        [HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var pricingPlan = await _context.PricingPlans.FindAsync(id);
-        //    if (pricingPlan != null)
-        //    {
-        //        _context.PricingPlans.Remove(pricingPlan);
-        //    }
+        public async Task<Array> PlanStatusFalse([FromBody]int planID)
+        {
+            string[] returnStatus = new string[2];
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["停用方案失敗", "失敗"];
+                return returnStatus;
+            }
 
-        //private bool PricingPlanExists(int id)
-        //{
-        //    return _context.PricingPlans.Any(e => e.PlanID == id);
-        //}
+            var plan = await _context.PricingPlans.FindAsync(planID);
+            if(plan == null)
+            {
+                returnStatus = ["資料庫不存在此方案", "失敗"];
+                return returnStatus;
+            }
+            plan.Status = false;
+
+            _context.Entry(plan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["停用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"停用方案ID:{planID}成功", "成功"];
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/PlanStatusTrue
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> PlanStatusTrue([FromBody] int planID)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["啟用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var plan = await _context.PricingPlans.FindAsync(planID);
+            if (plan == null)
+            {
+                returnStatus = ["資料庫不存在此方案", "失敗"];
+                return returnStatus;
+            }
+            plan.Status = true;
+
+            _context.Entry(plan).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["啟用方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"啟用方案ID:{planID}成功", "成功"];
+            return returnStatus;
+        }
+
+        
     }
 }

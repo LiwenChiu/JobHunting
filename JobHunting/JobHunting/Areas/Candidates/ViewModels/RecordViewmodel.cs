@@ -9,7 +9,7 @@ namespace JobHunting.Areas.Candidates.ViewModels
         public string CompanyName { get; set; }
         [Display(Name = "應徵日期")]
 
-        public DateOnly? ApplyDate { get; set; }
+        public string ApplyDate { get; set; }
         [Display(Name = "職缺")]
 
         public string OpeningTitle { get; set; }
