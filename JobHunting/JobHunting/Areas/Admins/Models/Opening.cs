@@ -7,13 +7,11 @@ namespace JobHunting.Areas.Admins.Models;
 
 public partial class Opening
 {
-    public int OpeningID { get; set; }
+    public int OpeningId { get; set; }
 
-    public int CompanyID { get; set; }
+    public int CompanyId { get; set; }
 
     public string Title { get; set; }
-
-    public string TitleClassID { get; set; }
 
     public string Address { get; set; }
 
@@ -43,7 +41,7 @@ public partial class Opening
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
 
-    public virtual TitleClass TitleClass { get; set; }
-
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+    public virtual ICollection<TitleClass> TitleClasses { get; set; } = new List<TitleClass>();
 }

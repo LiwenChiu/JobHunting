@@ -5,7 +5,7 @@ namespace JobHunting.Areas.Admins.ViewModels
     public class CompanyListViewModel
     {
         [Display(Name = "公司ID")]
-        public int CompanyID { get; set; }
+        public int CompanyId { get; set; }
 
         [Display(Name = "公司名稱")]
 

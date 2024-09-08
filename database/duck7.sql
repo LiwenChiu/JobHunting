@@ -4,28 +4,28 @@ CREATE DATABASE [Duck]
 GO
 USE [Duck]
 GO
-CREATE TABLE TitleCategories
+CREATE TABLE CompanyCategories
 (
-	TitleCategoryID nchar(1) primary key,
-	TitleCategoryName nvarchar(40) not null
+	CompanyCategoryId nchar(1) primary key,
+	CompanyCategoryName nvarchar(40) not null
 )
 GO
-CREATE TABLE TitleClasses
+CREATE TABLE CompanyClasses
 (
-	TitleClassID nchar(2) primary key,
-	TitleCategoryID nchar(1) not null
-		references TitleCategories(TitleCategoryID),
-	TitleClassName nvarchar(40) not null
+	CompanyClassId nchar(2) primary key,
+	CompanyCategoryId nchar(1) not null
+		references CompanyCategories(CompanyCategoryId),
+	CompanyClassName nvarchar(40) not null
 )
 GO
 CREATE TABLE Companies
 (
-    CompanyID int primary key identity,
+    CompanyId int primary key identity,
 	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
     CompanyName nvarchar(40) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
+	CompanyClassId nchar(2)
+		references CompanyClasses(CompanyClassId)
 		on delete set null,
 	[Address] nvarchar(100),
     Intro nvarchar(200),
@@ -38,16 +38,28 @@ CREATE TABLE Companies
 	[Date] datetime not null
 )
 GO
+CREATE TABLE TitleCategories
+(
+	TitleCategoryId int primary key identity(0,1),
+	TitleCategoryName nvarchar(30) not null,
+)
+Go
+CREATE TABLE TitleClasses
+(
+	TitleClassId int primary key identity,
+	TitleCategoryId int default(0)
+		references TitleCategories(TitleCategoryId)
+		on delete set null,
+	TitleClassName nvarchar(30) not null,
+)
+GO
 CREATE TABLE Openings
 (
-	OpeningID int primary key identity,
-	CompanyID int not null
-		references Companies(CompanyID)
+	OpeningId int primary key identity,
+	CompanyId int not null
+		references Companies(CompanyId)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
-		on delete set null,
 	[Address] nvarchar(100),
 	[Description] nvarchar(300) not null,
 	Degree nvarchar(20),
@@ -62,33 +74,42 @@ CREATE TABLE Openings
 	ReleaseYN bit not null default(0),
 )
 GO
+CREATE TABLE OpeningTitleClasses
+(
+	OpeningId int
+		references Openings(OpeningId)
+		on delete cascade,
+	TitleClassId int
+		references TitleClasses(TitleClassId)
+		on delete cascade,
+	primary key(OpeningId,TitleClassId)
+)
+GO
 CREATE TABLE Candidates
 (
-	CandidateID int primary key identity,
-	NationalID nchar(10) not null,
+	CandidateId int primary key identity,
+	NationalId nchar(10) not null,
 	Email nvarchar(320) not null,
 	[Password] nvarchar(16) not null,
 	[Name] nvarchar(30),
 	Sex bit,
 	Birthday date,
+	Headshot varbinary(Max),
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),
 	EmploymentStatus nvarchar(20),
 	MilitaryService nvarchar(20),
-	Headshot varbinary(max),
 )
 CREATE TABLE Resumes
 (
-	ResumeID int primary key identity,
-	CandidateID int not null
-		references Candidates(CandidateID)
+	ResumeId int primary key identity,
+	CandidateId int not null
+		references Candidates(CandidateId)
 		on delete cascade,
 	Title nvarchar(60) not null,
-	TitleClassID nchar(2)
-		references TitleClasses(TitleClassID)
-		on delete set null,
 	Intro nvarchar(200),
+	Headshot varbinary(Max),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
 	Certification varbinary(Max),
@@ -97,16 +118,27 @@ CREATE TABLE Resumes
 	ReleaseYN bit not null default(1),
 )
 GO
+CREATE TABLE ResumeTitleClasses
+(
+	ResumeId int
+		references Resumes(ResumeId)
+		on delete cascade,
+	TitleClassId int
+		references TitleClasses(TitleClassId)
+		on delete cascade,
+	primary key(ResumeId,TitleClassId)
+)
+GO
 CREATE TABLE ResumeOpeningRecords
 (
-	ResumeOpeningRecordID int primary key identity,
-	ResumeID int
-		references Resumes(ResumeID)
+	ResumeOpeningRecordId int primary key identity,
+	ResumeId int
+		references Resumes(ResumeId)
 		on delete cascade,
-	OpeningID int
-		references Openings(OpeningID)
+	OpeningId int
+		references Openings(OpeningId)
 		on delete set null,
-	CompanyID int not null,
+	CompanyId int not null,
 	CompanyName nvarchar(40) not null,
 	OpeningTitle nvarchar(60) not null,
 	ApplyDate date,
@@ -117,58 +149,58 @@ CREATE TABLE ResumeOpeningRecords
 GO
 CREATE TABLE CompanyResumeRecords
 (
-	CompanyID int not null
-		references Companies(CompanyID)
+	CompanyId int not null
+		references Companies(CompanyId)
 		on delete cascade,
-	ResumeID int not null
-		references Resumes(ResumeID)
+	ResumeId int not null
+		references Resumes(ResumeId)
 		on delete cascade,
 	LikeYN bit not null default(0),
 	InterviewYN bit,
 	HireYN bit
-	primary key(CompanyID,ResumeID)
+	primary key(CompanyId,ResumeId)
 )
 GO
 CREATE TABLE TagClasses
 (
-	TagClassID int primary key identity(0,1),
+	TagClassId int primary key identity(0,1),
 	TagClassName nvarchar(30) not null
 )
 GO
 CREATE TABLE Tags
 (
-	TagID int primary key identity,
-	TagClassID int default(0)
-		references TagClasses(TagClassID)
+	TagId int primary key identity,
+	TagClassId int default(0)
+		references TagClasses(TagClassId)
 		on delete set default,
 	TagName nvarchar(30) not null,
 )
 GO
 CREATE TABLE OpeningTags
 (
-	OpeningID int
-		references Openings(OpeningID)
+	OpeningId int
+		references Openings(OpeningId)
 		on delete cascade,
-	TagID int
-		references Tags(TagID)
+	TagId int
+		references Tags(TagId)
 		on delete cascade
-	primary key(OpeningID,TagID)
+	primary key(OpeningId,TagId)
 )
 GO
 CREATE TABLE ResumeTags
 (
-	ResumeID int
-		references Resumes(ResumeID)
+	ResumeId int
+		references Resumes(ResumeId)
 		on delete cascade,
-	TagID int
-		references Tags(TagID)
+	TagId int
+		references Tags(TagId)
 		on delete cascade
-	primary key(ResumeID,TagID)
+	primary key(ResumeId,TagId)
 )
 GO
 CREATE TABLE PricingPlans
 (
-	PlanID int primary key identity,
+	PlanId int primary key identity,
 	Title nvarchar(40) not null,
 	Intro nvarchar(100),
 	Duration int not null,
@@ -181,12 +213,12 @@ CREATE TABLE PricingPlans
 GO
 CREATE TABLE CompanyOrders
 (
-	OrderID int primary key identity,
-	CompanyID int
-		references Companies(CompanyID)
+	OrderId int primary key identity,
+	CompanyId int
+		references Companies(CompanyId)
 		on delete set null,
-	PlanID int
-		references PricingPlans(PlanID)
+	PlanId int
+		references PricingPlans(PlanId)
 		on delete set null,
 	CompanyName nvarchar(40) not null,
 	GUINumber nchar(8) not null,
@@ -199,15 +231,15 @@ CREATE TABLE CompanyOrders
 GO
 CREATE TABLE Notifications
 (
-	NotificationID int primary key identity,
-	CompanyID int
-		references Companies(CompanyID)
+	NotificationId int primary key identity,
+	CompanyId int
+		references Companies(CompanyId)
 		on delete set null,
-	CandidateID int
-		references Candidates(CandidateID)
+	CandidateId int
+		references Candidates(CandidateId)
 		on delete set null,
-	ResumeID int,
-	OpeningID int,
+	ResumeId int,
+	OpeningId int,
 	[Status] nvarchar(10),
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
@@ -217,7 +249,7 @@ CREATE TABLE Notifications
 GO
 CREATE TABLE Admins
 (
-	AdminID int primary key identity,
+	AdminId int primary key identity,
 	PersonnelCode int not null,
 	Email nvarchar(320) not null,
 	[Password] nvarchar(16) not null,
@@ -227,15 +259,15 @@ CREATE TABLE Admins
 GO
 CREATE TABLE OpinionLetters
 (
-	LetterID int primary key identity,
-	CompanyID int
-		references Companies(CompanyID)
+	LetterId int primary key identity,
+	CompanyId int
+		references Companies(CompanyId)
 		on delete set null,
-	CandidateID int
-		references Candidates(CandidateID)
+	CandidateId int
+		references Candidates(CandidateId)
 		on delete set null,
-	AdminID int
-		references Admins(AdminID)
+	AdminId int
+		references Admins(AdminId)
 		on delete set null,
 	Class nvarchar(30) not null,
 	SubjectLine nvarchar(60) not null,

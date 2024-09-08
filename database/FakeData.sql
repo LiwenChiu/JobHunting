@@ -1,6 +1,6 @@
 USE Duck
 GO
-INSERT INTO TitleCategories (TitleCategoryID, TitleCategoryName) VALUES
+INSERT INTO CompanyCategories (CompanyCategoryId, CompanyCategoryName) VALUES
 ('A', N'農、林、漁、牧業'),
 ('B', N'礦業及土石採取業'),
 ('C', N'製造業'),
@@ -13,7 +13,7 @@ INSERT INTO TitleCategories (TitleCategoryID, TitleCategoryName) VALUES
 ('J', N'文化、運動、休閒及其他服務業'),
 ('Z', N'其他未分類業');
 GO
-INSERT INTO TitleClasses (TitleClassID, TitleCategoryID, TitleClassName) VALUES
+INSERT INTO CompanyClasses (CompanyClassId, CompanyCategoryId, CompanyClassName) VALUES
 ('A1', 'A', N'農業'),
 ('A2', 'A', N'林業及伐木業'),
 ('A3', 'A', N'漁業'),
@@ -93,7 +93,7 @@ INSERT INTO TitleClasses (TitleClassID, TitleCategoryID, TitleClassName) VALUES
 ('JA', 'J', N'個人服務業'),
 ('ZZ', 'Z', N'其他未分類業');
 GO
-INSERT INTO Companies (GUINumber, [Password], CompanyName, TitleClassID, [Address], Intro, Benefits, ContactName, ContactPhone, ContactEmail, [Status], [Date]) VALUES
+INSERT INTO Companies (GUINumber, [Password], CompanyName, CompanyClassId, [Address], Intro, Benefits, ContactName, ContactPhone, ContactEmail, [Status], [Date]) VALUES
 (10000001, 'comp1pass', 'Tech Solutions', 'B1', '123 Main St', 'Leading technology solutions provider', 'Health insurance, 401k', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1, GETDATE()),
 (10000002, 'comp2pass', 'Green Energy', 'B2', '456 Elm St', 'Renewable energy company', 'Stock options, Flexible hours', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1, GETDATE()),
 (10000003, 'comp3pass', 'Creative Designs', 'J1', '789 Oak St', 'Innovative design firm', 'Paid leave, Health insurance', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1, GETDATE()),
@@ -105,19 +105,61 @@ INSERT INTO Companies (GUINumber, [Password], CompanyName, TitleClassID, [Addres
 (10000009, 'comp9pass', 'Marketing Magic', 'D1', '369 Fir St', 'Creative marketing solutions', 'Flexible hours, Stock options', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1, GETDATE()),
 (10000010, 'comp10pass', 'Customer First', 'F1', '852 Ash St', 'Customer service and support', 'Paid leave, Health insurance', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1, GETDATE());
 GO
-INSERT INTO Openings (CompanyID, Title, TitleClassID, [Address], [Description], Benefits, InterviewYN, SalaryMax, SalaryMin, [Time], ContactName, ContactPhone, ContactEmail, ReleaseYN) VALUES
-(1, 'Senior Software Engineer', 'B1', '123 Main St', 'Develop and maintain software applications', 'Health insurance, Stock options', 1, 120000, 80000, 'Full-time', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1),
-(2, 'Renewable Energy Consultant', 'B2', '456 Elm St', 'Consult on renewable energy projects', 'Stock options, Flexible hours', 1, 90000, 60000, 'Full-time', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1),
-(3, 'Graphic Designer', 'J1', '789 Oak St', 'Create visual content for marketing campaigns', 'Paid leave, Health insurance', 1, 70000, 50000, 'Full-time', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1),
-(4, 'Healthcare Administrator', 'A2', '321 Pine St', 'Manage healthcare operations and staff', 'Health insurance, Dental plan', 1, 95000, 70000, 'Full-time', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1),
-(5, 'Financial Analyst', 'H1', '654 Maple St', 'Analyze financial data and provide insights', '401k, Paid holidays', 1, 85000, 60000, 'Full-time', 'Evan Green', '555-6543', 'evan@financeworld.com', 1),
-(6, 'Junior IT Support Specialist', 'G1', '987 Cedar St', 'Provide IT support and troubleshooting', 'Gym membership, Health insurance', 1, 55000, 40000, 'Full-time', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1),
-(7, 'Paralegal', 'I1', '147 Birch St', 'Assist lawyers in legal research and case preparation', 'Health insurance, Stock options', 1, 60000, 45000, 'Full-time', 'George Fox', '555-8523', 'george@legaleagle.com', 1),
-(8, 'Sales Executive', 'IA', '258 Spruce St', 'Drive sales and build client relationships', 'Commission, Health insurance', 1, 80000, 50000, 'Full-time', 'Helen King', '555-9630', 'helen@salesempire.com', 1),
-(9, 'Digital Marketing Specialist', 'D1', '369 Fir St', 'Manage digital marketing campaigns', 'Flexible hours, Stock options', 1, 75000, 50000, 'Full-time', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1),
-(10, 'Customer Support Agent', 'F1', '852 Ash St', 'Provide customer service and support', 'Paid leave, Health insurance', 1, 50000, 35000, 'Full-time', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1);
+INSERT INTO TitleCategories (TitleCategoryName) VALUES
+(N'其他'),
+(N'民意代表、主管及經理人員'),
+(N'專業人員'),
+(N'技術員及助理專業人員'),
+(N'事務支援人員'),
+(N'服務及銷售工作人員'),
+(N'農、林、漁、牧業生產人員'),
+(N'技藝有關工作人員'),
+(N'機械設備操作及組裝人員'),
+(N'基層技術工及勞力工'),
+(N'軍人');
 GO
-INSERT INTO Candidates (NationalID, Email, [Password], [Name], Sex, Birthday, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
+INSERT INTO TitleClasses (TitleCategoryId,TitleClassName) VALUES
+(1,N'民意代表、高階主管及總執行長'),
+(1,N'行政及商業經理人員'),
+(1,N'生產及專業服務經理人員'),
+(1,N'餐旅、零售及其他場所服務經理人員'),
+(2,N'科學及工程專業人員'),
+(2,N'醫療保健專業人員'),
+(2,N'教學專業人員'),
+(2,N'商業及行政專業人員'),
+(2,N'資訊及通訊專業人員'),
+(2,N'法律、社會及文化專業人員'),
+(3,N'科學及工程助理專業人員'),
+(3,N'醫療保健助理專業人員'),
+(3,N'商業及行政助理專業人員'),
+(3,N'法律、社會、文化及有關助理專業人員'),
+(3,N'資訊及通訊傳播技術員');
+GO
+INSERT INTO Openings (CompanyId, Title, [Address], [Description], Benefits, InterviewYN, SalaryMax, SalaryMin, [Time], ContactName, ContactPhone, ContactEmail, ReleaseYN) VALUES
+(1, 'Senior Software Engineer', '123 Main St', 'Develop and maintain software applications', 'Health insurance, Stock options', 1, 120000, 80000, 'Full-time', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1),
+(2, 'Renewable Energy Consultant', '456 Elm St', 'Consult on renewable energy projects', 'Stock options, Flexible hours', 1, 90000, 60000, 'Full-time', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1),
+(3, 'Graphic Designer', '789 Oak St', 'Create visual content for marketing campaigns', 'Paid leave, Health insurance', 1, 70000, 50000, 'Full-time', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1),
+(4, 'Healthcare Administrator', '321 Pine St', 'Manage healthcare operations and staff', 'Health insurance, Dental plan', 1, 95000, 70000, 'Full-time', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1),
+(5, 'Financial Analyst', '654 Maple St', 'Analyze financial data and provide insights', '401k, Paid holidays', 1, 85000, 60000, 'Full-time', 'Evan Green', '555-6543', 'evan@financeworld.com', 1),
+(6, 'Junior IT Support Specialist', '987 Cedar St', 'Provide IT support and troubleshooting', 'Gym membership, Health insurance', 1, 55000, 40000, 'Full-time', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1),
+(7, 'Paralegal',  '147 Birch St', 'Assist lawyers in legal research and case preparation', 'Health insurance, Stock options', 1, 60000, 45000, 'Full-time', 'George Fox', '555-8523', 'george@legaleagle.com', 1),
+(8, 'Sales Executive', '258 Spruce St', 'Drive sales and build client relationships', 'Commission, Health insurance', 1, 80000, 50000, 'Full-time', 'Helen King', '555-9630', 'helen@salesempire.com', 1),
+(9, 'Digital Marketing Specialist', '369 Fir St', 'Manage digital marketing campaigns', 'Flexible hours, Stock options', 1, 75000, 50000, 'Full-time', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1),
+(10, 'Customer Support Agent', '852 Ash St', 'Provide customer service and support', 'Paid leave, Health insurance', 1, 50000, 35000, 'Full-time', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1);
+GO
+INSERT INTO OpeningTitleClasses (OpeningId,TitleClassId) VALUES
+(1,1),
+(1,2),
+(1,3),
+(2,4),
+(2,5),
+(3,6),
+(4,6),
+(5,7),
+(6,2),
+(8,9);
+GO
+INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
 ('A123456789', 'alice@example.com', 'pass123', 'Alice Chen', 0, '1990-01-01', '555-1111', '101 Rose Ave', 'Bachelor', 'Employed', 'Completed'),
 ('B987654321', 'bob@example.com', 'pass456', 'Bob Lin', 1, '1985-02-02', '555-2222', '202 Tulip Ave', 'Master', 'Unemployed', 'Completed'),
 ('C567890123', 'charlie@example.com', 'pass789', 'Charlie Wong', 1, '1992-03-03', '555-3333', '303 Orchid Ave', 'Bachelor', 'Employed', 'Exempt'),
@@ -129,19 +171,31 @@ INSERT INTO Candidates (NationalID, Email, [Password], [Name], Sex, Birthday, Ph
 ('I789012345', 'ivy@example.com', 'pass606', 'Ivy Liu', 0, '1994-09-09', '555-9999', '909 Marigold Ave', 'Bachelor', 'Unemployed', 'Completed'),
 ('J890123456', 'jack@example.com', 'pass707', 'Jack Cheng', 1, '1989-10-10', '555-1010', '1010 Carnation Ave', 'Bachelor', 'Employed', 'Completed');
 GO
-INSERT INTO Resumes (CandidateID, Title, TitleClassID, Intro, Autobiography, WorkExperience, [Time], [Address], ReleaseYN) VALUES
-(1, 'Senior Software Engineer Resume', 'B1', 'Experienced software engineer specializing in backend development', 'Alice has over 8 years of experience...', 'Tech Solutions, Backend Developer...', 'Full-time', '123 Main St', 1),
-(2, 'Renewable Energy Consultant Resume', 'B2', 'Expert in renewable energy project consulting', 'Bob has been involved in multiple renewable energy projects...', 'Green Energy, Project Consultant...', 'Full-time', '456 Elm St', 1),
-(3, 'Graphic Designer Resume', 'J1', 'Creative graphic designer with a strong portfolio', 'Charlie is skilled in Adobe Creative Suite...', 'Creative Designs, Graphic Designer...', 'Full-time', '789 Oak St', 1),
-(4, 'Healthcare Administrator Resume', 'A2', 'Experienced in managing healthcare operations', 'Dana has led teams in hospital administration...', 'Healthcare Plus, Admin Manager...', 'Full-time', '321 Pine St', 1),
-(5, 'Financial Analyst Resume', 'H1', 'Analytical financial analyst with a knack for data interpretation', 'Evan has experience in financial modeling...', 'Finance World, Financial Analyst...', 'Full-time', '654 Maple St', 1),
-(6, 'Junior IT Support Specialist Resume', 'G1', 'Passionate about IT and helping people solve technical problems', 'Fiona has worked in various IT support roles...', 'Tech Innovators, IT Support...', 'Full-time', '987 Cedar St', 1),
-(7, 'Paralegal Resume', 'I1', 'Detail-oriented paralegal with experience in legal research', 'George has assisted in multiple high-profile cases...', 'Legal Eagle, Paralegal...', 'Full-time', '147 Birch St', 1),
-(8, 'Sales Executive Resume', 'IA', 'Results-driven sales executive with a proven track record', 'Helen has exceeded sales targets consistently...', 'Sales Empire, Sales Executive...', 'Full-time', '258 Spruce St', 1),
-(9, 'Digital Marketing Specialist Resume', 'D1', 'Creative digital marketer with experience in SEO and SEM', 'Ivy has managed several successful digital campaigns...', 'Marketing Magic, Marketing Specialist...', 'Full-time', '369 Fir St', 1),
-(10, 'Customer Support Agent Resume', 'F1', 'Friendly and efficient customer support agent', 'Jack has provided excellent customer service...', 'Customer First, Support Agent...', 'Full-time', '852 Ash St', 1);
+INSERT INTO Resumes (CandidateId, Title,Intro, Autobiography, WorkExperience, [Time], [Address], ReleaseYN) VALUES
+(1, 'Senior Software Engineer Resume','Experienced software engineer specializing in backend development', 'Alice has over 8 years of experience...', 'Tech Solutions, Backend Developer...', 'Full-time', '123 Main St', 1),
+(2, 'Renewable Energy Consultant Resume','Expert in renewable energy project consulting', 'Bob has been involved in multiple renewable energy projects...', 'Green Energy, Project Consultant...', 'Full-time', '456 Elm St', 1),
+(3, 'Graphic Designer Resume','Creative graphic designer with a strong portfolio', 'Charlie is skilled in Adobe Creative Suite...', 'Creative Designs, Graphic Designer...', 'Full-time', '789 Oak St', 1),
+(4, 'Healthcare Administrator Resume','Experienced in managing healthcare operations', 'Dana has led teams in hospital administration...', 'Healthcare Plus, Admin Manager...', 'Full-time', '321 Pine St', 1),
+(5, 'Financial Analyst Resume', 'Analytical financial analyst with a knack for data interpretation', 'Evan has experience in financial modeling...', 'Finance World, Financial Analyst...', 'Full-time', '654 Maple St', 1),
+(6, 'Junior IT Support Specialist Resume','Passionate about IT and helping people solve technical problems', 'Fiona has worked in various IT support roles...', 'Tech Innovators, IT Support...', 'Full-time', '987 Cedar St', 1),
+(7, 'Paralegal Resume', 'Detail-oriented paralegal with experience in legal research', 'George has assisted in multiple high-profile cases...', 'Legal Eagle, Paralegal...', 'Full-time', '147 Birch St', 1),
+(8, 'Sales Executive Resume', 'Results-driven sales executive with a proven track record', 'Helen has exceeded sales targets consistently...', 'Sales Empire, Sales Executive...', 'Full-time', '258 Spruce St', 1),
+(9, 'Digital Marketing Specialist Resume', 'Creative digital marketer with experience in SEO and SEM', 'Ivy has managed several successful digital campaigns...', 'Marketing Magic, Marketing Specialist...', 'Full-time', '369 Fir St', 1),
+(10, 'Customer Support Agent Resume', 'Friendly and efficient customer support agent', 'Jack has provided excellent customer service...', 'Customer First, Support Agent...', 'Full-time', '852 Ash St', 1);
 GO
-INSERT INTO ResumeOpeningRecords (ResumeID, OpeningID, CompanyID, CompanyName, OpeningTitle, ApplyDate, LikeYN, InterviewYN, HireYN) VALUES
+INSERT INTO ResumeTitleClasses (ResumeId,TitleClassId) VALUES
+(1,2),
+(1,7),
+(2,3),
+(2,4),
+(2,7),
+(3,6),
+(4,12),
+(5,7),
+(6,10),
+(8,9);
+GO
+INSERT INTO ResumeOpeningRecords (ResumeId, OpeningId, CompanyId, CompanyName, OpeningTitle, ApplyDate, LikeYN, InterviewYN, HireYN) VALUES
 (1, 1, 1, 'Tech Solutions', 'Senior Software Engineer', '2024-08-01', 1, 1, 0),
 (2, 2, 2, 'Green Energy', 'Renewable Energy Consultant', '2024-08-02', 1, 0, 0),
 (3, 3, 3, 'Creative Designs', 'Graphic Designer', '2024-08-03', 1, 1, 0),
@@ -153,7 +207,7 @@ INSERT INTO ResumeOpeningRecords (ResumeID, OpeningID, CompanyID, CompanyName, O
 (9, 9, 9, 'Marketing Magic', 'Digital Marketing Specialist', '2024-08-09', 1, 1, 0),
 (10, 10, 10, 'Customer First', 'Customer Support Agent', '2024-08-10', 1, 0, 0);
 GO
-INSERT INTO CompanyResumeRecords (CompanyID, ResumeID, LikeYN, InterviewYN, HireYN) VALUES
+INSERT INTO CompanyResumeRecords (CompanyId, ResumeId, LikeYN, InterviewYN, HireYN) VALUES
 (1, 1, 1, 1, 0),
 (2, 2, 1, 0, 0),
 (3, 3, 1, 1, 0),
@@ -178,7 +232,7 @@ INSERT INTO TagClasses (TagClassName) VALUES
 ('Legal'),
 ('Human Resources');
 GO
-INSERT INTO Tags (TagClassID, TagName) VALUES
+INSERT INTO Tags (TagClassId, TagName) VALUES
 (1, 'Java'),
 (1, 'C++'),
 (2, 'Adobe Photoshop'),
@@ -192,7 +246,7 @@ INSERT INTO Tags (TagClassID, TagName) VALUES
 (10, 'Strategic Planning'),
 (0, N'TIM102全端班');
 GO
-INSERT INTO OpeningTags (OpeningID, TagID) VALUES
+INSERT INTO OpeningTags (OpeningId, TagId) VALUES
 (1, 1),
 (1, 2),
 (2, 7),
@@ -207,7 +261,7 @@ INSERT INTO OpeningTags (OpeningID, TagID) VALUES
 (9, 4),
 (10, 6);
 GO
-INSERT INTO ResumeTags (ResumeID, TagID) VALUES
+INSERT INTO ResumeTags (ResumeId, TagId) VALUES
 (1, 1),
 (1, 2),
 (2, 7),
@@ -230,7 +284,7 @@ INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
 (N'180天方案', N'180天方案', 180, 15750, 1.00),
 (N'365天方案', N'365天方案', 365, 31500, 1.00);
 GO
-INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
+INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
 (1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),
 (2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 1),
 (3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 1),
@@ -242,7 +296,7 @@ INSERT INTO CompanyOrders (CompanyID, PlanID, CompanyName, GUINumber, Title, Pri
 (9, 4, 'Marketing Magic', 10000009, N'90天方案', 8400, GETDATE(), 1),
 (10, 6, 'Customer First', 10000010, N'365天方案', 31500, GETDATE(), 1);
 GO
-INSERT INTO Notifications (CompanyID, CandidateID, ResumeID, OpeningID, [Status], SubjectLine, Content, SendDate, AppointmentTime) VALUES
+INSERT INTO Notifications (CompanyId, CandidateId, ResumeId, OpeningId, [Status], SubjectLine, Content, SendDate, AppointmentTime) VALUES
 (1, 1, 1, 1, 'Sent', 'Interview Invitation', 'We would like to invite you for an interview...', '2024-08-01', '2024-08-03 10:00:00'),
 (2, 2, 2, 2, 'Sent', 'Job Offer', 'We are pleased to offer you the position...', '2024-08-02', '2024-08-05 09:00:00'),
 (3, 3, 3, 3, 'Sent', 'Thank You for Your Application', 'Thank you for applying to Creative Designs...', '2024-08-03', NULL),
@@ -266,7 +320,7 @@ INSERT INTO Admins (PersonnelCode, Email, [Password], [Name], Authority) VALUES
 (1009, 'admin9@jobsite.com', 'adminpass9', 'Admin Nine', 3),
 (1010, 'admin10@jobsite.com', 'adminpass10', 'Admin Ten', 1);
 GO
-INSERT INTO OpinionLetters (CompanyID, CandidateID, AdminID, Class, SubjectLine, Content, Attachment, [Status]) VALUES
+INSERT INTO OpinionLetters (CompanyId, CandidateId, AdminId, Class, SubjectLine, Content, Attachment, [Status]) VALUES
 (1, 1, 1, 'Complaint', 'Issue with Job Posting', 'I have an issue with the job posting...', NULL, 0),
 (2, 2, 2, 'Feedback', 'Great Service', 'I am happy with the services provided...', NULL, 1),
 (3, 3, 3, 'Suggestion', 'Improve Search Feature', 'Can you improve the search feature...', NULL, 0),

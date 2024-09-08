@@ -25,7 +25,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var companyList = _context.Companies.Select(p => new
             {
-                CompanyID = p.CompanyID,
+                CompanyID = p.CompanyId,
                 CompanyName = p.CompanyName,
                 GUINumber = p.GUINumber,
                 ContactName = p.ContactName,
@@ -44,7 +44,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return _context.Companies
             .Where(clfilter =>
-                clfilter.CompanyID == clvm.CompanyID ||
+                clfilter.CompanyId == clvm.CompanyId ||
                 clfilter.CompanyName.Contains(clvm.CompanyName) ||
                 clfilter.GUINumber.Contains(clvm.GUINumber) ||
                 clfilter.ContactName.Contains(clvm.ContactName) ||
@@ -52,7 +52,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 clfilter.ContactEmail.Contains(clvm.ContactEmail))
             .Select(p => new CompanyListViewModel
             {
-                CompanyID = p.CompanyID,
+                CompanyId = p.CompanyId,
                 CompanyName = p.CompanyName,
                 GUINumber = p.GUINumber,
                 ContactName = p.ContactName,
