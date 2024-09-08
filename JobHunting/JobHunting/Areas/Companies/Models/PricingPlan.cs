@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class PricingPlan
 {
-    public int PlanID { get; set; }
+    public int PlanId { get; set; }
 
     public string Title { get; set; }
 

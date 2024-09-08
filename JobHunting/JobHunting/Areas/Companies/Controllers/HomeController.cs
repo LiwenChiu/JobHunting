@@ -36,9 +36,9 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         public JsonResult OpeningJson()
         {
-            return Json(_context.Openings.Include(c=>_context.TitleClasses).Select(o => new
+            return Json(_context.Openings.Select(o => new
             {
-                JobId=o.OpeningID,
+                JobId=o.OpeningId,
                 JobName=o.Title,
                 CompanyName=o.Company.CompanyName,
                 OpAddress=o.Address,
@@ -48,8 +48,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 SalaryMin=o.SalaryMin,
                 WorkingTime=o.Time,
                 JobDescription=o.Description,
-                TitleClassName=o.TitleClass.TitleClassName
-
+                TitleClassName=o.TitleClasses.Select(tc=>tc.TitleClassName),
+                OpBenefits=o.Address
             }));
         }
         public IActionResult Resume()
@@ -93,7 +93,7 @@ namespace JobHunting.Areas.Companies.Controllers
             var Order = _context.CompanyOrders
                 .Select(p => new
                 {
-                    OrderID = p.OrderID,
+                    OrderID = p.OrderId,
                     CompanyName = p.CompanyName,
                     GUINumber = p.GUINumber,
                     Title = p.Title,
