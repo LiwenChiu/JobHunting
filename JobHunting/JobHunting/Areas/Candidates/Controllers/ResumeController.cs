@@ -98,12 +98,16 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //Post: /Candidates/Resume/EditResume
         [HttpPost]
-        public async Task<string> EditResume([FromBody] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
         {
 
 
             var r = await _context.Resumes.FindAsync(rm.ResumeId);
-            
+
+            if (r == null)
+            {
+                return NotFound(new { Message = "Resume not found" });
+            }
 
             //c.Name = rm.Name;
             //c.Sex = rm.Sex;
@@ -122,17 +126,33 @@ namespace JobHunting.Areas.Candidates.Controllers
             //_context.Entry(r).State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
-                  return "修改成功";
+
+                return Json ( new { message = "修改成功"});
             
         }
 
 
-
-
-
-
-
-
+        [HttpPost]
+        public async Task<IActionResult> DelResume([FromBody] ResumeInputModel rm)
+        {
+            var resume = await _context.Resumes.FindAsync(rm.ResumeId);
+            if (resume != null)
+            {
+                _context.Resumes.Remove(resume);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) 
+            {
+                return Json(new { message = "刪除履歷失敗" });
+            }
+            return Json(new { message = "刪除履歷成功" });
+        }
 
     }
+
+
+    
 }
