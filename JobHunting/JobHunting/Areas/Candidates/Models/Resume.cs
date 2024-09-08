@@ -7,15 +7,15 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class Resume
 {
-    public int ResumeID { get; set; }
+    public int ResumeId { get; set; }
 
-    public int CandidateID { get; set; }
+    public int CandidateId { get; set; }
 
     public string Title { get; set; }
 
-    public string TitleClassID { get; set; }
-
     public string Intro { get; set; }
+
+    public byte[] Headshot { get; set; }
 
     public string Autobiography { get; set; }
 
@@ -35,7 +35,7 @@ public partial class Resume
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
 
-    public virtual TitleClass TitleClass { get; set; }
-
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+    public virtual ICollection<TitleClass> TitleClasses { get; set; } = new List<TitleClass>();
 }

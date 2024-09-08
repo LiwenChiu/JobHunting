@@ -36,50 +36,60 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Json(_context.Resumes.Include(r => r.Candidate).Select(a => new
             {
                 name = a.Candidate.Name,
-                CandidateAddress = a.Candidate.Address,
-                Sex = a.Candidate.Sex,
+                address = a.Address,
+                sex = a.Candidate.Sex,
                 birthday = a.Candidate.Birthday,
                 phone = a.Candidate.Phone,
-                Degree = a.Candidate.Degree,
-                Email = a.Candidate.Email,
-                EmploymentStatus = a.Candidate.EmploymentStatus,
-                HopeTime = a.Time,
-                ResumeTitle = a.Title,
-                TitleClassID = a.TitleClassID,
-                Certification = a.Certification,
-                WorkExperience = a.WorkExperience,
-                Autobiography = a.Autobiography,
-                candidateid = a.CandidateID
+                degree = a.Candidate.Degree,
+                email = a.Candidate.Email,
+                employmentStatus = a.Candidate.EmploymentStatus,
+                time = a.Time,
+                title = a.Title,
+                certification = a.Certification,
+                workExperience = a.WorkExperience,
+                autobiography = a.Autobiography,
+                candidateid = a.CandidateId
             }));
         }
 
-        [HttpPost]
-
+        [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
         {
             if (ModelState.IsValid)
             {
+                var candidate = await _context.Candidates.FindAsync(Creatr.CandidateId);
 
-                addResumeInputModel insert = new addResumeInputModel()
+                if (candidate == null)
                 {
-                    Name = Creatr.Name,
+                    return NotFound();
+                }
+
+                Resume insert = new Resume()
+                {
                     Address = Creatr.Address,
-                    Sex = Creatr.Sex,
-                    Birthday = Creatr.Birthday,
-                    Phone = Creatr.Phone,
-                    Degree = Creatr.Degree,
-                    Email = Creatr.Email,
-                    EmploymentStatus = Creatr.EmploymentStatus,
                     Time = Creatr.Time,
                     Title = Creatr.Title,
-                    TitleClassID = Creatr.TitleClassID,
                     Certification = Creatr.Certification,
                     WorkExperience = Creatr.WorkExperience,
                     Autobiography = Creatr.Autobiography,
-                    CandidateID = Creatr.CandidateID
+                    ReleaseYN = Creatr.ReleaseYN,
+                    CandidateId = Creatr.CandidateId,
+                    ResumeId = Creatr.ResumeId,
                 };
 
-                _context.Add(insert);
+                //candidate.Name = Creatr.Name;
+                //candidate.Sex = Creatr.Sex;
+                //candidate.Birthday = Creatr.Birthday;
+                //candidate.Phone = Creatr.Phone;
+                //candidate.Degree = Creatr.Degree;
+                //candidate.Email = Creatr.Email;
+                //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+
+
+
+
+                _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(ResumeManage));
             }

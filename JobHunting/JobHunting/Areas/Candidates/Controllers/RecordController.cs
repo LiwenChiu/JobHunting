@@ -36,7 +36,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Json(_context.ResumeOpeningRecords
                  .Include(c => c.Resume).Include(a => a.Opening).Select(p => new
                  {
-                     ResumeOpeningRecordID = p.ResumeOpeningRecordID,
+                     ResumeOpeningRecordID = p.ResumeOpeningRecordId,
                      ApplyDate = p.ApplyDate,
                      CompanyName = p.CompanyName,
                      OpeningTitle = p.OpeningTitle,
@@ -54,14 +54,14 @@ namespace JobHunting.Areas.Candidates.Controllers
 
            return  _context.ResumeOpeningRecords
                  .Include(c => c.Resume).Include(a => a.Opening).ToList()
-                 .Where(rvfilter => rvfilter.ResumeOpeningRecordID == rv.ResumeOpeningRecordID ||
+                 .Where(rvfilter => rvfilter.ResumeOpeningRecordId == rv.ResumeOpeningRecordID ||
                            rvfilter.CompanyName.Contains(rv.CompanyName) ||
                            rvfilter.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                            rvfilter.OpeningTitle.Contains(rv.OpeningTitle) ||
                            rvfilter.Resume.Title.Contains(rv.Title))
                  .Select(p => new RecordOutputmodel
                  {
-                     ResumeOpeningRecordID = p.ResumeOpeningRecordID,
+                     ResumeOpeningRecordID = p.ResumeOpeningRecordId,
                      ApplyDate = p.ApplyDate,
                      CompanyName = p.CompanyName,
                      OpeningTitle = p.OpeningTitle,
