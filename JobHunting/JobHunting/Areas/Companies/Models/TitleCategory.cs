@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class TitleCategory
 {
-    public string TitleCategoryID { get; set; }
+    public int TitleCategoryId { get; set; }
 
     public string TitleCategoryName { get; set; }
 

@@ -30,11 +30,11 @@ namespace JobHunting.Areas.Companies.Controllers
             var Candidate = _context.Candidates;
             return Json(_context.Resumes.Select(p => new
             {
-                jobTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeID == p.ResumeID).Select(ror => ror.OpeningTitle).Single(),
-                candidateName = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Name).Single(),
-                candidateSex = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Sex).Single(),
-                candidateDegree = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.Degree).Single(),
-                candidateEmpStatus = Candidate.Where(c => c.CandidateID == p.CandidateID).Select(c => c.EmploymentStatus).Single(),
+                jobTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == p.ResumeId).Select(ror => ror.OpeningTitle).Single(),
+                candidateName = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Name).Single(),
+                candidateSex = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Sex).Single(),
+                candidateDegree = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Degree).Single(),
+                candidateEmpStatus = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.EmploymentStatus).Single(),
 
             }));
         }
@@ -49,16 +49,14 @@ namespace JobHunting.Areas.Companies.Controllers
         public JsonResult ReceiveResumeJson()
         {
             var Openings = _context.Openings;
-            var TitleClasses = _context.TitleClasses;
             var ResumeOpeningRecords = _context.ResumeOpeningRecords;
-            ViewBag.TitleClass = new SelectList(TitleClasses, "TitleClassID", "TitleClassName");
             return Json(Openings.Select(p => new
             {
                 Title = p.Title,
-                TitleId=p.OpeningID,
-                TitleClassName = TitleClasses.Where(s => s.TitleClassID == p.TitleClassID).Select(s => s.TitleClassName).Single(),
-                TitleClassId = TitleClasses.Where(s => s.TitleClassID == p.TitleClassID).Select(s => s.TitleClassID).Single(),
-                ApplyDate = ResumeOpeningRecords.Where(a => a.OpeningID == p.OpeningID).Select(a => a.ApplyDate).Single(),
+                TitleId=p.OpeningId,
+                TitleClassName = p.TitleClasses.Select(tc=>tc.TitleClassName).FirstOrDefault(),
+                TitleClassId = p.TitleClasses.Select(tc=>tc.TitleClassId).FirstOrDefault(),
+                ApplyDate = p.ResumeOpeningRecords.Select(ror=>ror.ApplyDate).FirstOrDefault(),
             }));
         }
     }

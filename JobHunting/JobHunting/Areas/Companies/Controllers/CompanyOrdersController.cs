@@ -23,7 +23,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             ViewBag.CompanyOrders = new SelectList(
                     _context.CompanyOrders.Select(c => new {
-                        CompanyID= c.CompanyID,
+                        CompanyID= c.CompanyId,
                         CompanyName= c.CompanyName,
                     }),"CompanyID","CompanyName"
                 );
@@ -55,7 +55,7 @@ namespace JobHunting.Areas.Companies.Controllers
             var companyOrder = await _context.CompanyOrders
                 .Include(c => c.Company)
                 .Include(c => c.Plan)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+                .FirstOrDefaultAsync(m => m.OrderId == id);
             if (companyOrder == null)
             {
                 return NotFound();
@@ -85,8 +85,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyID);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanID);
+            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
+            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
             return View(companyOrder);
         }
 
@@ -103,8 +103,8 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return NotFound();
             }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyID);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanID);
+            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
+            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
             return View(companyOrder);
         }
 
@@ -115,7 +115,7 @@ namespace JobHunting.Areas.Companies.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrderID,CompanyID,PlanID,CompanyName,GUINumber,PlanTitle,Price,OrderDate,Status")] CompanyOrder companyOrder)
         {
-            if (id != companyOrder.OrderID)
+            if (id != companyOrder.OrderId)
             {
                 return NotFound();
             }
@@ -129,7 +129,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanyOrderExists(companyOrder.OrderID))
+                    if (!CompanyOrderExists(companyOrder.OrderId))
                     {
                         return NotFound();
                     }
@@ -140,8 +140,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyID);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanID);
+            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
+            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
             return View(companyOrder);
         }
 
@@ -156,7 +156,7 @@ namespace JobHunting.Areas.Companies.Controllers
             var companyOrder = await _context.CompanyOrders
                 .Include(c => c.Company)
                 .Include(c => c.Plan)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+                .FirstOrDefaultAsync(m => m.OrderId == id);
             if (companyOrder == null)
             {
                 return NotFound();
@@ -182,7 +182,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
         private bool CompanyOrderExists(int id)
         {
-            return _context.CompanyOrders.Any(e => e.OrderID == id);
+            return _context.CompanyOrders.Any(e => e.OrderId == id);
         }
     }
 }

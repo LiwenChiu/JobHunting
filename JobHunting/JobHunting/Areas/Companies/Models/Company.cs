@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class Company
 {
-    public int CompanyID { get; set; }
+    public int CompanyId { get; set; }
 
     public string GUINumber { get; set; }
 
@@ -15,7 +15,7 @@ public partial class Company
 
     public string CompanyName { get; set; }
 
-    public string TitleClassID { get; set; }
+    public string CompanyClassId { get; set; }
 
     public string Address { get; set; }
 
@@ -35,6 +35,8 @@ public partial class Company
 
     public DateTime Date { get; set; }
 
+    public virtual CompanyClass CompanyClass { get; set; }
+
     public virtual ICollection<CompanyOrder> CompanyOrders { get; set; } = new List<CompanyOrder>();
 
     public virtual ICollection<CompanyResumeRecord> CompanyResumeRecords { get; set; } = new List<CompanyResumeRecord>();
@@ -44,6 +46,4 @@ public partial class Company
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
-
-    public virtual TitleClass TitleClass { get; set; }
 }
