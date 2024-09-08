@@ -1,8 +1,10 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using NuGet.Protocol.Plugins;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -21,14 +23,9 @@ namespace JobHunting.Areas.Candidates.Controllers
             return View();
         }
 
-        public IActionResult CreateReasume()
-        {
-            return View();
-        }
 
-
-        //POST: /Candidates/Resume/ResumeResult
-        [HttpPost]
+        //GET: /Candidates/Resume/ResumeResult
+        [HttpGet]
         public JsonResult ResumeResult()
         {
 
@@ -36,80 +33,126 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Json(_context.Resumes.Include(r => r.Candidate).Select(a => new
             {
                 name = a.Candidate.Name,
-                CandidateAddress = a.Candidate.Address,
-                Sex = a.Candidate.Sex,
+                address = a.Address,
+                sex = a.Candidate.Sex,
                 birthday = a.Candidate.Birthday,
                 phone = a.Candidate.Phone,
-                Degree = a.Candidate.Degree,
-                Email = a.Candidate.Email,
-                EmploymentStatus = a.Candidate.EmploymentStatus,
-                HopeTime = a.Time,
-                ResumeTitle = a.Title,
-                TitleClassID = a.TitleClassID,
-                Certification = a.Certification,
-                WorkExperience = a.WorkExperience,
-                Autobiography = a.Autobiography,
-                candidateid = a.CandidateID
+                degree = a.Candidate.Degree,
+                email = a.Candidate.Email,
+                employmentStatus = a.Candidate.EmploymentStatus,
+                time = a.Time,
+                title = a.Title,
+                certification = a.Certification,
+                workExperience = a.WorkExperience,
+                autobiography = a.Autobiography,
+                candidateid = a.CandidateId,
+                resumeid = a.ResumeId,
+                releaseYN = a.ReleaseYN,
+                edit = false,
             }));
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var candidate = await _context.Candidates.FindAsync(Creatr.CandidateId);
+
+        //        if (candidate == null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        Resume insert = new Resume()
+        //        {
+        //            Address = Creatr.Address,
+        //            Time = Creatr.Time,
+        //            Title = Creatr.Title,
+        //            Certification = Creatr.Certification,
+        //            WorkExperience = Creatr.WorkExperience,
+        //            Autobiography = Creatr.Autobiography,
+        //            ReleaseYN = Creatr.ReleaseYN,
+        //            CandidateId = Creatr.CandidateId,
+        //            ResumeId = Creatr.ResumeId,
+        //        };
+
+        //        //candidate.Name = Creatr.Name;
+        //        //candidate.Sex = Creatr.Sex;
+        //        //candidate.Birthday = Creatr.Birthday;
+        //        //candidate.Phone = Creatr.Phone;
+        //        //candidate.Degree = Creatr.Degree;
+        //        //candidate.Email = Creatr.Email;
+        //        //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+
+
+
+
+        //        _context.Resumes.Add(insert);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(ResumeManage));
+        //    }
+        //    return View(Creatr);
+        //}
+
+        //Post: /Candidates/Resume/EditResume
         [HttpPost]
-
-        public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
+        public async Task<IActionResult> EditResume([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
         {
-            if (ModelState.IsValid)
+
+
+            var r = await _context.Resumes.FindAsync(rm.ResumeId);
+
+            if (r == null)
             {
-
-                addResumeInputModel insert = new addResumeInputModel()
-                {
-                    Name = Creatr.Name,
-                    Address = Creatr.Address,
-                    Sex = Creatr.Sex,
-                    Birthday = Creatr.Birthday,
-                    Phone = Creatr.Phone,
-                    Degree = Creatr.Degree,
-                    Email = Creatr.Email,
-                    EmploymentStatus = Creatr.EmploymentStatus,
-                    Time = Creatr.Time,
-                    Title = Creatr.Title,
-                    TitleClassID = Creatr.TitleClassID,
-                    Certification = Creatr.Certification,
-                    WorkExperience = Creatr.WorkExperience,
-                    Autobiography = Creatr.Autobiography,
-                    CandidateID = Creatr.CandidateID
-                };
-
-                _context.Add(insert);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ResumeManage));
+                return NotFound(new { Message = "Resume not found" });
             }
-            return View(Creatr);
+
+            //c.Name = rm.Name;
+            //c.Sex = rm.Sex;
+            //c.Birthday = rm.Birthday;
+            //c.EmploymentStatus = rm.EmploymentStatus;
+            //c.Phone = rm.Phone;
+            //c.Degree = rm.Degree;
+            //c.Email = rm.Email;
+            r.Address = rm.Address;
+            r.Title = rm.Title;
+            r.Autobiography = rm.Autobiography;
+            r.WorkExperience = rm.WorkExperience;
+            r.Time = rm.Time;
+            r.ReleaseYN = rm.ReleaseYN;
+
+            //_context.Entry(r).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return Json ( new { message = "修改成功"});
+            
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> DelResume([FromBody] ResumeInputModel rm)
+        {
+            var resume = await _context.Resumes.FindAsync(rm.ResumeId);
+            if (resume != null)
+            {
+                _context.Resumes.Remove(resume);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) 
+            {
+                return Json(new { message = "刪除履歷失敗" });
+            }
+            return Json(new { message = "刪除履歷成功" });
+        }
 
-
-
-
-
-
-
-
-        //[HttpPost]
-
-        //public async Task<IActionResult> CandidatesResumeDetail(int backid)
-        //{
-        //   var member = await _context.Candidates.Where(c => c.CandidateID == backid).FirstOrDefaultAsync();
-
-
-        //    if(member == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(member);
-
-
-        //}
     }
+
+
+    
 }

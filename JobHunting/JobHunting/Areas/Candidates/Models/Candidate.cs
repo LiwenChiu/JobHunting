@@ -7,9 +7,9 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class Candidate
 {
-    public int CandidateID { get; set; }
+    public int CandidateId { get; set; }
 
-    public string NationalID { get; set; }
+    public string NationalId { get; set; }
 
     public string Email { get; set; }
 
@@ -21,6 +21,8 @@ public partial class Candidate
 
     public DateOnly? Birthday { get; set; }
 
+    public byte[] Headshot { get; set; }
+
     public string Phone { get; set; }
 
     public string Address { get; set; }
@@ -30,8 +32,6 @@ public partial class Candidate
     public string EmploymentStatus { get; set; }
 
     public string MilitaryService { get; set; }
-
-    public byte[] Headshot { get; set; }
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 

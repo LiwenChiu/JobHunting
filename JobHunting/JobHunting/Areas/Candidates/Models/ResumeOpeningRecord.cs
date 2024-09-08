@@ -7,13 +7,13 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class ResumeOpeningRecord
 {
-    public int ResumeOpeningRecordID { get; set; }
+    public int ResumeOpeningRecordId { get; set; }
 
-    public int? ResumeID { get; set; }
+    public int? ResumeId { get; set; }
 
-    public int? OpeningID { get; set; }
+    public int? OpeningId { get; set; }
 
-    public int CompanyID { get; set; }
+    public int CompanyId { get; set; }
 
     public string CompanyName { get; set; }
 

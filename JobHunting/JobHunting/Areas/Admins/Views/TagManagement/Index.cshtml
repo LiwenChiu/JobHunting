@@ -315,7 +315,7 @@
                         err => { alert(err) });
                 },
                 ReturnNameId: function (item) {
-                    let NameId = `${item.tagName}${item.tagId}`;
+                    let NameId = `NameId${item.tagName}${item.tagId}`;
                     return NameId.replace(" ", "");
                 },
                 filterTagClass: function (ClassId) {
@@ -335,7 +335,7 @@
                     return counter;
                 },
                 ReturnClassNameId: function (item) {
-                    let ClassNameId = `${item.tagClassName}${item.tagClassId}`;
+                    let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
                     return ClassNameId.replace(" ", "");
                 },
                 Returnhashtag: function (item) {

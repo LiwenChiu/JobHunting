@@ -7,17 +7,15 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class TitleClass
 {
-    public string TitleClassID { get; set; }
+    public int TitleClassId { get; set; }
 
-    public string TitleCategoryID { get; set; }
+    public int? TitleCategoryId { get; set; }
 
     public string TitleClassName { get; set; }
 
-    public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
+    public virtual TitleCategory TitleCategory { get; set; }
 
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
     public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
-
-    public virtual TitleCategory TitleCategory { get; set; }
 }
