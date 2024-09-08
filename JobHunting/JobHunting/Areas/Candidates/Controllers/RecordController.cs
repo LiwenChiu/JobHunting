@@ -16,10 +16,6 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public IActionResult RecordHistory()
         {

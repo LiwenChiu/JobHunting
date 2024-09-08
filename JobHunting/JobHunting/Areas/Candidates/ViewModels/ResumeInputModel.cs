@@ -2,7 +2,7 @@
 
 namespace JobHunting.Areas.Candidates.ViewModels
 {
-    public class addResumeInputModel
+    public class ResumeInputModel
     {
         public string Name { get; set; }
         public string Address { get; set; }
