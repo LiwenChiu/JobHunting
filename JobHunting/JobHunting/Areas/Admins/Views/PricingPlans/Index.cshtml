@@ -40,47 +40,31 @@
                 </div>
             </div>
             <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
-                <div class="col-11 pt-sm-1" role="button" v-on:click="clickedId = plan.planId">
+                <div class="col-11 pt-sm-1">
                     <div class="card overcard">
-                        <div class="card-body">
+                        <div v-bind:id="planIdTitle(plan)" class="card-body">
                             <div class="row row-cols-2 align-items-center">
-                                <template v-if="plan.status == true">
-                                    <template v-if="plan.edit == false">
-                                        <p class="col-sm-2">方案: {{plan.title}}</p>
-                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
-                                        <p class="col-sm-2">天數: {{plan.duration}}</p>
-                                        <p class="col-sm-2">售價: ${{plan.price}}</p>
-                                        <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                    </template>
-                                    <template v-else>
-                                        <label class="col-sm-2">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
-                                        <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
-                                        <label class="col-sm-2">天數:<input type="text" name="duration" v-model.trim="plan.duration" /></label>
-                                        <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim="plan.price" /></label>
-                                        <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim="plan.discount" /></label>
-                                    </template>
-                                    <template v-if="plan.edit == false">
-                                        <button type="button" class="col-sm-2 btn btn-warning" v-on:click="plan.edit = true;">編輯</button>
-                                    </template>
-                                    <template v-else>
-                                        <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
-                                    </template>
-                                </template>
-                                <template v-else>
+                                <template v-if="plan.edit == false">
                                     <p class="col-sm-2">方案: {{plan.title}}</p>
+                                    <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                     <p class="col-sm-2">天數: {{plan.duration}}</p>
                                     <p class="col-sm-2">售價: ${{plan.price}}</p>
                                     <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                </template>
-                                <template v-if="plan.edit == false">
+                                    <button type="button" class="col-sm-2 btn btn-warning" v-on:click="plan.edit = true;">編輯</button>
                                     <template v-if="plan.status == true">
                                         <button type="button" class="col-sm-1 btn btn-danger" v-on:click="planStatusFalse(plan);">停用</button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" class="col-sm-3 btn btn-primary" v-on:click="planStatusTrue(plan);">啟用</button>
+                                        <button type="button" class="col-sm-1 btn btn-primary" v-on:click="planStatusTrue(plan);">啟用</button>
                                     </template>
                                 </template>
                                 <template v-else>
+                                    <label class="col-sm-2">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
+                                    <button type="button" class="col-sm-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
+                                    <label class="col-sm-2">天數:<input type="text" name="duration" v-model.trim="plan.duration" /></label>
+                                    <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim="plan.price" /></label>
+                                    <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim="plan.discount" /></label>
+                                    <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
                                     <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;">取消</button>
                                 </template>
                             </div>
@@ -191,10 +175,10 @@
                         err => { alert(err) });
                 },
                 planIdTitle:function(plan){
-                    return `${plan.planId}${plan.Title}`;
+                    return `IdTitle${plan.planId}${plan.Title}`;
                 },
                 planIdToId:function(planId){
-                    return `${planId}EditIntro`;
+                    return `EditIntro${planId}`;
                 },
                 editPricingPlans: function (plan) {
                     let str = "";
@@ -286,8 +270,8 @@
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
                         this.bootPage();
-                        $(`#${this.planIdTitle(plan)}Id`).removeAttr("style");
-                        $(`#${this.planIdTitle(plan)}Id`).attr("style", "background-color: #e6e6e6");
+                        $(`#${this.planIdTitle(plan)}`).removeAttr("style");
+                        $(`#${this.planIdTitle(plan)}`).attr("style", "background-color: #e6e6e6");
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },
@@ -300,8 +284,8 @@
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
                         this.bootPage();
-                        $(`#${this.planIdTitle(plan)}Id`).removeAttr("style");
-                        $(`#${this.planIdTitle(plan)}Id`).attr("style", "background-color: white");
+                        $(`#${this.planIdTitle(plan)}`).removeAttr("style");
+                        $(`#${this.planIdTitle(plan)}`).attr("style", "background-color: white");
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },
