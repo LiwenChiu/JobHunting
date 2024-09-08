@@ -8,6 +8,10 @@
         }
     </style>
 }
+<div class="row mt-2" style="width:40%;margin-right:auto; ">
+    <label class="col-md-4 form-lable">篩選關鍵字:</label>
+    <input class="col-md-8" v-model.lazy="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings" />
+</div>
 <div id="createOpening">
     <div class="container-fluid py-1 mt-5">
         <div class="letters row">
@@ -19,29 +23,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-4" v-for="item in openings">
+            <div class="col-md-3 mb-4" v-for="item in openings.slice(pageStart,pageEnd)">
                 <div class="card" style="width: 16rem; height: 16rem;">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-10">
-                                <span class="card-title mb-3">{{item.jobName}}</span>
+                                <span class="card-title mb-3">{{item.title}}</span>
                             </div>
                             <div class="col-2">
                                 <button type="button" class="btn-close" disabled aria-label="Close"></button>
                             </div>
                         </div>
-                        <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.opAddress}}</p>
-                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.workingTime}}</p>
+                        <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
                         <div class="text-center">
                             <div class="mb-3">
                                 <button type="button"
-                                        @@click="showModal(item.jobName)"
+                                        @@click="showModal(item.title)"
                                         class="btn btn-primary">
                                     職缺編輯
                                 </button>
                             </div>
                             <div class="modal fade"
-                                 :id="'modalId' + item.jobName"
+                                 :id="'modalId' + item.title"
                                  tabindex="-1"
                                  data-bs-backdrop="static"
                                  data-bs-keyboard="false"
@@ -53,7 +57,7 @@
                                     <div class="modal-content col-md-4">
                                         <div class="modal-header" style="background-color: #f7d179;">
                                             <h5 class="modal-titl text-center" id="modalTitleId" style="width:95% ;">
-                                                {{item.jobName}}
+                                                {{item.title}}
                                             </h5>
                                             <button type="button"
                                                     class="btn-close"
@@ -68,11 +72,13 @@
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
                                                             <label class="">職缺名稱:</label>
-                                                            <input type="text" :value="item.jobName" class="form-control" />
+                                                            <input type="text" :value="item.title" class="form-control" />
                                                             <label class="">公司名稱:</label>
                                                             <input type="text" :value="item.companyName" class="form-control" />
                                                             <label class="">工作地點:</label>
-                                                            <input type="text" :value="item.opAddress" class="form-control" />
+                                                            <input type="text" :value="item.address" class="form-control" />
+                                                            <label class="">連絡人:</label>
+                                                            <input type="text" :value="item.contactName" class="form-control" />
                                                             <label class="">連絡電話:</label>
                                                             <input type="text" :value="item.contactNumber" class="form-control" />
                                                             <label class="">電子郵件:</label>
@@ -84,18 +90,18 @@
                                                                 <input type="text" :value="item.salaryMax" class="text-center" placeholder="最高薪資" />
                                                             </div>
                                                             <label class="">上班時段:</label>
-                                                            <input type="text" :value="item.workingTime" class="form-control" />
+                                                            <input type="text" :value="item.time" class="form-control" />
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="">職缺類別:</label>
-                                                            <select>
-                                                                <option></option>
+                                                            <select style="width:30%" v-model="selectedtitleClassId">
+                                                                <option value="" selected>-----請選擇-----</option>
+                                                                <option v-for="item in titleClass" :value="item.titleClassId">{{item.titleclassName}}</option>
                                                             </select>
                                                             <label class="">學歷要求:</label>
-                                                            <select>
-                                                                <option>大學</option>
-                                                                <option>國中</option>
-                                                                <option>高中</option>
+                                                            <select v-model="selectedDegreeName">
+                                                                <option value="" selected>--請選擇--</option>
+                                                                <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
                                                             </select>
                                                         </div>
                                                         <div>
@@ -108,12 +114,12 @@
                                                             <div class="collapse" id="TagsCollapse">
                                                                 <div class="card card-body">
                                                                     <template v-for="(item,index) in TagClasses">
-                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.TagClass">{{item.TagClass}}</button>
-                                                                        <div class="collapse" v-bind:id="item.TagClass">
+                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.tagClassName">{{item.tagClassName}}</button>
+                                                                        <div class="collapse" v-bind:id="item.tagClassName">
                                                                             <div>
-                                                                                <template class="px-2" v-for="Tag in filterTagClass(item.TagClassID)">
-                                                                                    <input type="checkbox" v-bind:id="changeTagNameTo(Tag.TagName)" v-bind:value="Tag.TagID" v-model="TagCheckedResume" />
-                                                                                    <label v-bind:for="changeTagNameTo(Tag.TagName)">{{Tag.TagName}}</label>
+                                                                                <template class="px-2" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                                    <input type="checkbox" v-bind:id="changeTagNameTo(Tag.tagName)" v-bind:value="Tag.tagId" v-model="TagCheckedResume" />
+                                                                                    <label v-bind:for="changeTagNameTo(Tag.tagName)">{{Tag.tagName}}</label>
                                                                                 </template>
                                                                             </div>
                                                                         </div>
@@ -126,11 +132,11 @@
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
                                                             <label for="form-textarea" class="col-form-label">福利:</label>
-                                                            <textarea class="form-control" id="benefits" :value="item.opBenefits" style="height:100px"></textarea>
+                                                            <textarea class="form-control" id="benefits" :value="item.benefits" style="height:100px"></textarea>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="form-textarea" class="col-form-label">工作內容:</label>
-                                                            <textarea class="form-control" id="description" :value="item.jobDescription" style="height:300px"></textarea>
+                                                            <textarea class="form-control" id="description" :value="item.description" style="height:300px"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -159,23 +165,20 @@
             <div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item">
+                        <li class="page-item" v-on:click="setPage(currentPage-1)">
                             <a class="page-link" href="#" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                        <li class="page-item">
+                        <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                            <a class="page-link" href="#">{{item}}</a>
+                        </li>
+                        <li class="page-item" v-on:click="setPage(currentPage+1)">
                             <a class="page-link" href="#" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                     </ul>
-
                 </nav>
             </div>
         </div>
@@ -191,34 +194,38 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     openings: [],
+                    titleClass: [],
+                    selectedtitleClassId: '',
+                    selectedDegreeName: '',
 
                     pageStatus: 0,
-                    perpage: 5, //一頁的資料數
+                    perpage: 7, //一頁的資料數
                     currentPage: 1,
                     filter: "",
 
                     ResumeStatus: 1,
                     MessageStatus: 1,
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學" },
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
+                    DegreeRequired: [
+                        { DegreeVal: 1, DegreeName: "博士" },
+                        { DegreeVal: 2, DegreeName: "碩士" },
+                        { DegreeVal: 3, DegreeName: "大學" },
+                        { DegreeVal: 4, DegreeName: "四技" },
+                        { DegreeVal: 5, DegreeName: "二技" },
+                        { DegreeVal: 6, DegreeName: "二專" },
+                        { DegreeVal: 7, DegreeName: "三專" },
+                        { DegreeVal: 8, DegreeName: "五專" },
+                        { DegreeVal: 9, DegreeName: "高中" },
+                        { DegreeVal: 10, DegreeName: "高職" },
+                        { DegreeVal: 11, DegreeName: "國中(含)以下" },
                     ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
+                    TagClasses: [],
+                    Tags: [],
                     TagCheckedResume: [],
                 };
             },
             computed: {
                 totalPage() {
-                    return Math.ceil(this.resumes.length / this.perpage)
+                    return Math.ceil(this.openings.length / this.perpage)
                     //Math.ceil()取最小整數
                 },
                 pageStart() {
@@ -244,14 +251,14 @@
                 filterTagClass: function (ClassID) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
+                        return item.tagClassId == ClassID;
                     });
                 },
                 ReturnhashtagID: function (item) {
-                    return `#${item.TagClass}`;
+                    return `#${item.tagClassName}`;
                 },
                 ReceiveOpeningData() {
-                    fetch("/companies/Home/OpeningJson", {
+                    fetch("/Companies/Openings/OpeningJson", {
                         method: "GET",
                     }).then(response => {
                         return response.json();
@@ -261,15 +268,62 @@
                         }).catch(err => {
                             alert(JSON.stringify(err))
                         });
+
+                    axios.get(`${this.baseAddress}/Companies/Openings/TitleClassJson`).then(
+                        res => this.titleClass = res.data
+                    ).catch(
+                        err => { alert(err) }
+                    );
+
+                    axios.get(`${this.baseAddress}/Companies/Openings/TagJson`).then(
+                        res => this.Tags = res.data
+                    ).catch(
+                        err => { alert(err) }
+                    );
+
+                    axios.get(`${this.baseAddress}/Companies/Openings/TagClassJson`).then(
+                        res => this.TagClasses = res.data
+                    ).catch(
+                        err => { alert(err) }
+                    );
                 },
-                showModal(jobName) {
-                    let showModal = new bootstrap.Modal(document.getElementById('modalId' + jobName));
+                showModal(title) {
+                    let showModal = new bootstrap.Modal(document.getElementById('modalId' + title));
                     showModal.show();
                 },
-
+                filterOpenings: function () {
+                    let _this = this;
+                    //alert(`filter:${_this.filter}`);
+                    var request = {};
+                    request.openingId = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.title = request.address = request.contactName = request.contactEmail
+                        = request.contactPhone = request.salaryMax = request.salaryMin = request.time
+                        = request.description = request.benefits = request.titleClassName = request.companyName = _this.filter;
+                    
+                    fetch("/Companies/Openings/filter", {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                        },
+                        body: JSON.stringify(request)  //將 JavaScript 對象 request 序列化為 JSON 字符串發送。
+                    })
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(data => {
+                            return _this.openings = data
+                            for (let i = 0; i < _this.openings.length; i++) {
+                                _this.openings[i].Edit = false;
+                            }
+                        })
+                        .catch(err => {
+                            alert(JSON.stringify(err))
+                        })
+                },
             },
             mounted() {
                 this.ReceiveOpeningData();
+                this.filterOpenings();
             },
         };
 
