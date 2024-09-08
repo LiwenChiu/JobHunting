@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class Admin
 {
-    public int AdminID { get; set; }
+    public int AdminId { get; set; }
 
     public int PersonnelCode { get; set; }
 

@@ -7,9 +7,9 @@ namespace JobHunting.Areas.Companies.Models;
 
 public partial class Tag
 {
-    public int TagID { get; set; }
+    public int TagId { get; set; }
 
-    public int? TagClassID { get; set; }
+    public int? TagClassId { get; set; }
 
     public string TagName { get; set; }
 

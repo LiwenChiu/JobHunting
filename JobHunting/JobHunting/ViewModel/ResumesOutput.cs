@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using JobHunting.Models;
-
-namespace JobHunting.ViewModel
+﻿namespace JobHunting.ViewModel
 {
-    public class ResumeViewModel
+    public class ResumesOutput
     {
         public int ResumeID { get; set; }
 
@@ -29,7 +26,7 @@ namespace JobHunting.ViewModel
 
         public bool? Sex { get; set; }
 
-        public DateOnly? Birthday { get; set; }
+        public int Age { get; set; }
 
         public string Phone { get; set; }
 
@@ -39,5 +36,7 @@ namespace JobHunting.ViewModel
         public string EmploymentStatus { get; set; }
 
         public string MilitaryService { get; set; }
+        public object TagObj  { get; set; }
     }
 }
+
