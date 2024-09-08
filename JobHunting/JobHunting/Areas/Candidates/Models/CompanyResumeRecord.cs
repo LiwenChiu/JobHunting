@@ -7,9 +7,9 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class CompanyResumeRecord
 {
-    public int CompanyID { get; set; }
+    public int CompanyId { get; set; }
 
-    public int ResumeID { get; set; }
+    public int ResumeId { get; set; }
 
     public bool LikeYN { get; set; }
 

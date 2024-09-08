@@ -7,7 +7,7 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class TitleCategory
 {
-    public string TitleCategoryID { get; set; }
+    public int TitleCategoryId { get; set; }
 
     public string TitleCategoryName { get; set; }
 
