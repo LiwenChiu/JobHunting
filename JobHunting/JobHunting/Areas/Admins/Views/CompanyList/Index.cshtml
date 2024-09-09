@@ -25,7 +25,7 @@
             </tr>
         </thead>
         <tbody id="CompanyList">
-            <tr v-for="item in companylist" class="overcard">
+            <tr v-for="item in companylist.slice(pageStart,pageEnd)" class="overcard">
                 <td>{{item.companyID}}</td>
                 <td>{{item.companyName}}</td>
                 <td>{{item.guiNumber}}</td>
@@ -38,17 +38,16 @@
     <div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item">
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
+
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
@@ -71,9 +70,32 @@
                     baseAddress: "https://localhost:7169",
                     filter: "",
                     companylist:[],
+
+                    pageStatus: 0,
+                    perpage: 8, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                }
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.companylist.length / this.perpage)
+                    //回傳大於等於的最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
                 }
             },
             methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
                 CompanyListData: function () {
                     // alert("AAA");
                     fetch("/Admins/CompanyList/IndexJson", {

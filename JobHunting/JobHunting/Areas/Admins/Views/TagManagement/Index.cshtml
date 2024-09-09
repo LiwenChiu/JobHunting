@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagsViewModel>
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagViewModel>
 
 @{
     ViewData["Title"] = "標籤管理";
@@ -26,7 +26,7 @@
         </div>
     </template>
 
-    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:77vh">
+    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:76vh">
         <template v-for="item in TagClasses">
             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
                 {{item.tagClassName}}
@@ -97,7 +97,7 @@
                     加入的TagClassId:{{selectedTagClassId}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTag(selectedTagClassId,tagName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTag(selectedTagClassId,tagName)">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                     @* 新增的TagClass名稱:{{tagClassName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTagClass(tagClassName);alertOut();">新增</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTagClass(tagClassName)">新增</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     @* 要移動的標籤:{{TagChecked}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="moveTags(selectedTagClassId,TagChecked);alertOut();">移動</button>
+                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="moveTags(selectedTagClassId,TagChecked)">移動</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassId = null">取消</button>
                 </div>
             </div>
@@ -195,7 +195,7 @@
                     修改名稱:{{tagName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTag(selectedTagClassId,selectedTagId,tagName);alertOut();">修改</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTag(selectedTagClassId,selectedTagId,tagName)">修改</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -218,13 +218,13 @@
                         </select>
                     </div>
                     <div class="py-1">
-                        <label class="h5">修改標籤名稱:  </label>
+                        <label class="h5">修改標籤類型名稱:  </label>
                         <input type="text" class="form-control" v-model.trim="tagClassName" />
                     </div>
                     @* 修改TagClassId:{{selectedTagClassId}}，新增的TagClass名稱:{{tagClassName}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTagClass(selectedTagClassId,tagClassName);alertOut();">修改</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTagClass(selectedTagClassId,tagClassName)">修改</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTag()">取消</button>
                 </div>
             </div>
@@ -249,7 +249,7 @@
                     @* 要刪除的標籤:{{TagChecked}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTags(TagChecked);alertOut();">刪除</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTags(TagChecked)">刪除</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                 </div>
             </div>
@@ -272,7 +272,7 @@
                     @* 被選中的TagClassId是:{{selectedTagClassId}} *@
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTagClass(selectedTagClassId);alertOut();">刪除</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTagClass(selectedTagClassId)">刪除</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTagClassId = null">取消</button>
                 </div>
             </div>
@@ -368,6 +368,7 @@
                                 this.bootPage();
                             }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.selectedTagClassId = null;
                     _this.tagName = "";
                 },
@@ -380,12 +381,6 @@
                     else {
                         let request = {};
                         request.tagClassName = tagClassName;
-                        // if (isNaN(tagClassName)) {
-                        //     tagClassNameString = tagClassName;
-                        // }
-                        // else {
-                        //     tagClassNameString = tagClassName.toString();
-                        // }
                         axios.post(`${this.baseAddress}/Admins/TagManagement/CreateTagClass`, request, {
                             headers: { 'Content-Type': 'application/json' }
                         }).then(response => {
@@ -394,6 +389,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.tagClassName = "";
                 },
                 moveTags:function(selectedTagClassId,TagChecked){
@@ -414,6 +410,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.selectedTagClassId = null;
                     _this.TagChecked = [];
                 },
@@ -440,6 +437,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.selectedTagClassId = null;
                     _this.selectedTagId = null;
                     _this.tagName = "";
@@ -466,6 +464,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.selectedTagClassId = null;
                     _this.tagClassName = null;
                 },
@@ -497,6 +496,7 @@
                                 this.bootPage();
                             }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.TagChecked = [];
                 },
                 deleteTagClass: function (selectedTagClassId) {
@@ -516,6 +516,7 @@
                             this.bootPage();
                         }).catch(err => { alert(err) });
                     }
+                    this.alertOut();
                     _this.selectedTagClassId = null;
                 },
                 alertOut:function(){
