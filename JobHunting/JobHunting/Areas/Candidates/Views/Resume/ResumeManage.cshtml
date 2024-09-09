@@ -4,14 +4,15 @@
         
     </style>
 }
-@* 履歷新增 *@
+
 <div class="container-fluid py-2" id="ResumeApp">
     <div class="letters row">
-        <div class="col-md-3 mb-4">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#insertmodelID">
-                <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                    <div class="card-body">
-                        <h2 class="text-center">
+        @* 履歷新增 *@
+        <div class="col-md-3 mb-4 " >
+            <a href="#" data-bs-toggle="modal" style="text-decoration:none;" data-bs-target="#insertmodelID">
+                <div class="card rounded-5 " style="width: 15rem; height: 15rem;">
+                    <div class="card-body ">
+                        <h2 class="text-center mt-5 " >
                             新增<br />履歷
                         </h2>
                     </div>
@@ -48,6 +49,7 @@
 
 
         @*履歷新增內容*@
+        <form method="post" ref="resumeForm">
             <div class="modal fade" 
                  id="insertmodelID"
                  tabindex="-1"
@@ -82,28 +84,37 @@
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">名字
-                                                        <input type="text" required v-model="candidateName">
+                                                        <input type="text" required v-model="" disabled placeholder="根據求職者會員資料帶入">
                                                             </label>
                                                     </div>
                                                     <div>
-                                                        <label for="" class="mb-2">性別</label>
-                                                        <input type="radio" name="sex"><label>男</label>
-                                                        <input type="radio" name="sex"><label>女</label>
-                                                        <input type="radio" name="sex"><label>其他</label>
+                                                        <label for="" class="mb-2">性別 : </label>
+                                                        <input type="radio" name="name" value="" disabled/><label>男</label>
+                                                        <input type="radio" name="name" value="" disabled/><label>女</label>
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">生日</label>
-                                                    <input type="date" v-model="candidateBirthday">
+                                                    <input type="date" v-model="candidateBirthday" disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">電話</label>
-                                                    <input type="tel" v-model="candidatePhone">
+                                                    <input type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
                                                         <label for="" class="mb-2">學歷</label>
-                                                    <input type="text" v-model="candidateDegree">
+                                                    <input type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">郵件</label>
-                                                    <input type="email" class="form-control" v-model="candidateEmail">
+                                                    <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" v-model="candidateEmail">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">就業狀態 :</label>
+                                                        <input type="text" class="form-control" disabled placeholder="根據求職者會員資料帶入">
+                                                    </div>
+                                                    <div>
+                                                        <p class="card-text">
+                                                        自我介紹：
+                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
+                                                        </p>
                                                     </div>
                                                 </p>
 
@@ -115,7 +126,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8" v-model="WorkExperience"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model="WorkExperience"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -129,11 +140,7 @@
                                                 <h5 class="card-title" style="text-align:center">求職條件</h5>
                                                 <p class="card-text">
                                                     <div class="col">
-                                                        <label for="" class="mb-2">就業狀態</label>
-                                                    <input type="text" v-model="candidateEmploymentStatus">
-                                                    </div>
-                                                    <div class="col">
-                                                    <label class="mb-2">希望上班時段: <input type="text" v-model="timeR"></label>
+                                                    <label class="mb-2">希望上班時段: <input type="text" v-model=""></label>
                                                     </div>
                                                     <div class="col">
                                                     <label class="mb-2">希望職稱: <input type="text" v-model=""></label>
@@ -155,18 +162,22 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8" v-model="Autobiography"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model="Autobiography"></textarea>
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <p>
-                                    履歷狀態：
-                                <input type="text" name="name" value="" v-model="ReleaseYN" />
-                                </p>
+                                <div class="col-md-3 ">
+                                    <span class="form-control text-center ">履歷狀態：
+                                        <select v-model="ReleaseYN" class="btn btn-primary ms-4">
+                                            <option value="true">開放</option>
+                                            <option value="false">關閉</option>
+                                        </select>
+                                    </span>
+                                </div>
                                 <div class="form-group" style="text-align:right">
-                                    <button type="submit" class="btn btn-success" v-on:click="CreateNewResume">新增</button>
+                                    <button type="submit" class="btn btn-success mx-3"   data-bs-dismiss="modal" v-on:click="CreateNewResume">新增</button>
                                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" v-on:click="TagCheckedResume = [];">取消</button>
                                 </div>
 
@@ -175,7 +186,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div></form>
+            
 
         @* 履歷內容Modal *@
         <div class="modal fade" v-for="ResumeD in Resume"
@@ -211,25 +223,39 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
                                             <p class="card-text">
-                                                <div class="col">
-                                                    <label class="mb-2" size="10">姓名:{{ResumeD.name}}
+                                                    <div class="col">
+                                                        <label class="mb-2" size="10">
+                                                            姓名:{{ResumeD.name}}
                                                         </label>
-                                                </div>
-                                                <div>
-                                                    <label for="" class="mb-2">性別 : {{Sexif(ResumeD.sex)}}</label>
+                                                    </div>
+                                                    <div>
+                                                        <label for="" class="mb-2">性別 : {{Sexif(ResumeD.sex)}}</label>
 
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">生日 : {{ResumeD.birthday}}</label>
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                    <label for="" class="mb-2">學歷 : {{ResumeD.degree}}</label>
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
-                                                </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">生日 : {{ResumeD.birthday}}</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
+                                                        <label for="" class="mb-2">學歷 : {{ResumeD.degree}}</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
+                                                    </div>
+                                                     <div class="col">
+                                                        <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
+                                                     </div>
+                                                    <div>
+                                                        <p class="card-text">
+                                                            自我介紹：
+                                                            <textarea name="" id="" class="form-control" rows="6" >{{ResumeD.intro}}</textarea>
+                                                        </p>
+                                                    </div>
+                                                    
                                             </p>
+                                                
+
+                                            
 
                                         </div>
                                     </div>
@@ -239,7 +265,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8" v-model="ResumeD.workExperience"></textarea>
+                                                <textarea name="" id="" class="form-control" rows="12" v-model="ResumeD.workExperience"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -252,10 +278,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">求職條件</h5>
                                             <p class="card-text">
-                                                <div class="col">
-                                                    <label for="" class="mb-2">就業狀態</label>
-                                                    <input type="text" v-model="ResumeD.employmentStatus">
-                                                </div>
+
                                                 <div class="col">
                                                     <label class="mb-2">上班時段: <input type="text" v-model="ResumeD.time"></label>
                                                 </div>
@@ -284,14 +307,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p>
-                                    履歷狀態：
-                                <input type="text" name="name" value="" v-model="ResumeD.releaseYN" />
-                                </p>
+                                <div class="col-md-3 ">
+                                    <span class="form-control text-center ">履歷狀態：
+                                        <select v-model="ReleaseYN" class="btn btn-primary ms-4">
+                                            <option value="true">開放</option>
+                                            <option value="false">關閉</option>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>
                             <div class="" style="text-align:right">
-                                <button type="submit" class="btn btn-success " v-on:click="editConfirm(ResumeD)">編輯完成</button>
-                                <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" v-on:click="cancel(ResumeD)" >取消</button>
+                                <button type="submit" class="btn btn-success mx-3" v-on:click="editConfirm(ResumeD)">編輯完成</button>
+                                <button type="button" class="btn btn-secondary "   v-on:click="cancel(ResumeD)" >取消</button>
 
                             </div>
                             
@@ -335,6 +362,15 @@
                                                 <div class="col">
                                                     <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
                                                 </div>
+                                                <div class="col">
+                                                        <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
+                                                </div>
+                                                <div class="card-body">
+                                                        <h5 class="card-title" style="">自我介紹：</h5>
+                                                        <p class="card-text form-control overflow-auto" style="height:200px">
+                                                            {{ResumeD.intro}}
+                                                        </p>
+                                                </div>
                                             </p>
 
                                         </div>
@@ -344,7 +380,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                            <p class="card-text form-control" style="height:200px">
+                                            <p class="card-text form-control overflow-auto" style="height:250px">
                                                 {{ResumeD.workExperience}}
                                             </p>
                                         </div>
@@ -358,9 +394,6 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">求職條件</h5>
                                             <p class="card-text">
-                                                <div class="col">
-                                                    <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
-                                                </div>
                                                 <div class="col">
                                                     <label class="mb-2">上班時段: {{ResumeD.time}}</label>
                                                 </div>
@@ -383,7 +416,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">自傳</h5>
-                                            <p class="card-text form-control" style="height:200px">
+                                            <p class="card-text form-control overflow-auto" style="height:200px">
                                                 {{ResumeD.autobiography}}
                                             </p>
                                         </div>
@@ -455,12 +488,12 @@
                     resumevalue:"resumevalue",
                     Resume: [],
                     // CandidateNmae:"",
-                    // ResumeName:"",
+                    ResumeName:"",
                     // CandidateDegree:"",
                     // Employment:"",
-                    // WorkExperience:"",
-                    // Autobiography:"",
-                    // hopeaddress:"",
+                    WorkExperience:"",
+                    Autobiography:"",
+                    hopeaddress:"",
                     // candidateName:"",
                     // candidateBirthday:"",
                     // candidatePhone:"",
@@ -468,8 +501,9 @@
                     // candidateEmail:"",
                     // candidateEmploymentStatus:"",
                     // timeR: "",
-                    // ReleaseYN:false,
-
+                    ReleaseYN:true,
+                    sexYN:false,
+                    ResumeIntro:"",
                     TagClasses: [
                         { TagClassID: 1, TagClass: "電腦科學"},
                         { TagClassID: 2, TagClass: "數學" },
@@ -555,28 +589,42 @@
                         alert(JSON.stringify(err))
                     })
                 },
-                // CreateNewResume:function(){
-                //     let _this = this;
-                //     let request = {};
-                //     request.Address = _this.hopeaddress;
-                //     request.Title = _this.ResumeName;
-                //     request.WorkExperience = _this.WorkExperience;
-                //     request.Autobiography = _this.Autobiography;
-                //     request.ReleaseYN = _this.ReleaseYN;
-                //     fetch("/Candidates/Resume/CreateReasumes", {
-                //         method: "POST",
-                //         headers: {
-                //             "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
-                //         },
-                //         body: JSON.stringify(request)
-                //     }).then(response => {
-                //         return response.json()
-                //     }).then(data => {
-                //         csonsole.log( data)
-                //     }).catch(err => {
-                //         console.log(JSON.stringify(err))
-                //     })
-                // },
+
+                CreateNewResume:function(){
+                    let _this = this;
+                    let Candidateid = 1;
+                    let request = {};
+                    request.Address = _this.hopeaddress;
+                    request.Candidateid = Candidateid;
+                    request.Title = _this.ResumeName;
+                    request.WorkExperience = _this.WorkExperience;
+                    request.Autobiography = _this.Autobiography;
+                    request.ReleaseYN = _this.ReleaseYN;
+                    request.Intro = _this.ResumeIntro;
+
+                    fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                        },
+                        body: JSON.stringify(request)
+                    }).then(response => {
+                        return response.json()
+                    }).then(data => {
+                        alert(data.message);
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                    _this.hopeaddress ="";
+                    _this.ResumeName="";
+                    _this.WorkExperience="";
+                    _this.Autobiography="";
+                    _this.ReleaseYN="";
+                    _this.ResumeIntro="";
+
+                    //清空表單資訊
+                    _this.$refs.resumeForm.reset();
+                },
                 
                 //編輯完成再確認，並執行editResumD()
                 editConfirm: function(ResumeD){
@@ -599,6 +647,7 @@
                     request.WorkExperience = ResumeD.workExperience;
                     request.Time = ResumeD.time;
                     request.ReleaseYN = ResumeD.releaseYN;
+                    request.Intro = ResumeD.intro;
                     fetch("https://localhost:7169/Candidates/Resume/EditResume", {
                         method: "POST",
                         headers: {
