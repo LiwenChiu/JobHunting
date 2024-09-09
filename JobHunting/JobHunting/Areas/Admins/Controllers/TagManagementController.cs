@@ -50,7 +50,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/CreateTag
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CreateTag([FromBody][Bind("TagId,TagClassId,TagName")] TagsViewModel tvm)
+        public async Task<Array> CreateTag([FromBody][Bind("TagId,TagClassId,TagName")] TagViewModel tvm)
         {
             string[] returnStatus = new string[2];
 
@@ -88,7 +88,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/CreateTagClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CreateTagClass([FromBody] TagClassNameViewModel tagClassName)
+        public async Task<Array> CreateTagClass([FromBody][Bind("TagClassName")] TagClassNameViewModel tagClassName)
         {
             string[] returnStatus = new string[2];
 
@@ -178,7 +178,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/EditTag
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditTag([FromBody][Bind("TagId,TagClassId,TagName")] TagsViewModel tvm)
+        public async Task<Array> EditTag([FromBody][Bind("TagId,TagClassId,TagName")] TagViewModel tvm)
         {
             string[] returnStatus = new string[2];
 
@@ -233,7 +233,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //POST: Admins/TagManagement/EditTagClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditTagClass([FromBody][Bind("TagClassId,TagClassName")] TagClassesViewModel tcvm)
+        public async Task<Array> EditTagClass([FromBody][Bind("TagClassId,TagClassName")] TagClassViewModel tcvm)
         {
             string[] returnStatus = new string[2];
 

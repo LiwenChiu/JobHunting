@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagsViewModel>
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TagViewModel>
 
 @{
     ViewData["Title"] = "標籤管理";
@@ -26,7 +26,7 @@
         </div>
     </template>
 
-    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:77vh">
+    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:76vh">
         <template v-for="item in TagClasses">
             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
                 {{item.tagClassName}}
@@ -218,7 +218,7 @@
                         </select>
                     </div>
                     <div class="py-1">
-                        <label class="h5">修改標籤名稱:  </label>
+                        <label class="h5">修改標籤類型名稱:  </label>
                         <input type="text" class="form-control" v-model.trim="tagClassName" />
                     </div>
                     @* 修改TagClassId:{{selectedTagClassId}}，新增的TagClass名稱:{{tagClassName}} *@
