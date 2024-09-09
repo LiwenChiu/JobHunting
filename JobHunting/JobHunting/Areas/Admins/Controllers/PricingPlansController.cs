@@ -44,9 +44,9 @@ namespace JobHunting.Areas.Admins.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult BootPage([FromBody][Bind("PlanId,Title,Intro,Duration,Price,Discount,Status")] PricingPlanFilterViewModel ppfvm)
+        public async Task<IEnumerable<PricingPlanFilterOutputViewModel>> BootFilterPage([FromBody][Bind("planId,title,intro,duration,price,discount,status")] PricingPlanFilterViewModel ppfvm)
         {
-            return Json(_context.PricingPlans.Select(pp => new
+            return _context.PricingPlans.Select(pp => new PricingPlanFilterViewModel
             {
                 planId = pp.PlanId,
                 title = pp.Title,
@@ -55,13 +55,23 @@ namespace JobHunting.Areas.Admins.Controllers
                 price = pp.Price,
                 discount = pp.Discount,
                 status = pp.Status,
+            }).Where(ppfvmfilter => ppfvmfilter.planId == ppfvm.planId ||
+                                    ppfvmfilter.title.Contains(ppfvm.title) ||
+                                    ppfvmfilter.intro.Contains(ppfvm.intro) ||
+                                    ppfvmfilter.duration == ppfvm.duration ||
+                                    ppfvmfilter.price == ppfvm.price ||
+                                    ppfvmfilter.discount == ppfvm.discount)
+            .Select(ppfvmfilter => new PricingPlanFilterOutputViewModel
+            {
+                planId = ppfvmfilter.planId,
+                title = ppfvmfilter.title,
+                intro = ppfvmfilter.intro,
+                duration = ppfvmfilter.duration,
+                price = ppfvmfilter.price,
+                discount = ppfvmfilter.discount,
+                status = ppfvmfilter.status,
                 edit = false,
-            }).Where(ppfvmfilter => ppfvmfilter.planId == ppfvm.PlanId ||
-                                    ppfvmfilter.title.Contains(ppfvm.Title) ||
-                                    ppfvmfilter.intro.Contains(ppfvm.Intro) ||
-                                    ppfvmfilter.duration == ppfvm.Duration ||
-                                    ppfvmfilter.price == ppfvm.Price ||
-                                    ppfvmfilter.status == ppfvm.Status));
+            });
         }
 
         // POST: Admins/PricingPlans/EditPricingPlans

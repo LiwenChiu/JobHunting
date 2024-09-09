@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Admins.Models.PricingPlan>
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.PricingPlanFilterOutputViewModel>
 
 @{
     ViewData["Title"] = "方案管理";
@@ -21,7 +21,7 @@
             </div>
         </template>
         <template v-else-if="alertStatus == '失敗'">
-            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute">
+            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
                 <strong>{{alertText}}</strong>
                 <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
             </div>
@@ -107,10 +107,11 @@
             </div>
         </div>
         <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
-            <div class="col-4">
-                <label for="filterPlan">關鍵字篩選: </label>
-                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" />
-            </div>
+            @* <div class="col-4">
+                <label for="filterPlan">關鍵字搜尋: </label>
+                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model="filterPlanInput" v-on:keyup="bootFilterPage();" />
+                <button class="btn btn-warning text-light" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
+            </div> *@
             <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createPlan">新增</button>
             <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deletePlan">刪除</button>
         </div>
@@ -195,7 +196,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h3 class="modal-title text-light" id="deletePlanLabel">刪除方案</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click=""></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null"></button>
                 </div>
                 <div class="modal-body">
                     <h5>請問選擇欲刪除的方案:</h5>
@@ -205,7 +206,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deletePlan(selectedPlanId);">刪除</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="">取消</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null">取消</button>
                 </div>
             </div>
         </div>
@@ -221,6 +222,7 @@
                     baseAddress: "https://localhost:7169",
                     alertText: "",
                     alertStatus: "",
+                    filterPlanInput: "",
                     pricingPlans: [],
                     clickedPlanIntroId: null,
                     clickedPlanIntro: "",
@@ -234,9 +236,24 @@
                 bootPage: function(){
                     axios.get(`${this.baseAddress}/Admins/PricingPlans/IndexPricingPlans`).then(
                         response => this.pricingPlans = response.data
-                    ).catch(
-                        err => { alert(err) });
+                    ).catch(err => { alert(err) });
                 },
+                // bootFilterPage: function () {
+                //     let request = {};
+                //     request.planId = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
+                //     request.title = request.intro = this.filterPlanInput;
+                //     request.duration = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
+                //     request.price = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
+                //     request.discount = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
+                //     request.status = null;
+                //     axios.post(`${this.baseAddress}/Admins/PricingPlans/BootFilterPage`, request, {
+                //         headers: {
+                //             'Content-Type':'application/json'
+                //         }
+                //     })
+                //     .then(response => this.pricingPlans = response.data)
+                //     .catch(err => { alert(err) });
+                // },
                 planStatusTF:function(status){
                     return this.pricingPlans.filter(function (plan) {
                         return plan.status == status;
@@ -390,6 +407,7 @@
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
                             this.bootPage();
+                            this.createNewPlan = {};
                         }).catch(err => { alert(err) });
                     }
                     this.alertOut();
