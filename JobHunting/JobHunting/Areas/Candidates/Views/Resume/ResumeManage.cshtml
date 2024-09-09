@@ -21,21 +21,22 @@
             
         </div>
         @* 履歷職缺card *@
-        <div class="col-md-3 mb-4" v-for="item in Resume.slice(pageStart,pageEnd)">
+        <div class="col-md-3 mb-4" v-for="ResumeD in Resume.slice(pageStart,pageEnd)">
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
                 <div class="card-body" style="">
                     <div class="" style="text-align:right">
-                        <button type="button" class="btn-close text-right" aria-label="Close"></button>
+                        @* 刪除履歷 *@
+                        <button type="button" class="btn-close text-right" aria-label="Close" v-on:click="deleteResume(ResumeD)"></button>
                     </div>
                     <div class="">
                         <p class="fs-6 text-center fs-4">履歷名稱</p>
                         <hr></hr>
-                        <p :id="resumevalue" class="card-title pb-3 text-center fs-3" :key="item.candidateid" :value="item.candidateid">{{item.title.slice(0,13)}}</p>
+                        <p :id="resumevalue" class="card-title pb-3 text-center fs-3" :key="ResumeD.candidateid" :value="ResumeD.candidateid">{{ResumeD.title.slice(0,13)}}</p>
                     </div>
                     @* 履歷內容按鈕 *@
                         <div class="text-center">
                             <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                                :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary">
                                 詳細
                             </button>
                         </div>
@@ -539,6 +540,7 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+                //履歷全部資料
                 ResumeInformation: function () {
                     fetch("/Candidates/Resume/ResumeResult", {
                         headers: {
@@ -602,16 +604,39 @@
                         headers: {
                             "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
                         },
-                        body: JSON.stringify(request,requestRE)
+                        body: JSON.stringify(request)
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        console.log(data)
+                        alert(data.message);
                     }).catch(err => {
-                        console.log(JSON.stringify(err))
+                        alert(err)
                     });
                     ResumeD.edit = false;
                 },
+                //刪除履歷
+                deleteResume: function (item) {
+                    let _this = this
+                    var confirmdel = confirm("確定要刪除?");
+                    var request = {};
+                    request.resumeid = item.resumeid;
+                    if (confirmdel == true) {
+                        fetch("https://localhost:7169/Candidates/Resume/DelResume", {
+                            method:"POST",
+                            headers: {
+                                "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                            },
+                            body: JSON.stringify(request)
+                        }).then(response => {
+                            return response.json();
+                        }).then(data=>{
+                            alert(data.message);
+                        }).catch(err => {
+                            alert(err)
+                        })
+                        
+                    }
+                }
             },
 
             watch:{
