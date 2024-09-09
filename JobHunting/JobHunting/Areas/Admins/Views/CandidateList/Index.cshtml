@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody id="CandidateList">
-            <tr v-for="item in candidatelist" class="overcard">
+            <tr v-for="item in candidatelist.slice(pageStart,pageEnd)" class="overcard">
                 <td>{{item.candidateID}}</td>
                 <td>{{item.name}}</td>
                 <td>{{gender(item.sex)}}</td>
@@ -32,17 +32,16 @@
     <div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item">
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
+                
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
@@ -61,11 +60,37 @@
         Vue.createApp({
             data() {
                 return {
+                    pageStatus: 0,
+                    perpage: 8, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+
+                    candidatelist: [], //後端撈的資料陣列
+                    filter: "",
+
                     baseAddress: "https://localhost:7169",
-                    candidatelist: [],
-                    filter:"",
+                                                    
                 }
-            }, methods: {
+            }, 
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.candidatelist.length / this.perpage)
+                    //回傳大於等於的最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage                
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage                    
+                }
+            }, 
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
                 CandidateListData: function () {
                     // alert("AAA");
                     fetch("/Admins/CandidateList/IndexJson_candidate", {
@@ -107,6 +132,7 @@
                 _this.CandidateListData();
                 _this.filterCandidateList();
                 _this.gender();
+                // _this.setPage();
             },
         }).mount("#app");
     </script>
