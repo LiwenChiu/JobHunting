@@ -19,42 +19,42 @@ namespace JobHunting.Areas.Companies.Controllers
             return View();
         }
         //POST:Companies/Openings/filterOpening
-        [HttpPost]
-        public async Task<IEnumerable<OpeningsOutputModel>> filter([FromBody] OpeningsInputModel opening)
-        {
-            return _context.Openings.Where
-                (o =>
-                    o.OpeningId == opening.OpeningId ||
-                    o.Title.Contains(opening.Title) ||
-                    o.Address.Contains(opening.Address) ||
-                    o.ContactName.Contains(opening.ContactName) ||
-                    o.ContactEmail.Contains(opening.ContactEmail) ||
-                    o.ContactPhone.Contains(opening.ContactPhone) ||
-                    o.SalaryMax.ToString().Contains(opening.SalaryMax.ToString()) ||
-                    o.SalaryMin.ToString().Contains(opening.SalaryMin.ToString()) ||
-                    o.Time.Contains(opening.Time) ||
-                    o.Description.Contains(opening.Description) ||
-                    o.TitleClasses.Select(tc => tc.TitleClassName) == opening.TitleClasses.Select(tc => tc.TitleClassName) ||
-                    o.Benefits.Contains(opening.Benefits) ||
-                    o.Company.CompanyName.Contains(opening.Company.CompanyName)
-                )
-                .Select(c => new OpeningsOutputModel
-                {
-                    OpeningId = c.OpeningId,
-                    Title = c.Title,
-                    Address = c.Address,
-                    ContactName = c.ContactName,
-                    ContactEmail =c.ContactEmail,
-                    ContactPhone = c.ContactPhone,
-                    SalaryMax = c.SalaryMax,
-                    SalaryMin = c.SalaryMin,
-                    Time = c.Time,
-                    Description = c.Description,
-                    Benefits =c.Benefits,
-                    TitleClassName = c.TitleClasses.Select(tc=>tc.TitleClassName).ToString(),
-                    CompanyName = c.Company.CompanyName
-                });
-        }
+        //[HttpPost]
+        //public async Task<IEnumerable<OpeningsOutputModel>> filter([FromBody] OpeningsInputModel opening)
+        //{
+        //    return _context.Openings.Where
+        //        (o =>
+        //            o.OpeningId == opening.OpeningId ||
+        //            o.Title.Contains(opening.Title) ||
+        //            o.Address.Contains(opening.Address) ||
+        //            o.ContactName.Contains(opening.ContactName) ||
+        //            o.ContactEmail.Contains(opening.ContactEmail) ||
+        //            o.ContactPhone.Contains(opening.ContactPhone) ||
+        //            o.SalaryMax.ToString().Contains(opening.SalaryMax.ToString()) ||
+        //            o.SalaryMin.ToString().Contains(opening.SalaryMin.ToString()) ||
+        //            o.Time.Contains(opening.Time) ||
+        //            o.Description.Contains(opening.Description) ||
+        //            o.TitleClasses.Select(tc => tc.TitleClassName) == opening.TitleClasses.Select(tc => tc.TitleClassName) ||
+        //            o.Benefits.Contains(opening.Benefits) ||
+        //            o.Company.CompanyName.Contains(opening.Company.CompanyName)
+        //        )
+        //        .Select(c => new OpeningsOutputModel
+        //        {
+        //            OpeningId = c.OpeningId,
+        //            Title = c.Title,
+        //            Address = c.Address,
+        //            ContactName = c.ContactName,
+        //            ContactEmail = c.ContactEmail,
+        //            ContactNumber = c.ContactPhone,
+        //            SalaryMax = c.SalaryMax,
+        //            SalaryMin = c.SalaryMin,
+        //            Time = c.Time,
+        //            Description = c.Description,
+        //            Benefits = c.Benefits,
+        //            TitleClassName = c.TitleClasses.Select(tc => tc.TitleClassName).ToString(),
+        //            CompanyName = c.Company.CompanyName
+        //        });
+        //}
         //GET:Companies/Home/OpeningJson
         [HttpGet]
         public JsonResult OpeningJson()
@@ -66,14 +66,15 @@ namespace JobHunting.Areas.Companies.Controllers
                 CompanyName = o.Company.CompanyName,
                 Address = o.Address,
                 ContactName = o.ContactName,
-                ContactNumber = o.ContactPhone,
+                ContactPhone = o.ContactPhone,
                 ContactEmail = o.ContactEmail,
                 SalaryMax = o.SalaryMax,
                 SalaryMin = o.SalaryMin,
                 Time = o.Time,
                 Description = o.Description,
                 TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
-                Benefits = o.Benefits
+                Benefits = o.Benefits,
+                Edit = false,
             }));
         }
         //GET:Companies/Home/TitleClassJson
@@ -106,6 +107,30 @@ namespace JobHunting.Areas.Companies.Controllers
                 TagClassId = tc.TagClassId,
                 TagClassName = tc.TagClassName
             }));
+        }
+        public async Task<IActionResult>EditOpening([FromBody][Bind("Title", "CompanyName", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description")] OpeningsInputModel oim)
+        {
+            var r = await _context.Openings.FindAsync(oim.OpeningId);
+
+            if (r == null)
+            {
+                return NotFound(new { Message = "Opening not found" });
+            }
+
+            r.Title = oim.Title;
+            //r.Company.CompanyName = oim.CompanyName;
+            r.Address = oim.Address;
+            r.ContactName = oim.ContactName;
+            r.ContactPhone = oim.ContactPhone;
+            r.ContactEmail = oim.ContactEmail;
+            r.SalaryMax = oim.SalaryMax;
+            r.SalaryMin = oim.SalaryMin;
+            r.Time = oim.Time;
+            r.Benefits = oim.Benefits;
+            r.Description = oim.Description;
+
+            await _context.SaveChangesAsync();
+            return Json(new { message = "修改成功" });
         }
     }
 }
