@@ -7,15 +7,15 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class Notification
 {
-    public int NotificationID { get; set; }
+    public int NotificationId { get; set; }
 
-    public int? CompanyID { get; set; }
+    public int? CompanyId { get; set; }
 
-    public int? CandidateID { get; set; }
+    public int? CandidateId { get; set; }
 
-    public int? ResumeID { get; set; }
+    public int? ResumeId { get; set; }
 
-    public int? OpeningID { get; set; }
+    public int? OpeningId { get; set; }
 
     public string Status { get; set; }
 

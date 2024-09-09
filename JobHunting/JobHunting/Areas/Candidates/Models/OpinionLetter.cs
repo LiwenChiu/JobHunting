@@ -7,13 +7,13 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class OpinionLetter
 {
-    public int LetterID { get; set; }
+    public int LetterId { get; set; }
 
-    public int? CompanyID { get; set; }
+    public int? CompanyId { get; set; }
 
-    public int? CandidateID { get; set; }
+    public int? CandidateId { get; set; }
 
-    public int? AdminID { get; set; }
+    public int? AdminId { get; set; }
 
     public string Class { get; set; }
 
