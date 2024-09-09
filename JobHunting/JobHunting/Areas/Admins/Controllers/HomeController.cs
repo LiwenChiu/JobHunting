@@ -40,27 +40,6 @@ namespace JobHunting.Areas.Admins.Controllers
             });
             return Json(opinionletter);
         }
-        public IActionResult PricingPlansManagement()
-        {
-            return View();
-        }
-
-        public IActionResult TagManagement()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult TagManagement([Bind("TagClassId,TagClass,TagId,TagName")]TagManagementViewModel tmvm)
-        {
-            if (ModelState.IsValid)
-            {
-
-                return RedirectToAction("TagManagement");
-            }
-            return View(tmvm);
-        }
 
         public IActionResult Login()
         {

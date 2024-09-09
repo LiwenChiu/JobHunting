@@ -30,28 +30,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        public IActionResult Opening()
-        {
-            return View();
-        }
-        public JsonResult OpeningJson()
-        {
-            return Json(_context.Openings.Select(o => new
-            {
-                JobId=o.OpeningId,
-                JobName=o.Title,
-                CompanyName=o.Company.CompanyName,
-                OpAddress=o.Address,
-                ContactNumber=o.ContactPhone,
-                ContactEmail=o.ContactEmail,
-                SalaryMax=o.SalaryMax,
-                SalaryMin=o.SalaryMin,
-                WorkingTime=o.Time,
-                JobDescription=o.Description,
-                TitleClassName=o.TitleClasses.Select(tc=>tc.TitleClassName),
-                OpBenefits=o.Address
-            }));
-        }
+        
         public IActionResult Resume()
         {
             return View();
