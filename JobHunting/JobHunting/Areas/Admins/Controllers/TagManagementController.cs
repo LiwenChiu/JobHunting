@@ -352,6 +352,11 @@ namespace JobHunting.Areas.Admins.Controllers
             if (tagClass != null) { 
                 _context.TagClasses.Remove(tagClass);
             }
+            else
+            {
+                returnStatus = [$"不存在此標籤類型ID:{tagClassId}", "失敗"];
+                return returnStatus;
+            }
 
             try
             {

@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class PricingPlanViewModel
+    public class PricingPlanEditViewModel
     {
         public int PlanId { get; set; }
 
