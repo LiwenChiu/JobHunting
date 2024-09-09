@@ -1,0 +1,107 @@
+﻿@section Styles
+{
+    <style>
+
+    </style>
+}
+
+
+<div class="container py-2" id="app">
+    <div class="col-lg">
+        <div class="card mb-1 mb-md-0 h-100">
+            <div class="card-body text-center">
+                <h4 class="mb-3">意見信件</h4>
+                <div class="row row-cols-1 row-cols-md-1 g-4">
+                    <div class="col">
+                        <div class="card-body">
+                            <div class="row bg-warning text-dark">
+                                <h5 class="col-2">意見類別</h5>
+                                <h5 class="col-8">主旨</h5>
+                                <h5 class="col-2">處理狀態</h5>
+                            </div>
+                        </div>
+                        <div class="card overcard mb-3" v-for="item in opinionlist.slice(pageStart,pageEnd)">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:0 !important;">
+                                    <h5 class="col-2">{{item.class}}</h5>
+                                    <p class="col-8">{{item.subjectLine}}</p>
+                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">{{item.status}}</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" v-on:click="setPage(currentPage-1)">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                        <a class="page-link" href="#">{{item}}</a>
+                    </li>
+
+                    <li class="page-item" v-on:click="setPage(currentPage+1)">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    opinionlist:[],
+                    pageStatus: 0,
+                    perpage: 5, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                }
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.opinionlist.length / this.perpage)
+                    //回傳大於等於的最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                }
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                OpinionData: function () {
+                    // alert("AAA");
+                    fetch("/Admins/Home/IndexJson_opinionletter", {
+                        method:"GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                            return this.opinionlist=data
+                    }).catch(err => {
+                        alert(JSON.stringify(err))
+                    })
+                }
+            },
+                    mounted() { this.OpinionData() },
+        }).mount("#app");
+    </script>
+}
