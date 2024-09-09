@@ -1,0 +1,537 @@
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.TitleClassViewModel>
+
+@{
+    ViewData["Title"] = "職別管理";
+}
+
+@section Styles
+{
+    <style>
+
+    </style>
+}
+
+<div id="TitleClassManagement" class="py-2 px-1" style="position: relative">
+    @* 通知 *@
+    <template v-if="alertStatus == '成功'">
+        <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+    <template v-else-if="alertStatus == '失敗'">
+        <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+
+    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:76vh">
+        <template v-for="item in TitleCategories">
+            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
+                {{item.titleCategoryName}}
+                <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked)}}</span>
+            </button>
+            <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
+                <div class="row">
+                    <div class="col-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
+                        <input type="checkbox" v-bind:id="ReturnNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                        <label v-bind:for="ReturnNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </template>
+        <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+            其他
+            <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,TitleClassChecked) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+        </button>
+        <div class="collapse" id="otherClass">
+            <div class="row">
+                <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
+                    <input type="checkbox" v-bind:id="ReturnNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                    <label v-bind:for="ReturnNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </div>
+    @* <p>checked:{{TitleClassChecked}}</p> *@
+    <footer>
+        <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;">
+            <button type="button" class="btn btn-warning text-light col-md-2" v-on:click="TitleClassChecked=[];">清空</button>
+            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTitleClass">新增類型</button>
+            <button type="button" class="btn btn-success col-md-2" data-bs-toggle="modal" data-bs-target="#editTitleClasses">修改類型</button>
+            <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deleteTitleClasses">刪除類型</button>
+        </div>
+        <div class="container-fluid row pt-2" style="display:flex;align-items: center;justify-content: center;">
+            <button type="button" class="btn btn-warning col-md-2 text-light" data-bs-toggle="modal" data-bs-target="#moveTitleClasses">移動類型</button>
+            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTitleCategory">新增類別</button>
+            <button type="button" class="btn btn-success col-md-2" data-bs-toggle="modal" data-bs-target="#editTitleCategory">修改類別</button>
+            <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deleteTitleCategory">刪除類別</button>
+        </div>
+    </footer>
+
+    @* 新增職業類型 *@
+    <div class="modal fade" id="createTitleClass" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createTitleClassLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h3 class="modal-title text-light" id="createTitleClassLabel">新增職業類型</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTitleClass()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="py-1">
+                        <label class="h5">加入職業類別:  </label>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTitleCategoryId">
+                            <option v-for="item in TitleCategories" v-bind:value="item.titleCategoryId">{{item.titleCategoryName}}</option>
+                            <option value="0">其他</option>
+                        </select>
+                    </div>
+                    <div class="py-1">
+                        <label class="h5">新增職業類型名稱:  </label>
+                        <input type="text" class="form-control" v-model.trim="titleClassName" />
+                    </div>
+                    @* 新增的Tag名稱:{{titleClassName}}
+                    <br />
+                    加入的titleCategoryId:{{selectedTitleCategoryId}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTitleClass(selectedTitleCategoryId,titleClassName)">新增</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTitleClass()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 新增職業類別 *@
+    <div class="modal fade" id="createTitleCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createTitleCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h3 class="modal-title text-light" id="createTitleCategoryLabel">新增職業類別</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTitleClass()"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="h5">新增職業類別名稱:  </label>
+                    <input type="text" class="form-control" v-model.trim="titleCategoryName" />
+                    @* 新增的titleCategory名稱:{{titleCategoryName}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="createTitleCategory(titleCategoryName)">新增</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTitleClass()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 移動職業類型 *@
+    <div class="modal fade" id="moveTitleClasses" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="moveTitleClassesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="moveTitleClassesLabel">移動職業類型 - 請點選上方職業類型</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTitleCategoryId = null"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="py-1">
+                        <label class="h5">移動至職業類別:  </label>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTitleCategoryId">
+                            <option v-for="item in TitleCategories" v-bind:value="item.titleCategoryId">{{item.titleCategoryName}}</option>
+                            <option value="0">其他</option>
+                        </select>
+                    </div>
+                    <h5>請問是否要移動職業類型(已選{{TitleClassChecked.length}}個職業類型):</h5>
+                    <div class="row">
+                        <template v-for="id in TitleClassChecked">
+                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTitleClass(id)">{{titleClassIdToName(id)}}</button>
+                        </template>
+                    </div>
+                    @* 要移動的職業類型:{{TitleClassChecked}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="moveTitleClasses(selectedTitleCategoryId,TitleClassChecked)">移動</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTitleCategoryId = null">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 修改職業類型 *@
+    <div class="modal fade" id="editTitleClasses" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editTitleClassesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h3 class="modal-title text-light" id="editTitleClassesLabel">修改標籤</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTitleClass()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="py-1">
+                        <label class="h5">修改職業類別:  </label>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTitleCategoryId" v-on:change="selectedTitleClassId = null">
+                            <option v-for="item in TitleCategories" v-bind:value="item.titleCategoryId">{{item.titleCategoryName}}</option>
+                            <option value="0">其他</option>
+                        </select>
+                    </div>
+                    <div class="py-1">
+                        <label class="h5">欲修改職業類型:  </label>
+                        <template v-if="selectedTitleCategoryId != null">
+                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTitleClassId">
+                                <option v-for="item in filterTitleCategory(selectedTitleCategoryId)" v-bind:value="item.titleClassId">{{item.titleClassName}}</option>
+                            </select>
+                        </template>
+                        <template v-else>
+                            <select class="form-select form-select-md" aria-label=".form-select-sm" v-model="selectedTitleClassId">
+                                <option v-for="item in TitleClasses" v-bind:value="item.titleClassId">{{item.titleClassName}}</option>
+                            </select>
+                        </template>
+                    </div>
+                    <div class="py-1">
+                        <label class="h5">輸入修改名稱:</label>
+                        <input type="text" class="form-control" v-model.trim="titleClassName" />
+                    </div>
+                    @* 屬於titleCategoryId:{{selectedTitleCategoryId}}，修改的titleClassId:{{selectedTitleClassId}}
+                    <br />
+                    修改名稱:{{titleClassName}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTitleClass(selectedTitleCategoryId,selectedTitleClassId,titleClassName)">修改</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTitleClass()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 修改職業類別 *@
+    <div class="modal fade" id="editTitleCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editTitleCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h3 class="modal-title text-light" id="editTitleCategoryLabel">修改職業類別</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clearAllSelectedTitleClass()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="py-1">
+                        <label class="h5">修改職業類別:  </label>
+                        <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTitleCategoryId">
+                            <option v-for="item in TitleCategories" v-bind:value="item.titleCategoryId">{{item.titleCategoryName}}</option>
+                        </select>
+                    </div>
+                    <div class="py-1">
+                        <label class="h5">修改職業類別名稱:  </label>
+                        <input type="text" class="form-control" v-model.trim="titleCategoryName" />
+                    </div>
+                    @* 修改titleCategoryId:{{selectedTitleCategoryId}}，新增的TagClass名稱:{{titleCategoryName}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-on:click="editTitleCategory(selectedTitleCategoryId,titleCategoryName)">修改</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="clearAllSelectedTitleClass()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 刪除職業類型 *@
+    <div class="modal fade" id="deleteTitleClasses" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTitleClassesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h3 class="modal-title text-light" id="deleteTitleClassesLabel">刪除職業類型 - 請點選上方職業類型</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否要刪除職業類型(已選{{TitleClassChecked.length}}個職業類型):</h5>
+                    <div class="row">
+                        <template v-for="id in TitleClassChecked">
+                            <button type="button" class="astext overcard col-sm-3" v-on:click="removeChooseTitleClass(id)">{{titleClassIdToName(id)}}</button>
+                        </template>
+                    </div>
+                    @* 要刪除的職業類型:{{TitleClassChecked}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTitleClasses(TitleClassChecked)">刪除</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 刪除職業類別 *@
+    <div class="modal fade" id="deleteTitleCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTitleCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h3 class="modal-title text-light" id="deleteTitleCategoryLabel">刪除職業類別</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedTitleCategoryId = null"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>請問選擇欲刪除的職業類別:</h5>
+                    <select class="form-select form-select-md" aria-label=".form-select-md" v-model="selectedTitleCategoryId">
+                        <option v-for="item in TitleCategories" v-bind:value="item.titleCategoryId">{{item.titleCategoryName}}</option>
+                    </select>
+                    @* 被選中的titleCategoryId是:{{selectedTitleCategoryId}} *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteTitleCategory(selectedTitleCategoryId)">刪除</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedTitleCategoryId = null">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let vueAppTitleClassManagement = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    TitleCategories: [],
+                    TitleClasses: [],
+                    TitleClassChecked: [],
+                    selectedTitleClassId: null,
+                    selectedTitleCategoryId: null,
+                    titleClassName: "",
+                    titleCategoryName: "",
+                    alertText: "",
+                    alertStatus: "",
+                };
+            },
+            methods: {
+                bootPage: function () {
+                    axios.get(`${this.baseAddress}/Admins/TitleClassManagement/IndexTitleCategories`).then(
+                        response => this.TitleCategories = response.data
+                    ).catch(
+                        err => { alert(err) });
+
+                    axios.get(`${this.baseAddress}/Admins/TitleClassManagement/IndexTitleClasses`).then(
+                        response => this.TitleClasses = response.data
+                    ).catch(
+                        err => { alert(err) });
+                },
+                ReturnNameId: function (item) {
+                    let NameId = `NameId${item.titleClassName}${item.titleClassId}`;
+                    return NameId.replace(" ", "");
+                },
+                filterTitleCategory: function (categoryId) {
+                    let _this = this;
+                    return _this.TitleClasses.filter(function (item) {
+                        return item.titleCategoryId == categoryId;
+                    });
+                },
+                selectedFilterTitleCategory: function (titleCategoryId, TitleClassChecked) {
+                    let _this = this;
+                    let counter = 0;
+                    for (let i = 0; i < TitleClassChecked.length; i++) {
+                        if (this.filterTitleCategory(titleCategoryId).filter(function (item) {
+                            return item.titleClassId == TitleClassChecked[i];
+                        }).length > 0){counter++;}
+                    }
+                    return counter;
+                },
+                ReturnCategoryNameId: function (item) {
+                    let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
+                    return CategoryNameId.replace(" ", "");
+                },
+                Returnhashtag: function (item) {
+                    return `#${item}`;
+                },
+                clearAllSelectedTitleClass: function () {
+                    let _this = this;
+                    _this.selectedTitleClassId = null;
+                    _this.selectedTitleCategoryId = null;
+                    _this.titleClassName = "";
+                    _this.titleCategoryName = "";
+                },
+                createTitleClass: function (titleCategoryId, titleClassName) {
+                    let _this = this;
+                    if (titleClassName == "") {
+                        this.alertText = "請輸入欲新增標籤名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.titleClassId = 0;
+                        request.titleCategoryId = titleCategoryId;
+                        request.titleClassName = titleClassName;
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/CreateTitleClass`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                this.alertText = response.data[0];
+                                this.alertStatus = response.data[1];
+                                this.bootPage();
+                            }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.selectedTitleCategoryId = null;
+                    _this.titleClassName = "";
+                },
+                createTitleCategory: function (titleCategoryName) {
+                    let _this = this;
+                    if (titleCategoryName == "") {
+                        this.alertText = "請輸入欲新增標籤類型名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else {
+                        let request = {};
+                        request.titleCategoryName = titleCategoryName;
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/CreateTitleCategory`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.titleCategoryName = "";
+                },
+                moveTitleClasses: function (selectedTitleCategoryId, TitleClassChecked) {
+                    let _this = this;
+                    if (TitleClassChecked.length == 0) {
+                        this.alertText = "請選擇欲移動標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else {
+                        let request = {};
+                        request.titleCategoryId = (selectedTitleCategoryId == null ? 0 : selectedTitleCategoryId);
+                        request.TitleClassChecked = TitleClassChecked;
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/MoveTitleClasses`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.selectedTitleCategoryId = null;
+                    _this.TitleClassChecked = [];
+                },
+                editTitleClass: function (selectedTitleCategoryId, selectedTitleClassId, titleClassName) {
+                    let _this = this;
+                    if (selectedTitleClassId == null) {
+                        this.alertText = "請選擇欲修改標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else if (titleClassName == "") {
+                        this.alertText = "請輸入欲修改標籤名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.TitleClassId = selectedTitleClassId;
+                        request.titleCategoryId = (selectedTitleCategoryId == null ? 0 : selectedTitleCategoryId);
+                        request.titleClassName = titleClassName;
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/EditTitleClass`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.selectedTitleCategoryId = null;
+                    _this.selectedTitleClassId = null;
+                    _this.titleClassName = "";
+                },
+                editTitleCategory: function (selectedTitleCategoryId, titleCategoryName) {
+                    let _this = this;
+                    if (selectedTitleCategoryId == null) {
+                        this.alertText = "請選擇欲修改標籤類型";
+                        this.alertStatus = "失敗";
+                    }
+                    else if (titleCategoryName == "") {
+                        this.alertText = "請輸入欲修改標籤類型名稱";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.titleCategoryId = selectedTitleCategoryId;
+                        request.titleCategoryName = titleCategoryName;
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/EditTitleCategory`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.selectedTitleCategoryId = null;
+                    _this.titleCategoryName = null;
+                },
+                removeChooseTitleClass: function (id) {
+                    let _this = this;
+                    _this.TitleClassChecked.splice(jQuery.inArray(id, _this.TitleClassChecked), 1);
+                },
+                titleClassIdToName: function (id) {
+                    let _this = this;
+                    return _this.TitleClasses.filter(function (item) {
+                        return item.titleClassId == id;
+                    })[0].titleClassName;
+                },
+                deleteTitleClasses: function (delArray) {
+                    let _this = this;
+                    if (delArray.length == 0){
+                        this.alertText = "請選擇欲刪除標籤";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/DeleteTitleClasses`, delArray, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                this.alertText = response.data[0];
+                                this.alertStatus = response.data[1];
+                                this.bootPage();
+                            }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.TitleClassChecked = [];
+                },
+                deleteTitleCategory: function (selectedTitleCategoryId) {
+                    let _this = this;
+                    if (selectedTitleCategoryId == null) {
+                        this.alertText = "請選擇欲刪除標籤類型";
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        axios.post(`${this.baseAddress}/Admins/TitleClassManagement/DeleteTitleCategory`, selectedTitleCategoryId, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.bootPage();
+                        }).catch(err => { alert(err) });
+                    }
+                    this.alertOut();
+                    _this.selectedTitleCategoryId = null;
+                },
+                alertOut:function(){
+                    let time = window.setTimeout(( () => this.alertStatus = ""),5000);
+                },
+            },
+            watch:{
+
+            },
+            mounted: function () {
+                // let _this = this;
+                // alert("mounted");
+                this.bootPage();
+            },
+        };
+        let app = Vue.createApp(vueAppTitleClassManagement).mount("#TitleClassManagement");
+    </script>
+}
