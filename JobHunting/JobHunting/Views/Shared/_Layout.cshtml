@@ -97,6 +97,7 @@
     </div>
 
     @* 意見處理Modal *@
+    <div id="app">
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
          aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
@@ -110,15 +111,15 @@
                         <div class="inputOutAreas" style="width:95%">
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label">客服類別</label>
-                                <select class="form-control">
-                                    <option value="value">網站使用問題</option>
-                                    <option value="value">申訴/檢舉公司</option>
-                                    <option value="value">建議</option>
+                                <select class="form-control" v-model="letterclass">
+                                    <option >網站使用問題</option>
+                                    <option >申訴/檢舉公司</option>
+                                    <option >建議</option>
                                 </select>
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
-                                <input type="text" class="form-control ">
+                                <input type="text" class="form-control " v-model="subjectLine">
                             </div>
                             <div class="d-sm-flex inputAreas justify-content-around">
                                 <input type="file" accept="image/*" />
@@ -129,7 +130,7 @@
 
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                <textarea class="form-control" style="height:150px" name="意見信件訊息"></textarea>
+                                <textarea class="form-control" style="height:150px" name="意見信件訊息" v-model="content"></textarea>
                             </div>
 
                         </div>
@@ -139,7 +140,7 @@
                     <button id="insert" type="button"
                             class="btn btn-primary"
                             data-bs-dismiss="modal"
-                            v-on:click="insert">
+                                v-on:click="addletter">
                         送出
                     </button>
                     <button type="button"
@@ -151,6 +152,7 @@
             </div>
         </div>
     </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -160,7 +162,38 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="~/js/datatables-simple-demo.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        let vueLetter = {
+            data() {
+                return {
+                    letterclass: "",
+                    subjectLine: "",
+                    content: "",
+                };
+            },
+            methods: {
+                addletter() {
+                    let self = this;
+                    var request = {
+                        companyId: 3,
+                        letterclass: self.letterclass,
+                        subjectLine: self.subjectLine,
+                        content: self.content,
+                    };
+                        axios.post('https://localhost:7169/Home/AddLetter', request, {
+                            Headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            var s = await res.text();
+                             alert(s);
+                        }).catch(err => JSON.stringify(err))
+                },
+            }
+        };
+        Vue.createApp(vueLetter).mount("#app")
+    </script>
 </body>
 </html>
