@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace JobHunting.Areas.Admins.ViewModels
+﻿namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class PricingPlanFilterViewModel
+    public class PricingPlanFilterOutputViewModel
     {
-        [Key]
         public int planId { get; set; }
 
         public string title { get; set; }
@@ -18,5 +15,7 @@ namespace JobHunting.Areas.Admins.ViewModels
         public decimal? discount { get; set; }
 
         public bool status { get; set; }
+
+        public bool edit {  get; set; }
     }
 }
