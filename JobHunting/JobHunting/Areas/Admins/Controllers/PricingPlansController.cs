@@ -42,10 +42,42 @@ namespace JobHunting.Areas.Admins.Controllers
             }));
         }
 
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IEnumerable<PricingPlanFilterOutputViewModel>> BootFilterPage([FromBody][Bind("planId,title,intro,duration,price,discount,status")] PricingPlanFilterViewModel ppfvm)
+        {
+            return _context.PricingPlans.Select(pp => new PricingPlanFilterViewModel
+            {
+                planId = pp.PlanId,
+                title = pp.Title,
+                intro = pp.Intro,
+                duration = pp.Duration,
+                price = pp.Price,
+                discount = pp.Discount,
+                status = pp.Status,
+            }).Where(ppfvmfilter => ppfvmfilter.planId == ppfvm.planId ||
+                                    ppfvmfilter.title.Contains(ppfvm.title) ||
+                                    ppfvmfilter.intro.Contains(ppfvm.intro) ||
+                                    ppfvmfilter.duration == ppfvm.duration ||
+                                    ppfvmfilter.price == ppfvm.price ||
+                                    ppfvmfilter.discount == ppfvm.discount)
+            .Select(ppfvmfilter => new PricingPlanFilterOutputViewModel
+            {
+                planId = ppfvmfilter.planId,
+                title = ppfvmfilter.title,
+                intro = ppfvmfilter.intro,
+                duration = ppfvmfilter.duration,
+                price = ppfvmfilter.price,
+                discount = ppfvmfilter.discount,
+                status = ppfvmfilter.status,
+                edit = false,
+            });
+        }
+
         // POST: Admins/PricingPlans/EditPricingPlans
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanViewModel ppvm)
+        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanEditViewModel ppevm)
         {
             string[] returnStatus = new string[2];
             
@@ -55,12 +87,12 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            var pricingPlan = await _context.PricingPlans.FindAsync(ppvm.PlanId);
-            pricingPlan.Title = ppvm.Title;
-            pricingPlan.Duration = ppvm.Duration;
-            pricingPlan.Price = ppvm.Price;
-            pricingPlan.Discount = ppvm.Discount;
-            pricingPlan.Status = ppvm.Status;
+            var pricingPlan = await _context.PricingPlans.FindAsync(ppevm.PlanId);
+            pricingPlan.Title = ppevm.Title;
+            pricingPlan.Duration = ppevm.Duration;
+            pricingPlan.Price = ppevm.Price;
+            pricingPlan.Discount = ppevm.Discount;
+            pricingPlan.Status = ppevm.Status;
 
             _context.Entry(pricingPlan).State = EntityState.Modified;
             try
@@ -186,6 +218,73 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        
+
+        // POST: Admins/PricingPlans/createPlan
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> CreatePlan([FromBody][Bind("Title,Intro,Duration,Price,Discount")] PricingPlanCreateViewModel ppcvm)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["新增方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            PricingPlan ppadd = new PricingPlan
+            {
+                Title = ppcvm.Title,
+                Intro = ppcvm.Intro,
+                Duration = ppcvm.Duration,
+                Price = ppcvm.Price,
+                Discount = ppcvm.Discount == 0 ? 1 : ppcvm.Discount,
+                Status = true,
+            };
+
+            returnStatus = [$"新增方案{ppadd.Title}成功", "成功"];
+            _context.PricingPlans.Add(ppadd);
+            await _context.SaveChangesAsync();
+            return returnStatus;
+        }
+
+        // POST: Admins/PricingPlans/DeletePlan
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> DeletePlan([FromBody]int planId)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["刪除方案失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var plan = await _context.PricingPlans.FindAsync(planId);
+            if (plan != null)
+            {
+                _context.PricingPlans.Remove(plan);
+            }
+            else
+            {
+                returnStatus = [$"不存在此方案ID:{planId}", "失敗"];
+                return returnStatus;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                returnStatus = [$"刪除ID為{planId}的關聯方案失敗!", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"刪除方案{plan.Title}成功", "成功"];
+            return returnStatus;
+
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class TagClassesViewModel
+    public class TagClassViewModel
     {
         [Key]
         public int TagClassId { get; set; }

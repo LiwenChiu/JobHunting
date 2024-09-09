@@ -361,21 +361,12 @@
                         method: "GET",
                     }).then(response => {
                         return response.json();
-                    })
-                        .then(data => {
+                    }).then(data => {
                             return this.resumes = data
                         }).catch(err => {
                             alert(JSON.stringify(err))
                         });
-
-                    // axios.get(`${this.baseAddress}/Companies/C_Resume/OpClassTitle`).then(
-                    //     res => this.OpClassTitle = res.data
-                    // ).catch(
-                    //     err => { alert(err) }
-                    // );
                 },
-
-
             },
             watch: {
                 

@@ -49,7 +49,7 @@ CREATE TABLE TitleClasses
 	TitleClassId int primary key identity,
 	TitleCategoryId int default(0)
 		references TitleCategories(TitleCategoryId)
-		on delete set null,
+		on delete set default,
 	TitleClassName nvarchar(30) not null,
 )
 GO
