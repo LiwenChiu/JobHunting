@@ -49,7 +49,7 @@
 
 
         @*履歷新增內容*@
-        <form method="post" ref="resumeForm">
+
             <div class="modal fade" 
                  id="insertmodelID"
                  tabindex="-1"
@@ -80,7 +80,9 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            
+                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <a href="#" class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></a>
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">名字
@@ -97,13 +99,13 @@
                                                     <input type="date" v-model="candidateBirthday" disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">電話</label>
-                                                    <input type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
-                                                        <label for="" class="mb-2">學歷</label>
-                                                    <input type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
+                                                        <label for="" class="mb-2">電話 :</label>
+                                                    <input class="mx-1" type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
+                                                        <label class="mx-1" for="" class="mb-2">學歷 :</label>
+                                                    <input class="mx-1" type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">郵件</label>
+                                                        <label for="" class="mb-2">郵件 :</label>
                                                     <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" v-model="candidateEmail">
                                                     </div>
                                                     <div class="col">
@@ -169,10 +171,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3 ">
-                                    <span class="form-control text-center ">履歷狀態：
-                                        <select v-model="ReleaseYN" class="btn btn-primary ms-4">
-                                            <option value="true">開放</option>
-                                            <option value="false">關閉</option>
+                                    <span class="form-control text-center ">
+                                        履歷狀態：
+                                        <select v-model="releaseYN" class="btn btn-primary ms-4" disabled>
+                                            <option :value="true">開放</option>
+                                            <option :value="false">關閉</option>
                                         </select>
                                     </span>
                                 </div>
@@ -186,7 +189,7 @@
                         </div>
                     </div>
                 </div>
-            </div></form>
+            </div>
             
 
         @* 履歷內容Modal *@
@@ -213,7 +216,7 @@
                                         class="btn-close"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"
-                                        style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                                            style="width:5% ;" v-on:click="cancel(ResumeD)">
                                 </button>
                             </div>
 
@@ -222,6 +225,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                                <a href="#" class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></a>
                                             <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">
@@ -237,7 +241,7 @@
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                        <label for="" class="mb-2">學歷 : {{ResumeD.degree}}</label>
+                                                        <label for="" class="mb-2 mx-3">學歷 : {{ResumeD.degree}}</label>
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
@@ -309,9 +313,9 @@
                                 </div>
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">履歷狀態：
-                                        <select v-model="ReleaseYN" class="btn btn-primary ms-4">
-                                            <option value="true">開放</option>
-                                            <option value="false">關閉</option>
+                                            <select v-model="ResumeD.ReleaseYN" class="btn btn-primary ms-4">
+                                                <option :value="true">開放</option>
+                                                <option :value="false">關閉</option>
                                         </select>
                                     </span>
                                 </div>
@@ -344,10 +348,11 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></div>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2" size="10">姓名:{{ResumeD.name}}
-                                                        </label>
+                                                        <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
+                                                       
                                                 </div>
                                                 <div>
                                                     <label for="" class="mb-2" >性別 : {{Sexif(ResumeD.sex)}}</label>
@@ -357,7 +362,7 @@
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                    <label for="" class="mb-2">學歷 : {{ResumeD.degree}}</label>
+                                                    <label for="" class="mb-2 mx-3">學歷 : {{ResumeD.degree}}</label>
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
@@ -423,7 +428,7 @@
                                     </div>
                                 </div>
                                 <div class=" col-md-3 ">
-                                    <label class="form-control text-center" v-model="">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
+                                        <label class="form-control text-center" v-model="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
                                 </div>
                             </div>
                             <div class="" style="text-align:right">
@@ -489,6 +494,7 @@
                     Resume: [],
                     // CandidateNmae:"",
                     ResumeName:"",
+                    releaseYN:true,
                     // CandidateDegree:"",
                     // Employment:"",
                     WorkExperience:"",
@@ -501,7 +507,6 @@
                     // candidateEmail:"",
                     // candidateEmploymentStatus:"",
                     // timeR: "",
-                    ReleaseYN:true,
                     sexYN:false,
                     ResumeIntro:"",
                     TagClasses: [
@@ -599,7 +604,7 @@
                     request.Title = _this.ResumeName;
                     request.WorkExperience = _this.WorkExperience;
                     request.Autobiography = _this.Autobiography;
-                    request.ReleaseYN = _this.ReleaseYN;
+                    request.ReleaseYN = _this.releaseYN;
                     request.Intro = _this.ResumeIntro;
 
                     fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
@@ -611,7 +616,12 @@
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        alert(data.message);
+                        if (data.success) {
+                            alert("新增履歷成功")
+                            window.location.reload();
+                        } else {
+                            alert("新增履歷失敗")
+                        }
                     }).catch(err => {
                         console.log(err)
                     })
@@ -622,8 +632,6 @@
                     _this.ReleaseYN="";
                     _this.ResumeIntro="";
 
-                    //清空表單資訊
-                    _this.$refs.resumeForm.reset();
                 },
                 
                 //編輯完成再確認，並執行editResumD()
@@ -646,8 +654,9 @@
                     request.Autobiography = ResumeD.autobiography;
                     request.WorkExperience = ResumeD.workExperience;
                     request.Time = ResumeD.time;
-                    request.ReleaseYN = ResumeD.releaseYN;
+                    request.ReleaseYN = ResumeD.ReleaseYN;
                     request.Intro = ResumeD.intro;
+                    console.log(request.ReleaseYN);
                     fetch("https://localhost:7169/Candidates/Resume/EditResume", {
                         method: "POST",
                         headers: {
@@ -657,7 +666,12 @@
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        alert(data.message);
+                        if (data.success) {
+                            alert("編輯履歷成功")
+                            window.location.reload();
+                        } else {
+                            alert("編輯履歷失敗")
+                        }
                     }).catch(err => {
                         alert(err)
                     });
@@ -671,7 +685,7 @@
                     request.resumeid = item.resumeid;
                     if (confirmdel == true) {
                         fetch("https://localhost:7169/Candidates/Resume/DelResume", {
-                            method:"POST",
+                            method: "DELETE",
                             headers: {
                                 "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
                             },
@@ -679,7 +693,13 @@
                         }).then(response => {
                             return response.json();
                         }).then(data=>{
-                            alert(data.message);
+                            if (data.success) {
+                                alert("刪除履歷成功")
+                                window.location.reload();
+                            } else {
+                                alert("刪除履歷失敗")
+                            }
+                            // alert(data.message);
                         }).catch(err => {
                             alert(err)
                         })

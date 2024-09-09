@@ -84,22 +84,22 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
-                return Json(new { message = "新增成功"});
+                
             }
             catch (Exception ex) 
             {
                 return Json(new { message = "新增履歷失敗" });
             }
-                
-                //candidate.Name = Creatr.Name;
-                //candidate.Sex = Creatr.Sex;
-                //candidate.Birthday = Creatr.Birthday;
-                //candidate.Phone = Creatr.Phone;
-                //candidate.Degree = Creatr.Degree;
-                //candidate.Email = Creatr.Email;
-                //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+            return Json(new { success = true, message = "新增履歷成功" });
+            //candidate.Name = Creatr.Name;
+            //candidate.Sex = Creatr.Sex;
+            //candidate.Birthday = Creatr.Birthday;
+            //candidate.Phone = Creatr.Phone;
+            //candidate.Degree = Creatr.Degree;
+            //candidate.Email = Creatr.Email;
+            //candidate.EmploymentStatus = Creatr.EmploymentStatus;
 
-                
+
         }
             //return View(Creatr);
         //}
@@ -108,7 +108,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
         {
-
+            
 
             var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
@@ -133,15 +133,21 @@ namespace JobHunting.Areas.Candidates.Controllers
             r.ReleaseYN = rm.ReleaseYN;
 
             //_context.Entry(r).State = EntityState.Modified;
-
+            try
+            {
                 await _context.SaveChangesAsync();
+                
+            }
+            catch (Exception ex) 
+            {
+                return Json(new { message = "修改失敗" });
+            }
 
-                return Json ( new { message = "修改成功"});
-            
+            return Json(new { success = true, message = "修改成功" });
         }
 
 
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> DelResume([FromBody] ResumeInputModel rm)
         {
             var resume = await _context.Resumes.FindAsync(rm.ResumeId);
@@ -157,7 +163,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return Json(new { message = "刪除履歷失敗" });
             }
-            return Json(new { message = "刪除履歷成功" });
+            return Json(new { success = true,message = "刪除履歷成功" });
         }
 
     }
