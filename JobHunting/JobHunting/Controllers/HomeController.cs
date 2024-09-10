@@ -44,11 +44,11 @@ namespace JobHunting.Controllers
                 skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                 Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
             }).Where(b =>
-                    b.Age.ToString().Contains(resume.serchText) ||
+                    b.Age.ToString() == resume.serchText ||
                     b.Sex == resume.Sex ||
                     b.Name.Contains(resume.serchText) ||
-                    b.Address.Contains(resume.Area) ||
-                    b.Degree.Contains(resume.Edu) ||
+                    //b.Address.Contains(resume.Area) ||
+                    //b.Degree.Contains(resume.Edu) 
                     b.skill.Any(z => z.TagId == resume.Skill))
                     .Select(x => new ResumesOutput
                     {
@@ -100,6 +100,18 @@ namespace JobHunting.Controllers
                 TagClassName = p.TagClassName,
                 TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
+        }
+        [HttpPost]
+        public async Task<string> AddLetter([FromBody] InsterLetter letter)
+        {
+            OpinionLetter opinionLetter = new OpinionLetter();
+            opinionLetter.CompanyId = letter.CompanyId;
+            opinionLetter.Class = letter.Letterclass;
+            opinionLetter.SubjectLine = letter.SubjectLine;
+            opinionLetter.Content = letter.Content;
+            _context.OpinionLetters.Add(opinionLetter);
+            await _context.SaveChangesAsync();
+            return "新增信件成功";
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
