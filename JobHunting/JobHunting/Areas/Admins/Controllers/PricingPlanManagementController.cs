@@ -11,22 +11,22 @@ using JobHunting.Areas.Admins.ViewModels;
 namespace JobHunting.Areas.Admins.Controllers
 {
     [Area("Admins")]
-    public class PricingPlansController : Controller
+    public class PricingPlanManagementController : Controller
     {
         private readonly DuckAdminsContext _context;
 
-        public PricingPlansController(DuckAdminsContext context)
+        public PricingPlanManagementController(DuckAdminsContext context)
         {
             _context = context;
         }
 
-        // GET: Admins/PricingPlans
+        // GET: Admins/PricingPlanManagement
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        // GET: Admins/PricingPlans/IndexPricingPlans
+        // GET: Admins/PricingPlanManagement/IndexPricingPlans
         public JsonResult IndexPricingPlans()
         {
             return Json(_context.PricingPlans.Select(pp => new
@@ -42,42 +42,42 @@ namespace JobHunting.Areas.Admins.Controllers
             }));
         }
 
+        // POST: Admins/PricingPlanManagement/BootFilterPage
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<PricingPlanFilterOutputViewModel>> BootFilterPage([FromBody][Bind("planId,title,intro,duration,price,discount,status")] PricingPlanFilterViewModel ppfvm)
-        {
-            return _context.PricingPlans.Select(pp => new PricingPlanFilterViewModel
+        public async Task<IEnumerable<PricingPlanManagementFilterOutputViewModel>> BootFilterPage([FromBody][Bind("PlanId,Title,Intro,Duration,Price,Discount,Status")] PricingPlanManagementFilterViewModel ppfvm)
+       {
+            return _context.PricingPlans.Select(pp => new PricingPlanManagementFilterViewModel
             {
-                planId = pp.PlanId,
-                title = pp.Title,
-                intro = pp.Intro,
-                duration = pp.Duration,
-                price = pp.Price,
-                discount = pp.Discount,
-                status = pp.Status,
-            }).Where(ppfvmfilter => ppfvmfilter.planId == ppfvm.planId ||
-                                    ppfvmfilter.title.Contains(ppfvm.title) ||
-                                    ppfvmfilter.intro.Contains(ppfvm.intro) ||
-                                    ppfvmfilter.duration == ppfvm.duration ||
-                                    ppfvmfilter.price == ppfvm.price ||
-                                    ppfvmfilter.discount == ppfvm.discount)
-            .Select(ppfvmfilter => new PricingPlanFilterOutputViewModel
+                PlanId = pp.PlanId,
+                Title = pp.Title,
+                Intro = pp.Intro,
+                Duration = pp.Duration,
+                Price = pp.Price,
+                Discount = pp.Discount,
+                Status = pp.Status,
+            }).Where(ppfvmfilter => ppfvmfilter.Title.Contains(ppfvm.Title) ||
+                                    ppfvmfilter.Intro.Contains(ppfvm.Intro) ||
+                                    ppfvmfilter.Duration.ToString().Contains(ppfvm.Duration.ToString()) ||
+                                    ppfvmfilter.Price.ToString().Contains(ppfvm.Price.ToString()) ||
+                                    ppfvmfilter.Discount.ToString().Contains(ppfvm.Discount.ToString()))
+            .Select(ppfvmfilter => new PricingPlanManagementFilterOutputViewModel
             {
-                planId = ppfvmfilter.planId,
-                title = ppfvmfilter.title,
-                intro = ppfvmfilter.intro,
-                duration = ppfvmfilter.duration,
-                price = ppfvmfilter.price,
-                discount = ppfvmfilter.discount,
-                status = ppfvmfilter.status,
-                edit = false,
+                PlanId = ppfvmfilter.PlanId,
+                Title = ppfvmfilter.Title,
+                Intro = ppfvmfilter.Intro,
+                Duration = ppfvmfilter.Duration,
+                Price = ppfvmfilter.Price,
+                Discount = ppfvmfilter.Discount,
+                Status = ppfvmfilter.Status,
+                Edit = false,
             });
         }
 
-        // POST: Admins/PricingPlans/EditPricingPlans
+        // POST: Admins/PricingPlanManagement/EditPricingPlans
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanEditViewModel ppevm)
+        public async Task<Array> EditPricingPlans([FromBody][Bind("PlanId,Title,Duration,Price,Discount,Status")] PricingPlanManagementEditViewModel ppevm)
         {
             string[] returnStatus = new string[2];
             
@@ -109,10 +109,10 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        // POST: Admins/PricingPlans/EditIntro
+        // POST: Admins/PricingPlanManagement/EditIntro
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> EditIntro([FromBody][Bind("PlanId,Intro")] PricingPlanIntroViewModel ppivm)
+        public async Task<Array> EditIntro([FromBody][Bind("PlanId,Intro")] PricingPlanManagementIntroViewModel ppivm)
         {
             string[] returnStatus = new string[2];
 
@@ -146,7 +146,7 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        // POST: Admins/PricingPlans/PlanStatusFalse
+        // POST: Admins/PricingPlanManagement/PlanStatusFalse
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<Array> PlanStatusFalse([FromBody]int planID)
@@ -182,7 +182,7 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        // POST: Admins/PricingPlans/PlanStatusTrue
+        // POST: Admins/PricingPlanManagement/PlanStatusTrue
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<Array> PlanStatusTrue([FromBody] int planID)
@@ -219,10 +219,10 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
 
-        // POST: Admins/PricingPlans/createPlan
+        // POST: Admins/PricingPlanManagement/CreatePlan
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CreatePlan([FromBody][Bind("Title,Intro,Duration,Price,Discount")] PricingPlanCreateViewModel ppcvm)
+        public async Task<Array> CreatePlan([FromBody][Bind("Title,Intro,Duration,Price,Discount")] PricingPlanManagementCreateViewModel ppcvm)
         {
             string[] returnStatus = new string[2];
 
@@ -248,7 +248,7 @@ namespace JobHunting.Areas.Admins.Controllers
             return returnStatus;
         }
 
-        // POST: Admins/PricingPlans/DeletePlan
+        // POST: Admins/PricingPlanManagement/DeletePlan
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<Array> DeletePlan([FromBody]int planId)

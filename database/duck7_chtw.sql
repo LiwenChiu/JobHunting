@@ -1,6 +1,7 @@
 USE [master]
 GO
 CREATE DATABASE [Duck]
+COLLATE Chinese_PRC_CI_AS;
 GO
 USE [Duck]
 GO
@@ -226,7 +227,6 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
-	Duration int not null,
 	[Status] bit not null default(0),
 )
 GO

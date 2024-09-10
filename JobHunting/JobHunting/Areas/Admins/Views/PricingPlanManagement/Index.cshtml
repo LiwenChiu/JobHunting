@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.PricingPlanFilterOutputViewModel>
+﻿@model IEnumerable<JobHunting.Areas.Admins.ViewModels.PricingPlanManagementFilterOutputViewModel>
 
 @{
     ViewData["Title"] = "方案管理";
@@ -11,7 +11,7 @@
     </style>
 }
 
-<div id="PricingPlans">
+<div id="PricingPlanManagement">
     <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
         @* 通知 *@
         <template v-if="alertStatus == '成功'">
@@ -28,7 +28,7 @@
         </template>
 
         <h3 align="center">方案管理</h3>
-        <div class="border border-3 container" style="overflow-y:auto;height:75vh">
+        <div class="border border-3 container" style="overflow-y:auto;height:74vh">
             @* <div class="row">
                 <div class="col-11">
                     <div class="row" style="display:flex;align-items: center;justify-content: center;">
@@ -65,7 +65,7 @@
                                     <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim.number="plan.price" /></label>
                                     <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim.number="plan.discount" /></label>
                                     <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
-                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootPage();">取消</button>
+                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
                                 </template>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                                     <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim.number="plan.price" /></label>
                                     <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim.number="plan.discount" /></label>
                                     <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
-                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootPage();">取消</button>
+                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
                                 </template>
                             </div>
                         </div>
@@ -107,11 +107,11 @@
             </div>
         </div>
         <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
-            @* <div class="col-4">
+            <div class="col-md-6">
                 <label for="filterPlan">關鍵字搜尋: </label>
-                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model="filterPlanInput" v-on:keyup="bootFilterPage();" />
+                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model.trim="filterPlanInput" v-on:keyup="bootFilterPage();" />
                 <button class="btn btn-warning text-light" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
-            </div> *@
+            </div>
             <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createPlan">新增</button>
             <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deletePlan">刪除</button>
         </div>
@@ -216,7 +216,7 @@
 @section Scripts
 {
     <script>
-        let vueAppPricingPlans = {
+        let vueAppPricingPlanManagement = {
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
@@ -234,26 +234,24 @@
             },
             methods: {
                 bootPage: function(){
-                    axios.get(`${this.baseAddress}/Admins/PricingPlans/IndexPricingPlans`).then(
+                    axios.get(`${this.baseAddress}/Admins/PricingPlanManagement/IndexPricingPlans`).then(
                         response => this.pricingPlans = response.data
                     ).catch(err => { alert(err) });
                 },
-                // bootFilterPage: function () {
-                //     let request = {};
-                //     request.planId = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
-                //     request.title = request.intro = this.filterPlanInput;
-                //     request.duration = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
-                //     request.price = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
-                //     request.discount = isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput);
-                //     request.status = null;
-                //     axios.post(`${this.baseAddress}/Admins/PricingPlans/BootFilterPage`, request, {
-                //         headers: {
-                //             'Content-Type':'application/json'
-                //         }
-                //     })
-                //     .then(response => this.pricingPlans = response.data)
-                //     .catch(err => { alert(err) });
-                // },
+                bootFilterPage: function () {
+                    let request = {};
+                    request.Title = this.filterPlanInput
+                    request.Intro = this.filterPlanInput;
+                    request.Duration = request.Price = (Number.isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput));
+                    request.Discount = (Number.isNaN(Number(this.filterPlanInput)) ? -1 : Number(this.filterPlanInput))/100;
+                    axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/BootFilterPage`, request, {
+                        headers: {
+                            'Content-Type':'application/json'
+                        }
+                    })
+                    .then(response => this.pricingPlans = response.data)
+                    .catch(err => { alert(err) });
+                },
                 planStatusTF:function(status){
                     return this.pricingPlans.filter(function (plan) {
                         return plan.status == status;
@@ -287,7 +285,8 @@
                     if (wrongCount > 0) {
                         this.alertText = `${str}`;
                         this.alertStatus = "失敗";
-                        this.bootPage();
+                        //this.bootPage();
+                        this.bootFilterPage();
                     }
                     else {
                         let request = {};
@@ -297,14 +296,15 @@
                         request.Price = plan.price;
                         request.Discount = plan.discount;
                         request.Status = plan.status;
-                        axios.post(`${this.baseAddress}/Admins/PricingPlans/EditPricingPlans`, request, {
+                        axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/EditPricingPlans`, request, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.bootPage();
+                            //this.bootPage();
+                            this.bootFilterPage();
                         }).catch(err => { alert(err) });
                     }
                     plan.edit = false;
@@ -320,40 +320,43 @@
                         let request = {};
                         request.PlanId = clickedPlanIntroId;
                         request.Intro = clickedPlanIntro;
-                        axios.post(`${this.baseAddress}/Admins/PricingPlans/EditIntro`, request, {
+                        axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/EditIntro`, request, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.bootPage();
+                            //this.bootPage();
+                            this.bootFilterPage();
                         }).catch(err => { alert(err) });
                     }
                     this.editIntroModal = false;
                     this.alertOut();
                 },
                 planStatusFalse:function(plan){
-                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusFalse`, plan.planId, {
+                    axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/PlanStatusFalse`, plan.planId, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
-                        this.bootPage();
+                        //this.bootPage();
+                        this.bootFilterPage();
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },
                 planStatusTrue:function(plan){
-                    axios.post(`${this.baseAddress}/Admins/PricingPlans/PlanStatusTrue`, plan.planId, {
+                    axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/PlanStatusTrue`, plan.planId, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
                         this.alertText = response.data[0];
                         this.alertStatus = response.data[1];
-                        this.bootPage();
+                        //this.bootPage();
+                        this.bootFilterPage();
                         this.alertOut();
                     }).catch(err => { alert(err) });
                 },
@@ -399,14 +402,15 @@
                         request.duration = createNewPlan.duration;
                         request.price = createNewPlan.price;
                         request.discount = createNewPlan.discount;
-                        axios.post(`${this.baseAddress}/Admins/PricingPlans/CreatePlan`, request, {
+                        axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/CreatePlan`, request, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.bootPage();
+                            //this.bootPage();
+                            this.bootFilterPage();
                             this.createNewPlan = {};
                         }).catch(err => { alert(err) });
                     }
@@ -418,14 +422,15 @@
                         this.alertStatus = "失敗";
                     }
                     else{
-                        axios.post(`${this.baseAddress}/Admins/PricingPlans/DeletePlan`, selectedPlanId, {
+                        axios.post(`${this.baseAddress}/Admins/PricingPlanManagement/DeletePlan`, selectedPlanId, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.bootPage();
+                            //this.bootPage();
+                            this.bootFilterPage();
                         }).catch(err => { alert(err) });
                     }
                     this.alertOut();
@@ -435,9 +440,10 @@
                 },
             },
             mounted: function () {
-                this.bootPage();
+                //this.bootPage();
+                this.bootFilterPage();
             },
         }
-        let app = Vue.createApp(vueAppPricingPlans).mount("#PricingPlans");
+        let app = Vue.createApp(vueAppPricingPlanManagement).mount("#PricingPlanManagement");
     </script>
 }

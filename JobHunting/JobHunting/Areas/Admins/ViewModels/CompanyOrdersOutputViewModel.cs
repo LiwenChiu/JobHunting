@@ -9,11 +9,11 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public int? CompanyId { get; set; }
 
-        public int? PlanId { get; set; }
-
         public string CompanyName { get; set; }
 
         public string GUINumber { get; set; }
+
+        public int? PlanId { get; set; }
 
         public string Title { get; set; }
 
