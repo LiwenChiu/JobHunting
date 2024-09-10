@@ -20,12 +20,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IEnumerable<ResumesOutput>> CompanyIndexList([FromBody] ResumeInputModel resume)
+        public async Task<IActionResult> CompanyIndexList()
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).ToList();
-            var temp = source.Select(c => new
+            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Select(c => new CompanyResumeListViewModel
             {
                 ResumeID = c.ResumeId,
                 CandidateID = c.CandidateId,
@@ -38,6 +36,31 @@ namespace JobHunting.Controllers
                 WishAddress = c.Address,
                 Name = c.Candidate.Name,
                 Sex = c.Candidate.Sex,
+                Degree = c.Candidate.Degree,
+                Address = c.Candidate.Address,
+                TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+            }));
+        }
+        [HttpPost]
+        public async Task<IEnumerable<ResumesOutput>> SelectIndexList([FromBody] ResumeInputModel resume)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).ToList();
+            
+            var temp = source.Select(c => new
+            {
+                ResumeID = c.ResumeId,
+                CandidateID = c.CandidateId,
+                Title = c.Title,
+                Intro = c.Intro,
+                Autobiography = c.Autobiography,
+                WorkExperience = c.WorkExperience,
+                Certification = c.Certification,
+                WishAddress = c.Address,
+                Time = c.Time,
+                Name = c.Candidate.Name,
+                Sex = c.Candidate.Sex,
                 Birthday = c.Candidate.Birthday,
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
@@ -48,8 +71,11 @@ namespace JobHunting.Controllers
                     b.Sex == resume.Sex ||
                     b.Name.Contains(resume.serchText) ||
                     //b.Address.Contains(resume.Area) ||
-                    //b.Degree.Contains(resume.Edu) 
+                    b.Address.Contains(resume.serchText) ||
+                    //b.Degree.Contains(resume.Edu) ||
+                    b.Degree.Contains(resume.serchText) ||
                     b.skill.Any(z => z.TagId == resume.Skill))
+
                     .Select(x => new ResumesOutput
                     {
                         ResumeID = x.ResumeID,
