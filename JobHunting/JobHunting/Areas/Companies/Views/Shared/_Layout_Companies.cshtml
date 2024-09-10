@@ -101,7 +101,7 @@
                                 </div>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Home" asp-action="PricingPlans">方案選擇</a>
+                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="PricingPlans" asp-action="Index">方案選擇</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Home" asp-action="PricingOrderHistory">訂單紀錄</a>
@@ -129,8 +129,8 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="~/js/datatables-simple-demo.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="~/lib/datatables/js/datatables.bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js"></script>
+    @* <script src="~/lib/datatables/js/datatables.bootstrap.min.js"></script> *@
+    @* <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js"></script> *@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @await RenderSectionAsync("Scripts", required: false)

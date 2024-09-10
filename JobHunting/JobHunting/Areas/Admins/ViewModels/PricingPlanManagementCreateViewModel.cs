@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class PricingPlanCreateViewModel
+    public class PricingPlanManagementCreateViewModel
     {
         public string Title { get; set; }
 

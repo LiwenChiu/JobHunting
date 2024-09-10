@@ -30,7 +30,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
 
 
-            return Json(_context.Resumes.Include(r => r.Candidate).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Include(t=>t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -48,59 +48,67 @@ namespace JobHunting.Areas.Candidates.Controllers
                 candidateid = a.CandidateId,
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
+                intro = a.Intro,
+                titleClass = a.TitleClasses,
                 edit = false,
             }));
         }
 
-        //[HttpPost]
+        [HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateReasumes(addResumeInputModel Creatr)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var candidate = await _context.Candidates.FindAsync(Creatr.CandidateId);
+        public async Task<IActionResult> CreateReasumes ([FromBody]addResumeInputModel Creatr)
+        {
+            //if (ModelState.IsValid)
+            //{
 
-        //        if (candidate == null)
-        //        {
-        //            return NotFound();
-        //        }
+            try
+            {
+                var candidate = await _context.Candidates.FindAsync(Creatr.CandidateId);
 
-        //        Resume insert = new Resume()
-        //        {
-        //            Address = Creatr.Address,
-        //            Time = Creatr.Time,
-        //            Title = Creatr.Title,
-        //            Certification = Creatr.Certification,
-        //            WorkExperience = Creatr.WorkExperience,
-        //            Autobiography = Creatr.Autobiography,
-        //            ReleaseYN = Creatr.ReleaseYN,
-        //            CandidateId = Creatr.CandidateId,
-        //            ResumeId = Creatr.ResumeId,
-        //        };
+                if (candidate == null)
+                {
+                    return NotFound(new { Message = "Resume not found" });
+                }
 
-        //        //candidate.Name = Creatr.Name;
-        //        //candidate.Sex = Creatr.Sex;
-        //        //candidate.Birthday = Creatr.Birthday;
-        //        //candidate.Phone = Creatr.Phone;
-        //        //candidate.Degree = Creatr.Degree;
-        //        //candidate.Email = Creatr.Email;
-        //        //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+                Resume insert = new Resume()
+                {
+                    Address = Creatr.Address,
+                    //Time = Creatr.Time,
+                    Title = Creatr.Title,
+                    //Certification = Creatr.Certification,
+                    WorkExperience = Creatr.WorkExperience,
+                    Autobiography = Creatr.Autobiography,
+                    ReleaseYN = Creatr.ReleaseYN,
+                    CandidateId = Creatr.CandidateId,
+                    Intro = Creatr.Intro,
+                };
+                _context.Resumes.Add(insert);
+                await _context.SaveChangesAsync();
+                
+            }
+            catch (Exception ex) 
+            {
+                return Json(new { message = "新增履歷失敗" });
+            }
+            return Json(new { success = true, message = "新增履歷成功" });
+            //candidate.Name = Creatr.Name;
+            //candidate.Sex = Creatr.Sex;
+            //candidate.Birthday = Creatr.Birthday;
+            //candidate.Phone = Creatr.Phone;
+            //candidate.Degree = Creatr.Degree;
+            //candidate.Email = Creatr.Email;
+            //candidate.EmploymentStatus = Creatr.EmploymentStatus;
 
 
-
-
-        //        _context.Resumes.Add(insert);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(ResumeManage));
-        //    }
-        //    return View(Creatr);
+        }
+            //return View(Creatr);
         //}
 
         //Post: /Candidates/Resume/EditResume
         [HttpPost]
-        public async Task<IActionResult> EditResume([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
         {
-
+            
 
             var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
@@ -116,6 +124,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             //c.Phone = rm.Phone;
             //c.Degree = rm.Degree;
             //c.Email = rm.Email;
+            r.Intro = rm.Intro;
             r.Address = rm.Address;
             r.Title = rm.Title;
             r.Autobiography = rm.Autobiography;
@@ -124,15 +133,21 @@ namespace JobHunting.Areas.Candidates.Controllers
             r.ReleaseYN = rm.ReleaseYN;
 
             //_context.Entry(r).State = EntityState.Modified;
-
+            try
+            {
                 await _context.SaveChangesAsync();
+                
+            }
+            catch (Exception ex) 
+            {
+                return Json(new { message = "修改失敗" });
+            }
 
-                return Json ( new { message = "修改成功"});
-            
+            return Json(new { success = true, message = "修改成功" });
         }
 
 
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> DelResume([FromBody] ResumeInputModel rm)
         {
             var resume = await _context.Resumes.FindAsync(rm.ResumeId);
@@ -148,7 +163,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return Json(new { message = "刪除履歷失敗" });
             }
-            return Json(new { message = "刪除履歷成功" });
+            return Json(new { success = true,message = "刪除履歷成功" });
         }
 
     }
