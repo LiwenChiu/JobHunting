@@ -51,7 +51,7 @@ public partial class DuckAdminsContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminId).HasName("PK__Admins__719FE488905AE6C2");
+            entity.HasKey(e => e.AdminId).HasName("PK__Admins__719FE4886287635D");
 
             entity.Property(e => e.Email)
                 .IsRequired()
@@ -66,7 +66,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Candidate>(entity =>
         {
-            entity.HasKey(e => e.CandidateId).HasName("PK__Candidat__DF539B9C518DCE91");
+            entity.HasKey(e => e.CandidateId).HasName("PK__Candidat__DF539B9CDC788E35");
 
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Degree).HasMaxLength(30);
@@ -88,7 +88,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasKey(e => e.CompanyId).HasName("PK__Companie__2D971CACB97DA132");
+            entity.HasKey(e => e.CompanyId).HasName("PK__Companie__2D971CAC2B1FB79E");
 
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Benefits).HasMaxLength(200);
@@ -125,7 +125,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<CompanyCategory>(entity =>
         {
-            entity.HasKey(e => e.CompanyCategoryId).HasName("PK__CompanyC__0DD41130C9D4B7CA");
+            entity.HasKey(e => e.CompanyCategoryId).HasName("PK__CompanyC__0DD41130B42A2D8E");
 
             entity.Property(e => e.CompanyCategoryId)
                 .HasMaxLength(1)
@@ -137,7 +137,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<CompanyClass>(entity =>
         {
-            entity.HasKey(e => e.CompanyClassId).HasName("PK__CompanyC__2EBC463F1DF37319");
+            entity.HasKey(e => e.CompanyClassId).HasName("PK__CompanyC__2EBC463FC67ABA13");
 
             entity.Property(e => e.CompanyClassId)
                 .HasMaxLength(2)
@@ -158,7 +158,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<CompanyOrder>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__CompanyO__C3905BCF9908BC63");
+            entity.HasKey(e => e.OrderId).HasName("PK__CompanyO__C3905BCF0A9C2422");
 
             entity.Property(e => e.CompanyName)
                 .IsRequired()
@@ -186,7 +186,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<CompanyResumeRecord>(entity =>
         {
-            entity.HasKey(e => new { e.CompanyId, e.ResumeId }).HasName("PK__CompanyR__40EA66A3316DA63F");
+            entity.HasKey(e => new { e.CompanyId, e.ResumeId }).HasName("PK__CompanyR__40EA66A373D98BE4");
 
             entity.HasOne(d => d.Company).WithMany(p => p.CompanyResumeRecords)
                 .HasForeignKey(d => d.CompanyId)
@@ -199,7 +199,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E12EBD49A0D");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E12633C7439");
 
             entity.Property(e => e.AppointmentTime).HasColumnType("datetime");
             entity.Property(e => e.Content).IsRequired();
@@ -221,7 +221,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Opening>(entity =>
         {
-            entity.HasKey(e => e.OpeningId).HasName("PK__Openings__808F8733971DB2D7");
+            entity.HasKey(e => e.OpeningId).HasName("PK__Openings__808F8733C78FF245");
 
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Benefits).HasMaxLength(200);
@@ -258,7 +258,7 @@ public partial class DuckAdminsContext : DbContext
                         .HasConstraintName("FK__OpeningTa__Openi__5629CD9C"),
                     j =>
                     {
-                        j.HasKey("OpeningId", "TagId").HasName("PK__OpeningT__56D848A9D9A9EF41");
+                        j.HasKey("OpeningId", "TagId").HasName("PK__OpeningT__56D848A9F1553597");
                         j.ToTable("OpeningTags");
                     });
 
@@ -273,14 +273,14 @@ public partial class DuckAdminsContext : DbContext
                         .HasConstraintName("FK__OpeningTi__Openi__37A5467C"),
                     j =>
                     {
-                        j.HasKey("OpeningId", "TitleClassId").HasName("PK__OpeningT__0743ACD83E9B8DDD");
+                        j.HasKey("OpeningId", "TitleClassId").HasName("PK__OpeningT__0743ACD8C0991468");
                         j.ToTable("OpeningTitleClasses");
                     });
         });
 
         modelBuilder.Entity<OpinionLetter>(entity =>
         {
-            entity.HasKey(e => e.LetterId).HasName("PK__OpinionL__AE46E8F1813BDF64");
+            entity.HasKey(e => e.LetterId).HasName("PK__OpinionL__AE46E8F16B1B0B6B");
 
             entity.Property(e => e.Class)
                 .IsRequired()
@@ -308,7 +308,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<PricingPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__PricingP__755C22B7C7970F28");
+            entity.HasKey(e => e.PlanId).HasName("PK__PricingP__755C22B7FB672304");
 
             entity.Property(e => e.Discount)
                 .HasDefaultValue(1m)
@@ -323,7 +323,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Resume>(entity =>
         {
-            entity.HasKey(e => e.ResumeId).HasName("PK__Resumes__D7D7A0F74278AEFB");
+            entity.HasKey(e => e.ResumeId).HasName("PK__Resumes__D7D7A0F7CF2FC697");
 
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Intro).HasMaxLength(200);
@@ -348,7 +348,7 @@ public partial class DuckAdminsContext : DbContext
                         .HasConstraintName("FK__ResumeTag__Resum__59FA5E80"),
                     j =>
                     {
-                        j.HasKey("ResumeId", "TagId").HasName("PK__ResumeTa__01806F6DA919FD0D");
+                        j.HasKey("ResumeId", "TagId").HasName("PK__ResumeTa__01806F6DD5B35177");
                         j.ToTable("ResumeTags");
                     });
 
@@ -363,14 +363,14 @@ public partial class DuckAdminsContext : DbContext
                         .HasConstraintName("FK__ResumeTit__Resum__412EB0B6"),
                     j =>
                     {
-                        j.HasKey("ResumeId", "TitleClassId").HasName("PK__ResumeTi__501B8B1C65469FE1");
+                        j.HasKey("ResumeId", "TitleClassId").HasName("PK__ResumeTi__501B8B1C32AF23FF");
                         j.ToTable("ResumeTitleClasses");
                     });
         });
 
         modelBuilder.Entity<ResumeOpeningRecord>(entity =>
         {
-            entity.HasKey(e => e.ResumeOpeningRecordId).HasName("PK__ResumeOp__CD5B6F5AD19A3CD6");
+            entity.HasKey(e => e.ResumeOpeningRecordId).HasName("PK__ResumeOp__CD5B6F5A25D440B5");
 
             entity.Property(e => e.CompanyName)
                 .IsRequired()
@@ -392,7 +392,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<Tag>(entity =>
         {
-            entity.HasKey(e => e.TagId).HasName("PK__Tags__657CF9ACECCA0F9A");
+            entity.HasKey(e => e.TagId).HasName("PK__Tags__657CF9AC19AEAAEC");
 
             entity.Property(e => e.TagClassId).HasDefaultValue(0);
             entity.Property(e => e.TagName)
@@ -406,7 +406,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<TagClass>(entity =>
         {
-            entity.HasKey(e => e.TagClassId).HasName("PK__TagClass__94933B201517ABC8");
+            entity.HasKey(e => e.TagClassId).HasName("PK__TagClass__94933B208A2F82E9");
 
             entity.Property(e => e.TagClassName)
                 .IsRequired()
@@ -415,7 +415,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<TitleCategory>(entity =>
         {
-            entity.HasKey(e => e.TitleCategoryId).HasName("PK__TitleCat__079D34B846682A23");
+            entity.HasKey(e => e.TitleCategoryId).HasName("PK__TitleCat__079D34B804940C32");
 
             entity.Property(e => e.TitleCategoryName)
                 .IsRequired()
@@ -424,7 +424,7 @@ public partial class DuckAdminsContext : DbContext
 
         modelBuilder.Entity<TitleClass>(entity =>
         {
-            entity.HasKey(e => e.TitleClassId).HasName("PK__TitleCla__7CC2BEB90E76829B");
+            entity.HasKey(e => e.TitleClassId).HasName("PK__TitleCla__7CC2BEB9DD6D294F");
 
             entity.Property(e => e.TitleCategoryId).HasDefaultValue(0);
             entity.Property(e => e.TitleClassName)
@@ -433,7 +433,6 @@ public partial class DuckAdminsContext : DbContext
 
             entity.HasOne(d => d.TitleCategory).WithMany(p => p.TitleClasses)
                 .HasForeignKey(d => d.TitleCategoryId)
-                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK__TitleClas__Title__300424B4");
         });
 

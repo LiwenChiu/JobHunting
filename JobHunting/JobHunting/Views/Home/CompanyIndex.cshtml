@@ -11,7 +11,13 @@
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3" >
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
-                <div id="twzipcode"></div>
+                @* <div id="twzipcode"></div> *@
+                <select v-model="area">
+                    <option v-for="(item,index) in city" :value="index">{{item.CityName}}</option>
+                </select>
+                <select>
+                 @*    <option v-for="item in city[index].areaList" :value="index">{{item.areaName}}</option> *@
+                </select>
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">技能類別</label>
@@ -32,7 +38,7 @@
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-model.lazy="filter"/>
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup="filterResumes" v-model="filter" />
             </div>
             <div class="col-2 mb-0">
                 <button class="btn btn-warning" v-on:click="filterResumes">搜尋</button>
@@ -159,7 +165,7 @@
         let vueList = {
             data() {
                 return {
-                    area: "A",
+                    area: [],
                     skill: "1",
                     edu: "A", 
                     filter: "",
@@ -167,6 +173,7 @@
                     tagClasses: [],
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
+                    city:[],
                 };
             },
             computed: {
@@ -207,6 +214,16 @@
                     strID = str + num;
                     return strID;
                 },
+                indexList() {
+                    let self = this;
+                    axios.post('https://localhost:7169/Home/CompanyIndexList', {
+                        Headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        self.resumes = res.data
+                    }).catch(error => {
+                                console.error(error);
+                    });     
+                },
                 filterResumes() {
                     let self = this;
                     let today = new Date().getFullYear();
@@ -217,7 +234,7 @@
                         edu: self.edu,
                         skill: self.skill
                     };
-                        axios.post('https://localhost:7169/Home/CompanyIndexList', request, {
+                    axios.post('https://localhost:7169/Home/SelectIndexList', request, {
                             Headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                              self.resumes = res.data
@@ -226,6 +243,7 @@
                             }
                         }).catch(err => JSON.stringify(err))
                 },
+              
                 getTag() {
                     let request = {
                         method: 'GET',
@@ -245,10 +263,28 @@
                             console.error(error);
                         });
                 },
+                getCity(){
+                    axios.get('/json/CityCountyData.json')  //根目錄資料
+                        .then(model => {
+                            return this.city = model.data;
+                            // 在這裡處理你的 JSON 資料
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                },
+                // getArea(){
+                //     for (let i = 0; i < this.city.length; i++) { 
+                //         this.area[i] = this.city[i].AreaList
+                //     }
+                //     return area
+                // }
             },
             mounted() {
                 this.getTag();
-                this.filterResumes();
+                this.getCity();
+                this.indexList();
+                // this.getArea();
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#app2");
@@ -259,5 +295,6 @@
             districtName: "town" // 自訂地區 select 標籤的 name 值
         });
             $("#twzipcode").children("select").val()
+        
     </script>
 }

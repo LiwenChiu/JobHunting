@@ -2,7 +2,7 @@
 
 namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class PricingPlanIntroViewModel
+    public class PricingPlanManagementIntroViewModel
     {
         [Key]
         public int PlanId { get; set; }
