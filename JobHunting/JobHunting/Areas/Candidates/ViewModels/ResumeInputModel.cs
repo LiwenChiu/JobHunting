@@ -20,5 +20,6 @@ namespace JobHunting.Areas.Candidates.ViewModels
         public int CandidateId { get; set; }
         public int ResumeId { get; set; }
         public bool ReleaseYN { get; set; }
+        public string Intro { get; set; }
     }
 }
