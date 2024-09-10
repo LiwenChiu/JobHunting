@@ -9,25 +9,23 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public int? CompanyId { get; set; }
 
+        public int? PlanId { get; set; }
+
         public string CompanyName { get; set; }
 
         public string GUINumber { get; set; }
 
-        public int? PlanId { get; set; }
-
         public string Title { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? Price { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime OrderDate { get; set; }
+        public string OrderDate { get; set; }
 
         public int Duration { get; set; }
 
-        //public DateTime ExpirationTime { get; set; }
+        public string Expiration { get; set; }
 
-        public string Intro { get; set; }
+        public string? Intro { get; set; }
 
         public bool Status { get; set; }
     }
