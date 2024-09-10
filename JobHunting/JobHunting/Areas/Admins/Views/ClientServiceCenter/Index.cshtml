@@ -6,54 +6,40 @@
 }
 
 
-<div class="container py-2" id="app">
-    <div class="col-lg">
-        <div class="card mb-1 mb-md-0 h-100">
-            <div class="card-body text-center">
-                <h4 class="mb-3">意見信件</h4>
-                <div class="row row-cols-1 row-cols-md-1 g-4">
-                    <div class="col">
-                        <div class="card-body">
-                            <div class="row bg-warning text-dark">
-                                <h5 class="col-2">意見類別</h5>
-                                <h5 class="col-8">主旨</h5>
-                                <h5 class="col-2">處理狀態</h5>
-                            </div>
-                        </div>
-                        <div class="card overcard mb-3" v-for="item in opinionlist.slice(pageStart,pageEnd)">
-                            <div class="card-body">
-                                <div class="row" style="margin-bottom:0 !important;">
-                                    <h5 class="col-2">{{item.class}}</h5>
-                                    <p class="col-8">{{item.subjectLine}}</p>
-                                    <div class="col-2"><button type="button" class="btn btn-outline-danger">{{item.status}}</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="container-fluid py-1" id="app">
+    <div class="row">
+        <div class="card rounded-5 col-3 m-2" style="width: 15rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">
+            <div class="card-body">
+                <div class="card-title text-center">意見類別：{{item.class}}</div>
+                <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>            
+                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{item.status}}</p>
             </div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="setPage(currentPage-1)">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                        <a class="page-link" href="#">{{item}}</a>
-                    </li>
+            <div class="card-footer text-center" style="background-color:transparent">
+                        <partial name="_OpinionLettersBtnPartial" />                    
+                    </div>
+                
+        </div>   
+        @* 分頁 *@
+        <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" v-on:click="setPage(currentPage-1)">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                <a class="page-link" href="#">{{item}}</a>
+            </li>
 
-                    <li class="page-item" v-on:click="setPage(currentPage+1)">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+            <li class="page-item" v-on:click="setPage(currentPage+1)">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     </div>
 </div>
-
 
 @section Scripts
 {
@@ -64,9 +50,11 @@
                 return {
                     opinionlist:[],
                     pageStatus: 0,
-                    perpage: 5, //一頁的資料數
+                    perpage: 8, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
+                    opinionLetterModal: {},
+                    baseAddress: "https://localhost:7169",
                 }
             },
             computed: {
@@ -90,7 +78,7 @@
                 },
                 OpinionData: function () {
                     // alert("AAA");
-                    fetch("/Admins/Home/IndexJson_opinionletter", {
+                    fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
                         method:"GET"
                     }).then(response => {
                         return response.json();
@@ -99,9 +87,19 @@
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     })
-                }
+                },
+                OpinionLetterModalShow: function (id) {
+                    alert("AAA");
+                //     let request ={
+                //         LetterId: id,
+                //     };
+                //     axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
+                //             {headers: {'Content-Type': 'application/json'}})
+                //     .then(response => this.opinionLetterModal = response.data)
+                //     .catch(err => { alert(err) });
+                // }
             },
-                    mounted() { this.OpinionData() },
-        }).mount("#app");
+                mounted() { this.OpinionData() },
+            }).mount("#app");
     </script>
 }

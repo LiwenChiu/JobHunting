@@ -1,6 +1,9 @@
 ﻿using JobHunting.Areas.Admins.Models;
+using JobHunting.Areas.Admins.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -30,6 +33,63 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return View();
         }
+
+        //GET:Admins/ClientServiceCenter/IndexJson_opinionletter
+        [HttpGet]
+        public JsonResult IndexJson_opinionletter()
+        {
+            var opinionletter = _context.OpinionLetters.Select(p => new
+            {
+                id =p.LetterId,
+                Class = p.Class,
+                SubjectLine = p.SubjectLine,
+                Status = p.Status,
+            });
+            return Json(opinionletter);
+        }
+
+        //Post:Admins/ClientServiceCenter/OpinionLetterModalShow
+        [HttpPost]
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<IEnumerable<OpinioLetterOutputViewModel>> OpinionLetterModalShow([FromBody]int id)
+        //{           
+        //    //if (!ModelState.IsValid)
+        //    //{
+        //    //    return null;
+        //    //}
+
+        //    var opinionLetter = await _context.OpinionLetters.FindAsync(id);
+            
+        //    OpinioLetterOutputViewModel olovm = new OpinioLetterOutputViewModel
+        //    {
+        //        LetterId = opinionLetter.LetterId,
+        //        Class = opinionLetter.Class,
+        //        SubjectLine = opinionLetter.SubjectLine,
+        //        Attachment = opinionLetter.Attachment,
+        //        Content = opinionLetter.Content,
+        //        Status = opinionLetter.Status,
+        //    };
+
+        //    return (IEnumerable<OpinioLetterOutputViewModel>)olovm;
+        //}
 
         // POST: ClientServiceCenterController/Create
         [HttpPost]
