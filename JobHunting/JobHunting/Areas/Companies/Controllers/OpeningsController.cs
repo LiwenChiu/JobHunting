@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using JobHunting.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using System.Numerics;
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
@@ -18,45 +19,9 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        //POST:Companies/Openings/filterOpening
-        //[HttpPost]
-        //public async Task<IEnumerable<OpeningsOutputModel>> filter([FromBody] OpeningsInputModel opening)
-        //{
-        //    return _context.Openings.Where
-        //        (o =>
-        //            o.OpeningId == opening.OpeningId ||
-        //            o.Title.Contains(opening.Title) ||
-        //            o.Address.Contains(opening.Address) ||
-        //            o.ContactName.Contains(opening.ContactName) ||
-        //            o.ContactEmail.Contains(opening.ContactEmail) ||
-        //            o.ContactPhone.Contains(opening.ContactPhone) ||
-        //            o.SalaryMax.ToString().Contains(opening.SalaryMax.ToString()) ||
-        //            o.SalaryMin.ToString().Contains(opening.SalaryMin.ToString()) ||
-        //            o.Time.Contains(opening.Time) ||
-        //            o.Description.Contains(opening.Description) ||
-        //            o.TitleClasses.Select(tc => tc.TitleClassName) == opening.TitleClasses.Select(tc => tc.TitleClassName) ||
-        //            o.Benefits.Contains(opening.Benefits) ||
-        //            o.Company.CompanyName.Contains(opening.Company.CompanyName)
-        //        )
-        //        .Select(c => new OpeningsOutputModel
-        //        {
-        //            OpeningId = c.OpeningId,
-        //            Title = c.Title,
-        //            Address = c.Address,
-        //            ContactName = c.ContactName,
-        //            ContactEmail = c.ContactEmail,
-        //            ContactNumber = c.ContactPhone,
-        //            SalaryMax = c.SalaryMax,
-        //            SalaryMin = c.SalaryMin,
-        //            Time = c.Time,
-        //            Description = c.Description,
-        //            Benefits = c.Benefits,
-        //            TitleClassName = c.TitleClasses.Select(tc => tc.TitleClassName).ToString(),
-        //            CompanyName = c.Company.CompanyName
-        //        });
-        //}
+        
         //GET:Companies/Home/OpeningJson
-        [HttpGet]
+        [HttpGet] 
         public JsonResult OpeningJson()
         {
             return Json(_context.Openings.Select(o => new
@@ -131,6 +96,39 @@ namespace JobHunting.Areas.Companies.Controllers
 
             await _context.SaveChangesAsync();
             return Json(new { message = "修改成功" });
+        }
+        public async Task<Array> DelOpening([FromBody]int openingId)
+        {
+            string[] returnStatus = new string[2];
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["刪除職缺失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var opening = await _context.Openings.FindAsync(openingId);
+            if (opening != null)
+            {
+                _context.Openings.Remove(opening);
+            }
+            else
+            {
+                returnStatus = [$"不存在此職缺ID:{openingId}", "失敗"];
+                return returnStatus;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                returnStatus = [$"刪除ID為{openingId}的關聯職缺失敗!", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = [$"刪除職缺{opening.Title}成功", "成功"];
+            return returnStatus;
         }
     }
 }

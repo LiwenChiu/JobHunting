@@ -12,9 +12,25 @@
     <label class="col-md-4 form-lable">篩選關鍵字:</label>
     <input class="col-md-8" v-model.lazy="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings()" />
 </div> *@
+@* 通知 *@
 
-@* 職缺新增 *@
+
 <div id="createOpening">
+    <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
+        <template v-if="alertStatus == '成功'">
+            <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+        <template v-else-if="alertStatus == '失敗'">
+            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+    </div>
+    @* 新增職缺 *@
     <div class="container-fluid py-1 mt-5">
         <div class="letters row">
             <div class="col-md-3 mb-4">
@@ -53,6 +69,115 @@
                     </div>
                 </div>
             </div>
+
+            @* 新增職缺modal *@
+            @* <div class="modal fade"
+                 id="insertmodelID"
+                 tabindex="-1"
+                 data-bs-backdrop="static"
+                 data-bs-keyboard="false"
+                 role="dialog"
+                 aria-labelledby="modalTitleId"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                     role="document">
+                    <div class="modal-content col-md-4">
+                        <div class="modal-header" style="background-color: #f7d179;">
+                            <h5 class="modal-title text-center" id="modal" style="width:95% ;">
+                                新增職缺
+                            </h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                    style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="">職缺名稱:</label>
+                                            <input type="text" v-model="item.title" class="form-control" />
+                                            <label class="">公司名稱:</label>
+                                            <p>{{openings.companyName}}</p>
+                                            <label class="">工作地點:</label>
+                                            <input type="text" v-model="item.address" class="form-control" />
+                                            <label class="">連絡人:</label>
+                                            <input type="text" v-model="item.contactName" class="form-control" />
+                                            <label class="">連絡電話:</label>
+                                            <input type="text" v-model="item.contactNumber" class="form-control" />
+                                            <label class="">電子郵件:</label>
+                                            <input type="text" v-model="item.contactEmail" class="form-control" />
+                                            <label class="">薪資條件:</label>
+                                            <div class="">
+                                                <input type="text" v-model="item.salaryMin" class="text-center" placeholder="最低薪資" />
+                                                <span> -- </span>
+                                                <input type="text" v-model="item.salaryMax" class="text-center" placeholder="最高薪資" />
+                                            </div>
+                                            <label class="">上班時段:</label>
+                                            <input type="text" v-model="item.time" class="form-control" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="">職缺類別:</label>
+                                            <select style="width:30%" v-model="selectedtitleClassId">
+                                                <option value="" selected>-----請選擇-----</option>
+                                                <option v-for="item in titleClass" :value="item.titleClassId">{{item.titleclassName}}</option>
+                                            </select>
+                                            <label class="">學歷要求:</label>
+                                            <select v-model="selectedDegreeName">
+                                                <option value="" selected>--請選擇--</option>
+                                                <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <p>
+                                                <label>
+                                                    <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                    check: {{TagCheckedResume}}<label><span class="badge bg-primary" v-for="item in TagCheckedResume"></span></label>
+                                                </label>
+                                            </p>
+                                            <div class="collapse" id="TagsCollapse">
+                                                <div class="card card-body">
+                                                    <template v-for="(item,index) in TagClasses">
+                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="ReturnhashtagID(item)" aria-expanded="false" v-bind:aria-controls="item.tagClassName">{{item.tagClassName}}</button>
+                                                        <div class="collapse" v-bind:id="item.tagClassName">
+                                                            <div>
+                                                                <template class="px-2" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                    <input type="checkbox" v-bind:id="changeTagNameTo(Tag.tagName)" v-bind:value="Tag.tagId" v-model="TagCheckedResume" />
+                                                                    <label v-bind:for="changeTagNameTo(Tag.tagName)">{{Tag.tagName}}</label>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="form-textarea" class="col-form-label">福利:</label>
+                                            <textarea class="form-control" id="benefits" v-model="item.benefits" style="height:100px"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                            <textarea class="form-control" id="description" v-model="item.description" style="height:300px"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success " v-on:click="editConfirm(item)">編輯完成</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancel(item)">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+
+
             @* 職缺內容Modal *@
             <div class="modal fade" v-for="item in openings"
                :id="mergeID(item)"
@@ -86,7 +211,7 @@
                                                     <label class="">職缺名稱:</label>
                                                     <input type="text" v-model="item.title" class="form-control" />
                                                     <label class="">公司名稱:</label>
-                                                    <input type="text" v-model="item.companyName" class="form-control" />
+                                                    <p>{{item.companyName}}</p>
                                                     <label class="">工作地點:</label>
                                                     <input type="text" v-model="item.address" class="form-control" />
                                                     <label class="">連絡人:</label>
@@ -140,24 +265,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label for="form-textarea" class="col-form-label">福利:</label>
-                                                        <textarea class="form-control" id="benefits" v-model="item.benefits" style="height:100px"></textarea>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="form-textarea" class="col-form-label">工作內容:</label>
-                                                        <textarea class="form-control" id="description" v-model="item.description" style="height:300px"></textarea>
-                                                    </div>
-                                                </div>
-                                                </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="mb-3">
+                                                   <label for="form-textarea" class="col-form-label">福利:</label>
+                                                   <textarea class="form-control" id="benefits" v-model="item.benefits" style="height:100px"></textarea>
+                                               </div>
+                                               <div class="mb-3">
+                                                   <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                                   <textarea class="form-control" id="description" v-model="item.description" style="height:300px"></textarea>
+                                               </div>
                                            </div>
                                       </div>
-                                      <div class="modal-footer">
-                                          <button type="submit" class="btn btn-success " v-on:click="editConfirm(item)">編輯完成</button>
-                                          <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" v-on:click="cancel(item)" >取消</button>
-                                      </div>
-                                 </template>
+                                  </div>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="submit" class="btn btn-success " v-on:click="editConfirm(item)">編輯完成</button>
+                                  <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" v-on:click="cancel(item)" >取消</button>
+                              </div>
+                           </template>
                          @* 履歷顯示 *@
                            <template v-else="item.edit == false">
                                 <div class="modal-header" style="background-color: #f7d179;">
@@ -289,6 +415,8 @@
                     titleClass: [],
                     selectedtitleClassId: '',
                     selectedDegreeName: '',
+                    alertText: "",
+                    alertStatus: "",
 
                     pageStatus: 0,
                     perpage: 7, //一頁的資料數
@@ -426,27 +554,34 @@
                         err => { alert(err) }
                     );
                 },
-                // deleteOpening: function (item) {
-                //     let _this = this
-                //     var confirmdel = confirm("確定要刪除?");
-                //     var request = {};
-                //     request.resumeid = item.resumeid;
-                //     if (confirmdel == true) {
-                //         fetch("https://localhost:7169/Candidates/Resume/DelResume", {
-                //             method:"POST",
-                //             headers: {
-                //                 "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
-                //             },
-                //             body: JSON.stringify(request)
-                //         }).then(response => {
-                //             return response.json();
-                //         }).then(data=>{
-                //             alert(data.message);
-                //         }).catch(err => {
-                //             alert(err)
-                //         })
-                //         }
-                //     }
+                // 刪除職缺
+                deleteOpening: function (item) {
+                    if (item == null) {
+                        this.alertText = "請選擇欲刪除方案";
+                        this.alertStatus = "失敗";
+                    }
+                    else {
+                        if (confirm("確定要刪除此職缺嗎?")) {
+                            axios.post(`${this.baseAddress}/Companies/Openings/DelOpening`, item.openingId, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            }).then(response => {
+                                this.alertText = response.data[0];
+                                this.alertStatus = response.data[1];
+                                this.ReceiveOpeningData();
+                            }).catch(err => { alert(err) });
+                        }
+                        else {
+                            this.alertText = "刪除操作已取消";
+                            this.alertStatus = "取消";
+                        }
+                    }
+                    this.alertOut();
+                },
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
+                },
             },
             mounted() {
                 this.ReceiveOpeningData();
