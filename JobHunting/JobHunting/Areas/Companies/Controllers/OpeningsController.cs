@@ -4,6 +4,7 @@ using JobHunting.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
+using System.Net;
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
@@ -129,6 +130,39 @@ namespace JobHunting.Areas.Companies.Controllers
 
             returnStatus = [$"刪除職缺{opening.Title}成功", "成功"];
             return returnStatus;
+        }
+        public async Task<IActionResult> CreateOpening([FromBody]CreateOpeningInputModel coim)
+        {
+            try
+            {
+                var company = await _context.Companies.FindAsync(coim.CompanyId);
+                if(company == null)
+                {
+                    return NotFound(new { Message = "沒有此職缺" });
+                }
+
+                Models.Opening opening = new Models.Opening
+                {
+                    Title = coim.Title,
+                    Address = coim.Address,
+                    ContactName = coim.ContactName,
+                    ContactPhone = coim.ContactName,
+                    ContactEmail = coim.ContactEmail,
+                    SalaryMax = coim.SalaryMax,
+                    SalaryMin = coim.SalaryMin,
+                    Time = coim.Time,
+                    Benefits = coim.Benefits,
+                    Description = coim.Description,
+                    CompanyId = coim.CompanyId
+                };
+                _context.Openings.Add(opening);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                return Json(new { message = "新增職缺失敗" });
+            };
+            return Json(new { success = true, message = "新增職缺成功" });
         }
     }
 }

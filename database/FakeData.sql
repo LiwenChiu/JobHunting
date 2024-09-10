@@ -284,17 +284,17 @@ INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
 (N'180天方案', N'180天方案', 180, 15750, 1.00),
 (N'365天方案', N'365天方案', 365, 31500, 1.00);
 GO
-INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
-(1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),
-(2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 1),
-(3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 1),
-(4, 4, 'Healthcare Plus', 10000004, N'90天方案', 8400, GETDATE(), 1),
-(5, 5, 'Finance World', 10000005, N'180天方案', 15750, GETDATE(), 1),
-(6, 6, 'Tech Innovators', 10000006, N'365天方案', 31500, GETDATE(), 1),
-(7, 6, 'Legal Eagle', 10000007, N'365天方案', 31500, GETDATE(), 1),
-(8, 2, 'Sales Empire', 10000008, N'30天方案', 4200, GETDATE(), 1),
-(9, 4, 'Marketing Magic', 10000009, N'90天方案', 8400, GETDATE(), 1),
-(10, 6, 'Customer First', 10000010, N'365天方案', 31500, GETDATE(), 1);
+INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Price, OrderDate, Duration, [Status]) VALUES
+(1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 7, 1),
+(2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 30, 1),
+(3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 60, 1),
+(4, 4, 'Healthcare Plus', 10000004, N'90天方案', 8400, GETDATE(), 90, 1),
+(5, 5, 'Finance World', 10000005, N'180天方案', 15750, GETDATE(), 180, 1),
+(6, 6, 'Tech Innovators', 10000006, N'365天方案', 31500, GETDATE(), 365, 1),
+(7, 6, 'Legal Eagle', 10000007, N'365天方案', 31500, GETDATE(), 365, 1),
+(8, 2, 'Sales Empire', 10000008, N'30天方案', 4200, GETDATE(), 30, 1),
+(9, 4, 'Marketing Magic', 10000009, N'90天方案', 8400, GETDATE(), 90, 1),
+(10, 6, 'Customer First', 10000010, N'365天方案', 31500, GETDATE(), 365, 1);
 GO
 INSERT INTO Notifications (CompanyId, CandidateId, ResumeId, OpeningId, [Status], SubjectLine, Content, SendDate, AppointmentTime) VALUES
 (1, 1, 1, 1, 'Sent', 'Interview Invitation', 'We would like to invite you for an interview...', '2024-08-01', '2024-08-03 10:00:00'),
