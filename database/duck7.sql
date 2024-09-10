@@ -226,6 +226,7 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	Duration int not null,
 	[Status] bit not null default(0),
 )
 GO
