@@ -57,7 +57,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateReasumes ([FromBody] addResumeInputModel Creatr)
+        public async Task<IActionResult> CreateReasumes ([FromForm] addResumeInputModel Creatr)
         {
             //if (ModelState.IsValid)
             //{
@@ -84,6 +84,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Intro = Creatr.Intro,
                    
                 };
+                if (Creatr.ImageFile != null)
+                {
+                    using (BinaryReader br = new BinaryReader(Creatr.ImageFile.OpenReadStream()))
+                    {
+                        insert.Headshot = br.ReadBytes((int)Creatr.ImageFile.Length);
+                    }
+                }
+
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
                 
