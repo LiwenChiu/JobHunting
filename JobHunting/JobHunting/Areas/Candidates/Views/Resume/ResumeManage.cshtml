@@ -21,6 +21,7 @@
 
             
         </div>
+
         @* 履歷職缺card *@
         <div class="col-md-3 mb-4" v-for="ResumeD in Resume.slice(pageStart,pageEnd)">
             <div class="card rounded-5" style="width: 15rem; height: 15rem;">
@@ -31,8 +32,8 @@
                     </div>
                     <div class="">
                         <p class="fs-6 text-center fs-4">履歷名稱</p>
-                        <hr></hr>
-                        <p :id="resumevalue" class="card-title pb-3 text-center fs-3" :key="ResumeD.candidateid" :value="ResumeD.candidateid">{{ResumeD.title.slice(0,13)}}</p>
+                            <hr>
+                        <p  class="card-title pb-3 text-center fs-3">{{ResumeD.title.slice(0,13)}}</p>
                     </div>
                     @* 履歷內容按鈕 *@
                         <div class="text-center">
@@ -82,7 +83,19 @@
                                             <div class="card-body">
                                             
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
-                                            <a href="#" class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></a>
+                                            <div>
+                                                <a href="#" class="mb-3" v-on:click.prevent="">
+                                                    <div>
+                                                        @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
+                                                        <img class="rounded float-end mx-4 img-fluid" :src="headshotimagepreview" style="width:100px;height:100px" title="待上傳" />
+                                                    </div>
+                                                    
+                                                 </a>
+
+                                                <input ref="fileInput" class="" style="display:none" type="file" name="name" value="" accept="image/*" v-on:change="previewImage" />
+                                                
+                                                
+                                            </div>
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">名字
@@ -101,7 +114,7 @@
                                                     <div class="col">
                                                         <label for="" class="mb-2">電話 :</label>
                                                     <input class="mx-1" type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
-                                                        <label class="mx-1" for="" class="mb-2">學歷 :</label>
+                                                    <label class="mx-1 mb-2" for="" >學歷 :</label>
                                                     <input class="mx-1" type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
@@ -180,7 +193,7 @@
                                     </span>
                                 </div>
                                 <div class="form-group" style="text-align:right">
-                                    <button type="submit" class="btn btn-success mx-3"   data-bs-dismiss="modal" v-on:click="CreateNewResume">新增</button>
+                                <button id="insert" type="submit" class="btn btn-success mx-3" data-bs-dismiss="modal" v-on:click="CreateNewResume">新增</button>
                                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" v-on:click="TagCheckedResume = [];">取消</button>
                                 </div>
 
@@ -209,7 +222,7 @@
                         <template v-if="ResumeD.edit == true">
                             <div  class="card-body container-fluid" >
                             <div class="modal-header" style="background-color: #f7d179;">
-                                <h5 class="modal-titl text-center" id="modal" style="width:95% ;" v-model="">
+                                <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
                                     {{ResumeD.title}}
                                 </h5>
                                 <button type="button"
@@ -225,7 +238,18 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
-                                                <a href="#" class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></a>
+                                                <div>
+                                                    <a href="#" class="mb-3" v-on:click.prevent="">
+                                                        <div>
+                                                            @* ResumeD.headshot.startsWith('data:') ? ResumeD.headshot : 'data:image/jpeg;base64,' + ResumeD.headshot：如果 ResumeD.headshot 以 data: 開頭，直接使用 ResumeD.headshot；否則，加上 'data:image/jpeg;base64,' 前綴來顯示 Base64 圖片。
+                                                            : noImagePreview：如果 ResumeD.headshot 不存在，則顯示預設圖片 noImagePreview。 *@
+                                                            <img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? (ResumeD.headshot.startsWith('data:') ? ResumeD.headshot : 'data:image/jpeg;base64,' + ResumeD.headshot) : noimagepreview" style="width:100px;height:100px" title="待上傳" />
+                                                        </div>
+
+                                                    </a>
+                                                    <input id="editFile" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="previewImage($event, ResumeD)" />
+                                                </div>
+                                                
                                             <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">
@@ -321,7 +345,7 @@
                                 </div>
                             </div>
                             <div class="" style="text-align:right">
-                                <button type="submit" class="btn btn-success mx-3" v-on:click="editConfirm(ResumeD)">編輯完成</button>
+                                <button id="update" type="submit" class="btn btn-success mx-3" v-on:click="editConfirm(ResumeD)">編輯完成</button>
                                 <button type="button" class="btn btn-secondary "   v-on:click="cancel(ResumeD)" >取消</button>
 
                             </div>
@@ -348,7 +372,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
-                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" src="~/images/no_image_available.jpg" style="width:100px;height:100px" title="待上傳" /></div>
+                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="待上傳" /></div>
                                             <p class="card-text">
                                                 <div class="col">
                                                         <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
@@ -490,8 +514,8 @@
                     perpage: 7, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
-                    resumevalue:"resumevalue",
-                    Resume: [],
+                    resumevalue: "resumevalue",
+                    Resume:[],
                     // CandidateNmae:"",
                     ResumeName:"",
                     releaseYN:true,
@@ -523,6 +547,9 @@
                         { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
                         { TagClassID: 3, TagID: 7, TagName: "精神科" },
                     ],
+                    noimagepreview: "/images/No_Image_Available.jpg",
+                    showimage:null,
+                    image: "",
                 };
             },
         
@@ -562,7 +589,7 @@
                 },
                 mergeID(ResumeD) {
                     let str = ResumeD.name.replace(/\s/g, "");
-                    let num = ResumeD.resumeID;
+                    let num = ResumeD.resumeid;
                     strID = str + num;
                     return strID;
                 },
@@ -579,13 +606,64 @@
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+                // insertFileChange: function (file) {
+                //     let _this = this;
+                //     _this.readURL(file, file.previousElementSibling, $("#insert"));
+                // },
+                editFileChange: function (file) {
+                    let _this = this;
+                    _this.readURL(file, file.parentElement.parentElement.firstChild, $("#update"));
+                }, 
+                // previewImage: function (event) {
+                //     var input = event.target;
+                //     if (input.files) {
+                //         var reader = new FileReader();
+                //         reader.onload = (e) => {
+                //             ResumeD.headshot = e.target.result;
+                //         }
+                //         this.image = input.files[0];
+                //         reader.readAsDataURL(input.files[0]);
+                //     }
+                // },
+                previewImage: function (event, ResumeD) {
+                    let _this = this;
+                    let input = event.target.files[0];
+                    if (input) {
+                        let reader = new FileReader();
+                        reader.onload = (e) => {
+                            ResumeD.headshot = e.target.result;
+                        }
+
+                        reader.readAsDataURL(input);
+                    }
+                },
+
+                readURL: function (input, img, btn) {
+                    if (input.files && input.files[0]) {
+                        var imageType = "image.*";				//允許檔案格式
+                        if (input.files[0].type.match(imageType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                //img.attr('src', e.target.result);
+                                img.src = e.target.result;
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                            btn.prop("disabled", false);
+                        }
+                        else {
+                            alert("不支援上傳的檔案格式!");
+                            btn.prop("disabled", true);
+                        }
+                    }
+                },
                 //履歷全部資料
                 ResumeInformation: function () {
                     fetch("/Candidates/Resume/ResumeResult", {
+                        method:"GET",
                         headers: {
                             "content-type": "multipart/form-data"
                         },
-                        method:"GET",
+                        
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
@@ -606,7 +684,6 @@
                     request.Autobiography = _this.Autobiography;
                     request.ReleaseYN = _this.releaseYN;
                     request.Intro = _this.ResumeIntro;
-
                     fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
                         method: "POST",
                         headers: {
@@ -618,19 +695,20 @@
                     }).then(data => {
                         if (data.success) {
                             alert("新增履歷成功")
-                            window.location.reload();
+                            // window.location.reload();
                         } else {
                             alert("新增履歷失敗")
                         }
                     }).catch(err => {
                         console.log(err)
                     })
-                    _this.hopeaddress ="";
-                    _this.ResumeName="";
-                    _this.WorkExperience="";
-                    _this.Autobiography="";
-                    _this.ReleaseYN="";
-                    _this.ResumeIntro="";
+                    // _this.hopeaddress ="";
+                    // _this.resumeName="";
+                    // _this.workExperience="";
+                    // _this.autobiography="";
+                    // _this.releaseYN="";
+                    // _this.resumeIntro = "";
+                    // _this.title = "";
 
                 },
                 
@@ -644,25 +722,55 @@
                     };
                 },
                 //編輯履歷並修改資料庫資料。
-                editResumD: function(ResumeD){    
-                    let _this = this
-                    let request = {}
-                    request.ResumeId = ResumeD.resumeid;
-                    request.CandidateId = ResumeD.Candidateid;
-                    request.Address = ResumeD.address;
-                    request.Title = ResumeD.title;
-                    request.Autobiography = ResumeD.autobiography;
-                    request.WorkExperience = ResumeD.workExperience;
-                    request.Time = ResumeD.time;
-                    request.ReleaseYN = ResumeD.ReleaseYN;
-                    request.Intro = ResumeD.intro;
-                    console.log(request.ReleaseYN);
+                // editResumD: function(ResumeD){    
+                //     let _this = this
+                //     let request = {}
+                //     request.ResumeId = ResumeD.resumeid;
+                //     request.CandidateId = ResumeD.Candidateid;
+                //     request.Address = ResumeD.address;
+                //     request.Title = ResumeD.title;
+                //     request.Autobiography = ResumeD.autobiography;
+                //     request.WorkExperience = ResumeD.workExperience;
+                //     request.Time = ResumeD.time;
+                //     request.ReleaseYN = ResumeD.ReleaseYN;
+                //     request.Intro = ResumeD.intro;
+                    // fetch("https://localhost:7169/Candidates/Resume/EditResume", {
+                    //     method: "POST",
+                    //     headers: {
+                    //         "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                    //     },
+                    //     body: JSON.stringify(request)
+                    // }).then(response => {
+                    //     return response.json()
+                    // }).then(data => {
+                    //     if (data.success) {
+                    //         alert("編輯履歷成功")
+                    //         window.location.reload();
+                    //     } else {
+                    //         alert("編輯履歷失敗")
+                    //     }
+                    // }).catch(err => {
+                    //     alert(err)
+                    // });
+                    // ResumeD.edit = false;
+                // },
+                editResumD: function (ResumeD) {
+                    var _this = this
+                    var form = new FormData();
+                    form.append("ResumeId", ResumeD.resumeid);
+                    form.append("CandidateId", ResumeD.candidateId);
+                    form.append("Address", ResumeD.address);
+                    form.append("Title", ResumeD.title);
+                    form.append("Autobiography", ResumeD.autobiography);
+                    form.append("WorkExperience", ResumeD.workExperience);
+                    form.append("Time", ResumeD.time);
+                    form.append("ReleaseYN", ResumeD.releaseYN);
+                    form.append("Intro", ResumeD.intro);
+                    form.append("ImageFile", document.querySelector('#editFile').files[0]);
+                    // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
                     fetch("https://localhost:7169/Candidates/Resume/EditResume", {
                         method: "POST",
-                        headers: {
-                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
-                        },
-                        body: JSON.stringify(request)
+                        body:form
                     }).then(response => {
                         return response.json()
                     }).then(data => {
