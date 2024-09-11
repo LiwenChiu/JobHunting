@@ -20,9 +20,9 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        
-        //GET:Companies/Home/OpeningJson
-        [HttpGet] 
+
+        //GET:Companies/Openings/OpeningJson
+        [HttpGet]
         public JsonResult OpeningJson()
         {
             return Json(_context.Openings.Select(o => new
@@ -38,22 +38,34 @@ namespace JobHunting.Areas.Companies.Controllers
                 SalaryMin = o.SalaryMin,
                 Time = o.Time,
                 Description = o.Description,
+                TitleClassId=o.TitleClasses.Select(tc=>tc.TitleClassId),
                 TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
                 Benefits = o.Benefits,
                 Edit = false,
             }));
         }
-        //GET:Companies/Home/TitleClassJson
+        //GET:Companies/Openings/TitleClassJson
         [HttpGet]
         public JsonResult TitleClassJson()
         {
             return Json(_context.TitleClasses.Select(tc => new
             {
                 TitleClassId = tc.TitleClassId,
-                TitleclassName = tc.TitleClassName
+                TitleClassName = tc.TitleClassName,
+                TitleCategoryId = tc.TitleCategoryId
             }));
         }
-        //GET:Compaines/Home/TagsJson
+        //GET:Companies/Openings/TitleCategoryJosn
+        [HttpGet]
+        public JsonResult TitleCategoryJson()
+        {
+            return Json(_context.TitleCategories.Select(tc => new
+            {
+                TitleCategoryId = tc.TitleCategoryId,
+                TitleCategoryName = tc.TitleCategoryName
+            }));
+        }
+        //GET:Compaines/Openings/TagsJson
         [HttpGet]
         public JsonResult TagJson()
         {
@@ -74,7 +86,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 TagClassName = tc.TagClassName
             }));
         }
-        public async Task<IActionResult>EditOpening([FromBody][Bind("Title", "CompanyName", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description")] OpeningsInputModel oim)
+        [HttpPost]
+        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName")] OpeningsInputModel oim)
         {
             var r = await _context.Openings.FindAsync(oim.OpeningId);
 
@@ -84,7 +97,6 @@ namespace JobHunting.Areas.Companies.Controllers
             }
 
             r.Title = oim.Title;
-            //r.Company.CompanyName = oim.CompanyName;
             r.Address = oim.Address;
             r.ContactName = oim.ContactName;
             r.ContactPhone = oim.ContactPhone;
@@ -94,11 +106,14 @@ namespace JobHunting.Areas.Companies.Controllers
             r.Time = oim.Time;
             r.Benefits = oim.Benefits;
             r.Description = oim.Description;
+            r.ReleaseYN = oim.ReleaseYN;
+            r.Degree = oim.Degree;
+            
 
             await _context.SaveChangesAsync();
             return Json(new { message = "修改成功" });
         }
-        public async Task<Array> DelOpening([FromBody]int openingId)
+        public async Task<Array> DelOpening([FromBody] int openingId)
         {
             string[] returnStatus = new string[2];
             if (!ModelState.IsValid)
@@ -131,14 +146,21 @@ namespace JobHunting.Areas.Companies.Controllers
             returnStatus = [$"刪除職缺{opening.Title}成功", "成功"];
             return returnStatus;
         }
-        public async Task<IActionResult> CreateOpening([FromBody]CreateOpeningInputModel coim)
+        [HttpPost]
+        public async Task<IActionResult> CreateOpening([FromBody] CreateOpeningInputModel coim)
         {
             try
             {
                 var company = await _context.Companies.FindAsync(coim.CompanyId);
-                if(company == null)
+                if (company == null)
                 {
-                    return NotFound(new { Message = "沒有此職缺" });
+                    return NotFound(new { Message = "沒有此公司" });
+                }
+
+                var titleClass = await _context.TitleClasses.FindAsync(coim.TitleClassId);
+                if (titleClass == null)
+                {
+                    return NotFound(new { Message = "選擇的職缺類別不存在" });
                 }
 
                 Models.Opening opening = new Models.Opening
@@ -153,12 +175,18 @@ namespace JobHunting.Areas.Companies.Controllers
                     Time = coim.Time,
                     Benefits = coim.Benefits,
                     Description = coim.Description,
-                    CompanyId = coim.CompanyId
+                    CompanyId = coim.CompanyId,
+                    ReleaseYN = coim.ReleaseYN,
+                    Degree = coim.Degree,
+                    
                 };
+
+                opening.TitleClasses.Add(titleClass);
+
                 _context.Openings.Add(opening);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { message = "新增職缺失敗" });
             };

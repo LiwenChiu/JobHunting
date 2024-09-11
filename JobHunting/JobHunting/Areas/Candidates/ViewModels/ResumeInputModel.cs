@@ -21,5 +21,8 @@ namespace JobHunting.Areas.Candidates.ViewModels
         public int ResumeId { get; set; }
         public bool ReleaseYN { get; set; }
         public string Intro { get; set; }
+        //public byte[]? Headshot { get; set; }
+        public string TitleClassName { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }
