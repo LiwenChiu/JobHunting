@@ -13,6 +13,8 @@ public partial class TitleClass
 
     public string TitleClassName { get; set; }
 
+    public virtual ICollection<Candidate> Candidates { get; set; } = new List<Candidate>();
+
     public virtual TitleCategory TitleCategory { get; set; }
 
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();

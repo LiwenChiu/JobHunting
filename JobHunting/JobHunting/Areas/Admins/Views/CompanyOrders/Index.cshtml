@@ -14,7 +14,7 @@
 <div id="CompanyOrdersVue">
 @*     <h3 class="text-center pt-2">訂單紀錄</h3> *@
 
-    <div class="row py-2 px-1">
+    <div class="py-2 px-1">
        @*  <div class="col-md-10">
             <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
                 <option :value="idx" v-for="items,idx in OrderDetail">{{items.Detail}}</option>
@@ -27,116 +27,114 @@
                 <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
             </select>
         </div> *@
-        <div class="container-fluid row py-2">
+        <div class="container-fluid row">
             <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
-            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入篩選關鍵字" v-model.trim.lazy="filter" v-on:keyup="filterCompanyOrders" />
+            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入關鍵字" v-model.trim="filterInput" v-on:keyup="bootFilterPage()" />
+            <label for="pageNumber">每頁筆數: </label>
+            <input type="text" id="pageNumber" name="pageNumber" placeholder="8" v-model="pageLength"/>
         </div>
     </div>
     
-
-
-    <div class="container tableOutside ">
+    <div class="container tableOutside"> @* style="overflow-y:auto;height:66vh" *@
         <table class="table table-striped text-center mt-1" id="ChangePage" style="">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">訂單ID</th>
                     <th scope="col">公司名稱</th>
                     <th scope="col">方案名稱</th>
-                    <th scope="col">訂購日期</th>
-                    <th scope="col">到期日</th>
+                    <th scope="col">訂購時間</th>
+                    <th scope="col">到期時間</th>
                     <th scope="col">付款狀態</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in CompanyOrders">
-                    <th scope="row">{{item.orderID}}</th>
-                    <td>{{item.companyName}}</td>
-                    <td>{{item.title}}</td>
-                    <td>{{item.orderDate}}</td>
-                    <td>{{item.duration}}</td>
-                    <td><button class="btn btn-light btn-sm">{{item.status}}</button></td>
+                <tr v-for="order in companyOrders">
+                    <td>{{order.orderId}}</td>
+                    <td>{{order.companyName}}</td>
+                    <td>{{order.title}}</td>
+                    <td>{{order.orderDate}}</td>
+                    <td>{{order.expiration}}</td>
+                    <td><button class="btn btn-light btn-sm">{{orderStatus(order.status)}}</button></td>
                 </tr>
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination ">
-                <li class="page-item me-auto"><a class="page-link" href="#">上一頁</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item ms-auto"><a class="page-link" href="#">下一頁</a></li>
-            </ul>
-        </nav>
     </div>
+    <nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <template v-for="(page,index) in totalPage">
+        <li class="page-item"><a class="page-link" href="">{{index+1}}</a></li>
+    </template>
+    <li class="page-item">
+      <a class="page-link" href="" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 </div>
 
 @section Scripts
 {
     <script>
-        let VueAppPricingOrderHistory = {
+            let VueAppCompanyOrders = {
             data(){
                 return {
                     baseAddress: "https://localhost:7169",
-                    filter: "",
-                    isShow:false,
-                    orderSelA: "",
-                    orderSelB: "",
-                    CompanyOrders: [],
-                    OrderDetail:
-                    [
-                        {Detail: "公司名稱" },
-                        {Detail: "方案名稱" },
-                        {Detail: "訂購日期" },
-                        {Detail: "方案天數" },
-                        {Detail: "付款狀態" },
-                    ],
+                    filterInput: "",
+                    companyOrders: [],
+                    pageDraw: null,
+                    pageLength: 8,  //一頁幾筆
+                    pageStart: 1,   //第幾頁
+                    totalDataCount: null,   //總共幾筆資料
+                    totalPage: null,    //總共幾頁
                 };
             },
-            computed:{
-                orderSelAc: function (selval) {
-                    this.orderSelB = selval
-                },
-            },
             methods:{
-                filterCompanyOrders: function () {
-                    let _this = this;
+                bootFilterPaging: function () {
                     let request = {};
-                    request.OrderID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
-                    request.CompanyName = request.GUINumber = request.Title = request.Intro = _this.filter;
-                    // request.CompanyID = request.PlanID = request.Price = request.OrderDate = request.Duration = request.Status = null;
-                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/Filter`, request, {
-                        Headers: {'Content-Type':'application/json'},
-                    })
-                        .then(
-                            response => {
-                                _this.CompanyOrders = response.data;
-                                for (let i = 0; i < _this.CompanyOrders.length; i++) {
-                                    _this.CompanyOrders[i].Edit = false;
-                                }
-                            })
-                        .catch(err => {
-                            alert(err)
-                        });
+                    request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                    request.CompanyName = request.GUINumber = request.Title = request.Intro = request.OrderDate = request.Expiration = request.Status = this.filterInput;
+                    request.PageDraw = this.pageDraw;
+                    request.PageLength = this.pageLength;
+                    request.PageStart = (this.pageStart-1)*(this.pageLength);
+                        axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging/`, request, {
+                        headers: {
+                            'Content-Type':'application/json'
+                        },
+                    }).then(response => { this.companyOrders = response.data;
+                                        this.totalDataCount = response.total;
+                                        this.totalPage = parseInt((response.total)/(this.pageLength)) + 1;})
+                    .catch(err => { alert(err.response.data) });
                 },
-                // payStatus: function (status) {
-                //     if (status) {
-                //         return "已付款";
-                //     }
-                //     else {
-                //         return "尚未付款";
-                //     }
-                // }
-            },
-            watched:{
-
+                bootFilterPage: function () {
+                    let request = {};
+                    request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                    request.CompanyName = request.GUINumber = request.Title = request.Intro = request.OrderDate = request.Expiration = request.Status = this.filterInput;
+                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage/`, request, {
+                        headers: {
+                            'Content-Type':'application/json'
+                        },
+                    }).then(response => this.companyOrders = response.data)
+                    .catch(err => { alert(err.response.data) });
+                },
+                orderStatus: function (status) {
+                    if (status) {
+                        return "已付款";
+                    }
+                    else {
+                        return "尚未付款";
+                    }
+                },
             },
             mounted: function(){
-                let _this = this;
-                _this.filterCompanyOrders();
+                this.bootFilterPage();
             },
         };
-        let app = Vue.createApp(VueAppPricingOrderHistory).mount("#CompanyOrdersVue");
+        let app = Vue.createApp(VueAppCompanyOrders).mount("#CompanyOrdersVue");
     </script>
 }
