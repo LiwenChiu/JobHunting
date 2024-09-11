@@ -1,6 +1,7 @@
 USE [master]
 GO
 CREATE DATABASE [Duck]
+COLLATE Chinese_PRC_CI_AS;
 GO
 USE [Duck]
 GO
@@ -95,9 +96,6 @@ CREATE TABLE Candidates
 	Sex bit,
 	Birthday date,
 	Headshot varbinary(Max),
-	TitleClassId int
-		references TitleClasses(TitleClassId)
-		on delete set null,
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),
@@ -229,7 +227,6 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
-	Duration int not null,
 	[Status] bit not null default(0),
 )
 GO

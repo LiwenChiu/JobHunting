@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "方案選擇";
+}
+
+@section Styles
+{
+    <style>
+
+    </style>
+}
+<div id="PricingPlans" class="py-2">
+    <h3 class="" align="center">方案選擇</h3>
+    <div class="container" style="overflow-y:auto;height:73vh">
+        <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
+            <div class="col-11 pt-sm-1">
+                <div class="card overcard">
+                    <div class="card-body">
+                        <div class="row row-cols-2 align-items-center">
+                            <p class="col-sm-2">{{plan.title}}</p>
+                            <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
+                            <p class="col-sm-2">{{plan.duration}}天</p>
+                            <p class="col-sm-2">${{plan.price}}</p>
+                            <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
+                            <button type="button" class="btn btn-warning col-sm-3" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title">選擇</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
+        <div class="col-md-10">
+            <label for="filterPlan">關鍵字搜尋: </label>
+            <input type="text" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
+            <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
+        </div>
+    </div>
+
+    @* 介紹 *@
+    <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="IntroLabel">方案介紹</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="h5" style="width:100%;word-break:break-all;">{{clickedPlanIntro}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentAgreement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="paymentAgreementLabel">確認購買</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
+                </div>
+                <div class="modal-body">
+                    <h1>請問是否要購買此方案: {{selectedPlanTitle}}</h1>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="payAgree(CompanyId,selectedPlanId);">確認付款</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts
+{
+    <script>
+        let vueAppPricingPlans = {
+            data(){
+                return {
+                    baseAddress: "https://localhost:7169",
+                    CompanyId: null,
+                    filterPlantext: "",
+                    pricingPlans: [],
+                    clickedPlanIntro: "",
+                    selectedPlanTitle: "",
+                    selectedPlanId: null,
+                };
+            },
+            methods:{
+                bootFilterPage:function(){
+                    let request = {};
+                    request.Title = this.filterPlantext
+                    request.Intro = this.filterPlantext;
+                    request.Duration = request.Price = (Number.isNaN(Number(this.filterPlantext)) ? -1 : Number(this.filterPlantext));
+                    request.Discount = (Number.isNaN(Number(this.filterPlantext)) ? -1 : Number(this.filterPlantext))/100;
+                    axios.post(`${this.baseAddress}/Companies/PricingPlans/BootFilterPage`,request,{
+                        headers:{
+                            'Content-Type':'application/json'
+                        }
+                    }).then(response => {
+                        this.pricingPlans = response.data;
+                    }).catch(err => { alert(err) });
+                },
+                payAgree: function (CompanyId,selectedPlanId) {
+                    let request = {};
+                    request.CompanyId = CompanyId;
+                    request.PlanId = selectedPlanId;
+                    // axios.post(url, request, {})
+                    // .then(response => {
+
+                    // })
+                    // .catch(err => { alert(err) });
+                },
+            },
+            watch:{
+                filterPlantext:function(){
+                    this.bootFilterPage();
+                },
+            },
+            mounted:function(){
+                this.bootFilterPage();
+            },
+        };
+        let app = Vue.createApp(vueAppPricingPlans).mount("#PricingPlans");
+    </script>
+}

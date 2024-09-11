@@ -94,16 +94,16 @@ INSERT INTO CompanyClasses (CompanyClassId, CompanyCategoryId, CompanyClassName)
 ('ZZ', 'Z', N'其他未分類業');
 GO
 INSERT INTO Companies (GUINumber, [Password], CompanyName, CompanyClassId, [Address], Intro, Benefits, ContactName, ContactPhone, ContactEmail, [Status], [Date]) VALUES
-(10000001, 'comp1pass', 'Tech Solutions', 'B1', '123 Main St', 'Leading technology solutions provider', 'Health insurance, 401k', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1, GETDATE()),
-(10000002, 'comp2pass', 'Green Energy', 'B2', '456 Elm St', 'Renewable energy company', 'Stock options, Flexible hours', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1, GETDATE()),
-(10000003, 'comp3pass', 'Creative Designs', 'J1', '789 Oak St', 'Innovative design firm', 'Paid leave, Health insurance', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1, GETDATE()),
-(10000004, 'comp4pass', 'Healthcare Plus', 'A2', '321 Pine St', 'Healthcare services provider', 'Health insurance, Dental plan', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1, GETDATE()),
-(10000005, 'comp5pass', 'Finance World', 'H1', '654 Maple St', 'Financial consulting and services', '401k, Paid holidays', 'Evan Green', '555-6543', 'evan@financeworld.com', 1, GETDATE()),
-(10000006, 'comp6pass', 'Tech Innovators', 'G1', '987 Cedar St', 'Innovative technology solutions', 'Gym membership, Health insurance', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1, GETDATE()),
-(10000007, 'comp7pass', 'Legal Eagle', 'I1', '147 Birch St', 'Legal services and consulting', 'Health insurance, Stock options', 'George Fox', '555-8523', 'george@legaleagle.com', 1, GETDATE()),
-(10000008, 'comp8pass', 'Sales Empire', 'IA', '258 Spruce St', 'Leading sales and distribution', 'Commission, Health insurance', 'Helen King', '555-9630', 'helen@salesempire.com', 1, GETDATE()),
-(10000009, 'comp9pass', 'Marketing Magic', 'D1', '369 Fir St', 'Creative marketing solutions', 'Flexible hours, Stock options', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1, GETDATE()),
-(10000010, 'comp10pass', 'Customer First', 'F1', '852 Ash St', 'Customer service and support', 'Paid leave, Health insurance', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1, GETDATE());
+(10000001, 'comp1pass', 'Tech Solutions', 'B1', '100 台北市中正區仁愛路一段1號', 'Leading technology solutions provider', 'Health insurance, 401k', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1, GETDATE()),
+(10000002, 'comp2pass', 'Green Energy', 'B2', '103 台北市大同區南京西路2號', 'Renewable energy company', 'Stock options, Flexible hours', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1, GETDATE()),
+(10000003, 'comp3pass', 'Creative Designs', 'J1', '104 台北市中山區民權東路三段3號', 'Innovative design firm', 'Paid leave, Health insurance', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1, GETDATE()),
+(10000004, 'comp4pass', 'Healthcare Plus', 'A2', '105 台北市松山區復興北路4號', 'Healthcare services provider', 'Health insurance, Dental plan', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1, GETDATE()),
+(10000005, 'comp5pass', 'Finance World', 'H1', '106 台北市大安區信義路四段5號', 'Financial consulting and services', '401k, Paid holidays', 'Evan Green', '555-6543', 'evan@financeworld.com', 1, GETDATE()),
+(10000006, 'comp6pass', 'Tech Innovators', 'G1', '108 台北市萬華區西寧南路6號', 'Innovative technology solutions', 'Gym membership, Health insurance', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1, GETDATE()),
+(10000007, 'comp7pass', 'Legal Eagle', 'I1', '110 台北市信義區松仁路7號', 'Legal services and consulting', 'Health insurance, Stock options', 'George Fox', '555-8523', 'george@legaleagle.com', 1, GETDATE()),
+(10000008, 'comp8pass', 'Sales Empire', 'IA', '111 台北市士林區中山北路六段8號', 'Leading sales and distribution', 'Commission, Health insurance', 'Helen King', '555-9630', 'helen@salesempire.com', 1, GETDATE()),
+(10000009, 'comp9pass', 'Marketing Magic', 'D1', '112 台北市北投區光明路9號', 'Creative marketing solutions', 'Flexible hours, Stock options', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1, GETDATE()),
+(10000010, 'comp10pass', 'Customer First', 'F1', '114 台北市內湖區民權東路六段10號', 'Customer service and support', 'Paid leave, Health insurance', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1, GETDATE());
 GO
 INSERT INTO TitleCategories (TitleCategoryName) VALUES
 (N'其他'),
@@ -136,16 +136,16 @@ INSERT INTO TitleClasses (TitleCategoryId,TitleClassName) VALUES
 (3,N'資訊及通訊傳播技術員');
 GO
 INSERT INTO Openings (CompanyId, Title, [Address], [Description], Benefits, InterviewYN, SalaryMax, SalaryMin, [Time], ContactName, ContactPhone, ContactEmail, ReleaseYN) VALUES
-(1, 'Senior Software Engineer', '123 Main St', 'Develop and maintain software applications', 'Health insurance, Stock options', 1, 120000, 80000, 'Full-time', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1),
-(2, 'Renewable Energy Consultant', '456 Elm St', 'Consult on renewable energy projects', 'Stock options, Flexible hours', 1, 90000, 60000, 'Full-time', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1),
-(3, 'Graphic Designer', '789 Oak St', 'Create visual content for marketing campaigns', 'Paid leave, Health insurance', 1, 70000, 50000, 'Full-time', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1),
-(4, 'Healthcare Administrator', '321 Pine St', 'Manage healthcare operations and staff', 'Health insurance, Dental plan', 1, 95000, 70000, 'Full-time', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1),
-(5, 'Financial Analyst', '654 Maple St', 'Analyze financial data and provide insights', '401k, Paid holidays', 1, 85000, 60000, 'Full-time', 'Evan Green', '555-6543', 'evan@financeworld.com', 1),
-(6, 'Junior IT Support Specialist', '987 Cedar St', 'Provide IT support and troubleshooting', 'Gym membership, Health insurance', 1, 55000, 40000, 'Full-time', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1),
-(7, 'Paralegal',  '147 Birch St', 'Assist lawyers in legal research and case preparation', 'Health insurance, Stock options', 1, 60000, 45000, 'Full-time', 'George Fox', '555-8523', 'george@legaleagle.com', 1),
-(8, 'Sales Executive', '258 Spruce St', 'Drive sales and build client relationships', 'Commission, Health insurance', 1, 80000, 50000, 'Full-time', 'Helen King', '555-9630', 'helen@salesempire.com', 1),
-(9, 'Digital Marketing Specialist', '369 Fir St', 'Manage digital marketing campaigns', 'Flexible hours, Stock options', 1, 75000, 50000, 'Full-time', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1),
-(10, 'Customer Support Agent', '852 Ash St', 'Provide customer service and support', 'Paid leave, Health insurance', 1, 50000, 35000, 'Full-time', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1);
+(1, 'Senior Software Engineer', '115 台北市南港區忠孝東路七段11號', 'Develop and maintain software applications', 'Health insurance, Stock options', 1, 120000, 80000, 'Full-time', 'Alice Johnson', '555-1234', 'alice@techsolutions.com', 1),
+(2, 'Renewable Energy Consultant', '116 台北市文山區羅斯福路五段12號', 'Consult on renewable energy projects', 'Stock options, Flexible hours', 1, 90000, 60000, 'Full-time', 'Bob Smith', '555-5678', 'bob@greenenergy.com', 1),
+(3, 'Graphic Designer', '200 基隆市仁愛區忠一路13號', 'Create visual content for marketing campaigns', 'Paid leave, Health insurance', 1, 70000, 50000, 'Full-time', 'Charlie Brown', '555-8765', 'charlie@creativedesigns.com', 1),
+(4, 'Healthcare Administrator', '220 新北市板橋區中山路一段14號', 'Manage healthcare operations and staff', 'Health insurance, Dental plan', 1, 95000, 70000, 'Full-time', 'Dana White', '555-4321', 'dana@healthcareplus.com', 1),
+(5, 'Financial Analyst', '231 新北市新店區北新路一段15號', 'Analyze financial data and provide insights', '401k, Paid holidays', 1, 85000, 60000, 'Full-time', 'Evan Green', '555-6543', 'evan@financeworld.com', 1),
+(6, 'Junior IT Support Specialist', '235 新北市中和區中正路16號', 'Provide IT support and troubleshooting', 'Gym membership, Health insurance', 1, 55000, 40000, 'Full-time', 'Fiona Blue', '555-7890', 'fiona@techinnovators.com', 1),
+(7, 'Paralegal',  '242 新北市新莊區中正路17號', 'Assist lawyers in legal research and case preparation', 'Health insurance, Stock options', 1, 60000, 45000, 'Full-time', 'George Fox', '555-8523', 'george@legaleagle.com', 1),
+(8, 'Sales Executive', '251 新北市淡水區中山路18號', 'Drive sales and build client relationships', 'Commission, Health insurance', 1, 80000, 50000, 'Full-time', 'Helen King', '555-9630', 'helen@salesempire.com', 1),
+(9, 'Digital Marketing Specialist', '300 新竹市東區光復路二段19號', 'Manage digital marketing campaigns', 'Flexible hours, Stock options', 1, 75000, 50000, 'Full-time', 'Ivy Green', '555-7410', 'ivy@marketingmagic.com', 1),
+(10, 'Customer Support Agent', '400 台中市中區中山路20號', 'Provide customer service and support', 'Paid leave, Health insurance', 1, 50000, 35000, 'Full-time', 'Jack Black', '555-7531', 'jack@customerfirst.com', 1);
 GO
 INSERT INTO OpeningTitleClasses (OpeningId,TitleClassId) VALUES
 (1,1),
@@ -159,17 +159,17 @@ INSERT INTO OpeningTitleClasses (OpeningId,TitleClassId) VALUES
 (6,2),
 (8,9);
 GO
-INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, TitleClassId, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
-('A123456789', 'alice@example.com', 'pass123', 'Alice Chen', 0, '1990-01-01', 1, '555-1111', N'100 台北市中正區忠孝西路一段50號', 'Bachelor', 'Employed', 'Completed'),
-('B987654321', 'bob@example.com', 'pass456', 'Bob Lin', 1, '1985-02-02', 4, '555-2222', N'407 台中市西屯區台灣大道三段200號', 'Master', 'Unemployed', 'Completed'),
-('C567890123', 'charlie@example.com', 'pass789', 'Charlie Wong', 1, '1992-03-03', 5, '555-3333', N'802 高雄市苓雅區四維三路10號', 'Bachelor', 'Employed', 'Exempt'),
-('D234567890', 'dana@example.com', 'pass101', 'Dana Lee', 0, '1988-04-04', 2, '555-4444', N'220 新北市板橋區中山路一段100號', 'PhD', 'Self-Employed', 'Exempt'),
-('E345678901', 'evan@example.com', 'pass202', 'Evan Tan', 1, '1991-05-05', 4, '555-5555', N'320 桃園市中壢區中央西路一段200號', 'Master', 'Employed', 'Completed'),
-('F456789012', 'fiona@example.com', 'pass303', 'Fiona Huang', 0, '1993-06-06', 7, '555-6666', N'701 台南市東區東寧路300號', 'Bachelor', 'Unemployed', 'Completed'),
-('G567890123', 'george@example.com', 'pass404', 'George Ho', 1, '1987-07-07', 8, '555-7777', N'300 新竹市東區光復路一段150號', 'Master', 'Employed', 'Completed'),
-('H678901234', 'helen@example.com', 'pass505', 'Helen Wu', 0, '1986-08-08', 2, '555-8888', N'600 嘉義市西區文化路100號', 'Bachelor', 'Employed', 'Exempt'),
-('I789012345', 'ivy@example.com', 'pass606', 'Ivy Liu', 0, '1994-09-09', 10, '555-9999', N'500 彰化縣彰化市中正路200號', 'Bachelor', 'Unemployed', 'Completed'),
-('J890123456', 'jack@example.com', 'pass707', 'Jack Cheng', 1, '1989-10-10', 7,  '555-1010', N'200 基隆市仁愛區忠二路50號', 'Bachelor', 'Employed', 'Completed');
+INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
+('A123456789', 'alice@example.com', 'pass123', 'Alice Chen', 0, '1990-01-01', '555-1111', '100 台北市中正區忠孝西路一段50號', 'Bachelor', 'Employed', 'Completed'),
+('B987654321', 'bob@example.com', 'pass456', 'Bob Lin', 1, '1985-02-02', '555-2222', '407 台中市西屯區台灣大道三段200號', 'Master', 'Unemployed', 'Completed'),
+('C567890123', 'charlie@example.com', 'pass789', 'Charlie Wong', 1, '1992-03-03', '555-3333', '802 高雄市苓雅區四維三路10號', 'Bachelor', 'Employed', 'Exempt'),
+('D234567890', 'dana@example.com', 'pass101', 'Dana Lee', 0, '1988-04-04', '555-4444', '220 新北市板橋區中山路一段100號', 'PhD', 'Self-Employed', 'Exempt'),
+('E345678901', 'evan@example.com', 'pass202', 'Evan Tan', 1, '1991-05-05', '555-5555', '320 桃園市中壢區中央西路一段200號', 'Master', 'Employed', 'Completed'),
+('F456789012', 'fiona@example.com', 'pass303', 'Fiona Huang', 0, '1993-06-06', '555-6666', '701 台南市東區東寧路300號', 'Bachelor', 'Unemployed', 'Completed'),
+('G567890123', 'george@example.com', 'pass404', 'George Ho', 1, '1987-07-07', '555-7777', '300 新竹市東區光復路一段150號', 'Master', 'Employed', 'Completed'),
+('H678901234', 'helen@example.com', 'pass505', 'Helen Wu', 0, '1986-08-08', '555-8888', '600 嘉義市西區文化路100號', 'Bachelor', 'Employed', 'Exempt'),
+('I789012345', 'ivy@example.com', 'pass606', 'Ivy Liu', 0, '1994-09-09', '555-9999', '500 彰化縣彰化市中正路200號', 'Bachelor', 'Unemployed', 'Completed'),
+('J890123456', 'jack@example.com', 'pass707', 'Jack Cheng', 1, '1989-10-10', '555-1010', '200 基隆市仁愛區忠二路50號', 'Bachelor', 'Employed', 'Completed');
 GO
 INSERT INTO Resumes (CandidateId, Title,Intro, Autobiography, WorkExperience, [Time], [Address], ReleaseYN) VALUES
 (1, 'Senior Software Engineer Resume','Experienced software engineer specializing in backend development', 'Alice has over 8 years of experience...', 'Tech Solutions, Backend Developer...', 'Full-time', '103 台北市大同區重慶北路二段150號', 1),
@@ -284,17 +284,17 @@ INSERT INTO PricingPlans (Title, Intro, Duration, Price, Discount) VALUES
 (N'180天方案', N'180天方案', 180, 15750, 1.00),
 (N'365天方案', N'365天方案', 365, 31500, 1.00);
 GO
-INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Price, OrderDate, Duration, [Status]) VALUES
-(1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 7, 1),
-(2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 30, 1),
-(3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 60, 1),
-(4, 4, 'Healthcare Plus', 10000004, N'90天方案', 8400, GETDATE(), 90, 1),
-(5, 5, 'Finance World', 10000005, N'180天方案', 15750, GETDATE(), 180, 1),
-(6, 6, 'Tech Innovators', 10000006, N'365天方案', 31500, GETDATE(), 365, 1),
-(7, 6, 'Legal Eagle', 10000007, N'365天方案', 31500, GETDATE(), 365, 1),
-(8, 2, 'Sales Empire', 10000008, N'30天方案', 4200, GETDATE(), 30, 1),
-(9, 4, 'Marketing Magic', 10000009, N'90天方案', 8400, GETDATE(), 90, 1),
-(10, 6, 'Customer First', 10000010, N'365天方案', 31500, GETDATE(), 365, 1);
+INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Price, OrderDate, [Status]) VALUES
+(1, 1, 'Tech Solutions', 10000001, N'7天方案', 380, GETDATE(), 1),
+(2, 2, 'Green Energy', 10000002, N'30天方案', 4200, GETDATE(), 1),
+(3, 3, 'Creative Designs', 10000003, N'60天方案', 6800, GETDATE(), 1),
+(4, 4, 'Healthcare Plus', 10000004, N'90天方案', 8400, GETDATE(), 1),
+(5, 5, 'Finance World', 10000005, N'180天方案', 15750, GETDATE(), 1),
+(6, 6, 'Tech Innovators', 10000006, N'365天方案', 31500, GETDATE(), 1),
+(7, 6, 'Legal Eagle', 10000007, N'365天方案', 31500, GETDATE(), 1),
+(8, 2, 'Sales Empire', 10000008, N'30天方案', 4200, GETDATE(), 1),
+(9, 4, 'Marketing Magic', 10000009, N'90天方案', 8400, GETDATE(), 1),
+(10, 6, 'Customer First', 10000010, N'365天方案', 31500, GETDATE(), 1);
 GO
 INSERT INTO Notifications (CompanyId, CandidateId, ResumeId, OpeningId, [Status], SubjectLine, Content, SendDate, AppointmentTime) VALUES
 (1, 1, 1, 1, 'Sent', 'Interview Invitation', 'We would like to invite you for an interview...', '2024-08-01', '2024-08-03 10:00:00'),

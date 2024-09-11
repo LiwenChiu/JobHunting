@@ -23,6 +23,8 @@ public partial class CompanyOrder
 
     public DateTime OrderDate { get; set; }
 
+    public int Duration { get; set; }
+
     public bool Status { get; set; }
 
     public virtual Company Company { get; set; }
