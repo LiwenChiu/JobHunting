@@ -1,64 +1,241 @@
 ﻿@{
     ViewData["Title"] = "會員中心";
 }
-<div class="container bg-light position-relative mt-3" style="border-radius:30px;">
-    <div class="position-absolute end-50 ms-4 mt-4"><h3 class="CompanyNameh3 text-center ">公司介紹</h3></div>
-    
-    <div class="text-end me-5 pt-4"><button class="btn btn-outline-secondary text">編輯</button></div>
-    <div class="mt-2" >
-        <div class="inputOutAreas text-center pt-3">
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    公司名稱<span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control inputCompanyName col">
+    @* ---------------------------清單--------------------------------------- *@
+<div id="intro">
+    <div class="container bg-light position-relative mt-3" style="border-radius:30px;" >
+        <div class="position-absolute end-50 ms-4 mt-4"><h3 class="CompanyNameh3 text-center " >公司介紹</h3></div>
+        
+        <div class="mt-2" v-for="item in companyIntro">
+            <template v-if="item.edit == false">
+                <img class="card-img-top img-fluid"
+                     :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
+                     style="width:320px;height:240px" />
+                <div class="inputOutAreas text-center pt-3">
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="companyName" class="col-sm-2 col-form-label labelCompanyName">
+                            公司名稱
+                        </label>
+                        <label>{{item.companyName}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="companyClassName" class="col-sm-2 col-form-label labelCompanyName">
+                            公司類別
+                        </label>
+                        <label>{{item.companyClassName}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="contactEmail" class="col-sm-2 col-form-label labelCompanyName">
+                            電子郵件
+                        </label>
+                        <label>{{item.contactEmail}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="contactPhone" class="col-sm-2 col-form-label labelCompanyName">
+                            通訊電話
+                        </label>
+                        <label>{{item.contactPhone}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="address" class="col-sm-2 col-form-label labelCompanyName">
+                            通訊地址
+                        </label>
+                        <label>{{item.address}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="benefits" class="col-sm-2 col-form-label labelCompanyName">
+                            福利制度
+                        </label>
+                        <label>{{item.benefits}}</label>
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for="intro" class="col-sm-2 col-form-label labelCompanyName">
+                            簡介
+                        </label>
+                        <label>{{item.intro}}</label>
+                    </div>
+                    <button type="submit" class="btn btn-outline-secondary" v-on:click="edit(item)">編輯</button>
+                </div>
+            </template>
+        
+        
+    @* ---------------------------編輯--------------------------------------- *@
+        <template v-if="item.edit == true">
+                <div class="inputOutAreas text-center pt-3">
+                 
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         公司名稱<span class="text-danger">*</span>
+                     </label>
+                     <input type="text" class="form-control inputCompanyName col" v-model="item.companyName">
+                 </div>
+                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        公司類別<span class="text-danger">*</span>
+                    </label>
+                    <select v-model="seloption" v-on:change="selchange(item)">
+                        <option v-for="data in companyClasses" :key="data.companyClassId" :value="data.companyClassId">{{data.companyClassName}}</option>
+                    </select>
+                </div>
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         電子郵件<span class="text-danger">*</span>
+                     </label>
+                     <input type="email" class="form-control inputCompanyName col" v-model="item.contactEmail">
 
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    電子郵件<span class="text-danger">*</span>
-                </label>
-                <input type="email" class="form-control inputCompanyName col">
+                 </div>
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         通訊電話<span class="text-danger">*</span>
+                     </label>
+                     <input type="text" class="form-control inputCompanyName col" v-model="item.contactPhone">
 
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    通訊電話<span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control inputCompanyName col">
+                 </div>
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         通訊地址<span class="text-danger">*</span>
+                     </label>
+                     <input type="text" class="form-control inputCompanyName col" v-model="item.address">
 
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    通訊地址<span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control inputCompanyName col">
+                 </div>
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         福利制度
+                     </label>
+                     <input type="text" class="form-control inputCompanyName col" v-model="item.benefits">
 
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    福利制度
-                </label>
-                <input type="text" class="form-control inputCompanyName col">
+                 </div>
+                 <div class="d-sm-flex my-1 py-3 inputAreas">
+                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                         簡介
+                     </label>
+                     <textarea class="form-control" style="height:150px" v-model="item.intro"></textarea>
+                    </div>
+                    <img class="card-img-top img-fluid"
+                               :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
+                               style="width:320px;height:240px" />
+                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">                        
+                     <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($even.target)" accept="image/*" />
+                 </div>
+                    <button type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
+                    <button type="submit" class="btn btn-outline-secondary" v-on:click="cancel(item)">取消</button>
 
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    圖片
-                </label>
-                <input type="file" class="form-control inputCompanyName col">
-
-            </div>
-            <div class="d-sm-flex my-1 py-3 inputAreas">
-                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
-                    簡介
-                </label>
-                <textarea class="form-control" style="height:150px"></textarea>
-            </div>
-            <button type="submit" class="btn btn-outline-secondary">編輯完成</button>
-        </div>
+             </div>
+        </template>
     </div>
 </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    companyId: 3,
+                    companyIntro: [],
+                    companyClasses:[],
+                    seloption:"",
+                    companyIntroOld: {
+                        companyId:null,
+                        companyName:"",
+                        address:"",
+                        intro:"",
+                        benefits:"",
+                        contactName:"",
+                        contactPhone:"",
+                        contactEmail:"",
+                        companyClassId: null,
+                        companyClassName:"",
+                    },
+                };
+            },
+            methods: {
+                getCompanyIntro() {
+                    let self = this
+                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList/${self.companyId}`, {
+                        Headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        self.companyIntro = res.data;
+                    }).catch(err => JSON.stringify(err));
+                },
+                getCompanyClasses() {
+                    let self = this
+                    axios.get(`${self.baseAddress}/Companies/CompanyIntro/GetCompanyClass`, {
+                        Headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        self.companyClasses = res.data;
+                    }).catch(err => JSON.stringify(err));
+                },
+                edit(item) {
+                    let self = this;
+                    item.edit = true;
+                    self.seloption = item.companyClassId
+                    self.companyIntroOld.companyId = item.companyId
+                    self.companyIntroOld.companyName = item.companyName
+                    self.companyIntroOld.address = item.address
+                    self.companyIntroOld.intro = item.intro
+                    self.companyIntroOld.benefits = item.benefits
+                    self.companyIntroOld.contactName = item.contactName
+                    self.companyIntroOld.contactPhone = item.contactPhone
+                    self.companyIntroOld.contactEmail = item.contactEmail
+                    self.companyIntroOld.companyClassId = item.companyClassId
+                    self.companyIntroOld.companyClassName = item.companyClassName
+                },
+                cancel(item) {
+                    let self = this;
+                    if (item.edit == true) {
+                        item.companyId = self.companyIntroOld.companyId 
+                        item.companyName = self.companyIntroOld.companyName  
+                        item.address = self.companyIntroOld.address  
+                        item.intro = self.companyIntroOld.intro  
+                        item.benefits = self.companyIntroOld.benefits 
+                        item.contactName = self.companyIntroOld.contactName  
+                        item.contactPhone = self.companyIntroOld.contactPhone 
+                        item.contactEmail = self.companyIntroOld.contactEmail  
+                        item.companyClassName = self.companyIntroOld.companyClassName  
+                        item.edit = false;
+                    }
+                },
+                update(item) {
+                    let self = this;
+                    var form = new FormData();
+                    form.append("CompanyId", item.companyId);
+                    form.append("CompanyName", item.companyName);
+                    form.append("Address", item.address);
+                    form.append("Intro", item.intro);
+                    form.append("Benefits", item.benefits);
+                    form.append("ContactName", item.contactName);
+                    form.append("ContactPhone", item.contactPhone);
+                    form.append("ContactEmail", item.contactEmail);
+                    form.append("CompanyClassId", self.seloption);
+                    form.append("ImageFile", document.querySelector("#editFile").files[0]);
+                    axios.put(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro/${self.companyId}`, form, {
+                        headers: { "content-type": "multipart/form-data" }
+                    }).then(response => {
+                        // _this.rand = new Date().getTime();
+                        window.location.reload();
+                    }).catch(err => { alert(err) });
+                },
+                selchange(item) {
+                    let self = this;       
+                    item.companyClassId = self.seloption;       //設定原本的下拉選單值
+                },
+                editfilechange(){
+
+                }
+            },
+            mounted() {
+                let self = this;
+                self.getCompanyIntro();
+                self.getCompanyClasses()
+            }
+        }).mount("#intro")
+    </script>
+}
 
 
 

@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Companies.ViewModel
 {
-    public class CompanyIntroViewModel
+    public class PutCompanyIntroOutput
     {
         public int CompanyId { get; set; }
 
@@ -11,12 +11,12 @@
 
         public string? Benefits { get; set; }
 
+        public IFormFile? ImageFile { get; set; }
         public string ContactName { get; set; }
 
         public string ContactPhone { get; set; }
 
         public string ContactEmail { get; set; }
         public string? CompanyClassName { get; set; }
-        public bool Edit { get; set; }
     }
 }
