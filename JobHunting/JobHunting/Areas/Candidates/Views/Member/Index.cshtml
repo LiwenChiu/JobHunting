@@ -1,0 +1,194 @@
+﻿@{
+    ViewData["Title"] = "會員資料";
+}
+
+@section Styles
+{
+    <style>
+
+    </style>
+}
+
+<div class="container pt-1" id="MemberApp">
+    <div class="pb-1">
+        @* <h1 align="center">會員資料</h1> *@
+        <div class="d-grid">
+            <template v-if="editMemberData == false">
+                <button type="button" class="btn btn-warning text-light" v-on:click="editMemberData = true;">修改會員資料</button>
+            </template>
+            <template v-else>
+                <button type="button" class="btn btn-primary text-light" v-on:click="saveEditMemberData()">儲存會員資料</button>
+            </template>
+            @* <partial name="_memberedit" /> *@
+        </div>
+    </div>
+    <div class="card" style="overflow-y:auto;height:83vh">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateName" class="mb-0">姓名</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.name}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <input type="text" id="candidateName" class="col-sm-9" placeholder="請輸入姓名" v-model="CandiadteMemberData.name" />
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateSex" class="mb-0">性別</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.sex}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <select class="col-sm-9" v-model="CandiadteMemberData.sex">
+                        <option value="true">男</option>
+                        <option value="false">女</option>
+                    </select>
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">生日</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.birthday}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">電子信箱</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.email}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">手機號碼</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.phone}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">住址</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.address}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">學歷</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.degree}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">就業狀態</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.employmentStatus}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">兵役</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.militaryService}}</p>
+                    </div>
+                </template>
+                <template v-else>
+
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+@section Scripts
+{
+    <script>
+        let VueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    CandidateId: 1,
+                    CandiadteMemberData: {},
+                    editMemberData: false,
+                };
+            },
+            methods: {
+                getetWholeCandidateMember:function(){
+                    axios.post(`${this.baseAddress}/Candidates/Member/getWholeCandidateMemberData`, this.CandidateId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.CandiadteMemberData = response.data[0])
+                        .catch(err => alert(err));
+                },
+                saveEditMemberData:function(){
+
+                    this.editMemberData = false;
+                },
+            },
+            mounted: function () {
+                this.getetWholeCandidateMember();
+            },
+        };
+        let app = Vue.createApp(VueApp).mount("#MemberApp");
+    </script>
+
+}
