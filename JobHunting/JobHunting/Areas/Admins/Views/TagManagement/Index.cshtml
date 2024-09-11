@@ -26,7 +26,7 @@
         </div>
     </template>
 
-    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:76vh">
+    <div class="container text-center py-2 mb-2 border border-warning border-2" style="overflow-y:auto;height:74vh">
         <template v-for="item in TagClasses">
             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
                 {{item.tagClassName}}
