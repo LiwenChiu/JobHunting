@@ -95,6 +95,9 @@ CREATE TABLE Candidates
 	Sex bit,
 	Birthday date,
 	Headshot varbinary(Max),
+	TitleClassId int
+		references TitleClasses(TitleClassId)
+		on delete set null,
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),

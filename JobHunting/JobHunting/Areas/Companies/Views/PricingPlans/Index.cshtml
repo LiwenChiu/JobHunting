@@ -31,11 +31,10 @@
     <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
         <div class="col-md-10">
             <label for="filterPlan">關鍵字搜尋: </label>
-            <input type="text" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keyup="bootFilterPage();" />
-            <button class="btn btn-warning text-light" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
+            <input type="text" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
+            <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
         </div>
     </div>
-    
 
     @* 介紹 *@
     <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
@@ -116,6 +115,11 @@
 
                     // })
                     // .catch(err => { alert(err) });
+                },
+            },
+            watch:{
+                filterPlantext:function(){
+                    this.bootFilterPage();
                 },
             },
             mounted:function(){

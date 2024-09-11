@@ -109,7 +109,7 @@
         <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
             <div class="col-md-6">
                 <label for="filterPlan">關鍵字搜尋: </label>
-                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model.trim="filterPlanInput" v-on:keyup="bootFilterPage();" />
+                <input type="text" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model.trim="filterPlanInput" v-on:keydown.enter.exact="bootFilterPage();" />
                 <button class="btn btn-warning text-light" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
             </div>
             <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createPlan">新增</button>
@@ -437,6 +437,11 @@
                 },
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
+                },
+            },
+            watch:{
+                filterPlanInput:function(){
+                    this.bootFilterPage();
                 },
             },
             mounted: function () {

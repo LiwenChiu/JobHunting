@@ -159,17 +159,17 @@ INSERT INTO OpeningTitleClasses (OpeningId,TitleClassId) VALUES
 (6,2),
 (8,9);
 GO
-INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
-('A123456789', 'alice@example.com', 'pass123', 'Alice Chen', 0, '1990-01-01', '555-1111', '100 台北市中正區忠孝西路一段50號', 'Bachelor', 'Employed', 'Completed'),
-('B987654321', 'bob@example.com', 'pass456', 'Bob Lin', 1, '1985-02-02', '555-2222', '407 台中市西屯區台灣大道三段200號', 'Master', 'Unemployed', 'Completed'),
-('C567890123', 'charlie@example.com', 'pass789', 'Charlie Wong', 1, '1992-03-03', '555-3333', '802 高雄市苓雅區四維三路10號', 'Bachelor', 'Employed', 'Exempt'),
-('D234567890', 'dana@example.com', 'pass101', 'Dana Lee', 0, '1988-04-04', '555-4444', '220 新北市板橋區中山路一段100號', 'PhD', 'Self-Employed', 'Exempt'),
-('E345678901', 'evan@example.com', 'pass202', 'Evan Tan', 1, '1991-05-05', '555-5555', '320 桃園市中壢區中央西路一段200號', 'Master', 'Employed', 'Completed'),
-('F456789012', 'fiona@example.com', 'pass303', 'Fiona Huang', 0, '1993-06-06', '555-6666', '701 台南市東區東寧路300號', 'Bachelor', 'Unemployed', 'Completed'),
-('G567890123', 'george@example.com', 'pass404', 'George Ho', 1, '1987-07-07', '555-7777', '300 新竹市東區光復路一段150號', 'Master', 'Employed', 'Completed'),
-('H678901234', 'helen@example.com', 'pass505', 'Helen Wu', 0, '1986-08-08', '555-8888', '600 嘉義市西區文化路100號', 'Bachelor', 'Employed', 'Exempt'),
-('I789012345', 'ivy@example.com', 'pass606', 'Ivy Liu', 0, '1994-09-09', '555-9999', '500 彰化縣彰化市中正路200號', 'Bachelor', 'Unemployed', 'Completed'),
-('J890123456', 'jack@example.com', 'pass707', 'Jack Cheng', 1, '1989-10-10', '555-1010', '200 基隆市仁愛區忠二路50號', 'Bachelor', 'Employed', 'Completed');
+INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, TitleClassId, Phone, [Address], Degree, EmploymentStatus, MilitaryService) VALUES
+('A123456789', 'alice@example.com', 'pass123', 'Alice Chen', 0, '1990-01-01', 1, '555-1111', N'100 台北市中正區忠孝西路一段50號', 'Bachelor', 'Employed', 'Completed'),
+('B987654321', 'bob@example.com', 'pass456', 'Bob Lin', 1, '1985-02-02', 4, '555-2222', N'407 台中市西屯區台灣大道三段200號', 'Master', 'Unemployed', 'Completed'),
+('C567890123', 'charlie@example.com', 'pass789', 'Charlie Wong', 1, '1992-03-03', 5, '555-3333', N'802 高雄市苓雅區四維三路10號', 'Bachelor', 'Employed', 'Exempt'),
+('D234567890', 'dana@example.com', 'pass101', 'Dana Lee', 0, '1988-04-04', 2, '555-4444', N'220 新北市板橋區中山路一段100號', 'PhD', 'Self-Employed', 'Exempt'),
+('E345678901', 'evan@example.com', 'pass202', 'Evan Tan', 1, '1991-05-05', 4, '555-5555', N'320 桃園市中壢區中央西路一段200號', 'Master', 'Employed', 'Completed'),
+('F456789012', 'fiona@example.com', 'pass303', 'Fiona Huang', 0, '1993-06-06', 7, '555-6666', N'701 台南市東區東寧路300號', 'Bachelor', 'Unemployed', 'Completed'),
+('G567890123', 'george@example.com', 'pass404', 'George Ho', 1, '1987-07-07', 8, '555-7777', N'300 新竹市東區光復路一段150號', 'Master', 'Employed', 'Completed'),
+('H678901234', 'helen@example.com', 'pass505', 'Helen Wu', 0, '1986-08-08', 2, '555-8888', N'600 嘉義市西區文化路100號', 'Bachelor', 'Employed', 'Exempt'),
+('I789012345', 'ivy@example.com', 'pass606', 'Ivy Liu', 0, '1994-09-09', 10, '555-9999', N'500 彰化縣彰化市中正路200號', 'Bachelor', 'Unemployed', 'Completed'),
+('J890123456', 'jack@example.com', 'pass707', 'Jack Cheng', 1, '1989-10-10', 7,  '555-1010', N'200 基隆市仁愛區忠二路50號', 'Bachelor', 'Employed', 'Completed');
 GO
 INSERT INTO Resumes (CandidateId, Title,Intro, Autobiography, WorkExperience, [Time], [Address], ReleaseYN) VALUES
 (1, 'Senior Software Engineer Resume','Experienced software engineer specializing in backend development', 'Alice has over 8 years of experience...', 'Tech Solutions, Backend Developer...', 'Full-time', '103 台北市大同區重慶北路二段150號', 1),
