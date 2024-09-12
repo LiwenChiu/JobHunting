@@ -40,11 +40,18 @@ namespace JobHunting.Areas.Companies.Controllers
                 Description = o.Description,
                 TitleClassId=o.TitleClasses.Select(tc=>tc.TitleClassId),
                 TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
+                TagId=o.Tags.Select(t=>t.TagId),
+                TagName=o.Tags.Select(t=>t.TagName),
                 Benefits = o.Benefits,
                 Edit = false,
                 Degree = o.Degree,
+                ReleaseYN = o.ReleaseYN
             }));
         }
+
+        [HttpPost]
+
+
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
         public JsonResult TitleClassJson()
@@ -88,11 +95,19 @@ namespace JobHunting.Areas.Companies.Controllers
             }));
         }
         [HttpPost]
-        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName")] OpeningsInputModel oim)
+        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
         {
             var opening = await _context.Openings
-                .Include(o => o.TitleClasses)
+                .Include(o => o.TitleClasses).Include(t=>t.Tags)
                 .FirstOrDefaultAsync(o => o.OpeningId == oim.OpeningId);
+
+            var titleClasses = await _context.TitleClasses
+                    .Where(tc => oim.TitleClassId.Contains(tc.TitleClassId))
+                    .ToListAsync();
+
+            var tags = await _context.Tags
+                .Where(tc => oim.TagId.Contains(tc.TagId))
+                .ToListAsync();
 
             if (opening == null)
             {
@@ -113,21 +128,25 @@ namespace JobHunting.Areas.Companies.Controllers
             opening.ReleaseYN = oim.ReleaseYN;
             opening.Degree = oim.Degree;
 
-            if (oim.TitleClassId != null && oim.TitleClassId.Any())
-            {
-                var newTitleClasses = await _context.TitleClasses
-                    .Where(tc => oim.TitleClassId.Contains(tc.TitleClassId))
-                    .ToListAsync();
+            opening.TitleClasses.Clear();
+            opening.Tags.Clear();
 
-                foreach (var titleClass in newTitleClasses)
-                {
-                    opening.TitleClasses.Add(titleClass);
-                }
+
+            foreach (var titleClass in titleClasses)
+            {
+                opening.TitleClasses.Add(titleClass);
+            }
+
+            foreach (var tag in tags)
+            {
+                opening.Tags.Add(tag);
             }
 
             await _context.SaveChangesAsync();
             return Json(new { message = "修改成功" });
         }
+        
+        [HttpPost]
         public async Task<Array> DelOpening([FromBody] int openingId)
         {
             string[] returnStatus = new string[2];
@@ -161,6 +180,7 @@ namespace JobHunting.Areas.Companies.Controllers
             returnStatus = [$"刪除職缺{opening.Title}成功", "成功"];
             return returnStatus;
         }
+       
         [HttpPost]
         public async Task<IActionResult> CreateOpening([FromBody] CreateOpeningInputModel coim)
         {
@@ -176,13 +196,12 @@ namespace JobHunting.Areas.Companies.Controllers
                     .Where(tc => coim.TitleClassId.Contains(tc.TitleClassId))
                     .ToListAsync();
 
-                if (titleClasses == null || titleClasses.Count == 0)
-                {
-                    return NotFound(new { Message = "選擇的職缺類別不存在" });
-                }
+                var tags = await _context.Tags
+                    .Where(t => coim.TagId.Contains(t.TagId))
+                    .ToListAsync();
 
                 Models.Opening opening = new Models.Opening
-                {
+                { 
                     Title = coim.Title,
                     Address = coim.Address,
                     ContactName = coim.ContactName,
@@ -202,6 +221,11 @@ namespace JobHunting.Areas.Companies.Controllers
                 foreach (var titleClass in titleClasses)
                 {
                     opening.TitleClasses.Add(titleClass);
+                }
+
+                foreach (var tag in tags)
+                {
+                    opening.Tags.Add(tag);
                 }
 
                 _context.Openings.Add(opening);
