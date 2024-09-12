@@ -5,14 +5,20 @@
     </style>
 }
 
-
+@* 篩選搜尋 *@
 <div class="container-fluid py-1" id="app">
-    <div class="row">
-        <div class="card rounded-5 col-3 m-2" style="width: 15rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">
+    <div class="container-fluid row py-2">
+        <label class="form-label">關鍵字搜尋：</label>
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpinionLetter" />
+    </div>
+
+    @* 意見信件card *@
+    <div class="row">  
+        <div class="card rounded-5 col-3 m-2" style="width: 15rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>            
-                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{item.status}}</p>
+                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
             </div>
             <div class="card-footer text-center" style="background-color:transparent">
                         @* <partial name="_OpinionLettersBtnPartial" />                     *@
@@ -24,7 +30,7 @@
                     class="btn btn-primary btn-md"
                     data-bs-toggle="modal"
                     data-bs-target="#modalId"
-                    v-on:click="OpinionLetterModalShow();">
+                    v-on:click="OpinionLetterModalShow(item.id);">
                 意見信件
             </button>
 
@@ -50,15 +56,10 @@
                                 <div class="inputOutAreas" style="width:95%">
 
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label">意見類別：{{item.class}}</label>
-                                        @* <select class="form-control">
-                                            <option value="value">網站使用問題</option>
-                                            <option value="value">申訴/檢舉公司</option>
-                                            <option value="value">建議</option>
-                                        </select> *@
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label">意見類別：{{opinionLetterModal.class}}</label>
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨:{{item.subjectLine}}</label>
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨:{{opinionLetterModal.subjectLine}}</label>
 
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
@@ -67,37 +68,30 @@
 
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                        <textarea class="form-control" style="height:150px" name="意見信件訊息">{{item.content}}</textarea>
+                                        <textarea class="form-control" style="height:150px" name="意見信件訊息">{{opinionLetterModal.content}}</textarea>
                                     </div>
 
                                 </div>
 
                                 <div class="text-center">
-                                    <div class="fw-bold">目前處理狀態：{{item.status}}</div>
+                                    <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
                                     <div class="row-6">
                                         <template v-if="opinionLetterModal.status">
-                                            <button type="button" class="btn btn-success m-3" id="false" data-bs-dismiss="modal" v-on:click="">已處理</button>
+                                            <button type="button" class="btn btn-secondary m-3" id="false"  v-on:click="">處理中</button>
                                         </template>
                                         <template v-else>
-                                            <button type="button" class="btn btn-secondary m-3" id="true" data-bs-dismiss="modal">處理中</button>
+                                            <button type="button" class="btn btn-success m-3" id="true" >已處理</button>
                                         </template>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-            
-                    
-
-
-
-
+            </div>          
         </div>   
+
+
         @* 分頁 *@
         <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
@@ -168,14 +162,26 @@
                     })
                 },
                 OpinionLetterModalShow: function (id) {
-                    alert("AAA");
+                    alert(id);
                     // let request ={
                     //     LetterId: id,
                     // };
-                    axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
-                            {headers: {'Content-Type': 'application/json'}})
+                    // axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
+                    //         {headers: {'Content-Type': 'application/json'}})
+                    axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
                     .then(response => this.opinionLetterModal = response.data)
                     .catch(err => { alert(err) });
+                },
+
+                letterstatus: function (isDone) {
+                    return isDone ? '已處理' : '處理中';
+                },
+
+                filterOpinionLetter: function () { 
+                    // alert(`${this.filter}`);
+                    let _this = this;
+                    let request = {};
+                    
                 }
             },
                 mounted() { this.OpinionData() },

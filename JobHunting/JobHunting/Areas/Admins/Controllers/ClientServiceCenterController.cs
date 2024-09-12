@@ -40,7 +40,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var opinionletter = _context.OpinionLetters.Select(p => new
             {
-                id =p.LetterId,
+                id = p.LetterId,
                 Class = p.Class,
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
@@ -49,15 +49,10 @@ namespace JobHunting.Areas.Admins.Controllers
             return Json(opinionletter);
         }
 
-        //Post:Admins/ClientServiceCenter/OpinionLetterModalShow
-        [HttpPost]
-        public async Task<IEnumerable<OpinioLetterOutputViewModel>> OpinionLetterModalShow([FromBody] int id)
-        {
-            //if (!ModelState.IsValid)
-            //{
-            //    return null;
-            //}
-
+        //Get:Admins/ClientServiceCenter/OpinionLetterModalShow/{id}
+        [HttpGet]
+        public async Task<OpinioLetterOutputViewModel> OpinionLetterModalShow([FromRoute] int id)
+        {        
             var opinionLetter = await _context.OpinionLetters.FindAsync(id);
 
             OpinioLetterOutputViewModel olovm = new OpinioLetterOutputViewModel
@@ -70,8 +65,29 @@ namespace JobHunting.Areas.Admins.Controllers
                 Status = opinionLetter.Status,
             };
 
-            return (IEnumerable<OpinioLetterOutputViewModel>)olovm;
+            return olovm;
         }
+
+        //Post: Admins/ClientServiceCenter/Filter
+        [HttpPost]
+        public async Task<IEnumerable<OpinioLetterOutputViewModel>> Filter([FromBody] OpinioLetterOutputViewModel olvm) 
+        {
+            return _context.OpinionLetters
+                .Where(olfilter =>
+                olfilter.LetterId == olvm.LetterId ||
+                olfilter.Class.Contains(olvm.Class) ||
+                olfilter.SubjectLine.Contains(olvm.SubjectLine) ||
+                olfilter.Status==olvm.Status)
+                .Select(p => new OpinioLetterOutputViewModel 
+                {
+                    LetterId = p.LetterId,
+                    Class = p.Class,
+                    SubjectLine = p.SubjectLine,
+                    Status = p.Status,
+                });
+        }
+
+
 
         // POST: ClientServiceCenterController/Create
         [HttpPost]
