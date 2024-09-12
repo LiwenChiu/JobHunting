@@ -70,21 +70,47 @@ namespace JobHunting.Areas.Admins.Controllers
 
         //Post: Admins/ClientServiceCenter/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinioLetterOutputViewModel>> Filter([FromBody] OpinioLetterOutputViewModel olvm) 
+        public async Task<IEnumerable<OpinioLetterCardViewModel>> Filter([FromBody] OpinioLetterCardViewModel olcvm) 
         {
             return _context.OpinionLetters
                 .Where(olfilter =>
-                olfilter.LetterId == olvm.LetterId ||
-                olfilter.Class.Contains(olvm.Class) ||
-                olfilter.SubjectLine.Contains(olvm.SubjectLine) ||
-                olfilter.Status==olvm.Status)
-                .Select(p => new OpinioLetterOutputViewModel 
+                olfilter.Class.Contains(olcvm.Class) ||
+                olfilter.SubjectLine.Contains(olcvm.SubjectLine) ||
+                olfilter.Status==olcvm.Status)
+                .Select(p => new OpinioLetterCardViewModel
                 {
-                    LetterId = p.LetterId,
                     Class = p.Class,
                     SubjectLine = p.SubjectLine,
                     Status = p.Status,
                 });
+        }
+
+
+        //Post: Admins/ClientServiceCenter/ToggleStatus
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus([FromBody] int letterId) 
+        {
+            var opinionLetter = await _context.OpinionLetters.FindAsync(letterId);
+            if (opinionLetter == null)
+            { 
+                return NotFound("NotFound"); 
+            }
+
+            opinionLetter.Status = true;
+            _context.Entry(opinionLetter).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, "錯誤"); 
+            }
+
+           return Ok("修改成功");
+
         }
 
 
@@ -133,7 +159,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
         // POST: ClientServiceCenterController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try

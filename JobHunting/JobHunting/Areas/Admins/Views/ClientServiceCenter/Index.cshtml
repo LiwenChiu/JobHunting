@@ -68,7 +68,7 @@
 
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                        <textarea class="form-control" style="height:150px" name="意見信件訊息">{{opinionLetterModal.content}}</textarea>
+                                        <textarea class="form-control" style="height:150px" name="意見信件訊息" readonly>{{opinionLetterModal.content}}</textarea>
                                     </div>
 
                                 </div>
@@ -77,11 +77,16 @@
                                     <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
                                     <div class="row-6">
                                         <template v-if="opinionLetterModal.status">
-                                            <button type="button" class="btn btn-secondary m-3" id="false"  v-on:click="">處理中</button>
+                                            <button type="button" class="btn btn-success m-3" disabled>已處理</button>
                                         </template>
                                         <template v-else>
-                                            <button type="button" class="btn btn-success m-3" id="true" >已處理</button>
+                                            <button type="button" class="btn btn-secondary m-3" v-on:click="toggleStatus(opinionLetterModal.letterId)">
+                                                {{ opinionLetterModal.status ? '已處理' : '處理中' }}
+                                            </button>
                                         </template>
+
+                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -127,6 +132,7 @@
                     currentPage: 1,
                     MessageStatus: 1,
                     opinionLetterModal: {},
+                    filter:"",
                     baseAddress: "https://localhost:7169",
                 }
             },
@@ -140,7 +146,9 @@
                 },
                 pageEnd() {
                     return this.currentPage * this.perpage
-                }
+                },
+
+                
             },
             methods: {
                 setPage(page) {
@@ -177,14 +185,42 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
-                filterOpinionLetter: function () { 
-                    // alert(`${this.filter}`);
+                // filterOpinionLetter: function () { 
+                //     // alert(`${this.filter}`);
+                //     let _this = this;
+                //     let request = {};
+                //     // if (_this.filter == "已處理") 
+                    // { request.Status = true; }
+                    // else if (_this.filter == "處理中")
+                    // { requst.Status = false; }
+
+                //     request.Class = request.SubjectLine = _this.filter;
+                //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
+                //     .then(response => { 
+                //             // alert(JSON.stringify(response.data));
+                //             _this.opinionlist = response.data;
+                //     })
+                //     .catch(err => { alert(JSON.stringify(err)); })
+                // },
+
+                toggleStatus: function (letterId) {
+                    // alert(letterId);
+
                     let _this = this;
-                    let request = {};
-                    
+                    _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
+                  
+                    axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
+                        letterId,
+                        { headers: { 'Content-Type': 'application/json' } })
+                        .then(response => {
+                            alert(response.data);
+                            this.OpinionData();
+                        })
+                        .catch(err => { alert(err) });
+
                 }
             },
-                mounted() { this.OpinionData() },
+            mounted() { this.OpinionData() },
             }).mount("#app");
     </script>
 }
