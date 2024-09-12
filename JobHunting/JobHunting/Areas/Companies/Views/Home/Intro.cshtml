@@ -110,11 +110,11 @@
                         <textarea class="form-control" style="height:150px" v-model="item.intro"></textarea>
                     </div>
                         
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">                        
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around form-group">
                         <img class="card-img-top img-fluid"
-                             :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
+                             :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}?rand=${rand}`
                              style="width:320px;height:240px" asp-append-version=true />
-                        <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($even.target)" accept="image/*" />
+                        <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($event.target)" accept="image/*" />
                     </div>
                         <button type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
                         <button type="submit" class="btn btn-outline-secondary" v-on:click="cancel(item)">取消</button>
@@ -135,6 +135,7 @@
                     companyIntro: [],
                     companyClasses:[],
                     seloption:"",
+                    rand:1,
                     companyIntroOld: {
                         companyId:null,
                         companyName:"",
@@ -212,7 +213,7 @@
                     axios.put(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro/${self.companyId}`, form, {
                         headers: { "content-type": "multipart/form-data" }
                     }).then(response => {
-                        // _this.rand = new Date().getTime();
+                        self.rand = new Date().getTime();
                         window.location.reload();
                     }).catch(err => { alert(err) });
                 },
@@ -232,7 +233,7 @@
                             var reader = new FileReader();
                             reader.onload = function (e){
                                 img.src = e.target.result;
-                                img.title = img.name;
+                                img.title = file.name;
                             }
                             reader.readAsDataURL(file)
                             btn.prop("disabled",false)
