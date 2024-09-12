@@ -32,6 +32,6 @@
 
         public string Degree { get; set; }
 
-        public int TitleClassId { get; set; }
+        public List<int> TitleClassId { get; set; }
     }
 }

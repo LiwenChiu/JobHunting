@@ -42,6 +42,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
                 Benefits = o.Benefits,
                 Edit = false,
+                Degree = o.Degree,
             }));
         }
         //GET:Companies/Openings/TitleClassJson
@@ -89,26 +90,40 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName")] OpeningsInputModel oim)
         {
-            var r = await _context.Openings.FindAsync(oim.OpeningId);
+            var opening = await _context.Openings
+                .Include(o => o.TitleClasses)
+                .FirstOrDefaultAsync(o => o.OpeningId == oim.OpeningId);
 
-            if (r == null)
+            if (opening == null)
             {
                 return NotFound(new { Message = "Opening not found" });
             }
 
-            r.Title = oim.Title;
-            r.Address = oim.Address;
-            r.ContactName = oim.ContactName;
-            r.ContactPhone = oim.ContactPhone;
-            r.ContactEmail = oim.ContactEmail;
-            r.SalaryMax = oim.SalaryMax;
-            r.SalaryMin = oim.SalaryMin;
-            r.Time = oim.Time;
-            r.Benefits = oim.Benefits;
-            r.Description = oim.Description;
-            r.ReleaseYN = oim.ReleaseYN;
-            r.Degree = oim.Degree;
-            
+            // 更新 Opening 的屬性
+            opening.Title = oim.Title;
+            opening.Address = oim.Address;
+            opening.ContactName = oim.ContactName;
+            opening.ContactPhone = oim.ContactPhone;
+            opening.ContactEmail = oim.ContactEmail;
+            opening.SalaryMax = oim.SalaryMax;
+            opening.SalaryMin = oim.SalaryMin;
+            opening.Time = oim.Time;
+            opening.Benefits = oim.Benefits;
+            opening.Description = oim.Description;
+            opening.ReleaseYN = oim.ReleaseYN;
+            opening.Degree = oim.Degree;
+
+            if (oim.TitleClassId != null && oim.TitleClassId.Any())
+            {
+                var newTitleClasses = await _context.TitleClasses
+                    .Where(tc => oim.TitleClassId.Contains(tc.TitleClassId))
+                    .ToListAsync();
+
+                foreach (var titleClass in newTitleClasses)
+                {
+                    opening.TitleClasses.Add(titleClass);
+                }
+            }
 
             await _context.SaveChangesAsync();
             return Json(new { message = "修改成功" });
@@ -157,8 +172,11 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { Message = "沒有此公司" });
                 }
 
-                var titleClass = await _context.TitleClasses.FindAsync(coim.TitleClassId);
-                if (titleClass == null)
+                var titleClasses = await _context.TitleClasses
+                    .Where(tc => coim.TitleClassId.Contains(tc.TitleClassId))
+                    .ToListAsync();
+
+                if (titleClasses == null || titleClasses.Count == 0)
                 {
                     return NotFound(new { Message = "選擇的職缺類別不存在" });
                 }
@@ -181,7 +199,10 @@ namespace JobHunting.Areas.Companies.Controllers
                     
                 };
 
-                opening.TitleClasses.Add(titleClass);
+                foreach (var titleClass in titleClasses)
+                {
+                    opening.TitleClasses.Add(titleClass);
+                }
 
                 _context.Openings.Add(opening);
                 await _context.SaveChangesAsync();
