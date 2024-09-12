@@ -7,5 +7,6 @@
         public string Area { get; set; }
         public string serchText { get; set; }
         public bool? Sex { get; set; }
+        public string? zipCode { get; set; }
     }
 }

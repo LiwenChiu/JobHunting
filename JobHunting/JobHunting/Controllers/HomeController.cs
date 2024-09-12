@@ -42,7 +42,7 @@ namespace JobHunting.Controllers
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
                 TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0       
             }));
         }
         [HttpPost]
@@ -71,7 +71,8 @@ namespace JobHunting.Controllers
                     skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
-                    b.Address.Substring(3, 4) == resume.Area ||
+                    b.Address.Substring(4, 3) == resume.Area ||
+                    //b.Address.Substring(0, 3) == resume.zipCode ||
                     //b.Degree.Contains(resume.Edu) ||
                     b.skill.Any(z => z.TagId == resume.Skill))
                                    .Select(x => new ResumesOutput
@@ -117,6 +118,7 @@ namespace JobHunting.Controllers
                             }).Where(b =>
                                 b.Age.ToString().Contains(resume.serchText) ||
                                 b.Address.Contains(resume.serchText) ||
+                                b.Address.Substring(4, 3) == resume.Area ||
                                 resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0 ||  //不區分英文字母大小寫，逐一檢查
                                 b.skill.Any(z => z.TagId == resume.Skill)))
                                     .Select(x => new ResumesOutput
@@ -184,6 +186,16 @@ namespace JobHunting.Controllers
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
             return "新增信件成功";
+        }
+        public string NormalizeAddress(string address)
+        {
+            return address.Replace("臺", "台");
+        }
+        public void AddResume(Resume resume)
+        {
+            resume.Address = NormalizeAddress(resume.Address);
+            _context.Resumes.Add(resume);
+            _context.SaveChanges();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
