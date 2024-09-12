@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using System.Numerics;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -47,6 +48,7 @@ namespace JobHunting.Areas.Companies.Controllers
                                     ppvmfilter.Discount.ToString().Contains(ppvm.Discount.ToString())) && ppvmfilter.Status == true)
             .Select(pp => new PricingPlanOutputViewModel
             {
+                PlanId = pp.PlanId,
                 Title = pp.Title,
                 Intro = pp.Intro,
                 Duration = pp.Duration,
@@ -55,12 +57,68 @@ namespace JobHunting.Areas.Companies.Controllers
             });
         }
 
-        //// POST: Companies/PricingPlans/PayAgree
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<> PayAgree([FromHeader])
-        //{
+        // POST: Companies/PricingPlans/PayAgree
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> PayAgree([FromBody][Bind("CompanyId,PlanId")] PayAgreementViewModel pavm )
+        {
+            string[] returnStatus = new string[2];
 
-        //}
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["輸入資料失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var company = _context.Companies.Where(c => c.CompanyId == pavm.CompanyId)
+                .Select(c => new PayAgreementCompanyViewModel 
+                {
+                    CompanyId = c.CompanyId,
+                    CompanyName = c.CompanyName,
+                    GUINumber = c.GUINumber,
+                }).ToList()[0];
+
+            if (company == null)
+            {
+                returnStatus = ["公司資料不存在", "失敗"];
+                return returnStatus;
+            }
+
+            var pricingPlan = _context.PricingPlans.Where(pp => pp.PlanId == pavm.PlanId)
+                .Select(pp => new PayAgreementPricingPlanViewModel
+                {
+                    PlanId = pp.PlanId,
+                    Title = pp.Title,
+                    Price = pp.Price,
+                    Discount = pp.Discount,
+                    Duration = pp.Duration,
+                }).ToList()[0];
+
+            if (pricingPlan == null)
+            {
+                returnStatus = ["方案資料不存在", "失敗"];
+                return returnStatus;
+            }
+
+            CompanyOrder companyOrder = new CompanyOrder
+            {
+                CompanyId = company.CompanyId,
+                CompanyName = company.CompanyName,
+                GUINumber = company.GUINumber,
+                PlanId = pricingPlan.PlanId,
+                Title = pricingPlan.Title,
+                Price = (pricingPlan.Price)*(pricingPlan.Discount),
+                OrderDate = DateTime.Now,
+                PayDate = DateTime.Now.AddDays(3), //在Status == false 時，PayDate當作付款期限，而當付款完成後，Status == true，PayDate再變成付款完成時間
+                Duration = pricingPlan.Duration,
+                Status = false,
+            };
+
+            returnStatus = ["下單成功，請於3天內付款", "成功"];
+            _context.CompanyOrders.Add(companyOrder);
+            await _context.SaveChangesAsync();
+            return returnStatus;
+
+        }
     }
 }
