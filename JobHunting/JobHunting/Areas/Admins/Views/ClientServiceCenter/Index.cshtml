@@ -1,0 +1,226 @@
+﻿@section Styles
+{
+    <style>
+
+    </style>
+}
+
+@* 篩選搜尋 *@
+<div class="container-fluid py-1" id="app">
+    <div class="container-fluid row py-2">
+        <label class="form-label">關鍵字搜尋：</label>
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpinionLetter" />
+    </div>
+
+    @* 意見信件card *@
+    <div class="row">  
+        <div class="card rounded-5 col-3 m-2" style="width: 15rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
+            <div class="card-body">
+                <div class="card-title text-center">意見類別：{{item.class}}</div>
+                <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>            
+                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
+            </div>
+            <div class="card-footer text-center" style="background-color:transparent">
+                        @* <partial name="_OpinionLettersBtnPartial" />                     *@
+            </div>
+
+
+            @* 意見信件modalBtn *@
+            <button type="button"
+                    class="btn btn-primary btn-md"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalId"
+                    v-on:click="OpinionLetterModalShow(item.id);">
+                意見信件
+            </button>
+
+            @* 意見信件modal *@
+
+            <div class="modal fade" 
+                 id="modalId"
+                 tabindex="-1"
+                 data-bs-backdrop="static"
+                 data-bs-keyboard="false"
+                 role="dialog"
+                 aria-labelledby="modalTitleId"
+                 aria-hidden="true"
+                 v-for="item in opinionlist">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning ">
+                            <h3 class="CompanyNameh3 text-center " style="width:95%">意見信件</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container bg-light" style="border-radius: 30px;">
+                                <div class="inputOutAreas" style="width:95%">
+
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label">意見類別：{{opinionLetterModal.class}}</label>
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨:{{opinionLetterModal.subjectLine}}</label>
+
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <img src="~/images/no_image_available.jpg" />
+                                    </div>
+
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                        <textarea class="form-control" style="height:150px" name="意見信件訊息" readonly>{{opinionLetterModal.content}}</textarea>
+                                    </div>
+
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
+                                    <div class="row-6">
+                                        <template v-if="opinionLetterModal.status">
+                                            <button type="button" class="btn btn-success m-3" disabled>已處理</button>
+                                        </template>
+                                        <template v-else>
+                                            <button type="button" class="btn btn-secondary m-3" v-on:click="toggleStatus(opinionLetterModal.letterId)">
+                                                {{ opinionLetterModal.status ? '已處理' : '處理中' }}
+                                            </button>
+                                        </template>
+
+                                        
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>          
+        </div>   
+
+
+        @* 分頁 *@
+        <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" v-on:click="setPage(currentPage-1)">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                <a class="page-link" href="#">{{item}}</a>
+            </li>
+
+            <li class="page-item" v-on:click="setPage(currentPage+1)">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    opinionlist:[],
+                    pageStatus: 0,
+                    perpage: 8, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                    opinionLetterModal: {},
+                    filter:"",
+                    baseAddress: "https://localhost:7169",
+                }
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.opinionlist.length / this.perpage)
+                    //回傳大於等於的最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                },
+
+                
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                OpinionData: function () {
+                    // alert("AAA");
+                    fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
+                        method:"GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                            return this.opinionlist=data
+                    }).catch(err => {
+                        alert(JSON.stringify(err))
+                    })
+                },
+                OpinionLetterModalShow: function (id) {
+                    alert(id);
+                    // let request ={
+                    //     LetterId: id,
+                    // };
+                    // axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
+                    //         {headers: {'Content-Type': 'application/json'}})
+                    axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
+                    .then(response => this.opinionLetterModal = response.data)
+                    .catch(err => { alert(err) });
+                },
+
+                letterstatus: function (isDone) {
+                    return isDone ? '已處理' : '處理中';
+                },
+
+                // filterOpinionLetter: function () { 
+                //     // alert(`${this.filter}`);
+                //     let _this = this;
+                //     let request = {};
+                //     // if (_this.filter == "已處理") 
+                    // { request.Status = true; }
+                    // else if (_this.filter == "處理中")
+                    // { requst.Status = false; }
+
+                //     request.Class = request.SubjectLine = _this.filter;
+                //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
+                //     .then(response => { 
+                //             // alert(JSON.stringify(response.data));
+                //             _this.opinionlist = response.data;
+                //     })
+                //     .catch(err => { alert(JSON.stringify(err)); })
+                // },
+
+                toggleStatus: function (letterId) {
+                    // alert(letterId);
+
+                    let _this = this;
+                    _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
+                  
+                    axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
+                        letterId,
+                        { headers: { 'Content-Type': 'application/json' } })
+                        .then(response => {
+                            alert(response.data);
+                            this.OpinionData();
+                        })
+                        .catch(err => { alert(err) });
+
+                }
+            },
+            mounted() { this.OpinionData() },
+            }).mount("#app");
+    </script>
+}
