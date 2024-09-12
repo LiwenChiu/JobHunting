@@ -35,7 +35,8 @@ CREATE TABLE Companies
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320) not null,
 	[Status] bit not null default(0),
-	[Date] datetime not null
+	[Date] datetime not null,
+	Deadline datetime
 )
 GO
 CREATE TABLE TitleCategories
@@ -229,6 +230,7 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	PayDate datetime not null,
 	Duration int not null,
 	[Status] bit not null default(0),
 )
@@ -258,7 +260,8 @@ CREATE TABLE Admins
 	Email nvarchar(320) not null,
 	[Password] nvarchar(16) not null,
 	[Name] nvarchar(30) not null,
-	Authority int
+	Authority int,
+	[Status] bit,
 )
 GO
 CREATE TABLE OpinionLetters
@@ -278,4 +281,13 @@ CREATE TABLE OpinionLetters
 	Content nvarchar(Max) not null,
 	Attachment varbinary(MAX),
 	[Status] bit not null default(0)
+)
+GO
+CREATE TABLE AdminRecords
+(
+	RecordId int primary key identity,
+	AdminId int not null,
+	Task nvarchar(50) not null,
+	CRUD nvarchar(20) not null,
+	[Time] datetime not null,
 )
