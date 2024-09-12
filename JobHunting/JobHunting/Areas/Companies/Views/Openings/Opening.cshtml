@@ -8,13 +8,12 @@
         }
     </style>
 }
-@* <div class="row mt-2" style="width:40%;margin-right:auto; ">
+<div class="row ms-2 pt-5 " style="width:40%;">
     <label class="col-md-4 form-lable">篩選關鍵字:</label>
     <input class="col-md-8" v-model.lazy="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings()" />
-</div> *@
+</div>
+
 @* 通知 *@
-
-
 <div id="createOpening">
     <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
         <template v-if="alertStatus == '成功'">
@@ -180,7 +179,7 @@
                                                         <div class="collapse" v-bind:id="ReturnClassNameId(item)">
                                                             <div class="row">
                                                                 <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
-                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
                                                                     <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                 </div>
                                                             </div>
@@ -256,7 +255,7 @@
                                         class="btn-close"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"
-                                        style="width:5% ;" v-on:click="TagCheckedOpening=[]">
+                                        style="width:5% ;">
                                 </button>
                             </div>
                             <div class="modal-body">
@@ -285,7 +284,9 @@
                                                 <label class="">上班時段:</label>
                                                 <input type="text" v-model="item.time" class="form-control" />
                                             </div>
+                                            
                                             <div class="mb-3">
+                                                @* 職缺類別 *@
                                                 <p>
                                                     <label>
                                                         <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
@@ -322,12 +323,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @* 學歷要求 *@
                                                 <label class="">學歷要求:</label>
-                                                <select v-model="selectedDegreeName">
-                                                    <option value="" selected>--請選擇--</option>
-                                                    <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
+                                                <select v-model="item.degree">
+                                                    <option value="">--請選擇--</option>
+                                                    <option v-for="Degree in DegreeRequired" :value="Degree.DegreeName">{{Degree.DegreeName}}</option>
                                                 </select>
                                             </div>
+                                            @* 能力標籤 *@
                                             <div>
                                                 <p>
                                                     <label>
@@ -339,12 +342,12 @@
                                                         <template v-for="item in TagClasses">
                                                             <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
                                                                 {{item.tagClassName}}
-                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
+                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,selectedTagId) > 0">{{selectedFilterTagClass(item.tagClassId,selectedTagId)}}</span>
                                                             </button>
                                                             <div class="collapse" v-bind:id="ReturnClassNameId(item)">
                                                                 <div class="row">
                                                                     <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
-                                                                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
                                                                         <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                     </div>
                                                                 </div>
@@ -353,12 +356,12 @@
                                                         </template>
                                                         <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
                                                             其他
-                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(0,selectedTagId) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
                                                         </button>
                                                         <div class="collapse" id="otherClass">
                                                             <div class="row">
                                                                 <div class="col-2" v-for="Tag in filterTagClass(0)">
-                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
                                                                     <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                 </div>
                                                             </div>
@@ -404,7 +407,7 @@
                                         class="btn-close"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"
-                                        style="width:5% ;" v-on:click="TagCheckedOpening=[]">
+                                        style="width:5% ;">
                                 </button>
                             </div>
                             <div class="modal-body">
@@ -435,33 +438,12 @@
                                                     {{ getTitleClassName(item.titleClassId) }}
                                                 </p>
                                                 <label class="">學歷要求:</label><span>{{item.degree}}</span>
-                                                @* <select v-model="selectedDegreeName">   
-                                                    <option value="" selected>--請選擇--</option>
-                                                    <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
-                                                </select> *@
                                             </div>
                                             <div>
+                                                <label class="">能力標籤:</label>
                                                 <p>
-                                                    <label>
-                                                        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
-                                                    </label>
+                                                    {{ getTagName(item.tagId) }}
                                                 </p>
-                                                <div class="collapse" id="TagsCollapse">
-                                                    <div class="card card-body">
-                                                        <template v-for="(item,index) in TagClasses">
-                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(item)" aria-expanded="false" v-bind:aria-controls="item.tagClassName">{{item.tagClassName}}</button>
-                                                            <div class="collapse" v-bind:id="item.tagClassName">
-                                                                <div>
-                                                                    <template class="px-2" v-for="Tag in filterTagClass(item.tagClassId)">
-                                                                        <input type="checkbox" v-bind:id="changeTagNameTo(Tag.tagName)" v-bind:value="Tag.tagId" v-model="TagCheckedOpening" />
-                                                                        <label v-bind:for="changeTagNameTo(Tag.tagName)">{{Tag.tagName}}</label>
-                                                                    </template>
-                                                                </div>
-                                                            </div>
-                                                            <hr />
-                                                        </template>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -478,10 +460,10 @@
                                 </div>
                             </div>
                             <div class=" col-md-3 ">
-                                <label class="form-control text-center" >是否上架： <span class="btn btn-primary ms-4">{{Openingif(item.releaseYN)}}</span></label>
+                                <label class="form-control text-center">是否上架： <span class="btn btn-primary ms-4">{{Openingif(item.releaseYN)}}</span></label>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary " v-on:click="item.edit = true">編輯</button>
+                                <button type="button" class="btn btn-secondary " v-on:click="item.edit = true;selectedtitleClassId = item.titleClassId ; selectedTagId=item.tagId">編輯</button>
                             </div>
                         </template>
                     </div>
@@ -537,7 +519,7 @@
                     Time: "",
                     Description: "",
                     Benefits: "",
-                    ReleaseYN:true,
+                    ReleaseYN: true,
                     //分頁
                     pageStatus: 0,
                     perpage: 7, //一頁的資料數
@@ -562,10 +544,11 @@
                     TagClasses: [],
                     Tags: [],
                     TagChecked: [],
+                    selectedTagId: [],
                     TagCheckedOpening: [],
 
                     titleClass: [],
-                    titleCategory:[],
+                    titleCategory: [],
                     TitleClassChecked: [],
                     selectedtitleClassId: [],
                 };
@@ -669,7 +652,17 @@
                             let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
                             return titleClassItem ? titleClassItem.titleClassName : '未指定';
                         })
-                        .join(', '); // 用逗號分隔
+                        .join('/ ');
+                },
+                //列出所有被選到的能力標籤
+                getTagName(tagId) {
+                    if (!Array.isArray(tagId)) return '未指定';
+                    return tagId
+                        .map(id => {
+                            let tagItem = this.Tags.find(item => item.tagId === id);
+                            return tagItem ? tagItem.tagName : '未指定';
+                        })
+                        .join('/ ');
                 },
                 //判斷履歷開放狀態
                 Openingif(item) {
@@ -692,27 +685,26 @@
                     request.Description = _this.Description;
                     request.Benefits = _this.Benefits;
                     request.TitleClassId = _this.selectedtitleClassId;
+                    request.tagId = _this.selectedTagId;
                     request.Degree = _this.selectedDegreeName;
-
-                    fetch("https://localhost:7169/Companies/Openings/CreateOpening", {
-                        method: "POST",
+                    axios.post("https://localhost:7169/Companies/Openings/CreateOpening", request, {
                         headers: {
-                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
-                        },
-                        body: JSON.stringify(request)
+                            "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
+                        }
                     }).then(response => {
-                        return response.json()
-                    }).then(data => {
+                        // 處理成功響應
+                        let data = response.data;
                         if (data.success) {
                             alert("新增職缺成功");
                             window.location.reload();
                         } else {
-                            alert("新增職缺失敗")
+                            alert("新增職缺失敗");
                         }
-                    }).catch(err => {
-                        console.log(err)
                     })
-
+                        .catch(err => {
+                            // 處理錯誤
+                            alert(err);
+                        });
                 },
                 //編輯確認
                 editConfirm: function (item) {
@@ -725,8 +717,8 @@
                 },
                 // 編輯職缺並修改資料庫資料
                 editOpening: function (item) {
-                    let _this = this
-                    let request = {}
+                    let _this = this;
+                    let request = {};
                     request.OpeningId = item.openingId;
                     request.Title = item.title;
                     request.Address = item.address;
@@ -740,35 +732,32 @@
                     request.Description = item.description;
                     request.ReleaseYN = item.releaseYN;
                     request.TitleClassId = _this.selectedtitleClassId;
-                    
-                    fetch("https://localhost:7169/Companies/Openings/EditOpening", {
-                        method: "POST",
+                    request.TagId = _this.selectedTagId;
+                    request.Degree = item.degree;
+
+                    axios.post("https://localhost:7169/Companies/Openings/EditOpening", request, {
                         headers: {
-                            "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
-                        },
-                        body: JSON.stringify(request)
+                            "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
+                        }
                     }).then(response => {
-                        return response.json()
-                        window.location.reload();
-                    }).then(data => {
+                        let data = response.data;
                         alert(data.message);
+                        _this.ReceiveOpeningData();
                     }).catch(err => {
-                        alert(err)
+                        alert(err);
                     });
+                    // 關閉編輯模式
                     item.edit = false;
                 },
                 //資料初始
                 ReceiveOpeningData() {
-                    fetch("/Companies/Openings/OpeningJson", {
-                        method: "GET",
-                    }).then(response => {
-                        return response.json();
-                    })
-                        .then(data => {
-                            return this.openings = data
-                        }).catch(err => {
-                            alert(JSON.stringify(err))
-                        });
+                    axios.get("/Companies/Openings/OpeningJson").then(
+                        res => {
+                            this.openings = res.data;
+                        }
+                    ).catch(
+                        err => { alert(err) }
+                    );
 
                     axios.get(`${this.baseAddress}/Companies/Openings/TitleClassJson`).then(
                         res => {
@@ -785,7 +774,7 @@
                     ).catch(
                         err => { alert(err) }
                     );
-                        
+
                     axios.get(`${this.baseAddress}/Companies/Openings/TagJson`).then(
                         res => this.Tags = res.data
                     ).catch(
@@ -798,7 +787,7 @@
                         err => { alert(err) }
                     );
                 },
-                // 刪除職缺
+                //刪除職缺
                 deleteOpening: function (item) {
                     if (item == null) {
                         this.alertText = "請選擇欲刪除方案";
@@ -823,6 +812,7 @@
                     }
                     this.alertOut();
                 },
+                //通知
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
