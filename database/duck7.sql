@@ -37,7 +37,7 @@ CREATE TABLE Companies
     ContactEmail nvarchar(320) not null,
 	[Status] bit not null default(0),
 	[Date] datetime not null,
-	Deadline datetime
+	Deadline datetime,
 )
 GO
 CREATE TABLE TitleCategories
