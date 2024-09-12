@@ -30,13 +30,11 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public string TitleClassName { get; set; }
 
-        public string CompanyName { get; set; }
-
         public int CompanyId { get; set; }
 
-        public virtual Company Company { get; set; }
+        public bool ReleaseYN { get; set; }
+        public List<int> TitleClassId { get; set; }
 
-        public virtual ICollection<TitleClass> TitleClasses { get; set; } = new List<TitleClass>();
 
     }
 }

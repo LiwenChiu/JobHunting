@@ -1,0 +1,322 @@
+﻿@{
+    ViewData["Title"] = "會員資料";
+}
+
+@section Styles
+{
+    <style>
+
+    </style>
+}
+
+<div class="container pt-1" id="MemberApp">
+    <div class="pb-1 px-2" style="position: relative">
+
+        @* 通知 *@
+        <template v-if="alertStatus == '成功'">
+            <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+        <template v-else-if="alertStatus == '失敗'">
+            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+
+        @* <h1 align="center">會員資料</h1> *@
+        <div class="row">
+            <template v-if="editMemberData == false">
+                <button type="button" class="btn btn-warning text-light" v-on:click="editMemberData = true;">修改會員資料</button>
+            </template>
+            <template v-else>
+                <button type="button" class="btn btn-primary text-light col-sm-10" data-bs-toggle="modal" data-bs-target="#saveEditMemberDataModal">儲存會員資料</button>
+                <button type="button" class="btn btn-secondary text-light col-sm-2" v-on:click="getetWholeCandidateMember();editMemberData = false;">取消</button>
+            </template>
+            @* <partial name="_memberedit" /> *@
+        </div>
+    </div>
+    <div class="card" style="overflow-y:auto;height:83vh">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateName" class="mb-0">姓名</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.name}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <input type="text" id="candidateName" class="col-sm-9" placeholder="請輸入姓名" v-model.trim="CandiadteMemberData.name" />
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateSex" class="mb-0">性別</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.sex ? "男" : "女"}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <select id="candidateSex" class="col-sm-9" v-model="CandiadteMemberData.sex">
+                        <option v-for="item in Sex" v-bind:value="item.status">{{item.sexType}}</option>
+                    </select>
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateBirthday" class="mb-0">生日</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.birthday}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <input type="Date" id="candidateBirthday" class="col-sm-9" v-model="CandiadteMemberData.birthday" />
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidateEmail" class="mb-0">電子信箱</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.email}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <input type="email" id="candidateEmail" class="col-sm-9" v-model.trim="CandiadteMemberData.email" />
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="candidatePhone" class="mb-0">手機號碼</label>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.phone}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <input type="tel" id="candidatePhone" class="col-sm-9" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" v-model.trim="CandiadteMemberData.phone" />
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">住址</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.address}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <select class="col-sm-2">
+                                <option value="value">text</option>
+                            </select>
+                            <select class="col-sm-2">
+                                <option value="value">text</option>
+                            </select>
+                            <input type="text" class="col-sm-8" placeholder="請輸入完整地址" v-model.trim="CandiadteMemberData.address" />
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">學歷</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.degree}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <select class="col-sm-9" v-model="CandiadteMemberData.degree">
+                        <option v-for="item in Degree" :value="item.DegreeName">{{item.DegreeName}}</option>
+                    </select>
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">就業狀態</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.employmentStatus}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <select class="col-sm-9" v-model="CandiadteMemberData.employmentStatus">
+                        <option v-for="item in EmploymentStatus" :value="item.status">{{item.status}}</option>
+                    </select>
+                </template>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p class="mb-0">兵役</p>
+                </div>
+                <template v-if="editMemberData == false">
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{CandiadteMemberData.militaryService}}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <select class="col-sm-9" v-model="CandiadteMemberData.militaryService">
+                        <option v-for="item in MilitaryService" :value="item.status">{{item.status}}</option>
+                    </select>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    @* 確認是否儲存Modal *@
+    <div class="modal fade" id="saveEditMemberDataModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveEditMemberDataModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h3 class="modal-title text-light" id="saveEditMemberDataModalLabel">儲存變更</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否要儲存修改資料</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="saveEditMemberData()">確認</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts
+{
+    <script>
+        let VueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    CandidateId: 1,
+                    alertStatus: "",
+                    alertText: "",
+                    CandiadteMemberData: {},
+                    editMemberData: false,
+                    Sex: [
+                        { status: true, sexType: "男" },
+                        { status: false, sexType: "女" },
+                    ],
+                    Degree: [
+                        { DegreeVal: 1, DegreeName: "博士" },
+                        { DegreeVal: 2, DegreeName: "碩士" },
+                        { DegreeVal: 3, DegreeName: "大學" },
+                        { DegreeVal: 4, DegreeName: "四技" },
+                        { DegreeVal: 5, DegreeName: "二技" },
+                        { DegreeVal: 6, DegreeName: "二專" },
+                        { DegreeVal: 7, DegreeName: "三專" },
+                        { DegreeVal: 8, DegreeName: "五專" },
+                        { DegreeVal: 9, DegreeName: "高中" },
+                        { DegreeVal: 10, DegreeName: "高職" },
+                        { DegreeVal: 11, DegreeName: "國中(含)以下" },
+                    ],
+                    EmploymentStatus: [
+                        { statusId: 1, status: "待業中" },
+                        { statusId: 2, status: "在職中" },
+                        { statusId: 3, status: "自由業" },
+                    ],
+                    MilitaryService: [
+                        { id: 1, status: "役畢" },
+                        { id: 2, status: "未役" },
+                        { id: 3, status: "免役" },
+                    ],
+                };
+            },
+            methods: {
+                getetWholeCandidateMember:function(){
+                    axios.post(`${this.baseAddress}/Candidates/Member/GetWholeCandidateMemberData`, this.CandidateId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.CandiadteMemberData = response.data[0])
+                        .catch(err => alert(err));
+                },
+                saveEditMemberData:function(){
+                    let str = "";
+                    let wrongCount = 0;
+                    if (this.CandiadteMemberData.name == "" || this.CandiadteMemberData.name == null) {
+                        str += "姓名 ";
+                        wrongCount++;
+                    }
+                    if (this.CandiadteMemberData.email == "" || this.CandiadteMemberData.email == null) {
+                        str += "電子信箱 ";
+                        wrongCount++;
+                    }
+                    if (this.CandiadteMemberData.birthday == "" || this.CandiadteMemberData.birthday == null) {
+                        str += "生日 ";
+                        wrongCount++;
+                    }
+                    if (this.CandiadteMemberData.phone == "" || this.CandiadteMemberData.phone == null) {
+                        str += "電話號碼 ";
+                        wrongCount++;
+                    }
+                    if (wrongCount > 0) {
+                        str += "不可為空 ";
+                        this.alertText = `${str}`;
+                        this.alertStatus = "失敗";
+                    }
+                    else{
+                        let request = {};
+                        request.CandidateId = this.CandiadteMemberData.candidateId;
+                        request.Name = this.CandiadteMemberData.name;
+                        request.Email = this.CandiadteMemberData.email;
+                        request.Sex = this.CandiadteMemberData.sex;
+                        request.Birthday = this.CandiadteMemberData.birthday;
+                        request.TitleClassId = this.CandiadteMemberData.titleClassId;
+                        request.Phone = this.CandiadteMemberData.phone;
+                        request.Address = this.CandiadteMemberData.address;
+                        request.Degree = this.CandiadteMemberData.degree;
+                        request.EmploymentStatus = this.CandiadteMemberData.employmentStatus;
+                        request.MilitaryService = this.CandiadteMemberData.militaryService;
+                        axios.post(`${this.baseAddress}/Candidates/Member/SaveEditMemberData`, request, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            this.alertText = response.data[0];
+                            this.alertStatus = response.data[1];
+                            this.getetWholeCandidateMember();
+                        }).catch(err => alert(err));
+                    }
+                    this.getetWholeCandidateMember();
+                    this.editMemberData = false;
+                    this.alertOut();
+                },
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
+                },
+            },
+            mounted: function () {
+                this.getetWholeCandidateMember();
+            },
+        };
+        let app = Vue.createApp(VueApp).mount("#MemberApp");
+    </script>
+
+}
