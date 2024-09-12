@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData["Title"] - 會員中心</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
@@ -104,7 +104,7 @@
                                 <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="PricingPlans" asp-action="Index">方案選擇</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Home" asp-action="PricingOrderHistory">訂單紀錄</a>
+                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="CompanyOrders" asp-action="Index">訂單紀錄</a>
                             </nav>
                         </div>
                     </div>
@@ -134,6 +134,5 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>

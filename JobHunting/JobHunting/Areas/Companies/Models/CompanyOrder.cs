@@ -23,7 +23,7 @@ public partial class CompanyOrder
 
     public DateTime OrderDate { get; set; }
 
-    public DateTime? PayDate { get; set; }
+    public DateTime PayDate { get; set; }
 
     public int Duration { get; set; }
 
