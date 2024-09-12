@@ -9,64 +9,87 @@
     </style>
 }
 <div id="PricingPlans" class="py-2">
-    <h3 class="" align="center">方案選擇</h3>
-    <div class="container" style="overflow-y:auto;height:73vh">
-        <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
-            <div class="col-11 pt-sm-1">
-                <div class="card overcard">
-                    <div class="card-body">
-                        <div class="row row-cols-2 align-items-center">
-                            <p class="col-sm-2">{{plan.title}}</p>
-                            <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
-                            <p class="col-sm-2">{{plan.duration}}天</p>
-                            <p class="col-sm-2">${{plan.price}}</p>
-                            <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                            <button type="button" class="btn btn-warning col-sm-3" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title">選擇</button>
+    <div style="position: relative">
+        @* 通知 *@
+        <template v-if="alertStatus == '成功'">
+            <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+        <template v-else-if="alertStatus == '失敗'">
+            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+                <strong>{{alertText}}</strong>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+            </div>
+        </template>
+
+        <h3 class="" align="center">方案選擇</h3>
+        <div class="container" style="overflow-y:auto;height:73vh">
+            <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
+                <div class="col-11 pt-sm-1">
+                    <div class="card overcard">
+                        <div class="card-body">
+                            <div class="row row-cols-2 align-items-center">
+                                <p class="col-sm-2">{{plan.title}}</p>
+                                <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
+                                <p class="col-sm-2">{{plan.duration}}天</p>
+                                <p class="col-sm-2">${{plan.price}}</p>
+                                <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
+                                <button type="button" class="btn btn-warning col-sm-3" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
-        <div class="col-md-10">
-            <label for="filterPlan">關鍵字搜尋: </label>
-            <input type="search" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
-            <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
+        <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
+            <div class="col-md-10">
+                <label for="filterPlan">關鍵字搜尋: </label>
+                <input type="search" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
+                <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
+            </div>
         </div>
-    </div>
 
-    @* 介紹 *@
-    <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h3 class="modal-title text-light" id="IntroLabel">方案介紹</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="h5" style="width:100%;word-break:break-all;">{{clickedPlanIntro}}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+        @* 介紹 *@
+        <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="modal-title text-light" id="IntroLabel">方案介紹</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="h5" style="width:100%;word-break:break-all;">{{clickedPlanIntro}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="paymentAgreement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h3 class="modal-title text-light" id="paymentAgreementLabel">確認購買</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
-                </div>
-                <div class="modal-body">
-                    <h1>請問是否要購買此方案: {{selectedPlanTitle}}</h1>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="payAgree(CompanyId,selectedPlanId);">確認付款</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
+        <div class="modal fade" id="paymentAgreement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="modal-title text-light" id="paymentAgreementLabel">確認購買</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>請問是否要購買此方案: </h3>
+                        <p>方案: {{selectedPlanTitle}} </p>
+                        <template v-if="selectedPlanDiscount === 1">
+                            <p>應付金額: NT${{selectedPlanPrice}} = NT${{selectedPlanPrice}}</p>
+                        </template>
+                        <template v-else>
+                            <p>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</p>
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="payAgree(selectedPlanId);">確認付款</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,12 +106,16 @@
             data(){
                 return {
                     baseAddress: "https://localhost:7169",
-                    CompanyId: null,
+                    CompanyId: 1,
                     filterPlantext: "",
                     pricingPlans: [],
                     clickedPlanIntro: "",
                     selectedPlanTitle: "",
                     selectedPlanId: null,
+                    selectedPlanPrice: null,
+                    selectedPlanDiscount: null,
+                    alertText: "",
+                    alertStatus: "",
                 };
             },
             methods:{
@@ -106,15 +133,24 @@
                         this.pricingPlans = response.data;
                     }).catch(err => { alert(err) });
                 },
-                payAgree: function (CompanyId,selectedPlanId) {
+                payAgree: function (selectedPlanId) {
                     let request = {};
-                    request.CompanyId = CompanyId;
+                    request.CompanyId = this.CompanyId;
                     request.PlanId = selectedPlanId;
-                    // axios.post(url, request, {})
-                    // .then(response => {
-
-                    // })
-                    // .catch(err => { alert(err) });
+                    axios.post(`${this.baseAddress}/Companies/PricingPlans/PayAgree`, request, {
+                        headers: {
+                            'Content-Type':'application/json'
+                        }
+                    })
+                    .then(response => {
+                        this.alertText = response.data[0];
+                        this.alertStatus = response.data[1];
+                    })
+                    .catch(err => { alert(err) });
+                    this.alertOut();
+                },
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
             },
             watch:{
