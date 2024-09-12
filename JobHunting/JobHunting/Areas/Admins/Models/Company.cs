@@ -35,6 +35,8 @@ public partial class Company
 
     public DateTime Date { get; set; }
 
+    public DateTime? Deadline { get; set; }
+
     public virtual CompanyClass CompanyClass { get; set; }
 
     public virtual ICollection<CompanyOrder> CompanyOrders { get; set; } = new List<CompanyOrder>();

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Companies.Models;
+using JobHunting.Areas.Companies.ViewModel;
+using System.Globalization;
+using System.Numerics;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -18,171 +21,108 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             _context = context;
         }
-        //GET: Companies/CompanyOrders/Index
+
+        // GET: Companies/CompanyOrders
         public IActionResult Index()
         {
-            ViewBag.CompanyOrders = new SelectList(
-                    _context.CompanyOrders.Select(c => new {
-                        CompanyID= c.CompanyId,
-                        CompanyName= c.CompanyName,
-                    }),"CompanyID","CompanyName"
-                );
-            return View();
-        }
-        //public async Task<IActionResult> CompanyOrders(int CompanyID)
-        //GET: Companies/CompanyOrders/IndexJson
-        public JsonResult IndexJson()
-        {
-            return Json(_context.CompanyOrders);
-        }
-
-
-        //GET: Companies/CompanyOrders
-        //    public async Task<IActionResult> Index()
-        //{
-        //    var duckCompaniesContext = _context.CompanyOrders.Include(c => c.Company).Include(c => c.Plan);
-        //    return View(await duckCompaniesContext.ToListAsync());
-        //}
-
-        // GET: Companies/CompanyOrders/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var companyOrder = await _context.CompanyOrders
-                .Include(c => c.Company)
-                .Include(c => c.Plan)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (companyOrder == null)
-            {
-                return NotFound();
-            }
-
-            return View(companyOrder);
-        }
-
-        // GET: Companies/CompanyOrders/Create
-        public IActionResult Create()
-        {
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName");
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title");
             return View();
         }
 
-        // POST: Companies/CompanyOrders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // GET: Companies/CompanyOrders/IndexJson
+        [HttpGet]
+        public JsonResult IndexJson(int id)
+        {
+            var Order = _context.CompanyOrders
+                .Select(p => new
+                {
+                    OrderID = p.OrderId,
+                    CompanyName = p.CompanyName,
+                    GUINumber = p.GUINumber,
+                    Title = p.Title,
+                    Price = p.Price,
+                    OrderDate = p.OrderDate,
+                    Status = p.Status
+                });
+
+            return Json(Order);
+        }
+
+        //POST: Companies/CompanyOrders/GetCompanyOrders
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,CompanyID,PlanID,CompanyName,GUINumber,PlanTitle,Price,OrderDate,Status")] CompanyOrder companyOrder)
+        //[ValidateAntiForgeryToken]
+        public async Task<IEnumerable<CompanyOrdersFilterOutputViewModel>> GetCompanyOrders([FromBody][Bind("CompanyId,Title,Price,OrderDate,PayDate,Duration")] CompanyOrdersFilterViewModel cofvm)
         {
-            if (ModelState.IsValid)
+            CultureInfo cultureTW = new CultureInfo("zh-TW");
+
+            return _context.CompanyOrders
+                .Where(co => co.CompanyId == cofvm.CompanyId)
+                .Where(co => co.Title.Contains(cofvm.Title) ||
+                             co.Price.ToString().Contains(cofvm.Price.ToString()) ||
+                             co.OrderDate.ToString().Contains(cofvm.OrderDate) ||
+                             co.PayDate.ToString().Contains(cofvm.PayDate) ||
+                             co.Duration.ToString().Contains(cofvm.Duration.ToString()))
+                .Select(co => new CompanyOrdersFilterOutputViewModel
+                {
+                    OrderId = co.OrderId,
+                    Title = co.Title,
+                    Price = co.Price,
+                    OrderDate = co.OrderDate,
+                    PayDate = co.Status ? co.PayDate : null,
+                    Duration = co.Duration,
+                    Status = co.Status,
+                })
+                .OrderBy(co => co.Status).ThenByDescending(co => co.OrderId);
+        }
+
+        //POST: Companies/CompanyOrders/GetDeadline
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<DateTime?> GetDeadline([FromBody]int companyId)
+        {
+            var companyDeadline = _context.Companies.AsNoTracking().Where(c => c.CompanyId == companyId).Select(c => c.Deadline).Single();
+            if(companyDeadline == null)
             {
-                _context.Add(companyOrder);
+                return null;
+            }
+
+            return companyDeadline;
+        }
+
+        //POST: Companies/CompanyOrders/CancelOrder
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> CancelOrder([FromBody][Bind("CompanyId,OrderId")] CancelOrderViewModel covm)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["格式不正確", "失敗"];
+                return returnStatus;
+            }
+
+            var order = await _context.CompanyOrders.FindAsync(covm.OrderId);
+            if (order == null || order.CompanyId != covm.CompanyId)
+            {
+                returnStatus = ["訂單不存在", "失敗"];
+                return returnStatus;
+            }
+            
+            _context.CompanyOrders.Remove(order);
+            
+            try
+            {
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
-            return View(companyOrder);
-        }
-
-        // GET: Companies/CompanyOrders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
+            catch (DbUpdateException ex)
             {
-                return NotFound();
+                returnStatus = ["取消訂單失敗!", "失敗"];
+                return returnStatus;
             }
 
-            var companyOrder = await _context.CompanyOrders.FindAsync(id);
-            if (companyOrder == null)
-            {
-                return NotFound();
-            }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
-            return View(companyOrder);
-        }
+            returnStatus = ["取消訂單成功", "成功"];
+            return returnStatus;
 
-        // POST: Companies/CompanyOrders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,CompanyID,PlanID,CompanyName,GUINumber,PlanTitle,Price,OrderDate,Status")] CompanyOrder companyOrder)
-        {
-            if (id != companyOrder.OrderId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(companyOrder);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CompanyOrderExists(companyOrder.OrderId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CompanyID"] = new SelectList(_context.Companies, "CompanyID", "CompanyName", companyOrder.CompanyId);
-            ViewData["PlanID"] = new SelectList(_context.PricingPlans, "PlanID", "Title", companyOrder.PlanId);
-            return View(companyOrder);
-        }
-
-        // GET: Companies/CompanyOrders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var companyOrder = await _context.CompanyOrders
-                .Include(c => c.Company)
-                .Include(c => c.Plan)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (companyOrder == null)
-            {
-                return NotFound();
-            }
-
-            return View(companyOrder);
-        }
-
-        // POST: Companies/CompanyOrders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var companyOrder = await _context.CompanyOrders.FindAsync(id);
-            if (companyOrder != null)
-            {
-                _context.CompanyOrders.Remove(companyOrder);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CompanyOrderExists(int id)
-        {
-            return _context.CompanyOrders.Any(e => e.OrderId == id);
         }
     }
 }

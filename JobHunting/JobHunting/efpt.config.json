@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "DuckCompaniesContext",
+   "ContextClassName": "DuckCandidatesContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Areas\/Companies\/Models",
+   "OutputPath": "Areas\/Candidates\/Models",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "JobHunting",
    "Schemas": null,
@@ -14,6 +14,10 @@
    "SelectedToBeGenerated": 0,
    "T4TemplatePath": null,
    "Tables": [
+      {
+         "Name": "[dbo].[AdminRecords]",
+         "ObjectType": 0
+      },
       {
          "Name": "[dbo].[Admins]",
          "ObjectType": 0

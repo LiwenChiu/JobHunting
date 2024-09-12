@@ -64,25 +64,6 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        
-        // GET: Companies/Home/IndexJson
-        [HttpGet]
-        public JsonResult IndexJson()
-        {
-            var Order = _context.CompanyOrders
-                .Select(p => new
-                {
-                    OrderID = p.OrderId,
-                    CompanyName = p.CompanyName,
-                    GUINumber = p.GUINumber,
-                    Title = p.Title,
-                    Price = p.Price,
-                    OrderDate = p.OrderDate,
-                    Status = p.Status
-                });
-
-            return Json(Order);
-        }
 
     }
 }

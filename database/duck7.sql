@@ -36,7 +36,7 @@ CREATE TABLE Companies
     ContactEmail nvarchar(320) not null,
 	[Status] bit not null default(0),
 	[Date] datetime not null,
-	Deadline datetime
+	Deadline datetime,
 )
 GO
 CREATE TABLE TitleCategories
@@ -230,6 +230,7 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	PayDate datetime not null,
 	Duration int not null,
 	[Status] bit not null default(0),
 )

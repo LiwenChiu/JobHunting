@@ -33,5 +33,7 @@
         public string Degree { get; set; }
 
         public List<int> TitleClassId { get; set; }
+
+        public List<int> TagId { get; set; }
     }
 }
