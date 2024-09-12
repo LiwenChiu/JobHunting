@@ -186,8 +186,8 @@
                     };
                         axios.post('https://localhost:7169/Home/AddLetter', request, {
                             Headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            var s = await res.text();
+                        }).then( res => {
+                            var s = res.text();
                              alert(s);
                         }).catch(err => JSON.stringify(err))
                 },
