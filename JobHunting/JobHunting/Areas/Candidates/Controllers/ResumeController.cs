@@ -49,21 +49,22 @@ namespace JobHunting.Areas.Candidates.Controllers
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
                 intro = a.Intro,
-                titleClass = a.TitleClasses,
+                //titleClass = a.TitleClasses,
+                headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
             }));
         }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateReasumes ([FromBody]addResumeInputModel Creatr)
+        public async Task<IActionResult> CreateReasumes ([FromForm] addResumeInputModel Creatr)
         {
             //if (ModelState.IsValid)
             //{
 
             try
             {
-                var candidate = await _context.Candidates.FindAsync(Creatr.CandidateId);
+                var candidate = await  _context.Candidates.FindAsync(Creatr.CandidateId);
 
                 if (candidate == null)
                 {
@@ -81,7 +82,16 @@ namespace JobHunting.Areas.Candidates.Controllers
                     ReleaseYN = Creatr.ReleaseYN,
                     CandidateId = Creatr.CandidateId,
                     Intro = Creatr.Intro,
+                   
                 };
+                if (Creatr.ImageFile != null)
+                {
+                    using (BinaryReader br = new BinaryReader(Creatr.ImageFile.OpenReadStream()))
+                    {
+                        insert.Headshot = br.ReadBytes((int)Creatr.ImageFile.Length);
+                    }
+                }
+
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
                 
@@ -105,46 +115,83 @@ namespace JobHunting.Areas.Candidates.Controllers
         //}
 
         //Post: /Candidates/Resume/EditResume
-        [HttpPost]
-        public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
+        //{
             
 
-            var r = await _context.Resumes.FindAsync(rm.ResumeId);
+        //    var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
-            if (r == null)
-            {
-                return NotFound(new { Message = "Resume not found" });
-            }
+        //    if (r == null)
+        //    {
+        //        return NotFound(new { Message = "Resume not found" });
+        //    }
 
-            //c.Name = rm.Name;
-            //c.Sex = rm.Sex;
-            //c.Birthday = rm.Birthday;
-            //c.EmploymentStatus = rm.EmploymentStatus;
-            //c.Phone = rm.Phone;
-            //c.Degree = rm.Degree;
-            //c.Email = rm.Email;
-            r.Intro = rm.Intro;
-            r.Address = rm.Address;
-            r.Title = rm.Title;
-            r.Autobiography = rm.Autobiography;
-            r.WorkExperience = rm.WorkExperience;
-            r.Time = rm.Time;
-            r.ReleaseYN = rm.ReleaseYN;
+        //    //c.Name = rm.Name;
+        //    //c.Sex = rm.Sex;
+        //    //c.Birthday = rm.Birthday;
+        //    //c.EmploymentStatus = rm.EmploymentStatus;
+        //    //c.Phone = rm.Phone;
+        //    //c.Degree = rm.Degree;
+        //    //c.Email = rm.Email;
+        //    r.Intro = rm.Intro;
+        //    r.Address = rm.Address;
+        //    r.Title = rm.Title;
+        //    r.Autobiography = rm.Autobiography;
+        //    r.WorkExperience = rm.WorkExperience;
+        //    r.Time = rm.Time;
+        //    r.ReleaseYN = rm.ReleaseYN;
+        //    r.Headshot = rm.Headshot;
 
-            //_context.Entry(r).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
                 
-            }
-            catch (Exception ex) 
-            {
-                return Json(new { message = "修改失敗" });
-            }
+        //    }
+        //    catch (Exception ex) 
+        //    {
+        //        return Json(new { message = "修改失敗" });
+        //    }
 
+        //    return Json(new { success = true, message = "修改成功" });
+        //}
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "ImageFile")] ResumeInputModel rm)
+        {
+
+            Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
+
+                r.Intro = rm.Intro;
+                r.Address = rm.Address;
+                r.Title = rm.Title;
+                r.Autobiography = rm.Autobiography;
+                r.WorkExperience = rm.WorkExperience;
+                r.Time = rm.Time;
+                r.ReleaseYN = rm.ReleaseYN;
+
+            if (rm.ImageFile != null)
+            {
+                using (BinaryReader br = new BinaryReader(rm.ImageFile.OpenReadStream()))
+                {
+                    r.Headshot = br.ReadBytes((int)rm.ImageFile.Length);
+                }
+            }
+            _context.Update(r);
+            await _context.SaveChangesAsync();
             return Json(new { success = true, message = "修改成功" });
+
+
+
+
+
+
         }
+
+
+
+
 
 
         [HttpDelete]
