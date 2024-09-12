@@ -74,23 +74,48 @@ namespace JobHunting.Areas.Candidates.Controllers
                 Resume insert = new Resume()
                 {
                     Address = Creatr.Address,
-                    //Time = Creatr.Time,
+                    Time = Creatr.Time,
                     Title = Creatr.Title,
-                    //Certification = Creatr.Certification,
                     WorkExperience = Creatr.WorkExperience,
                     Autobiography = Creatr.Autobiography,
                     ReleaseYN = Creatr.ReleaseYN,
-                    CandidateId = Creatr.CandidateId,
+                    //CandidateId = Creatr.CandidateId,
                     Intro = Creatr.Intro,
                    
                 };
-                if (Creatr.ImageFile != null)
+                if (Creatr.HeadshotImageFile != null)
                 {
-                    using (BinaryReader br = new BinaryReader(Creatr.ImageFile.OpenReadStream()))
+                    using (BinaryReader br = new BinaryReader(Creatr.HeadshotImageFile.OpenReadStream()))
                     {
-                        insert.Headshot = br.ReadBytes((int)Creatr.ImageFile.Length);
+                        insert.Headshot = br.ReadBytes((int)Creatr.HeadshotImageFile.Length);
                     }
                 }
+
+                //foreach (var formFile in Creatr.CertificationImageFile)
+                //{
+                //    if (formFile.Length > 0)
+                //    {// 請替換為你希望保存文件的實際路徑，這裡假設是 wwwroot/uploads
+                //        var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+
+                //        // 如果目錄不存在，則創建目錄
+                //        if (!Directory.Exists(uploadsFolderPath))
+                //        {
+                //            Directory.CreateDirectory(uploadsFolderPath);
+                //        }
+
+                //        // 生成唯一文件名，防止重名文件被覆蓋
+                //        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+
+                //        // 獲取完整的文件保存路徑
+                //        var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+                //        // 將文件保存到指定路徑
+                //        using (var stream = new FileStream(filePath, FileMode.Create))
+                //        {
+                //            await formFile.CopyToAsync(stream);
+                //        }
+                //    }
+                //}
 
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
@@ -101,13 +126,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return Json(new { message = "新增履歷失敗" });
             }
             return Json(new { success = true, message = "新增履歷成功" });
-            //candidate.Name = Creatr.Name;
-            //candidate.Sex = Creatr.Sex;
-            //candidate.Birthday = Creatr.Birthday;
-            //candidate.Phone = Creatr.Phone;
-            //candidate.Degree = Creatr.Degree;
-            //candidate.Email = Creatr.Email;
-            //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+
 
 
         }

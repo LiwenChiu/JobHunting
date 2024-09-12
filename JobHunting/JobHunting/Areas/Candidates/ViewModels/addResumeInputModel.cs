@@ -21,9 +21,10 @@
         public string? Intro { get; set; }
 
         //public byte[]? Headshot { get; set; }
-        public string TitleClassName { get; set; }
 
-        public IFormFile? ImageFile { get; set; }
+
+        public List<IFormFile>? CertificationImageFile { get; set; }
+        public IFormFile? HeadshotImageFile { get; set; }
 
 
     }

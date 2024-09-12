@@ -66,14 +66,14 @@
                                 <div class="card-body container-fluid">
                                 <div class="modal-header" style="background-color: #f7d179;">
                                     <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
-                                    <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model="ResumeName" />
+                                    <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model.lazy="ResumeName" />
                                     </h5>
 
                                     <button type="button"
                                             class="btn-close"
                                             data-bs-dismiss="modal"
                                             aria-label="Close"
-                                            style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                                        style="width:5% ;" v-on:click="Createcancel">
                                     </button>
                                 </div>
 
@@ -92,7 +92,7 @@
                                                     
                                                  </a>
 
-                                                <input id="insertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
+                                                <input id="HeadshotinsertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
                                                 
                                                 
                                             </div>
@@ -109,17 +109,17 @@
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">生日</label>
-                                                    <input type="date" v-model="candidateBirthday" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input type="date"  disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">電話 :</label>
-                                                    <input class="mx-1" type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input class="mx-1" type="tel"  disabled placeholder="根據求職者會員資料帶入">
                                                     <label class="mx-1 mb-2" for="" >學歷 :</label>
-                                                    <input class="mx-1" type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input class="mx-1" type="text"  disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">郵件 :</label>
-                                                    <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" v-model="candidateEmail">
+                                                    <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" >
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">就業狀態 :</label>
@@ -128,7 +128,7 @@
                                                     <div>
                                                         <p class="card-text">
                                                         自我介紹：
-                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
+                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model.lazy="ResumeIntro"></textarea>
                                                         </p>
                                                     </div>
                                                 </p>
@@ -141,7 +141,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model="WorkExperience"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -161,10 +161,12 @@
                                                     <label class="mb-2">希望職稱: <input type="text" v-model=""></label>
                                                     </div>
                                                     <div class="col">
-                                                    <label class="mb-2">希望上班地點: <input type="text" v-model="hopeaddress"></label>
+                                                    <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
+                                                        <label for="" class="mb-2">證照
+                                                        <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
+                                                        </label>
                                                     </div>
                                                     <partial name="../Partial/_Tags.cshtml" />
                                                 </p>
@@ -177,7 +179,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model="Autobiography"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -186,7 +188,7 @@
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">
                                         履歷狀態：
-                                        <select v-model="releaseYN" class="btn btn-primary ms-4" disabled>
+                                    <select v-model.lazy="releaseYN" class="btn btn-primary ms-4" disabled>
                                             <option :value="true">開放</option>
                                             <option :value="false">關閉</option>
                                         </select>
@@ -247,7 +249,7 @@
                                                         </div>
 
                                                     </a>
-                                                    <input id="editFile" class="" style="" type="file" name="name"  accept="image/*" v-on:change="previewImage($event, ResumeD)" />
+                                                    <input id="HeadshotEditFile" class="" style="" type="file" name="name" accept="image/*" v-on:change="previewImage($event, ResumeD)" />
                                                 </div>
                                                 
                                             <p class="card-text">
@@ -293,7 +295,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="12" v-model="ResumeD.workExperience"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -308,16 +310,18 @@
                                             <p class="card-text">
 
                                                 <div class="col">
-                                                    <label class="mb-2">上班時段: <input type="text" v-model="ResumeD.time"></label>
+                                                        <label class="mb-2">上班時段: <input type="text" v-model.lazy="ResumeD.time"></label>
                                                 </div>
                                                 <div class="col">
                                                     <label class="mb-2">希望職稱: <input type="text"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望上班地點: <input type="text" v-model="ResumeD.address"></label>
+                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
+                                                    <label for="" class="mb-2">證照
+                                                            <input id="CertificationEditFile" type="file" accept="image/*" multiple/>
+                                                        </label>
                                                 </div>
                                                 <partial name="../Partial/_Tags.cshtml" />
                                             </p>
@@ -330,14 +334,14 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">自傳</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8" v-model="ResumeD.autobiography"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="8" v-model.lazy="ResumeD.autobiography"></textarea>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">履歷狀態：
-                                            <select v-model="ResumeD.ReleaseYN" class="btn btn-primary ms-4">
+                                            <select v-model.lazy="ResumeD.ReleaseYN" class="btn btn-primary ms-4">
                                                 <option :value="true">開放</option>
                                                 <option :value="false">關閉</option>
                                         </select>
@@ -452,7 +456,7 @@
                                     </div>
                                 </div>
                                 <div class=" col-md-3 ">
-                                        <label class="form-control text-center" v-model="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
+                                        <label class="form-control text-center" v-model.lazy="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
                                 </div>
                             </div>
                             <div class="" style="text-align:right">
@@ -569,7 +573,7 @@
                 },
                 //判斷男女
                 Sexif(ResumeD) {
-                    return ResumeD.sex == true ? "男":"女";   
+                    return ResumeD == true ? "男":"女";   
                 },
                 //判斷履歷開放狀態
                 Resumeif(ResumeD){
@@ -681,9 +685,9 @@
                 //新增履歷
                 CreateNewResume: function () {
                     let _this = this;
-                    let Candidateid = 1;
+                    let candidateid = 1;
                     var form = new FormData();
-                    form.append("CandidateId",Candidateid);
+                    form.append("CandidateId",candidateid);
                     form.append("Address", _this.hopeaddress);
                     form.append("Title", _this.ResumeName);
                     form.append("Autobiography", _this.Autobiography);
@@ -691,7 +695,11 @@
                     form.append("Time", _this.timeR);
                     form.append("ReleaseYN", _this.releaseYN);
                     form.append("Intro", _this.ResumeIntro);
-                    form.append("ImageFile", document.querySelector('#insertFile').files[0]);
+                    form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[1]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[2]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[3]);
                     fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
                         method: "POST",
                         body: form
@@ -703,6 +711,7 @@
                             window.location.reload();
                         } else {
                             alert("新增履歷失敗")
+                            window.location.reload();
                         }
                     }).catch(err => {
                         console.log(err)
@@ -731,7 +740,7 @@
                     form.append("Time", ResumeD.time);
                     form.append("ReleaseYN", ResumeD.releaseYN);
                     form.append("Intro", ResumeD.intro);
-                    form.append("ImageFile", document.querySelector('#editFile').files[0]);
+                    form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
                     // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
                     fetch("https://localhost:7169/Candidates/Resume/EditResume", {
                         method: "POST",
