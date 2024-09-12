@@ -122,7 +122,7 @@
                                 <input type="text" class="form-control " v-model="subjectLine">
                             </div>
                             <div class="d-sm-flex inputAreas justify-content-around">
-                                <input type="file" accept="image/*" />
+                                <input id="addFile" type="file" class="form-control" accept="image/*" />
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <img src="~/images/no_image_available.jpg" />
@@ -178,19 +178,19 @@
             methods: {
                 addletter() {
                     let self = this;
-                    var request = {
-                        companyId: 3,
-                        letterclass: self.letterclass,
-                        subjectLine: self.subjectLine,
-                        content: self.content,
-                    };
-                        axios.post('https://localhost:7169/Home/AddLetter', request, {
-                            Headers: { 'Content-Type': 'application/json' },
-                        }).then( res => {
-                            var s = res.text();
-                             alert(s);
+                    var form = new FormData();
+                    form.append("CompanyId", 3);
+                    form.append("Letterclass", self.letterclass);
+                    form.append("SubjectLine", self.subjectLine);
+                    form.append("Content", self.content);
+                    form.append("ImageFile", document.querySelector("#addFile").files[0]);
+                        axios.post('https://localhost:7169/Home/AddLetter', form, {
+                        Headers: { 'Content-Type': 'multipart/form-data' },
+                        }).then(res => {
+                            alert(res.data)
                         }).catch(err => JSON.stringify(err))
                 },
+
             }
         };
         Vue.createApp(vueLetter).mount("#app")

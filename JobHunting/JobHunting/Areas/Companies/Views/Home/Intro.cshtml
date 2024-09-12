@@ -109,10 +109,11 @@
                         </label>
                         <textarea class="form-control" style="height:150px" v-model="item.intro"></textarea>
                     </div>
-                        <img class="card-img-top img-fluid"
-                                   :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
-                                   style="width:320px;height:240px" />
+                        
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">                        
+                        <img class="card-img-top img-fluid"
+                             :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
+                             style="width:320px;height:240px" asp-append-version=true />
                         <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($even.target)" accept="image/*" />
                     </div>
                         <button type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
@@ -152,7 +153,7 @@
                 getCompanyIntro() {
                     let self = this
                     axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList/${self.companyId}`, {
-                        Headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.companyIntro = res.data;
                     }).catch(err => JSON.stringify(err));
@@ -160,7 +161,7 @@
                 getCompanyClasses() {
                     let self = this
                     axios.get(`${self.baseAddress}/Companies/CompanyIntro/GetCompanyClass`, {
-                        Headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.companyClasses = res.data;
                     }).catch(err => JSON.stringify(err));
@@ -219,8 +220,28 @@
                     let self = this;       
                     item.companyClassId = self.seloption;       //設定原本的下拉選單值
                 },
-                editfilechange(){
-
+                editFileChange(inputFile){
+                    let self = this;
+                    self.readURL(inputFile, inputFile.previousElementSibling, $("#editFile"))
+                },
+                readURL(inputFile, img, btn) {
+                    if (inputFile.files && inputFile.files[0]){
+                        var allowType = "image.*";
+                        var file = inputFile.files[0]
+                        if (file.type.match(allowType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e){
+                                img.src = e.target.result;
+                                img.title = img.name;
+                            }
+                            reader.readAsDataURL(file)
+                            btn.prop("disabled",false)
+                        }
+                        else{
+                            alert("不支援檔案上傳格式");
+                            btn.prop("disabled", true);
+                        }
+                    }
                 }
             },
             mounted() {

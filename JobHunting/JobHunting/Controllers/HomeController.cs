@@ -1,4 +1,5 @@
 using Azure.Core;
+using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +73,7 @@ namespace JobHunting.Controllers
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
                     b.Address.Substring(4, 3) == resume.Area ||
-                    //b.Address.Substring(0, 3) == resume.zipCode ||
+                    (b.Address.Substring(4, 3) == resume.Area && b.Address.Substring(0, 3) == resume.zipCode) ||
                     //b.Degree.Contains(resume.Edu) ||
                     b.skill.Any(z => z.TagId == resume.Skill))
                                    .Select(x => new ResumesOutput
@@ -176,16 +177,28 @@ namespace JobHunting.Controllers
             }));
         }
         [HttpPost]
-        public async Task<string> AddLetter([FromBody] InsterLetter letter)
+        public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {
             OpinionLetter opinionLetter = new OpinionLetter();
             opinionLetter.CompanyId = letter.CompanyId;
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
+            IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
+            _context.Entry(opinionLetter).State = EntityState.Modified;
             return "新增信件成功";
+        }
+        private static void IsPicture(InsterLetter letter, OpinionLetter o)
+        {
+            if (letter.ImageFile != null)
+            {
+                using (BinaryReader br = new BinaryReader(letter.ImageFile.OpenReadStream()))
+                {
+                    o.Attachment = br.ReadBytes((int)letter.ImageFile.Length);
+                }
+            }
         }
         public string NormalizeAddress(string address)
         {

@@ -56,8 +56,8 @@
                     <td>年紀</td>
                     <td>性別</td>
                     <td>學歷</td>
-                    <td>所在地</td>
                     <td>技能</td>
+                    <td>所在地</td>
                     <td></td>
                 </tr>
 
@@ -68,8 +68,8 @@
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
-                    <td>{{item.address}}</td>
                     <td>{{selectTagName(item.tagObj)}}</td>
+                    <td>{{item.address}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" :data-bs-target="'#'+mergeID(item)">預覽</button></td>
                 </tr>
             </tbody>
@@ -218,7 +218,7 @@
                 indexList() {
                     let self = this;
                     axios.post('https://localhost:7169/Home/CompanyIndexList', {
-                        Headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         console.log(res.data[0].address.substring(3, 7))
                         self.resumes = res.data
@@ -240,8 +240,8 @@
                             Headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.resumes = res.data;
-                            self.filter = "";
                             self.skill = null;
+                            self.city = self.zipCode = self.filter = "";
                         }).catch(err => JSON.stringify(err))
                 },
                 getTag() {

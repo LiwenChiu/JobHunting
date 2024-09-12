@@ -1,6 +1,7 @@
 USE [master]
 GO
 CREATE DATABASE [Duck]
+COLLATE Chinese_PRC_CI_AS;
 GO
 USE [Duck]
 GO
