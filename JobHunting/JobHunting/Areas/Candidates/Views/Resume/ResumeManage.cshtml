@@ -157,9 +157,49 @@
                                                     <div class="col">
                                                     <label class="mb-2">希望上班時段: <input type="text" v-model=""></label>
                                                     </div>
-                                                    <div class="col">
-                                                    <label class="mb-2">希望職稱: <input type="text" v-model=""></label>
-                                                    </div>
+
+                                                        <div class="mb-3">
+                                                                <p>
+                                                                    <label>
+                                                                        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
+                                                                        check: {{TitleClassCheckedOpening}}<label><span class="badge bg-primary" v-for="item in TitleClassCheckedOpening"></span></label>
+                                                                    </label>
+                                                                </p>
+                                                                <div class="collapse" id="TitleClassCollapse">
+                                                                    <div class="card card-body">
+                                                                        <template v-for="item in titleCategory">
+                                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
+                                                                                {{item.titleCategoryName}}
+                                                                                <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked)}}</span>
+                                                                            </button>
+                                                                            <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
+                                                                                <div class="row">
+                                                                                    <div class="px-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
+                                                                                        <input type="checkbox" v-bind:id="ReturnNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                                                                                        <label v-bind:for="ReturnNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr />
+                                                                        </template>
+                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                            其他
+                                                                            <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,TitleClassChecked) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+                                                                        </button>
+                                                                        <div class="collapse" id="otherClass">
+                                                                            <div class="row">
+                                                                                <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
+                                                                                    <input type="checkbox" v-bind:id="ReturnNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                                                                                    <label v-bind:for="ReturnNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                            
+
                                                     <div class="col">
                                                     <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
                                                     </div>
@@ -168,7 +208,47 @@
                                                         <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
                                                         </label>
                                                     </div>
-                                                    <partial name="../Partial/_Tags.cshtml" />
+
+                                                            <p>
+                                                                <label>
+                                                                    <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                                    check: {{TagCheckedOpening}}<label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                                </label>
+                                                            </p>
+                                                            <div class="collapse" id="TagsCollapse">
+                                                                <div class="card card-body">
+                                                                    <template v-for="item in TagClasses">
+                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                            {{item.tagClassName}}
+                                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
+                                                                        </button>
+                                                                        <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                            <div class="row">
+                                                                                <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                                    <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr />
+                                                                    </template>
+                                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                        其他
+                                                                        <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                                    </button>
+                                                                    <div class="collapse" id="otherClass">
+                                                                        <div class="row">
+                                                                            <div class="col-2" v-for="Tag in filterTagClass(0)">
+                                                                                <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                                <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
                                                 </p>
 
                                             </div>
@@ -313,7 +393,11 @@
                                                         <label class="mb-2">上班時段: <input type="text" v-model.lazy="ResumeD.time"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望職稱: <input type="text"></label>
+                                                    <label class="">希望職缺:</label>
+                                                <select style="width:30%" v-model="selectedtitleClassId">
+                                                    <option value="" selected>-----請選擇-----</option>
+                                                    <option v-for="item in titleClass" :value="item.titleClassId">{{item.titleclassName}}</option>
+                                                </select>
                                                 </div>
                                                 <div class="col">
                                                         <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
@@ -323,7 +407,30 @@
                                                             <input id="CertificationEditFile" type="file" accept="image/*" multiple/>
                                                         </label>
                                                 </div>
-                                                <partial name="../Partial/_Tags.cshtml" />
+                                                    <div>
+                                                <p>
+                                                    <label>
+                                                        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                        check: {{TagCheckedOpening}}<label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                    </label>
+                                                </p>
+                                                <div class="collapse" id="TagsCollapse">
+                                                    <div class="card card-body">
+                                                        <template v-for="(item,index) in TagClasses">
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(item)" aria-expanded="false" v-bind:aria-controls="item.tagClassName">{{item.tagClassName}}</button>
+                                                            <div class="collapse" v-bind:id="item.tagClassName">
+                                                                <div>
+                                                                    <template class="px-2" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                        <input type="checkbox" v-bind:id="changeTagNameTo(Tag.tagName)" v-bind:value="Tag.tagId" v-model="selectedtitleClassId" />
+                                                                        <label v-bind:for="changeTagNameTo(Tag.tagName)">{{Tag.tagName}}</label>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             </p>
 
                                         </div>
@@ -341,7 +448,7 @@
                                 </div>
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">履歷狀態：
-                                            <select v-model.lazy="ResumeD.ReleaseYN" class="btn btn-primary ms-4">
+                                            <select v-model.lazy="ResumeD.releaseYN" class="btn btn-primary ms-4">
                                                 <option :value="true">開放</option>
                                                 <option :value="false">關閉</option>
                                         </select>
@@ -431,15 +538,40 @@
                                                     <label class="mb-2">上班時段: {{ResumeD.time}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望職稱: </label>
+                                                    <label class="">希望職缺:</label>
+
                                                 </div>
-                                                <div class="col">
-                                                    <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
+                                                    <div class="col">
+                                                        <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">證照
+                                                        </label>
+                                                    </div>
+                                                <div>
+                                                    <p>
+                                                        <label>
+                                                            <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                            check: {{TagCheckedOpening}}<label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                        </label>
+                                                    </p>
+                                                    <div class="collapse" id="TagsCollapse">
+                                                        <div class="card card-body">
+                                                            <template v-for="(item,index) in TagClasses">
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(item)" aria-expanded="false" v-bind:aria-controls="item.tagClassName">{{item.tagClassName}}</button>
+                                                                <div class="collapse" v-bind:id="item.tagClassName">
+                                                                    <div>
+                                                                        <template class="px-2" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                            <input type="checkbox" v-bind:id="changeTagNameTo(Tag.tagName)" v-bind:value="Tag.tagId" v-model="TagCheckedOpening" />
+                                                                            <label v-bind:for="changeTagNameTo(Tag.tagName)">{{Tag.tagName}}</label>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </template>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
-                                                </div>
-                                                <partial name="../Partial/_Tags.cshtml" />
                                             </p>
 
                                         </div>
@@ -529,22 +661,18 @@
                     timeR: "",
                     sexYN:false,
                     ResumeIntro:"",
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學"},
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
                     noimagepreview: "/images/No_Image_Available.jpg",
                     originalHeadshot: null,
+                    TagClasses: [],
+                    Tags: [],
+                    TagChecked: [],
+                    TagCheckedOpening: [],
+
+                    titleClass: [],
+                    titleCategory:[],
+                    TitleClassChecked: [],
+                    TitleClassCheckedOpening:[],
+                    selectedtitleClassId: '',
                 };
             },
         
@@ -621,19 +749,72 @@
                     strID = str + num;
                     return strID;
                 },
-                filterTagClass:function(ClassID) {
-                        let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
-                        });
-                },
-                ReturnhashtagID:function(item){
-                    return `#${item.TagClass}`;
-                },
+
                 changeTagNameTo: function (TagName) {
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+                changeTitleClassNameTo: function (TitleClassName) {
+                    let _this = this;
+                    return `${TitleClassName}BindID`;
+                },
+                filterTagClass: function (ClassID) {
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.tagClassId == ClassID;
+                    });
+                },
+                filterTitleCategory: function (CategoryID) {
+                    let _this = this;
+                    return _this.titleClass.filter(function (item) {
+                        return item.titleCategoryId == CategoryID;
+                    });
+                },
+                selectedFilterTagClass: function (ClassId, TagChecked) {
+                    let _this = this;
+                    let counter = 0;
+                    for (let i = 0; i < TagChecked.length; i++) {
+                        if (this.filterTagClass(ClassId).filter(function (item) {
+                            return item.tagId == TagChecked[i];
+                        }).length > 0) { counter++; }
+                    }
+                    return counter;
+                },
+                selectedFilterTitleCategory: function (titleCategoryId, TitleClassChecked) {
+                    let _this = this;
+                    let counter = 0;
+                    for (let i = 0; i < TitleClassChecked.length; i++) {
+                        if (this.filterTitleCategory(titleCategoryId).filter(function (item) {
+                            return item.titleClassId == TitleClassChecked[i];
+                        }).length > 0) { counter++; }
+                    }
+                    return counter;
+                },
+                ReturnNameId: function (item) {
+                    let NameId = `NameId${item.tagName}${item.tagId}`;
+                    return NameId.replace(" ", "");
+                },
+                ReturnClassNameId: function (item) {
+                    let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
+                    return ClassNameId.replace(" ", "");
+                },
+                Returnhashtag: function (item) {
+                    return `#${item}`;
+                },
+                ReturnCategoryNameId: function (item) {
+                    let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
+                    return CategoryNameId.replace(" ", "");
+                },
+                getTitleClassName(titleClassId) {
+                    if (!Array.isArray(titleClassId)) return '未指定';
+                    return titleClassId
+                        .map(id => {
+                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                            return titleClassItem ? titleClassItem.titleClassName : '未指定';
+                        })
+                        .join(', '); // 用逗號分隔
+                },
+
                 //履歷編輯與顯示畫面圖片預覽
                 previewImage: function (event, ResumeD,btn) {
                     let _this = this;
@@ -666,21 +847,59 @@
                         reader.readAsDataURL(input.files[0]);
                     }
                 },
-                //履歷全部資料
+                
                 ResumeInformation: function () {
+                    //履歷全部資料
                     fetch("/Candidates/Resume/ResumeResult", {
                         method:"GET",
-                        headers: {
-                            "content-type": "multipart/form-data"
-                        },
-                        
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
                         return this.Resume = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
-                    })
+                    });
+
+                    //職業類別名稱和ID
+                    fetch("/Candidates/Resume/TitleCategoryJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.titleCategory = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+                    //職業類型
+                    fetch("/Candidates/Resume/TitleClassJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.titleClass = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+
+                    fetch("/Candidates/Resume/TagJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.Tags = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+
+                    fetch("/Candidates/Resume/TagClassJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.TagClasses = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
                 },
                 //新增履歷
                 CreateNewResume: function () {
@@ -782,12 +1001,16 @@
                                 window.location.reload();
                             } else {
                                 alert("刪除履歷失敗")
+                                window.location.reload();
+
                             }
                             // alert(data.message);
                         }).catch(err => {
                             alert(err)
                         })
                         
+                    }else{
+                        alert("已取消操作")
                     }
                 }
             },

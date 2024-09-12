@@ -20,8 +20,7 @@
         public bool ReleaseYN { get; set; }
         public string? Intro { get; set; }
 
-        //public byte[]? Headshot { get; set; }
-
+        public string? TitleCategoryName { get; set; }
 
         public List<IFormFile>? CertificationImageFile { get; set; }
         public IFormFile? HeadshotImageFile { get; set; }

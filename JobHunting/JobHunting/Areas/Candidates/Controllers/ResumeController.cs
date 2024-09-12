@@ -30,7 +30,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
 
 
-            return Json(_context.Resumes.Include(r => r.Candidate).Include(t=>t.TitleClasses).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Include(t => t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -49,11 +49,60 @@ namespace JobHunting.Areas.Candidates.Controllers
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
                 intro = a.Intro,
-                //titleClass = a.TitleClasses,
+                TitleCategoryName = a.TitleClasses.Select(b => b.TitleCategory).Select(c=>c.TitleCategoryName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
             }));
         }
+
+        [HttpGet]
+        public JsonResult TitleCategoryJson()
+        {
+            return Json(_context.TitleCategories.Select(rtc => new
+            {
+                TitleCategoryId = rtc.TitleCategoryId,
+                TitleCategoryName = rtc.TitleCategoryName
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TitleClassJson()
+        {
+            return Json(_context.TitleClasses.Select(rtc => new
+            {
+                TitleClassId = rtc.TitleClassId,
+                TitleClassName = rtc.TitleClassName,
+                TitleCategoryId = rtc.TitleCategoryId
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TagJson()
+        {
+            return Json(_context.Tags.Select(rt => new
+            {
+                TagId = rt.TagId,
+                TagName = rt.TagName,
+                TagClassId = rt.TagClassId
+            }));
+        }
+        //GET:Companies/Openings/TagClassJson
+        [HttpGet]
+        public JsonResult TagClassJson()
+        {
+            return Json(_context.TagClasses.Select(rtc => new
+            {
+                TagClassId = rtc.TagClassId,
+                TagClassName = rtc.TagClassName
+            }));
+        }
+
+
+
+
+
+
+
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -61,6 +110,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             //if (ModelState.IsValid)
             //{
+           
 
             try
             {
@@ -79,7 +129,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     WorkExperience = Creatr.WorkExperience,
                     Autobiography = Creatr.Autobiography,
                     ReleaseYN = Creatr.ReleaseYN,
-                    //CandidateId = Creatr.CandidateId,
+                    CandidateId = Creatr.CandidateId,
                     Intro = Creatr.Intro,
                    
                 };
@@ -90,36 +140,42 @@ namespace JobHunting.Areas.Candidates.Controllers
                         insert.Headshot = br.ReadBytes((int)Creatr.HeadshotImageFile.Length);
                     }
                 }
+                _context.Resumes.Add(insert);
+                await _context.SaveChangesAsync();
 
+                //var resumeId = insert.ResumeId;
+                //List<string> uploadedFilePaths = new List<string>();
+                ////在wwwroot的images根據求職者的名稱與履歷id建立資料夾
+                //var candidateFolderName = $"{candidate.Name}_{resumeId}";
+                //var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", candidateFolderName);
+
+                //// 如果資料夾不存在，就建立資料夾
+                //if (!Directory.Exists(uploadsFolderPath))
+                //{
+                //    Directory.CreateDirectory(uploadsFolderPath);
+                //}
+
+                //// 保存文件
                 //foreach (var formFile in Creatr.CertificationImageFile)
                 //{
                 //    if (formFile.Length > 0)
-                //    {// 請替換為你希望保存文件的實際路徑，這裡假設是 wwwroot/uploads
-                //        var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-
-                //        // 如果目錄不存在，則創建目錄
-                //        if (!Directory.Exists(uploadsFolderPath))
-                //        {
-                //            Directory.CreateDirectory(uploadsFolderPath);
-                //        }
-
-                //        // 生成唯一文件名，防止重名文件被覆蓋
+                //    {
                 //        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-
-                //        // 獲取完整的文件保存路徑
                 //        var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
 
-                //        // 將文件保存到指定路徑
+                //        // 将文件保存到指定路径
                 //        using (var stream = new FileStream(filePath, FileMode.Create))
                 //        {
                 //            await formFile.CopyToAsync(stream);
                 //        }
+
+                //        // 保存文件路径或文件名，以便返回前端
+                //        uploadedFilePaths.Add($"/images/{candidateFolderName}/{uniqueFileName}");
                 //    }
                 //}
 
-                _context.Resumes.Add(insert);
-                await _context.SaveChangesAsync();
-                
+                //return Json(new { success = true, message = "新增履歷成功", files = uploadedFilePaths });
+
             }
             catch (Exception ex) 
             {
