@@ -7,7 +7,13 @@
 @section Styles
 {
     <style>
+        input[type="file"] {
+            display: none;
+        }
 
+        .uploadStyle {
+            
+        }
     </style>
 }
 
@@ -32,7 +38,15 @@
         <div class="col-lg-4">
             <div class="card mb-1">
                 <div class="card-body text-center">
-                    <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
+                    <div style="position: relative">
+                        <div style="position: absolute; z-index:70;">
+                            <input id="upload" type="file">
+                            <label type="button" for="upload" class="uploadStyle">
+                                更改圖片
+                            </label>
+                        </div>
+                        <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
+                    </div>
                     <h5 class="my-1">{{CandidateMemberData.name}}</h5>
                     <template v-if="titleClassEdit == false">
                         <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
@@ -192,7 +206,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    }).then(response => this.CandidateMemberData = response.data[0])
+                    }).then(response => this.CandidateMemberData = response.data)
                         .catch(err => alert(err));
                 },
                 getCandidateResumes: function () {
