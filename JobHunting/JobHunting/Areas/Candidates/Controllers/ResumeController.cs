@@ -5,6 +5,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Protocol.Plugins;
+using System.Security.Cryptography;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -49,7 +50,10 @@ namespace JobHunting.Areas.Candidates.Controllers
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
                 intro = a.Intro,
-                TitleCategoryName = a.TitleClasses.Select(b => b.TitleCategory).Select(c=>c.TitleCategoryName),
+                TitleClassId = a.TitleClasses.Select(rtc => rtc.TitleClassId),
+                TitleClassName = a.TitleClasses.Select(rtc => rtc.TitleClassName),
+                TagId = a.Tags.Select(t => t.TagId),
+                TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
             }));
@@ -121,6 +125,15 @@ namespace JobHunting.Areas.Candidates.Controllers
                     return NotFound(new { Message = "Resume not found" });
                 }
 
+                var titleClasses = await _context.TitleClasses
+                   .Where(tc => Creatr.TitleClassId.Contains(tc.TitleClassId))
+                   .ToListAsync();
+
+                var tags = await _context.Tags
+                    .Where(t => Creatr.TagId.Contains(t.TagId))
+                    .ToListAsync();
+
+
                 Resume insert = new Resume()
                 {
                     Address = Creatr.Address,
@@ -140,6 +153,17 @@ namespace JobHunting.Areas.Candidates.Controllers
                         insert.Headshot = br.ReadBytes((int)Creatr.HeadshotImageFile.Length);
                     }
                 }
+
+                foreach (var titleClass in titleClasses)
+                {
+                    insert.TitleClasses.Add(titleClass);
+                }
+
+                foreach (var tag in tags)
+                {
+                    insert.Tags.Add(tag);
+                }
+
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
 
@@ -233,10 +257,22 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "ImageFile")] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro")] ResumeInputModel rm)
         {
 
-            Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
+            var r = await _context.Resumes
+            .Include(o => o.TitleClasses).Include(t => t.Tags)
+            .FirstOrDefaultAsync(o => o.ResumeId == rm.ResumeId);
+
+            var titleClasses = await _context.TitleClasses
+                   .Where(tc => rm.TitleClassId.Contains(tc.TitleClassId))
+                   .ToListAsync();
+
+            var tags = await _context.Tags
+                .Where(t => rm.TagId.Contains(t.TagId))
+                .ToListAsync();
+
+            //Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
 
                 r.Intro = rm.Intro;
                 r.Address = rm.Address;
@@ -246,13 +282,27 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.Time = rm.Time;
                 r.ReleaseYN = rm.ReleaseYN;
 
-            if (rm.ImageFile != null)
+            if (rm.HeadshotImageFile != null)
             {
-                using (BinaryReader br = new BinaryReader(rm.ImageFile.OpenReadStream()))
+                using (BinaryReader br = new BinaryReader(rm.HeadshotImageFile.OpenReadStream()))
                 {
-                    r.Headshot = br.ReadBytes((int)rm.ImageFile.Length);
+                    r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
                 }
             }
+
+
+
+            foreach (var titleClass in titleClasses)
+            {
+                r.TitleClasses.Add(titleClass);
+            }
+
+            foreach (var tag in tags)
+            {
+                r.Tags.Add(tag);
+            }
+
+
             _context.Update(r);
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "修改成功" });
