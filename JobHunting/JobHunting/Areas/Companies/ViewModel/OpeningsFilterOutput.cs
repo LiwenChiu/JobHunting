@@ -1,8 +1,6 @@
-﻿using JobHunting.Areas.Companies.Models;
-
-namespace JobHunting.Areas.Companies.ViewModel
+﻿namespace JobHunting.Areas.Companies.ViewModel
 {
-    public class OpeningsOutputModel
+    public class OpeningsFilterOutput
     {
         public int OpeningId { get; set; }
 
@@ -24,13 +22,25 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public string ContactName { get; set; }
 
-        public string ContactNumber { get; set; }
+        public string ContactPhone { get; set; }
 
         public string ContactEmail { get; set; }
 
-        public string TitleClassName { get; set; }
+        public List<string> TitleClassName { get; set; }
+
+        public List<string> TagName { get; set; }
+
+        public int CompanyId { get; set; }
+
+        public bool ReleaseYN { get; set; }
+
+        public List<int> TitleClassId { get; set; }
+
+        public List<int> TagId { get; set; }
 
         public string CompanyName { get; set; }
+
+        public bool Edit {  get; set; }
 
     }
 }
