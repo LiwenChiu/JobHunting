@@ -27,7 +27,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/GetCandidateMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<GetCandidateMemberDataViewModel>> GetCandidateMemberData([FromBody] int id)
+        public async Task<GetCandidateMemberDataViewModel> GetCandidateMemberData([FromBody] int id)
         {
             return _context.Candidates.AsNoTracking()
                 .Where(cmd => cmd.CandidateId == id)
@@ -40,7 +40,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Phone = cmd.Phone,
                     Address = cmd.Address,
                     EmploymentStatus = cmd.EmploymentStatus,
-                });
+                }).Single();
         }
 
         // POST: Candidates/Home/GetCandidateMemberData

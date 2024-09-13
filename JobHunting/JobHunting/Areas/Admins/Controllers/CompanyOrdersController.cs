@@ -29,14 +29,6 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/CompanyOrders
         public IActionResult Index()
         {
-            //static DateTime Expiration(DateTime date, int DurationTime)
-            //{
-            //    System.TimeSpan Duration = new System.TimeSpan(DurationTime, 0, 0, 0);
-            //    System.DateTime ExpirationTime = date.Add(Duration);
-
-            //    return ExpirationTime;
-            //}
-
             return View();
         }
 
@@ -118,7 +110,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             CultureInfo cultureTW = new CultureInfo("zh-TW");
 
-            var companyorders = _context.CompanyOrders.Include(co => co.Plan)
+            var companyorders = _context.CompanyOrders.Include(co => co.Plan).AsNoTracking()
                 .Select(co => new
                 {
                     OrderId = co.OrderId,
@@ -165,7 +157,7 @@ namespace JobHunting.Areas.Admins.Controllers
 
             var filterPaging = new CompanyOrdersOutputViewModel
             {
-                totalPage = companyorders.Count(),
+                totalDataCount = companyorders.Count(),
                 companyOrdersFilter = companyorders.Skip((covm.PageStart - 1) * covm.PageLength).Take(covm.PageLength),
             };
 
