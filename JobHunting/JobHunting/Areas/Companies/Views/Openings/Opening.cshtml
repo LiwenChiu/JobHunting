@@ -8,13 +8,14 @@
         }
     </style>
 }
-<div class="row ms-2 pt-5 " style="width:40%;">
-    <label class="col-md-4 form-lable">篩選關鍵字:</label>
-    <input class="col-md-8" v-model.lazy="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings()" />
-</div>
+
 
 @* 通知 *@
 <div id="createOpening">
+    <div class="container-fluid row py-2">
+        <label class="form-label">關鍵字搜尋：</label>
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings" />
+    </div>
     <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
         <template v-if="alertStatus == '成功'">
             <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
@@ -504,7 +505,7 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     openings: [],
-                    filterOpening: [],
+                    openingsfilter:[],
                     selectedDegreeName: '',
                     alertText: "",
                     alertStatus: "",
@@ -734,7 +735,7 @@
                     request.TitleClassId = _this.selectedtitleClassId;
                     request.TagId = _this.selectedTagId;
                     request.Degree = item.degree;
-
+                    console.log(request);
                     axios.post("https://localhost:7169/Companies/Openings/EditOpening", request, {
                         headers: {
                             "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
@@ -816,9 +817,22 @@
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
+                filterOpenings: function(){
+                    var request = {
+                        Title: this.filter,
+                        Address: this.filter,
+                        Time: this.filter
+                    };
+                    axios.post(`${this.baseAddress}/Companies/Openings/Filter`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        this.openings = res.data
+                    }).catch(err => JSON.stringify(err))
+                },
             },
             mounted() {
                 this.ReceiveOpeningData();
+                
             },
         }
         let app = Vue.createApp(VueApp).mount("#createOpening");
