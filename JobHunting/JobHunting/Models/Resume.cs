@@ -33,8 +33,6 @@ public partial class Resume
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
 
-    public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
-
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
     public virtual ICollection<TitleClass> TitleClasses { get; set; } = new List<TitleClass>();
