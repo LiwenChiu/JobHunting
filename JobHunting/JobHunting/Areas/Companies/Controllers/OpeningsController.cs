@@ -50,7 +50,58 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
         [HttpPost]
-
+        public async Task<IEnumerable<OpeningsFilterOutput>> Filter([FromBody]OpeningsFilterInput ofi)
+        {
+            var source = _context.Openings.Include(o => o.TitleClasses).Include(c=>c.Company).ToList();
+            var temp = source.Select(o => new
+            {
+                OpeningId = o.OpeningId,
+                Title = o.Title,
+                CompanyName = o.Company.CompanyName,
+                Address = o.Address,
+                ContactName = o.ContactName,
+                ContactPhone = o.ContactPhone,
+                ContactEmail = o.ContactEmail,
+                SalaryMax = o.SalaryMax,
+                SalaryMin = o.SalaryMin,
+                Time = o.Time,
+                Description = o.Description,
+                TitleClassId = o.TitleClasses.Select(tc => tc.TitleClassId),
+                TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
+                TagId = o.Tags.Select(t => t.TagId),
+                TagName = o.Tags.Select(t => t.TagName),
+                Benefits = o.Benefits,
+                Edit = false,
+                Degree = o.Degree,
+                ReleaseYN = o.ReleaseYN
+            }).Where(a =>
+                a.Address.Contains(ofi.Address) ||
+                a.Title.Contains(ofi.Title) ||
+                a.Time.Contains(ofi.Time)
+             ).Select(o => new OpeningsFilterOutput
+             {
+                 OpeningId = o.OpeningId,
+                 Title = o.Title,
+                 CompanyName = o.CompanyName,
+                 Address = o.Address,
+                 ContactName = o.ContactName,
+                 ContactPhone = o.ContactPhone,
+                 ContactEmail = o.ContactEmail,
+                 SalaryMax = o.SalaryMax,
+                 SalaryMin = o.SalaryMin,
+                 Time = o.Time,
+                 Description = o.Description,
+                 TitleClassId = o.TitleClassId.ToList(),
+                 TitleClassName = o.TitleClassName.ToList(),
+                 TagId = o.TagId.ToList(),
+                 TagName = o.TagName.ToList(),
+                 Benefits = o.Benefits,
+                 Edit = o.Edit,
+                 Degree = o.Degree,
+                 ReleaseYN = o.ReleaseYN
+             });
+            return temp;
+        }
 
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
