@@ -24,7 +24,7 @@ CREATE TABLE Companies
     CompanyId int primary key identity,
 	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
-    CompanyName nvarchar(40) not null,
+    CompanyName nvarchar(60) not null,
 	CompanyClassId nchar(2)
 		references CompanyClasses(CompanyClassId)
 		on delete set null,
@@ -141,6 +141,9 @@ CREATE TABLE ResumeOpeningRecords
 	OpeningId int
 		references Openings(OpeningId)
 		on delete cascade,
+	OpeningTitle nvarchar(60),
+	CompanyId int,
+	CompanyName nvarchar(60),
 	ApplyDate date,
 	InterviewYN bit not null default(0),
 	HireYN bit not null default(0)
@@ -227,7 +230,7 @@ CREATE TABLE CompanyOrders
 	PlanId int
 		references PricingPlans(PlanId)
 		on delete set null,
-	CompanyName nvarchar(40) not null,
+	CompanyName nvarchar(60) not null,
 	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
 	Price money
