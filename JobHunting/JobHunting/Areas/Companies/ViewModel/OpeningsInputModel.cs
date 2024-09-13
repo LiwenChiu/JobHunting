@@ -34,6 +34,11 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public bool ReleaseYN { get; set; }
 
+        public List<int> TitleClassId { get; set; }
+
+        public List<int> TagId { get; set; }
+
+
 
     }
 }

@@ -122,10 +122,10 @@
                                 <input type="text" class="form-control " v-model="subjectLine">
                             </div>
                             <div class="d-sm-flex inputAreas justify-content-around">
-                                <input type="file" accept="image/*" />
+                                <input id="addFile" type="file" class="form-control" v-on:change="addChange($event.target)" accept="image/*" />
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <img src="~/images/no_image_available.jpg" />
+                                <img id="addPicture" src="~/images/no_image_available.jpg" asp-append-version=true />
                             </div>
 
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
@@ -140,7 +140,7 @@
                     <button id="insert" type="button"
                             class="btn btn-primary"
                             data-bs-dismiss="modal"
-                                v-on:click="addletter">
+                            v-on:click="addletter">
                         送出
                     </button>
                     <button type="button"
@@ -178,19 +178,42 @@
             methods: {
                 addletter() {
                     let self = this;
-                    var request = {
-                        companyId: 3,
-                        letterclass: self.letterclass,
-                        subjectLine: self.subjectLine,
-                        content: self.content,
-                    };
-                        axios.post('https://localhost:7169/Home/AddLetter', request, {
-                            Headers: { 'Content-Type': 'application/json' },
+                    var form = new FormData();
+                    form.append("CompanyId", 3);
+                    form.append("Letterclass", self.letterclass);
+                    form.append("SubjectLine", self.subjectLine);
+                    form.append("Content", self.content);
+                    form.append("ImageFile", document.querySelector("#addFile").files[0]);
+                        axios.post('https://localhost:7169/Home/AddLetter', form, {
+                        headers: { 'Content-Type': 'multipart/form-data' },
                         }).then(res => {
-                            var s = await res.text();
-                             alert(s);
+                            alert(res.data)
                         }).catch(err => JSON.stringify(err))
                 },
+                addChange(inputFile){
+                    let self = this;
+                    self.readURL(inputFile, inputFile.parentElement.nextElementSibling.firstChild, $("#addFile"))
+                },
+                readURL(inputFile, img, btn) {
+                    if (inputFile.files && inputFile.files[0]) {
+                        var allowType = "image.*";
+                        var file = inputFile.files[0]
+                        if (file.type.match(allowType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                                img.title = file.name;
+                            }
+                            reader.readAsDataURL(file)
+                            btn.prop("disabled", false)
+                        }
+                        else {
+                            alert("不支援檔案上傳格式");
+                            btn.prop("disabled", true);
+                        }
+                    }
+                }
+
             }
         };
         Vue.createApp(vueLetter).mount("#app")

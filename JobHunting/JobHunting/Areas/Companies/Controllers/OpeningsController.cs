@@ -40,10 +40,69 @@ namespace JobHunting.Areas.Companies.Controllers
                 Description = o.Description,
                 TitleClassId=o.TitleClasses.Select(tc=>tc.TitleClassId),
                 TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
+                TagId=o.Tags.Select(t=>t.TagId),
+                TagName=o.Tags.Select(t=>t.TagName),
                 Benefits = o.Benefits,
                 Edit = false,
+                Degree = o.Degree,
+                ReleaseYN = o.ReleaseYN
             }));
         }
+
+        [HttpPost]
+        public async Task<IEnumerable<OpeningsFilterOutput>> Filter([FromBody]OpeningsFilterInput ofi)
+        {
+            var source = _context.Openings.Include(o => o.TitleClasses).Include(c=>c.Company).ToList();
+            var temp = source.Select(o => new
+            {
+                OpeningId = o.OpeningId,
+                Title = o.Title,
+                CompanyName = o.Company.CompanyName,
+                Address = o.Address,
+                ContactName = o.ContactName,
+                ContactPhone = o.ContactPhone,
+                ContactEmail = o.ContactEmail,
+                SalaryMax = o.SalaryMax,
+                SalaryMin = o.SalaryMin,
+                Time = o.Time,
+                Description = o.Description,
+                TitleClassId = o.TitleClasses.Select(tc => tc.TitleClassId),
+                TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
+                TagId = o.Tags.Select(t => t.TagId),
+                TagName = o.Tags.Select(t => t.TagName),
+                Benefits = o.Benefits,
+                Edit = false,
+                Degree = o.Degree,
+                ReleaseYN = o.ReleaseYN
+            }).Where(a =>
+                a.Address.Contains(ofi.Address) ||
+                a.Title.Contains(ofi.Title) ||
+                a.Time.Contains(ofi.Time)
+             ).Select(o => new OpeningsFilterOutput
+             {
+                 OpeningId = o.OpeningId,
+                 Title = o.Title,
+                 CompanyName = o.CompanyName,
+                 Address = o.Address,
+                 ContactName = o.ContactName,
+                 ContactPhone = o.ContactPhone,
+                 ContactEmail = o.ContactEmail,
+                 SalaryMax = o.SalaryMax,
+                 SalaryMin = o.SalaryMin,
+                 Time = o.Time,
+                 Description = o.Description,
+                 TitleClassId = o.TitleClassId.ToList(),
+                 TitleClassName = o.TitleClassName.ToList(),
+                 TagId = o.TagId.ToList(),
+                 TagName = o.TagName.ToList(),
+                 Benefits = o.Benefits,
+                 Edit = o.Edit,
+                 Degree = o.Degree,
+                 ReleaseYN = o.ReleaseYN
+             });
+            return temp;
+        }
+
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
         public JsonResult TitleClassJson()
@@ -87,32 +146,58 @@ namespace JobHunting.Areas.Companies.Controllers
             }));
         }
         [HttpPost]
-        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName")] OpeningsInputModel oim)
+        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
         {
-            var r = await _context.Openings.FindAsync(oim.OpeningId);
+            var opening = await _context.Openings
+                .Include(o => o.TitleClasses).Include(t=>t.Tags)
+                .FirstOrDefaultAsync(o => o.OpeningId == oim.OpeningId);
 
-            if (r == null)
+            var titleClasses = await _context.TitleClasses
+                    .Where(tc => oim.TitleClassId.Contains(tc.TitleClassId))
+                    .ToListAsync();
+
+            var tags = await _context.Tags
+                .Where(tc => oim.TagId.Contains(tc.TagId))
+                .ToListAsync();
+
+            if (opening == null)
             {
                 return NotFound(new { Message = "Opening not found" });
             }
 
-            r.Title = oim.Title;
-            r.Address = oim.Address;
-            r.ContactName = oim.ContactName;
-            r.ContactPhone = oim.ContactPhone;
-            r.ContactEmail = oim.ContactEmail;
-            r.SalaryMax = oim.SalaryMax;
-            r.SalaryMin = oim.SalaryMin;
-            r.Time = oim.Time;
-            r.Benefits = oim.Benefits;
-            r.Description = oim.Description;
-            r.ReleaseYN = oim.ReleaseYN;
-            r.Degree = oim.Degree;
-            
+            // 更新 Opening 的屬性
+            opening.Title = oim.Title;
+            opening.Address = oim.Address;
+            opening.ContactName = oim.ContactName;
+            opening.ContactPhone = oim.ContactPhone;
+            opening.ContactEmail = oim.ContactEmail;
+            opening.SalaryMax = oim.SalaryMax;
+            opening.SalaryMin = oim.SalaryMin;
+            opening.Time = oim.Time;
+            opening.Benefits = oim.Benefits;
+            opening.Description = oim.Description;
+            opening.ReleaseYN = oim.ReleaseYN;
+            opening.Degree = oim.Degree;
+
+            opening.TitleClasses.Clear();
+            opening.Tags.Clear();
+
+
+            foreach (var titleClass in titleClasses)
+            {
+                opening.TitleClasses.Add(titleClass);
+            }
+
+            foreach (var tag in tags)
+            {
+                opening.Tags.Add(tag);
+            }
 
             await _context.SaveChangesAsync();
             return Json(new { message = "修改成功" });
         }
+        
+        [HttpPost]
         public async Task<Array> DelOpening([FromBody] int openingId)
         {
             string[] returnStatus = new string[2];
@@ -146,6 +231,7 @@ namespace JobHunting.Areas.Companies.Controllers
             returnStatus = [$"刪除職缺{opening.Title}成功", "成功"];
             return returnStatus;
         }
+       
         [HttpPost]
         public async Task<IActionResult> CreateOpening([FromBody] CreateOpeningInputModel coim)
         {
@@ -157,14 +243,16 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { Message = "沒有此公司" });
                 }
 
-                var titleClass = await _context.TitleClasses.FindAsync(coim.TitleClassId);
-                if (titleClass == null)
-                {
-                    return NotFound(new { Message = "選擇的職缺類別不存在" });
-                }
+                var titleClasses = await _context.TitleClasses
+                    .Where(tc => coim.TitleClassId.Contains(tc.TitleClassId))
+                    .ToListAsync();
+
+                var tags = await _context.Tags
+                    .Where(t => coim.TagId.Contains(t.TagId))
+                    .ToListAsync();
 
                 Models.Opening opening = new Models.Opening
-                {
+                { 
                     Title = coim.Title,
                     Address = coim.Address,
                     ContactName = coim.ContactName,
@@ -181,7 +269,15 @@ namespace JobHunting.Areas.Companies.Controllers
                     
                 };
 
-                opening.TitleClasses.Add(titleClass);
+                foreach (var titleClass in titleClasses)
+                {
+                    opening.TitleClasses.Add(titleClass);
+                }
+
+                foreach (var tag in tags)
+                {
+                    opening.Tags.Add(tag);
+                }
 
                 _context.Openings.Add(opening);
                 await _context.SaveChangesAsync();

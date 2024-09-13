@@ -1,6 +1,7 @@
 USE [master]
 GO
 CREATE DATABASE [Duck]
+COLLATE Chinese_PRC_CI_AS;
 GO
 USE [Duck]
 GO
@@ -23,7 +24,7 @@ CREATE TABLE Companies
     CompanyId int primary key identity,
 	GUINumber nchar(8) not null,
 	[Password] nvarchar(16) not null,
-    CompanyName nvarchar(40) not null,
+    CompanyName nvarchar(60) not null,
 	CompanyClassId nchar(2)
 		references CompanyClasses(CompanyClassId)
 		on delete set null,
@@ -35,7 +36,8 @@ CREATE TABLE Companies
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320) not null,
 	[Status] bit not null default(0),
-	[Date] datetime not null
+	[Date] datetime not null,
+	Deadline datetime,
 )
 GO
 CREATE TABLE TitleCategories
@@ -95,9 +97,7 @@ CREATE TABLE Candidates
 	Sex bit,
 	Birthday date,
 	Headshot varbinary(Max),
-	TitleClassId int
-		references TitleClasses(TitleClassId)
-		on delete set null,
+	TitleClass nvarchar(30),
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),
@@ -140,27 +140,34 @@ CREATE TABLE ResumeOpeningRecords
 		on delete cascade,
 	OpeningId int
 		references Openings(OpeningId)
-		on delete set null,
-	CompanyId int not null,
-	CompanyName nvarchar(40) not null,
-	OpeningTitle nvarchar(60) not null,
+		on delete cascade,
+	OpeningTitle nvarchar(60),
+	CompanyId int,
+	CompanyName nvarchar(60),
 	ApplyDate date,
-	LikeYN bit not null default(0),
 	InterviewYN bit not null default(0),
 	HireYN bit not null default(0)
 )
 GO
-CREATE TABLE CompanyResumeRecords
+CREATE TABLE CandidateOpeningLikeRecords
 (
-	CompanyId int not null
+	CandidateId int
+		references Candidates(CandidateId)
+		on delete cascade,
+	OpeningId int
+		references Openings(OpeningId)
+		on delete cascade
+	primary key(CandidateId,OpeningId)
+)
+GO
+CREATE TABLE CompanyResumeLikeRecords
+(
+	CompanyId int
 		references Companies(CompanyId)
 		on delete cascade,
-	ResumeId int not null
+	ResumeId int
 		references Resumes(ResumeId)
-		on delete cascade,
-	LikeYN bit not null default(0),
-	InterviewYN bit,
-	HireYN bit
+		on delete cascade
 	primary key(CompanyId,ResumeId)
 )
 GO
@@ -223,12 +230,13 @@ CREATE TABLE CompanyOrders
 	PlanId int
 		references PricingPlans(PlanId)
 		on delete set null,
-	CompanyName nvarchar(40) not null,
+	CompanyName nvarchar(60) not null,
 	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	PayDate datetime not null,
 	Duration int not null,
 	[Status] bit not null default(0),
 )
@@ -242,8 +250,8 @@ CREATE TABLE Notifications
 	CandidateId int
 		references Candidates(CandidateId)
 		on delete set null,
-	ResumeId int,
 	OpeningId int,
+	ResumeId int,
 	[Status] nvarchar(10),
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
@@ -258,7 +266,8 @@ CREATE TABLE Admins
 	Email nvarchar(320) not null,
 	[Password] nvarchar(16) not null,
 	[Name] nvarchar(30) not null,
-	Authority int
+	Authority int,
+	[Status] bit,
 )
 GO
 CREATE TABLE OpinionLetters
@@ -278,4 +287,13 @@ CREATE TABLE OpinionLetters
 	Content nvarchar(Max) not null,
 	Attachment varbinary(MAX),
 	[Status] bit not null default(0)
+)
+GO
+CREATE TABLE AdminRecords
+(
+	RecordId int primary key identity,
+	AdminId int not null,
+	Task nvarchar(50) not null,
+	CRUD nvarchar(20) not null,
+	[Time] datetime not null,
 )

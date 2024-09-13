@@ -23,6 +23,8 @@ public partial class Candidate
 
     public byte[] Headshot { get; set; }
 
+    public string TitleClass { get; set; }
+
     public string Phone { get; set; }
 
     public string Address { get; set; }
@@ -38,4 +40,6 @@ public partial class Candidate
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
 
     public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
+
+    public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 }
