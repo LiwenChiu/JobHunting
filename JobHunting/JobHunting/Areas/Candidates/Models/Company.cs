@@ -41,11 +41,11 @@ public partial class Company
 
     public virtual ICollection<CompanyOrder> CompanyOrders { get; set; } = new List<CompanyOrder>();
 
-    public virtual ICollection<CompanyResumeRecord> CompanyResumeRecords { get; set; } = new List<CompanyResumeRecord>();
-
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
+
+    public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
 }

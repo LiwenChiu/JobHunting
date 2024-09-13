@@ -6,7 +6,7 @@
 
         public byte[] Headshot { get; set; }
 
-        public string? TitleClassName { get; set; }
+        public string? TitleClass { get; set; }
 
         public string Email { get; set; }
 

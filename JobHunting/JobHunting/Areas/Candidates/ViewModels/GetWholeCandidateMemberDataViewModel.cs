@@ -12,8 +12,6 @@
 
         public DateOnly? Birthday { get; set; }
 
-        public int? TitleClassId { get; set; }
-
         public string Phone { get; set; }
 
         public string Address { get; set; }

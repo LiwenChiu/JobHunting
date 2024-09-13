@@ -13,9 +13,9 @@ public partial class Notification
 
     public int? CandidateId { get; set; }
 
-    public int? ResumeId { get; set; }
-
     public int? OpeningId { get; set; }
+
+    public int? ResumeId { get; set; }
 
     public string Status { get; set; }
 
