@@ -497,14 +497,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
-                                    <span class="form-control text-center ">履歷狀態：
-                                            <select v-model.lazy="ResumeD.releaseYN" class="btn btn-primary ms-4">
-                                                <option :value="true">開放</option>
-                                                <option :value="false">關閉</option>
-                                        </select>
-                                    </span>
-                                </div>
+                                
                             </div>
                             <div class="" style="text-align:right">
                                 <button id="update" type="submit" class="btn btn-success mx-3" v-on:click="editConfirm(ResumeD)">編輯完成</button>
@@ -623,9 +616,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class=" col-md-3 ">
-                                        <label class="form-control text-center" v-model.lazy="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
-                                </div>
+                                    <template v-if="ResumeD.ReleaseYNedit == false">
+                                        <div class="col-md-5 ">
+                                            <span class="form-control text-center ">
+                                                履歷狀態：
+                                                <select v-model.lazy="ResumeD.releaseYN" class="btn btn-outline-secondary ms-4">
+                                                    <option :value="true">開放</option>
+                                                    <option :value="false">關閉</option>
+                                                </select>
+                                                <button class="ms-3 btn btn-danger" v-on:click="editReleaseYN(ResumeD)">確認更換狀態</button>
+                                                <button class="ms-3 btn btn-secondary" v-on:click="cancelReleaseYNedit(ResumeD)">取消</button>
+                                            </span>
+                                        </div>
+                                    </template>
+
+                                    <template v-else="ResumeD.ReleaseYNedit == true">
+                                        <div class="col-md-5 ">
+                                            <span class="form-control text-center ">
+                                                履歷狀態： 
+                                                <span class="btn btn-outline-secondary">{{Resumeif(ResumeD.releaseYN)}}</span>
+                                                <button class="ms-3 btn btn-success" v-on:click="editReleaseYNedit(ResumeD)">編輯狀態</button>
+                                            </span>
+                                        </div>
+                                    </template>
+                                    
                             </div>
                             <div class="" style="text-align:right">
                                     <button type="button" class="btn btn-secondary " v-on:click="edit(ResumeD);selectedtitleClassId = ResumeD.titleClassId ; selectedTagId=ResumeD.tagId">編輯</button>
@@ -682,6 +696,7 @@
         let VueApp = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
                     pageStatus: 0,
                     perpage: 7, //一頁的資料數
                     currentPage: 1,
@@ -689,6 +704,7 @@
                     resumevalue: "resumevalue",
                     Resume:[],
                     backupResume: {},
+                    backupReleaseYNedit: {},
                     ResumeName:"",
                     releaseYN:true,
                     WorkExperience:"",
@@ -709,6 +725,7 @@
                     titleCategory: [],
                     TitleClassChecked: [],
                     selectedtitleClassId: [],
+                    CandateidResume: null,
                 };
             },
         
@@ -758,7 +775,15 @@
                         
                     };
                     _this.selectedtitleClassId = ResumeD.titleClassId;
-    _this.selectedTagId = ResumeD.tagId;
+                    _this.selectedTagId = ResumeD.tagId;
+                },
+                editReleaseYNedit: function (ResumeD) {
+                    let _this = this;
+                    ResumeD.ReleaseYNedit = false;
+
+                    _this.backupReleaseYNedit = {
+                        releaseYN: ResumeD.releaseYN,
+                    };
                 },
                 Createcancel(){
                     window.location.reload()
@@ -774,14 +799,23 @@
                             ResumeD.title = _this.backupResume.ResumeName;
                             ResumeD.autobiography = _this.backupResume.Autobiography;
                             ResumeD.time = _this.backupResume.timeR;
-                            ResumeD.releaseYN = _this.backupResume.releaseYN;
+
                             ResumeD.intro = _this.backupResume.ResumeIntro;
                             ResumeD.headshot = _this.backupResume.Headshot;
-                        
                     }
                     ResumeD.edit = false
+
                     
                 },
+                cancelReleaseYNedit(ResumeD) {
+                    let _this = this
+                    for (let n = 0; n < _this.Resume.length; n++) {
+                        let ResumeD = _this.Resume[n];
+                        ResumeD.releaseYN = _this.backupReleaseYNedit.releaseYN;
+                    }
+                    ResumeD.ReleaseYNedit = true;
+                },
+
                 mergeID(ResumeD) {
                     let str = ResumeD.name.replace(/\s/g, "");
                     let num = ResumeD.resumeid;
@@ -904,7 +938,9 @@
                 
                 ResumeInformation: function () {
                     //履歷全部資料
-                    fetch("/Candidates/Resume/ResumeResult", {
+                    let _this = this;
+                    let CandateidResumeID = 1;
+                    fetch(`${_this.baseAddress}/Candidates/Resume/CandidatesResumeResult/${CandateidResumeID}`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
@@ -915,42 +951,42 @@
                     });
 
                     //職業類別名稱和ID
-                    fetch("/Candidates/Resume/TitleCategoryJson", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/TitleCategoryJson`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
-                        return this.titleCategory = data
+                        return _this.titleCategory = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
                     });
                     //職業類型
-                    fetch("/Candidates/Resume/TitleClassJson", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/TitleClassJson`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
-                        return this.titleClass = data
+                        return _this.titleClass = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
                     });
 
-                    fetch("/Candidates/Resume/TagJson", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/TagJson`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
-                        return this.Tags = data
+                        return _this.Tags = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
                     });
 
-                    fetch("/Candidates/Resume/TagClassJson", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/TagClassJson`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
-                        return this.TagClasses = data
+                        return _this.TagClasses = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
                     });
@@ -982,7 +1018,7 @@
                     form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[1]);
                     form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[2]);
                     form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[3]);
-                    fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/CreateReasumes`, {
                         method: "POST",
                         body: form
                     }).then(response => {
@@ -1011,8 +1047,8 @@
                 },
                 //編輯履歷並修改資料庫資料
                 editResumD: function (ResumeD) {
-                    var _this = this
-                    var form = new FormData();
+                    let _this = this
+                    let form = new FormData();
                     form.append("ResumeId", ResumeD.resumeid);
                     form.append("CandidateId", ResumeD.candidateId);
                     form.append("Address", ResumeD.address);
@@ -1034,7 +1070,7 @@
                     console.log(_this.selectedTagId);
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
                     // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
-                    fetch("https://localhost:7169/Candidates/Resume/EditResume", {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/EditResume`, {
                         method: "POST",
                         body:form,
                     }).then(response => {
@@ -1053,6 +1089,31 @@
                     // this.originalHeadshot = ResumeD.headshot;
                     // ResumeD.edit = false;
                 },
+                editReleaseYN: function (ResumeD) {
+                    let _this = this
+                    let request = {}
+                    request.ReleaseYN = ResumeD.releaseYN,
+                    request.ResumeId = ResumeD.resumeid,
+                     fetch(`${_this.baseAddress}/Candidates/Resume/EditReleaseYN`, {
+                        method: "POST",
+                        headers: {
+                        "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
+                        },
+                        body:JSON.stringify(request)
+                    }).then(response => {
+                        return response.json()
+                    }).then(data => {
+                        if (data.success) {
+                            alert("履歷狀態已更改")
+                            window.location.reload();
+                        } else {
+                            alert("履歷狀態更改失敗")
+                            window.location.reload();
+                        }
+                    }).catch(err => {
+                        alert(err)
+                    });
+                },
                 //刪除履歷
                 deleteResume: function (item) {
                     let _this = this
@@ -1060,7 +1121,7 @@
                     var request = {};
                     request.resumeid = item.resumeid;
                     if (confirmdel == true) {
-                        fetch("https://localhost:7169/Candidates/Resume/DelResume", {
+                        fetch(`${_this.baseAddress}/Candidates/Resume/DelResume`, {
                             method: "DELETE",
                             headers: {
                                 "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
