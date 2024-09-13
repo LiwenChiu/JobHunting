@@ -230,14 +230,25 @@
                     let self = this;
                     let today = new Date().getFullYear();
                     var request = {
+                        sex:null,
                         serchText: self.filter,
                         area: self.city,
                         zipCode: self.zipCode,
                         // edu: self.edu,
                         skill: self.skill
                     };
+                    if (self.filter == "男") {
+                        request.sex = true;
+                    }
+                    else if (self.filter == "女") {
+                        request.sex = false;
+                    }
+                    else {
+                        request.sex = null;
+                    }
+                       
                     axios.post('https://localhost:7169/Home/SelectIndexList', request, {
-                            Headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.resumes = res.data;
                             self.skill = null;
