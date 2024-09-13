@@ -23,7 +23,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var candidateList = _context.Candidates.Select(p => new
             {
-                CandidateID = p.CandidateId,
+                CandidateId = p.CandidateId,
                 Name = p.Name,
                 Sex = p.Sex,
                 Degree = p.Degree,
