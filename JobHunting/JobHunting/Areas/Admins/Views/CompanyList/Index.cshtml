@@ -26,7 +26,7 @@
         </thead>
         <tbody id="CompanyList">
             <tr v-for="item in companylist.slice(pageStart,pageEnd)" class="overcard">
-                <td>{{item.companyID}}</td>
+                <td>{{item.companyId}}</td>
                 <td>{{item.companyName}}</td>
                 <td>{{item.guiNumber}}</td>
                 <td>{{item.contactName}}</td>
@@ -112,7 +112,7 @@
                     // alert(`filter:${_this.filter}`);
                     let _this = this;
                     let request = {};
-                    request.CompanyID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.CompanyId = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
                     request.CompanyName = request.GUINumber = request.ContactName = request.ContactPhone = request.ContactEmail = _this.filter;
                     axios.post(`${_this.baseAddress}/Admins/CompanyList/Filter`, request).then(response => {
                         // alert(JSON.stringify(response.data));
@@ -126,7 +126,7 @@
             mounted: function () {
                 let _this = this;
                 _this.CompanyListData();
-                _this.filterCompanyList();
+                // _this.filterCompanyList();
             },
         }).mount("#app");
     </script>
