@@ -65,6 +65,12 @@
                                     :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
                                 詳細
                             </button>
+                            <template v-if="item.releaseYN == true">
+                                <button type="button" class="btn btn-danger ms-1" v-on:click="toggleStatusToFalse(item);">停用</button>
+                            </template>
+                            <template v-else>
+                                <button type="button" class="btn btn-warning ms-1" v-on:click="toggleStatusToTrue(item);">啟用</button>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -285,7 +291,7 @@
                                                 <label class="">上班時段:</label>
                                                 <input type="text" v-model="item.time" class="form-control" />
                                             </div>
-                                            
+
                                             <div class="mb-3">
                                                 @* 職缺類別 *@
                                                 <p>
@@ -384,15 +390,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <span class="form-control text-center ">
-                                    是否上架：
-                                    <select v-model="item.releaseYN" class="btn btn-primary ms-4">
-                                        <option :value="true">上架</option>
-                                        <option :value="false">關閉</option>
-                                    </select>
-                                </span>
-                            </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success " v-on:click="editConfirm(item)">編輯完成</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancel(item)">取消</button>
@@ -460,9 +457,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class=" col-md-3 ">
-                                <label class="form-control text-center">是否上架： <span class="btn btn-primary ms-4">{{Openingif(item.releaseYN)}}</span></label>
-                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary " v-on:click="item.edit = true;selectedtitleClassId = item.titleClassId ; selectedTagId=item.tagId">編輯</button>
                             </div>
@@ -504,8 +498,9 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
+                    CompanyId : 1,
                     openings: [],
-                    openingsfilter:[],
+                    openingsfilter: [],
                     selectedDegreeName: '',
                     alertText: "",
                     alertStatus: "",
@@ -672,9 +667,8 @@
                 //新增履歷
                 createOpening: function () {
                     let _this = this;
-                    let CompanyId = 7;
                     let request = {};
-                    request.CompanyId = CompanyId;
+                    request.CompanyId = _this.CompanyId;
                     request.Title = _this.Title;
                     request.Address = _this.Address;
                     request.ContactName = _this.ContactName;
@@ -716,7 +710,7 @@
                         alert("已取消編輯");
                     };
                 },
-                // 編輯職缺並修改資料庫資料
+                //編輯職缺並修改資料庫資料
                 editOpening: function (item) {
                     let _this = this;
                     let request = {};
@@ -731,7 +725,6 @@
                     request.Time = item.time;
                     request.Benefits = item.benefits;
                     request.Description = item.description;
-                    request.ReleaseYN = item.releaseYN;
                     request.TitleClassId = _this.selectedtitleClassId;
                     request.TagId = _this.selectedTagId;
                     request.Degree = item.degree;
@@ -752,38 +745,40 @@
                 },
                 //資料初始
                 ReceiveOpeningData() {
-                    axios.get("/Companies/Openings/OpeningJson").then(
+                    let _this = this;
+                    let companyId = 1;
+                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${companyId}`).then(
                         res => {
-                            this.openings = res.data;
+                            _this.openings = res.data;
                         }
                     ).catch(
                         err => { alert(err) }
                     );
 
-                    axios.get(`${this.baseAddress}/Companies/Openings/TitleClassJson`).then(
+                    axios.get(`${_this.baseAddress}/Companies/Openings/TitleClassJson`).then(
                         res => {
-                            this.titleClass = res.data;
+                            _this.titleClass = res.data;
                         }
                     ).catch(
                         err => { alert(err) }
                     );
 
-                    axios.get(`${this.baseAddress}/Companies/Openings/TitleCategoryJson`).then(
+                    axios.get(`${_this.baseAddress}/Companies/Openings/TitleCategoryJson`).then(
                         res => {
-                            this.titleCategory = res.data;
+                            _this.titleCategory = res.data;
                         }
                     ).catch(
                         err => { alert(err) }
                     );
 
-                    axios.get(`${this.baseAddress}/Companies/Openings/TagJson`).then(
-                        res => this.Tags = res.data
+                    axios.get(`${_this.baseAddress}/Companies/Openings/TagJson`).then(
+                        res => _this.Tags = res.data
                     ).catch(
                         err => { alert(err) }
                     );
 
-                    axios.get(`${this.baseAddress}/Companies/Openings/TagClassJson`).then(
-                        res => this.TagClasses = res.data
+                    axios.get(`${_this.baseAddress}/Companies/Openings/TagClassJson`).then(
+                        res => _this.TagClasses = res.data
                     ).catch(
                         err => { alert(err) }
                     );
@@ -817,22 +812,47 @@
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
-                filterOpenings: function(){
+                //關鍵字搜尋
+                filterOpenings: function () {
+                    let _this = this;
                     var request = {
-                        Title: this.filter,
-                        Address: this.filter,
-                        Time: this.filter
+                        CompanyId: _this.CompanyId,
+                        Title: _this.filter,
+                        Address: _this.filter,
+                        Time: _this.filter
                     };
-                    axios.post(`${this.baseAddress}/Companies/Openings/Filter`, request, {
+                    axios.post(`${_this.baseAddress}/Companies/Openings/Filter`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        this.openings = res.data
+                        _this.openings = res.data
                     }).catch(err => JSON.stringify(err))
+                },
+                //切換成下架職缺
+                toggleStatusToFalse: function (item) {
+                    axios.post(`${this.baseAddress}/Companies/Openings/ToggleStautsFalse`, item.openingId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        alert(response.data)
+                        this.ReceiveOpeningData();
+                    }).catch(err => { alert(err) });
+                },
+                //切換成上架職缺
+                toggleStatusToTrue: function (item){
+                    axios.post(`${this.baseAddress}/Companies/Openings/ToggleStautsTrue`, item.openingId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        alert(response.data)
+                        this.ReceiveOpeningData();
+                    }).catch(err => { alert(err) });
                 },
             },
             mounted() {
                 this.ReceiveOpeningData();
-                
+
             },
         }
         let app = Vue.createApp(VueApp).mount("#createOpening");
