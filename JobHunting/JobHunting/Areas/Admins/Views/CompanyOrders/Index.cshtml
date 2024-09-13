@@ -35,12 +35,17 @@
             <div class="row">
                 <label for="pageNumber" class="col-md-2 text-end">每頁筆數: </label>
                 <input type="text" id="pageNumber" name="pageNumber" class="col-md-8" placeholder="請輸入每頁筆數" v-model.trim.number="pageLength" />
+                <div class="col-md-2">
+                    <label for="inputPaging">第</label>
+                    <input type="text" id="inputPaging" style="width: 3vh" v-model.trim.number="pageStart" />
+                    <label for="inputPaging">頁</label>
+                </div>
             </div>
         </div>
     </div>
     
     <div class="container tableOutside" style="overflow-y:auto;height:70vh">
-        <table class="table table-striped text-center mt-1" id="ChangePage" style="">
+        <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">訂單ID</th>
@@ -64,8 +69,8 @@
         </table>
     </div>
 
-    <div class="justify-content-center" style="display: flex;">
-        <nav aria-label="Page navigation">
+    <div>
+        <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
             <ul class="pagination">
                 <li class="page-item">
                     <button type="button" id="turnPagePreviousBtn" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()">
@@ -82,6 +87,7 @@
                 </li>
             </ul>
         </nav>
+
     </div>
 
 </div>
@@ -105,12 +111,13 @@
             methods:{
                 bootFilterPaging: function () {
                     let pageSize = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
+                    let pageNumber= this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
                     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
                     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
                     request.PageDraw = this.pageDraw;
                     request.PageLength = pageSize,
-                    request.PageStart = this.pageStart;
+                    request.PageStart = pageNumber;
                     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging`, request, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -121,19 +128,18 @@
                         this.totalPage = parseInt((response.data.totalPage) / (pageSize)) + 1;
                     })
                     .catch(err => { alert(err) });
-
                 },
-                bootFilterPage: function () {
-                    let request = {};
-                    request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                    request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
-                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage`, request, {
-                        headers: {
-                            'Content-Type':'application/json'
-                        },
-                    }).then(response => this.companyOrders = response.data)
-                    .catch(err => { alert(err.response.data) });
-                },
+                // bootFilterPage: function () {
+                //     let request = {};
+                //     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                //     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
+                //     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage`, request, {
+                //         headers: {
+                //             'Content-Type':'application/json'
+                //         },
+                //     }).then(response => this.companyOrders = response.data)
+                //     .catch(err => { alert(err.response.data) });
+                // },
                 orderStatus: function (status) {
                     if (status) {
                         return "已付款";
@@ -144,18 +150,15 @@
                 },
                 turnPage: function (page) {
                     this.pageStart = page;
-                    this.bootFilterPaging();
                 },
                 turnPagePrevious: function () {
                     if (this.pageStart != 1) {
                         this.pageStart--;
-                        this.bootFilterPaging();
                     }
                 },
                 turnPageNext: function () {
                     if (this.pageStart != this.totalPage) {
                         this.pageStart++;
-                        this.bootFilterPaging();
                     }
                 },
             },
@@ -165,6 +168,10 @@
                     this.bootFilterPaging();
                 },
                 pageLength:function(){
+                    //this.bootFilterPage();
+                    this.bootFilterPaging();
+                },
+                pageStart:function(){
                     //this.bootFilterPage();
                     this.bootFilterPaging();
                 },
