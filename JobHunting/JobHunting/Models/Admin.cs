@@ -19,5 +19,7 @@ public partial class Admin
 
     public int? Authority { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
 }

@@ -41,6 +41,8 @@ public partial class Opening
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
 
+    public virtual ICollection<Candidate> Candidates { get; set; } = new List<Candidate>();
+
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
     public virtual ICollection<TitleClass> TitleClasses { get; set; } = new List<TitleClass>();
