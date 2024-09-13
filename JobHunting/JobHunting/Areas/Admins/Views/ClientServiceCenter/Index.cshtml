@@ -26,8 +26,7 @@
 
 
             @* 意見信件modalBtn *@
-            <button type="button"
-                    class="btn btn-primary btn-md"
+            <button class="btn btn-warning "
                     data-bs-toggle="modal"
                     data-bs-target="#modalId"
                     v-on:click="OpinionLetterModalShow(item.id);">
@@ -63,7 +62,10 @@
 
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <img src="~/images/no_image_available.jpg" />
+                                        <img class="img-fluid" id="showPicture"
+                                             v-bind:src=`${baseAddress}/Admins/ClientServiceCenter/GetPicture/${opinionLetterModal.letterId}`
+                                             v-bind:title="opinionLetterModal.subjectLine"
+                                             style="width:480px;height:320px"/>
                                     </div>
 
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
