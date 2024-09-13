@@ -27,11 +27,10 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //GET: /Candidates/Resume/ResumeResult
         [HttpGet]
-        public JsonResult ResumeResult()
+        public async Task<JsonResult> CandidatesResumeResult(int id)
         {
 
-
-            return Json(_context.Resumes.Include(r => r.Candidate).Include(t => t.TitleClasses).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Where(w=>w.CandidateId == id).Include(t => t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -56,8 +55,40 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
+                ReleaseYNedit = false,
             }));
         }
+
+        //撈全部的履歷資料
+        //{
+
+        //    return Json(_context.Resumes.Include(r => r.Candidate).Include(t => t.TitleClasses).Select(a => new
+        //    {
+        //        name = a.Candidate.Name,
+        //        address = a.Address,
+        //        sex = a.Candidate.Sex,
+        //        birthday = a.Candidate.Birthday,
+        //        phone = a.Candidate.Phone,
+        //        degree = a.Candidate.Degree,
+        //        email = a.Candidate.Email,
+        //        employmentStatus = a.Candidate.EmploymentStatus,
+        //        time = a.Time,
+        //        title = a.Title,
+        //        certification = a.Certification,
+        //        workExperience = a.WorkExperience,
+        //        autobiography = a.Autobiography,
+        //        candidateid = a.CandidateId,
+        //        resumeid = a.ResumeId,
+        //        releaseYN = a.ReleaseYN,
+        //        intro = a.Intro,
+        //        TitleClassId = a.TitleClasses.Select(rtc => rtc.TitleClassId),
+        //        TitleClassName = a.TitleClasses.Select(rtc => rtc.TitleClassName),
+        //        TagId = a.Tags.Select(t => t.TagId),
+        //        TagName = a.Tags.Select(t => t.TagName),
+        //        headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
+        //        edit = false,
+        //    }));
+        //}
 
         [HttpGet]
         public JsonResult TitleCategoryJson()
@@ -210,55 +241,43 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
         }
-            //return View(Creatr);
+        //return View(Creatr);
         //}
 
         //Post: /Candidates/Resume/EditResume
-        //[HttpPost]
-        //public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
-        //{
-            
+        [HttpPost]
+        public async Task<IActionResult> EditReleaseYN([FromBody][Bind("ReleaseYN", "ResumeId")] ResumeInputModel rm)
+        {
 
-        //    var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
-        //    if (r == null)
-        //    {
-        //        return NotFound(new { Message = "Resume not found" });
-        //    }
+            var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
-        //    //c.Name = rm.Name;
-        //    //c.Sex = rm.Sex;
-        //    //c.Birthday = rm.Birthday;
-        //    //c.EmploymentStatus = rm.EmploymentStatus;
-        //    //c.Phone = rm.Phone;
-        //    //c.Degree = rm.Degree;
-        //    //c.Email = rm.Email;
-        //    r.Intro = rm.Intro;
-        //    r.Address = rm.Address;
-        //    r.Title = rm.Title;
-        //    r.Autobiography = rm.Autobiography;
-        //    r.WorkExperience = rm.WorkExperience;
-        //    r.Time = rm.Time;
-        //    r.ReleaseYN = rm.ReleaseYN;
-        //    r.Headshot = rm.Headshot;
+            if (r == null)
+            {
+                return NotFound(new { Message = "Resume not found" });
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-                
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return Json(new { message = "修改失敗" });
-        //    }
+            r.ReleaseYN = rm.ReleaseYN;
 
-        //    return Json(new { success = true, message = "修改成功" });
-        //}
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "修改失敗" });
+            }
+
+            return Json(new { success = true, message = "修改成功" });
+        }
 
 
         [HttpPost]
         public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro")] ResumeInputModel rm)
         {
+            
 
             var r = await _context.Resumes
             .Include(o => o.TitleClasses).Include(t => t.Tags)
@@ -307,12 +326,9 @@ namespace JobHunting.Areas.Candidates.Controllers
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "修改成功" });
 
-
-
-
-
-
         }
+
+
 
 
 

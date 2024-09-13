@@ -53,10 +53,10 @@ namespace JobHunting.Areas.Companies.Controllers
             return Json(Openings.Select(p => new
             {
                 Title = p.Title,
-                TitleId=p.OpeningId,
-                TitleClassName = p.TitleClasses.Select(tc=>tc.TitleClassName).FirstOrDefault(),
-                TitleClassId = p.TitleClasses.Select(tc=>tc.TitleClassId).FirstOrDefault(),
-                ApplyDate = p.ResumeOpeningRecords.Select(ror=>ror.ApplyDate).FirstOrDefault(),
+                TitleId = p.OpeningId,
+                TitleClassName = p.TitleClasses.Select(tc => tc.TitleClassName).FirstOrDefault(),
+                TitleClassId = p.TitleClasses.Select(tc => tc.TitleClassId).FirstOrDefault(),
+                ApplyDate = p.ResumeOpeningRecords.Select(ror => ror.ApplyDate).FirstOrDefault(),
             }));
         }
     }

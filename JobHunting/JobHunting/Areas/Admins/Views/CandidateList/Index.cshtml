@@ -21,7 +21,7 @@
         </thead>
         <tbody id="CandidateList">
             <tr v-for="item in candidatelist.slice(pageStart,pageEnd)" class="overcard">
-                <td>{{item.candidateID}}</td>
+                <td>{{item.candidateId}}</td>
                 <td>{{item.name}}</td>
                 <td>{{gender(item.sex)}}</td>
                 <td>{{item.degree}}</td>
@@ -116,7 +116,7 @@
                     else if (_this.filter == "女")
                         request.sex = false;
 
-                    request.CandidateID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.CandidateId = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
                     request.Name = request.Degree = request.Address = _this.filter;
                     axios.post(`${_this.baseAddress}/Admins/CandidateList/Filter`, request).then(response => {
                         // alert(JSON.stringify(response.data));
