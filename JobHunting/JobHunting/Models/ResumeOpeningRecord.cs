@@ -13,13 +13,15 @@ public partial class ResumeOpeningRecord
 
     public int? OpeningId { get; set; }
 
-    public string OpeningTitle { get; set; }
-
-    public int? CompanyId { get; set; }
+    public int CompanyId { get; set; }
 
     public string CompanyName { get; set; }
 
+    public string OpeningTitle { get; set; }
+
     public DateOnly? ApplyDate { get; set; }
+
+    public bool LikeYN { get; set; }
 
     public bool InterviewYN { get; set; }
 

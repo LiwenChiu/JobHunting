@@ -9,7 +9,7 @@
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
-            <div class="col-sm-3" >
+            <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
                 <select v-model="city" v-on:change="getArea">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
@@ -64,11 +64,11 @@
             </thead>
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
-                    <td><a class="" asp-area="Candidates" asp-controller="Home" asp-action="Login">{{item.name}}</a></td>
+                    <td><a class="" asp-area="" asp-controller="Company" asp-action="ResumeIntro">{{item.name}}</a></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
-                    <td>{{selectTagName(item.tagObj)}}</td>
+                    <td><p v-for="data in item.tagObj">{{data.tagName}}</p></td>
                     <td>{{item.address}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" :data-bs-target="'#'+mergeID(item)">預覽</button></td>
                 </tr>
@@ -124,11 +124,11 @@
                                     <label>性別:{{selectSex(item.sex)}}</label>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label>學歷:{{item.degree}}</label>
+                                    學歷:{{item.degree}}
                                 </div>
-                                <h5 class="text-center">專業技能</h5>
-                                <div class="col-12 col-sm-12">
-                                    <label class="text-center">{{selectTagName(item.tagObj)}}</label>
+                                <h6 class="text-center">專業技能</h6>
+                                <div class="col-12 col-sm-12" v-for="data in item.tagObj">
+                                    {{data.tagName}}
                                 </div>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
                 return {
                     area: [],
                     skill: null,
-                    edu: "A", 
+                    edu: "A",
                     filter: "",
                     resumes: [],
                     filteredResume:[],
@@ -190,7 +190,7 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
-                
+
             },
             methods: {
                 setPage(page) {
@@ -202,13 +202,13 @@
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
-                selectTagName(item){
-                    let s = "";
-                    for (let i = 0; i < item.length; i++) {
-                        s += `${i+1}.${item[i].tagName} `;
-                    }
-                    return s
-                },
+                // selectTagName(item){
+                //     let s = "";
+                //     for (let i = 0; i < item.length; i++) {
+                //         s += `${item[i].tagName}、`;
+                //     }
+                //     return s
+                // },
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeID;
@@ -217,14 +217,13 @@
                 },
                 indexList() {
                     let self = this;
-                    axios.post('https://localhost:7169/Home/CompanyIndexList', {
+                    axios.post('https://localhost:7169/Company/CompanyIndexList', {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        console.log(res.data[0].address.substring(3, 7))
                         self.resumes = res.data
                     }).catch(error => {
                         console.error(error);
-                    });     
+                    });
                 },
                 filterResumes() {
                     let self = this;
@@ -246,14 +245,19 @@
                     else {
                         request.sex = null;
                     }
-                       
-                    axios.post('https://localhost:7169/Home/SelectIndexList', request, {
-                            headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            self.resumes = res.data;
-                            self.skill = null;
-                            self.city = self.zipCode = self.filter = "";
-                        }).catch(err => JSON.stringify(err))
+                    if (self.filter == self.city == self.zipCode == "" &&  self.skill == null) {
+                        self.indexList();
+                    }
+                    else {
+                        axios.post('https://localhost:7169/Company/SelectIndexList', request, {
+                                headers: { 'Content-Type': 'application/json' },
+                            }).then(res => {
+                                self.resumes = res.data;
+                                self.skill = null;
+                                self.city = self.zipCode = self.filter = "";
+                            }).catch(err => JSON.stringify(err))
+                    }
+
                 },
                 getTag() {
                     let request = {
@@ -263,7 +267,7 @@
                             'Content-Type': 'application/json'
                         })
                     };
-                    fetch('https://localhost:7169/Home/TagClasses', request)
+                    fetch('https://localhost:7169/Company/TagClasses', request)
                         .then(response => {
                             return response.json();
                         })
