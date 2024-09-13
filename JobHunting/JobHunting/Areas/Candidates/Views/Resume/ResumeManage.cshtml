@@ -66,14 +66,14 @@
                                 <div class="card-body container-fluid">
                                 <div class="modal-header" style="background-color: #f7d179;">
                                     <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
-                                    <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model="ResumeName" />
+                                    <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model.lazy="ResumeName" />
                                     </h5>
 
                                     <button type="button"
                                             class="btn-close"
                                             data-bs-dismiss="modal"
                                             aria-label="Close"
-                                            style="width:5% ;" v-on:click="TagCheckedResume=[]">
+                                        style="width:5% ;" v-on:click="Createcancel">
                                     </button>
                                 </div>
 
@@ -92,7 +92,7 @@
                                                     
                                                  </a>
 
-                                                <input id="insertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
+                                                <input id="HeadshotinsertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
                                                 
                                                 
                                             </div>
@@ -109,17 +109,17 @@
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">生日</label>
-                                                    <input type="date" v-model="candidateBirthday" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input type="date"  disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">電話 :</label>
-                                                    <input class="mx-1" type="tel" v-model="candidatePhone" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input class="mx-1" type="tel"  disabled placeholder="根據求職者會員資料帶入">
                                                     <label class="mx-1 mb-2" for="" >學歷 :</label>
-                                                    <input class="mx-1" type="text" v-model="candidateDegree" disabled placeholder="根據求職者會員資料帶入">
+                                                    <input class="mx-1" type="text"  disabled placeholder="根據求職者會員資料帶入">
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">郵件 :</label>
-                                                    <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" v-model="candidateEmail">
+                                                    <input type="email" class="form-control " disabled placeholder="根據求職者會員資料帶入" >
                                                     </div>
                                                     <div class="col">
                                                         <label for="" class="mb-2">就業狀態 :</label>
@@ -128,7 +128,7 @@
                                                     <div>
                                                         <p class="card-text">
                                                         自我介紹：
-                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
+                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model.lazy="ResumeIntro"></textarea>
                                                         </p>
                                                     </div>
                                                 </p>
@@ -141,7 +141,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model="WorkExperience"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -157,16 +157,100 @@
                                                     <div class="col">
                                                     <label class="mb-2">希望上班時段: <input type="text" v-model=""></label>
                                                     </div>
-                                                    <div class="col">
-                                                    <label class="mb-2">希望職稱: <input type="text" v-model=""></label>
+
+                                                    <div class="mb-3">
+                                                           <p>
+                                                            <label>
+                                                                <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
+                                                            </label>
+                                                          </p>
+
+                                                            <div class="collapse" id="TitleClassCollapse">
+                                                                <div class="card card-body">
+                                                                    <template v-for="item in titleCategory">
+                                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
+                                                                            {{item.titleCategoryName}}
+                                                                            <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked)}}</span>
+                                                                        </button>
+                                                                        <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
+                                                                            <div class="row">
+                                                                                <div class="px-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
+                                                                            <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="selectedtitleClassId" />
+                                                                            <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr />
+                                                                    </template>
+                                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                        其他
+                                                                        <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,TitleClassChecked) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+                                                                    </button>
+                                                                    <div class="collapse" id="otherClass">
+                                                                        <div class="row">
+                                                                            <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
+                                                                        <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                                                                        <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                     </div>
-                                                    <div class="col">
-                                                    <label class="mb-2">希望上班地點: <input type="text" v-model="hopeaddress"></label>
+
+                                                    <div>
+                                            
+
+                                                        <div class="col">
+                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
+                                                        </div>
+
+                                                        <div class="col">
+                                                            <label for="" class="mb-2">證照
+                                                            <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
+                                                            </label>
+                                                        </div>
+
+                                                        <p>
+                                                            <label>
+                                                                <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                                <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                            </label>
+                                                        </p>
+
+                                                        <div class="collapse" id="TagsCollapse">
+                                                            <div class="card card-body">
+                                                                <template v-for="item in TagClasses">
+                                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                        {{item.tagClassName}}
+                                                                        <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
+                                                                    </button>
+                                                                    <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                        <div class="row">
+                                                                            <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                                <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
+                                                                                <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr />
+                                                                </template>
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                    其他
+                                                                    <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                                </button>
+                                                                <div class="collapse" id="otherClass">
+                                                                    <div class="row">
+                                                                        <div class="col-2" v-for="Tag in filterTagClass(0)">
+                                                                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
-                                                    </div>
-                                                    <partial name="../Partial/_Tags.cshtml" />
+
                                                 </p>
 
                                             </div>
@@ -177,7 +261,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model="Autobiography"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -186,7 +270,7 @@
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">
                                         履歷狀態：
-                                        <select v-model="releaseYN" class="btn btn-primary ms-4" disabled>
+                                    <select v-model.lazy="releaseYN" class="btn btn-primary ms-4" disabled>
                                             <option :value="true">開放</option>
                                             <option :value="false">關閉</option>
                                         </select>
@@ -223,7 +307,7 @@
                             <div  class="card-body container-fluid" >
                             <div class="modal-header" style="background-color: #f7d179;">
                                 <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
-                                    {{ResumeD.title}}
+                                     <input type="text" class="text-center " name="name" value="" v-model="ResumeD.title" />
                                 </h5>
                                 <button type="button"
                                         class="btn-close"
@@ -247,7 +331,7 @@
                                                         </div>
 
                                                     </a>
-                                                    <input id="editFile" class="" style="" type="file" name="name"  accept="image/*" v-on:change="previewImage($event, ResumeD)" />
+                                                    <input id="HeadshotEditFile" class="" style="" type="file" name="name" accept="image/*" v-on:change="previewImage($event, ResumeD)" />
                                                 </div>
                                                 
                                             <p class="card-text">
@@ -293,7 +377,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="12" v-model="ResumeD.workExperience"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -308,18 +392,96 @@
                                             <p class="card-text">
 
                                                 <div class="col">
-                                                    <label class="mb-2">上班時段: <input type="text" v-model="ResumeD.time"></label>
+                                                        <label class="mb-2">上班時段: <input type="text" v-model.lazy="ResumeD.time"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望職稱: <input type="text"></label>
+                                                    <p>
+                                                        <label>
+                                                            <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
+                                                        </label>
+                                                    </p>
+
+                                                <div class="collapse" id="TitleClassCollapse">
+                                                    <div class="card card-body">
+                                                        <template v-for="item in titleCategory">
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
+                                                                {{item.titleCategoryName}}
+                                                                <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,selectedtitleClassId) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,selectedtitleClassId)}}</span>
+                                                            </button>
+                                                            <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
+                                                                <div class="row">
+                                                                    <div class="px-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
+                                                                        <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="selectedtitleClassId" />
+                                                                        <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </template>
+                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                            其他
+                                                            <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,selectedtitleClassId) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+                                                        </button>
+                                                        <div class="collapse" id="otherClass">
+                                                            <div class="row">
+                                                                <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
+                                                                            <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="selectedtitleClassId" />
+                                                                    <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望上班地點: <input type="text" v-model="ResumeD.address"></label>
+                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
+                                                    <label for="" class="mb-2">證照
+                                                            <input id="CertificationEditFile" type="file" accept="image/*" multiple/>
+                                                        </label>
                                                 </div>
-                                                <partial name="../Partial/_Tags.cshtml" />
+                                                <div>
+                                                     <p>
+                                                         <label>
+                                                             <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                         </label>
+                                                     </p>
+
+                                                    <div class="collapse" id="TagsCollapse">
+                                                        <div class="card card-body">
+                                                            <template v-for="item in TagClasses">
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                    {{item.tagClassName}}
+                                                                    <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,selectedTagId) > 0">{{selectedFilterTagClass(item.tagClassId,selectedTagId)}}</span>
+                                                                </button>
+                                                                <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                    <div class="row">
+                                                                        <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                            <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
+                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </template>
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                其他
+                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(0,selectedTagId) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                            </button>
+                                                            <div class="collapse" id="otherClass">
+                                                                <div class="row">
+                                                                    <div class="col-2" v-for="Tag in filterTagClass(0)">
+                                                                            <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                        <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </p>
 
                                         </div>
@@ -330,14 +492,14 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">自傳</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control" rows="8" v-model="ResumeD.autobiography"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="8" v-model.lazy="ResumeD.autobiography"></textarea>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 ">
                                     <span class="form-control text-center ">履歷狀態：
-                                            <select v-model="ResumeD.ReleaseYN" class="btn btn-primary ms-4">
+                                            <select v-model.lazy="ResumeD.releaseYN" class="btn btn-primary ms-4">
                                                 <option :value="true">開放</option>
                                                 <option :value="false">關閉</option>
                                         </select>
@@ -427,15 +589,25 @@
                                                     <label class="mb-2">上班時段: {{ResumeD.time}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label class="mb-2">希望職稱: </label>
+                                                    <label class="">
+                                                        <span class="">希望職缺:    </span> 
+                                                         {{ getTitleClassName(ResumeD.titleClassId) }}
+                                                    </label>
+                                                    
+
                                                 </div>
-                                                <div class="col">
-                                                    <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
+                                                    <div class="col">
+                                                        <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">證照
+                                                        </label>
+                                                    </div>
+                                                <div>
+                                                    <label class="">能力標籤:</label>
+
+                                                    {{ getTagName(ResumeD.tagId) }}
                                                 </div>
-                                                <div class="col">
-                                                    <label for="" class="mb-2">證照<input type="file" accept="image/*" /></label>
-                                                </div>
-                                                <partial name="../Partial/_Tags.cshtml" />
                                             </p>
 
                                         </div>
@@ -452,11 +624,11 @@
                                     </div>
                                 </div>
                                 <div class=" col-md-3 ">
-                                        <label class="form-control text-center" v-model="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
+                                        <label class="form-control text-center" v-model.lazy="releaseYN" :value="ResumeD.releaseYN">履歷狀態： <span class="btn btn-primary ms-4">{{Resumeif(ResumeD.releaseYN)}}</span></label>
                                 </div>
                             </div>
                             <div class="" style="text-align:right">
-                                    <button type="button" class="btn btn-secondary " v-on:click="edit(ResumeD)">編輯</button>
+                                    <button type="button" class="btn btn-secondary " v-on:click="edit(ResumeD);selectedtitleClassId = ResumeD.titleClassId ; selectedTagId=ResumeD.tagId">編輯</button>
                                 
                             </div>
                             
@@ -525,22 +697,18 @@
                     timeR: "",
                     sexYN:false,
                     ResumeIntro:"",
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學"},
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
                     noimagepreview: "/images/No_Image_Available.jpg",
                     originalHeadshot: null,
+                    TagClasses: [],
+                    Tags: [],
+                    TagChecked: [],
+                    selectedTagId: [],
+                    TagCheckedOpening: [],
+
+                    titleClass: [],
+                    titleCategory: [],
+                    TitleClassChecked: [],
+                    selectedtitleClassId: [],
                 };
             },
         
@@ -569,7 +737,7 @@
                 },
                 //判斷男女
                 Sexif(ResumeD) {
-                    return ResumeD.sex == true ? "男":"女";   
+                    return ResumeD == true ? "男":"女";   
                 },
                 //判斷履歷開放狀態
                 Resumeif(ResumeD){
@@ -577,6 +745,7 @@
                 },
                 edit:function(ResumeD) {
                     let _this = this;
+                    ResumeD.edit = true;
                     _this.backupResume = {
                         WorkExperience: ResumeD.workExperience,
                         hopeaddress: ResumeD.address,
@@ -586,8 +755,10 @@
                         releaseYN:ResumeD.releaseYN,
                         ResumeIntro: ResumeD.intro,
                         Headshot: ResumeD.headshot,
+                        
                     };
-                    ResumeD.edit = true;
+                    _this.selectedtitleClassId = ResumeD.titleClassId;
+    _this.selectedTagId = ResumeD.tagId;
                 },
                 Createcancel(){
                     window.location.reload()
@@ -617,19 +788,87 @@
                     strID = str + num;
                     return strID;
                 },
-                filterTagClass:function(ClassID) {
-                        let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
-                        });
-                },
-                ReturnhashtagID:function(item){
-                    return `#${item.TagClass}`;
-                },
+
                 changeTagNameTo: function (TagName) {
                     let _this = this;
                     return `${TagName}BindID`;
                 },
+                changeTitleClassNameTo: function (TitleClassName) {
+                    let _this = this;
+                    return `${TitleClassName}BindID`;
+                },
+                filterTagClass: function (ClassID) {
+                    let _this = this;
+                    return _this.Tags.filter(function (item) {
+                        return item.tagClassId == ClassID;
+                    });
+                },
+                filterTitleCategory: function (CategoryID) {
+                    let _this = this;
+                    return _this.titleClass.filter(function (item) {
+                        return item.titleCategoryId == CategoryID;
+                    });
+                },
+                selectedFilterTagClass: function (ClassId, TagChecked) {
+                    let _this = this;
+                    let counter = 0;
+                    for (let i = 0; i < TagChecked.length; i++) {
+                        if (this.filterTagClass(ClassId).filter(function (item) {
+                            return item.tagId == TagChecked[i];
+                        }).length > 0) { counter++; }
+                    }
+                    return counter;
+                },
+                selectedFilterTitleCategory: function (titleCategoryId, TitleClassChecked) {
+                    let _this = this;
+                    let counter = 0;
+                    for (let i = 0; i < TitleClassChecked.length; i++) {
+                        if (this.filterTitleCategory(titleCategoryId).filter(function (item) {
+                            return item.titleClassId == TitleClassChecked[i];
+                        }).length > 0) { counter++; }
+                    }
+                    return counter;
+                },
+                ReturnNameId: function (item) {
+                    let NameId = `NameId${item.tagName}${item.tagId}`;
+                    return NameId.replace(" ", "");
+                },
+                ReturnTitleClassNameId: function (item) {
+                    let NameId = `NameId${item.titleClassName}${item.titleClassId}`;
+                    return NameId.replace(" ", "");
+                },
+                ReturnClassNameId: function (item) {
+                    let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
+                    return ClassNameId.replace(" ", "");
+                },
+                Returnhashtag: function (item) {
+                    return `#${item}`;
+                },
+                ReturnCategoryNameId: function (item) {
+                    let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
+                    return CategoryNameId.replace(" ", "");
+                },
+                //列出所有被選到的職業類別
+                getTitleClassName(titleClassId) {
+                    if (!Array.isArray(titleClassId)) return '未指定';
+                    return titleClassId
+                        .map(id => {
+                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                            return titleClassItem ? titleClassItem.titleClassName : '未指定';
+                        })
+                        .join('/ ');
+                },
+                //列出所有被選到的能力標籤
+                getTagName(tagId) {
+                    if (!Array.isArray(tagId)) return '未指定';
+                    return tagId
+                        .map(id => {
+                            let tagItem = this.Tags.find(item => item.tagId === id);
+                            return tagItem ? tagItem.tagName : '未指定';
+                        })
+                        .join('/ ');
+                },
+
                 //履歷編輯與顯示畫面圖片預覽
                 previewImage: function (event, ResumeD,btn) {
                     let _this = this;
@@ -662,28 +901,66 @@
                         reader.readAsDataURL(input.files[0]);
                     }
                 },
-                //履歷全部資料
+                
                 ResumeInformation: function () {
+                    //履歷全部資料
                     fetch("/Candidates/Resume/ResumeResult", {
                         method:"GET",
-                        headers: {
-                            "content-type": "multipart/form-data"
-                        },
-                        
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
                         return this.Resume = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
-                    })
+                    });
+
+                    //職業類別名稱和ID
+                    fetch("/Candidates/Resume/TitleCategoryJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.titleCategory = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+                    //職業類型
+                    fetch("/Candidates/Resume/TitleClassJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.titleClass = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+
+                    fetch("/Candidates/Resume/TagJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.Tags = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
+
+                    fetch("/Candidates/Resume/TagClassJson", {
+                        method:"GET",
+                    }).then(response=>{
+                        return response.json();
+                    }).then(data=> {
+                        return this.TagClasses = data
+                    }).catch(err=>{
+                        alert(JSON.stringify(err))
+                    });
                 },
                 //新增履歷
                 CreateNewResume: function () {
                     let _this = this;
-                    let Candidateid = 1;
+                    let candidateid = 1;
                     var form = new FormData();
-                    form.append("CandidateId",Candidateid);
+                    form.append("CandidateId",candidateid);
                     form.append("Address", _this.hopeaddress);
                     form.append("Title", _this.ResumeName);
                     form.append("Autobiography", _this.Autobiography);
@@ -691,7 +968,20 @@
                     form.append("Time", _this.timeR);
                     form.append("ReleaseYN", _this.releaseYN);
                     form.append("Intro", _this.ResumeIntro);
-                    form.append("ImageFile", document.querySelector('#insertFile').files[0]);
+                    // form.append("TitleClassId", JSON.stringify(_this.selectedtitleClassId));
+                    // form.append("TagId", JSON.stringify(_this.selectedTagId));
+                    _this.selectedtitleClassId.forEach((id, index) => {
+                        form.append(`TitleClassId[${index}]`, id);
+                    });
+
+                    _this.selectedTagId.forEach((id, index) => {
+                        form.append(`TagId[${index}]`, id);
+                    });
+                    form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[1]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[2]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[3]);
                     fetch("https://localhost:7169/Candidates/Resume/CreateReasumes", {
                         method: "POST",
                         body: form
@@ -703,6 +993,7 @@
                             window.location.reload();
                         } else {
                             alert("新增履歷失敗")
+                            window.location.reload();
                         }
                     }).catch(err => {
                         console.log(err)
@@ -731,11 +1022,20 @@
                     form.append("Time", ResumeD.time);
                     form.append("ReleaseYN", ResumeD.releaseYN);
                     form.append("Intro", ResumeD.intro);
-                    form.append("ImageFile", document.querySelector('#editFile').files[0]);
+                    //手動新增每個元素到 FormData
+                    _this.selectedtitleClassId.forEach((id, index) => {
+                        form.append(`TitleClassId[${index}]`, id);
+                    });
+
+                    _this.selectedTagId.forEach((id, index) => {
+                        form.append(`TagId[${index}]`, id);
+                    });
+                    console.log(_this.selectedtitleClassId);
+                    console.log(_this.selectedTagId);
+                    form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
                     // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
                     fetch("https://localhost:7169/Candidates/Resume/EditResume", {
                         method: "POST",
-                        "content-type": "multipart/form-data",
                         body:form,
                     }).then(response => {
                         return response.json()
@@ -745,6 +1045,7 @@
                             window.location.reload();
                         } else {
                             alert("編輯履歷失敗")
+                            window.location.reload();
                         }
                     }).catch(err => {
                         alert(err)
@@ -773,12 +1074,16 @@
                                 window.location.reload();
                             } else {
                                 alert("刪除履歷失敗")
+                                window.location.reload();
+
                             }
                             // alert(data.message);
                         }).catch(err => {
                             alert(err)
                         })
                         
+                    }else{
+                        alert("已取消操作")
                     }
                 }
             },

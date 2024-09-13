@@ -22,7 +22,6 @@ public partial class Resume
     public string WorkExperience { get; set; }
 
     public byte[] Certification { get; set; }
-
     public string Time { get; set; }
 
     public string Address { get; set; }
