@@ -37,7 +37,6 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Email = c.Email,
                     Sex = c.Sex,
                     Birthday = c.Birthday,
-                    TitleClassId = c.TitleClassId,
                     Phone = c.Phone,
                     Address = c.Address,
                     Degree = c.Degree,
@@ -49,7 +48,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Member/SaveEditMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> SaveEditMemberData([FromBody][Bind("CandidateId,Name,Email,Sex,Birthday,TitleClassId,Phone,Address,Degree,EmploymentStatus,MilitaryService")] GetWholeCandidateMemberDataViewModel gwcmdvm)
+        public async Task<Array> SaveEditMemberData([FromBody][Bind("CandidateId,Name,Email,Sex,Birthday,Phone,Address,Degree,EmploymentStatus,MilitaryService")] GetWholeCandidateMemberDataViewModel gwcmdvm)
         {
             string[] returnStatus = new string[2];
 
@@ -69,7 +68,6 @@ namespace JobHunting.Areas.Candidates.Controllers
             candidatememberData.Email = gwcmdvm.Email;
             candidatememberData.Sex = gwcmdvm.Sex;
             candidatememberData.Birthday = gwcmdvm.Birthday;
-            candidatememberData.TitleClassId = gwcmdvm.TitleClassId;
             candidatememberData.Phone = gwcmdvm.Phone;
             candidatememberData.Address = gwcmdvm.Address;
             candidatememberData.Degree = gwcmdvm.Degree;

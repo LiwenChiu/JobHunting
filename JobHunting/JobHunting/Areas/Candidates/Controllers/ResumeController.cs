@@ -5,6 +5,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Protocol.Plugins;
+using System.Security.Cryptography;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -26,11 +27,10 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //GET: /Candidates/Resume/ResumeResult
         [HttpGet]
-        public JsonResult ResumeResult()
+        public async Task<JsonResult> CandidatesResumeResult(int id)
         {
 
-
-            return Json(_context.Resumes.Include(r => r.Candidate).Include(t=>t.TitleClasses).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Where(w=>w.CandidateId == id).Include(t => t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -49,11 +49,95 @@ namespace JobHunting.Areas.Candidates.Controllers
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
                 intro = a.Intro,
-                //titleClass = a.TitleClasses,
+                TitleClassId = a.TitleClasses.Select(rtc => rtc.TitleClassId),
+                TitleClassName = a.TitleClasses.Select(rtc => rtc.TitleClassName),
+                TagId = a.Tags.Select(t => t.TagId),
+                TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
+                ReleaseYNedit = false,
             }));
         }
+
+        //撈全部的履歷資料
+        //{
+
+        //    return Json(_context.Resumes.Include(r => r.Candidate).Include(t => t.TitleClasses).Select(a => new
+        //    {
+        //        name = a.Candidate.Name,
+        //        address = a.Address,
+        //        sex = a.Candidate.Sex,
+        //        birthday = a.Candidate.Birthday,
+        //        phone = a.Candidate.Phone,
+        //        degree = a.Candidate.Degree,
+        //        email = a.Candidate.Email,
+        //        employmentStatus = a.Candidate.EmploymentStatus,
+        //        time = a.Time,
+        //        title = a.Title,
+        //        certification = a.Certification,
+        //        workExperience = a.WorkExperience,
+        //        autobiography = a.Autobiography,
+        //        candidateid = a.CandidateId,
+        //        resumeid = a.ResumeId,
+        //        releaseYN = a.ReleaseYN,
+        //        intro = a.Intro,
+        //        TitleClassId = a.TitleClasses.Select(rtc => rtc.TitleClassId),
+        //        TitleClassName = a.TitleClasses.Select(rtc => rtc.TitleClassName),
+        //        TagId = a.Tags.Select(t => t.TagId),
+        //        TagName = a.Tags.Select(t => t.TagName),
+        //        headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
+        //        edit = false,
+        //    }));
+        //}
+
+        [HttpGet]
+        public JsonResult TitleCategoryJson()
+        {
+            return Json(_context.TitleCategories.Select(rtc => new
+            {
+                TitleCategoryId = rtc.TitleCategoryId,
+                TitleCategoryName = rtc.TitleCategoryName
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TitleClassJson()
+        {
+            return Json(_context.TitleClasses.Select(rtc => new
+            {
+                TitleClassId = rtc.TitleClassId,
+                TitleClassName = rtc.TitleClassName,
+                TitleCategoryId = rtc.TitleCategoryId
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TagJson()
+        {
+            return Json(_context.Tags.Select(rt => new
+            {
+                TagId = rt.TagId,
+                TagName = rt.TagName,
+                TagClassId = rt.TagClassId
+            }));
+        }
+        //GET:Companies/Openings/TagClassJson
+        [HttpGet]
+        public JsonResult TagClassJson()
+        {
+            return Json(_context.TagClasses.Select(rtc => new
+            {
+                TagClassId = rtc.TagClassId,
+                TagClassName = rtc.TagClassName
+            }));
+        }
+
+
+
+
+
+
+
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -61,6 +145,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             //if (ModelState.IsValid)
             //{
+           
 
             try
             {
@@ -71,12 +156,20 @@ namespace JobHunting.Areas.Candidates.Controllers
                     return NotFound(new { Message = "Resume not found" });
                 }
 
+                var titleClasses = await _context.TitleClasses
+                   .Where(tc => Creatr.TitleClassId.Contains(tc.TitleClassId))
+                   .ToListAsync();
+
+                var tags = await _context.Tags
+                    .Where(t => Creatr.TagId.Contains(t.TagId))
+                    .ToListAsync();
+
+
                 Resume insert = new Resume()
                 {
                     Address = Creatr.Address,
-                    //Time = Creatr.Time,
+                    Time = Creatr.Time,
                     Title = Creatr.Title,
-                    //Certification = Creatr.Certification,
                     WorkExperience = Creatr.WorkExperience,
                     Autobiography = Creatr.Autobiography,
                     ReleaseYN = Creatr.ReleaseYN,
@@ -84,84 +177,121 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Intro = Creatr.Intro,
                    
                 };
-                if (Creatr.ImageFile != null)
+                if (Creatr.HeadshotImageFile != null)
                 {
-                    using (BinaryReader br = new BinaryReader(Creatr.ImageFile.OpenReadStream()))
+                    using (BinaryReader br = new BinaryReader(Creatr.HeadshotImageFile.OpenReadStream()))
                     {
-                        insert.Headshot = br.ReadBytes((int)Creatr.ImageFile.Length);
+                        insert.Headshot = br.ReadBytes((int)Creatr.HeadshotImageFile.Length);
                     }
+                }
+
+                foreach (var titleClass in titleClasses)
+                {
+                    insert.TitleClasses.Add(titleClass);
+                }
+
+                foreach (var tag in tags)
+                {
+                    insert.Tags.Add(tag);
                 }
 
                 _context.Resumes.Add(insert);
                 await _context.SaveChangesAsync();
-                
+
+                //var resumeId = insert.ResumeId;
+                //List<string> uploadedFilePaths = new List<string>();
+                ////在wwwroot的images根據求職者的名稱與履歷id建立資料夾
+                //var candidateFolderName = $"{candidate.Name}_{resumeId}";
+                //var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", candidateFolderName);
+
+                //// 如果資料夾不存在，就建立資料夾
+                //if (!Directory.Exists(uploadsFolderPath))
+                //{
+                //    Directory.CreateDirectory(uploadsFolderPath);
+                //}
+
+                //// 保存文件
+                //foreach (var formFile in Creatr.CertificationImageFile)
+                //{
+                //    if (formFile.Length > 0)
+                //    {
+                //        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                //        var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+                //        // 将文件保存到指定路径
+                //        using (var stream = new FileStream(filePath, FileMode.Create))
+                //        {
+                //            await formFile.CopyToAsync(stream);
+                //        }
+
+                //        // 保存文件路径或文件名，以便返回前端
+                //        uploadedFilePaths.Add($"/images/{candidateFolderName}/{uniqueFileName}");
+                //    }
+                //}
+
+                //return Json(new { success = true, message = "新增履歷成功", files = uploadedFilePaths });
+
             }
             catch (Exception ex) 
             {
                 return Json(new { message = "新增履歷失敗" });
             }
             return Json(new { success = true, message = "新增履歷成功" });
-            //candidate.Name = Creatr.Name;
-            //candidate.Sex = Creatr.Sex;
-            //candidate.Birthday = Creatr.Birthday;
-            //candidate.Phone = Creatr.Phone;
-            //candidate.Degree = Creatr.Degree;
-            //candidate.Email = Creatr.Email;
-            //candidate.EmploymentStatus = Creatr.EmploymentStatus;
+
 
 
         }
-            //return View(Creatr);
+        //return View(Creatr);
         //}
 
         //Post: /Candidates/Resume/EditResume
-        //[HttpPost]
-        //public async Task<IActionResult> EditResume ([FromBody][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN")] ResumeInputModel rm)
-        //{
-            
+        [HttpPost]
+        public async Task<IActionResult> EditReleaseYN([FromBody][Bind("ReleaseYN", "ResumeId")] ResumeInputModel rm)
+        {
 
-        //    var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
-        //    if (r == null)
-        //    {
-        //        return NotFound(new { Message = "Resume not found" });
-        //    }
+            var r = await _context.Resumes.FindAsync(rm.ResumeId);
 
-        //    //c.Name = rm.Name;
-        //    //c.Sex = rm.Sex;
-        //    //c.Birthday = rm.Birthday;
-        //    //c.EmploymentStatus = rm.EmploymentStatus;
-        //    //c.Phone = rm.Phone;
-        //    //c.Degree = rm.Degree;
-        //    //c.Email = rm.Email;
-        //    r.Intro = rm.Intro;
-        //    r.Address = rm.Address;
-        //    r.Title = rm.Title;
-        //    r.Autobiography = rm.Autobiography;
-        //    r.WorkExperience = rm.WorkExperience;
-        //    r.Time = rm.Time;
-        //    r.ReleaseYN = rm.ReleaseYN;
-        //    r.Headshot = rm.Headshot;
+            if (r == null)
+            {
+                return NotFound(new { Message = "Resume not found" });
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-                
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return Json(new { message = "修改失敗" });
-        //    }
+            r.ReleaseYN = rm.ReleaseYN;
 
-        //    return Json(new { success = true, message = "修改成功" });
-        //}
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "修改失敗" });
+            }
+
+            return Json(new { success = true, message = "修改成功" });
+        }
 
 
         [HttpPost]
-        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "ImageFile")] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro")] ResumeInputModel rm)
         {
+            
 
-            Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
+            var r = await _context.Resumes
+            .Include(o => o.TitleClasses).Include(t => t.Tags)
+            .FirstOrDefaultAsync(o => o.ResumeId == rm.ResumeId);
+
+            var titleClasses = await _context.TitleClasses
+                   .Where(tc => rm.TitleClassId.Contains(tc.TitleClassId))
+                   .ToListAsync();
+
+            var tags = await _context.Tags
+                .Where(t => rm.TagId.Contains(t.TagId))
+                .ToListAsync();
+
+            //Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
 
                 r.Intro = rm.Intro;
                 r.Address = rm.Address;
@@ -171,23 +301,34 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.Time = rm.Time;
                 r.ReleaseYN = rm.ReleaseYN;
 
-            if (rm.ImageFile != null)
+            if (rm.HeadshotImageFile != null)
             {
-                using (BinaryReader br = new BinaryReader(rm.ImageFile.OpenReadStream()))
+                using (BinaryReader br = new BinaryReader(rm.HeadshotImageFile.OpenReadStream()))
                 {
-                    r.Headshot = br.ReadBytes((int)rm.ImageFile.Length);
+                    r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
                 }
             }
+
+
+
+            foreach (var titleClass in titleClasses)
+            {
+                r.TitleClasses.Add(titleClass);
+            }
+
+            foreach (var tag in tags)
+            {
+                r.Tags.Add(tag);
+            }
+
+
             _context.Update(r);
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "修改成功" });
 
-
-
-
-
-
         }
+
+
 
 
 

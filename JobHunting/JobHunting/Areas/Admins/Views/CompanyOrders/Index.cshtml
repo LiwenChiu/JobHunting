@@ -12,7 +12,7 @@
 }
 
 <div id="CompanyOrdersVue">
-@*     <h3 class="text-center pt-2">訂單紀錄</h3> *@
+    @*<h3 class="text-center pt-2">訂單紀錄</h3> *@
 
     <div class="py-2 px-1">
        @*  <div class="col-md-10">
@@ -27,22 +27,32 @@
                 <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
             </select>
         </div> *@
-        <div class="container-fluid row">
-            <label class="col-md-2 text-end" for="filterCompanyOrders">關鍵字搜尋:</label>
-            <input type="text" id="filterCompanyOrders" class="col-md-8" placeholder="請輸入關鍵字" v-model.trim="filterInput" v-on:keyup="bootFilterPage()" />
-            <label for="pageNumber">每頁筆數: </label>
-            <input type="text" id="pageNumber" name="pageNumber" placeholder="8" v-model="pageLength"/>
+        <div class="container-fluid">
+            <div class="row">
+                <label for="filterCompanyOrders" class="col-md-2 text-end">關鍵字搜尋:</label>
+                <input type="text" id="filterCompanyOrders" name="filterCompanyOrders" class="col-md-8" placeholder="請輸入關鍵字" v-model.trim="filterInput" />
+            </div>
+            <div class="row">
+                <label for="pageNumber" class="col-md-2 text-end">每頁筆數: </label>
+                <input type="text" id="pageNumber" name="pageNumber" class="col-md-8" placeholder="請輸入每頁筆數" v-model.trim.number="pageLength" />
+                <div class="col-md-2">
+                    <label for="inputPaging">第</label>
+                    <input type="text" id="inputPaging" style="width: 3vh" v-model.trim.number="pageStart" />
+                    <label for="inputPaging">頁</label>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="container tableOutside"> @* style="overflow-y:auto;height:66vh" *@
-        <table class="table table-striped text-center mt-1" id="ChangePage" style="">
+    <div class="container tableOutside" style="overflow-y:auto;height:70vh">
+        <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">訂單ID</th>
                     <th scope="col">公司名稱</th>
+                    <th scope="col">統一編號</th>
                     <th scope="col">方案名稱</th>
-                    <th scope="col">付款時間</th>
+                    <th scope="col">付款時間/截止時間</th>
                     <th scope="col">到期時間</th>
                     <th scope="col">付款狀態</th>
                 </tr>
@@ -51,6 +61,7 @@
                 <tr v-for="order in companyOrders">
                     <td>{{order.orderId}}</td>
                     <td>{{order.companyName}}</td>
+                    <td>{{order.guiNumber}}</td>
                     <td>{{order.title}}</td>
                     <td>{{order.payDate}}</td>
                     <td>{{order.expiration}}</td>
@@ -59,23 +70,23 @@
             </tbody>
         </table>
     </div>
-    <nav aria-label="Page navigation">
-  <ul class="pagination">
-    <li class="page-item">
-      <a class="page-link" href="" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    <template v-for="(page,index) in totalPage">
-        <li class="page-item"><a class="page-link" href="">{{index+1}}</a></li>
-    </template>
-    <li class="page-item">
-      <a class="page-link" href="" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+    <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
+            <ul class="pagination">
+                <li class="page-item">
+                    <button type="button" id="turnPagePreviousBtn" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <template v-for="page in totalPage">
+                    <li class="page-item"><button class="page-link" v-on:click="turnPage(page)">{{page}}</button></li>
+                </template>
+                <li class="page-item">
+                    <button type="button" id="turnPageNextBtn" class="page-link" aria-label="Next" v-on:click="turnPageNext()">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
 </div>
 
 @section Scripts
@@ -95,33 +106,37 @@
                 };
             },
             methods:{
-                // bootFilterPaging: function () {
-                //     let request = {};
-                //     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                //     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
-                //     request.PageDraw = this.pageDraw;
-                //     request.PageLength = this.pageLength;
-                //     request.PageStart = (this.pageStart-1)*(this.pageLength);
-                //         axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging/`, request, {
-                //         headers: {
-                //             'Content-Type':'application/json'
-                //         },
-                //     }).then(response => { this.companyOrders = response.data;
-                //                         this.totalDataCount = response.total;
-                //                         this.totalPage = parseInt((response.total)/(this.pageLength)) + 1;})
-                //     .catch(err => { alert(err.response.data) });
-                // },
-                bootFilterPage: function () {
+                bootFilterPaging: function () {
+                    let pageSize = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
+                    let pageNumber= this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
                     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
                     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
-                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage/`, request, {
+                    request.PageDraw = this.pageDraw;
+                    request.PageLength = pageSize,
+                    request.PageStart = pageNumber;
+                    axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging`, request, {
                         headers: {
-                            'Content-Type':'application/json'
+                            'Content-Type': 'application/json'
                         },
-                    }).then(response => this.companyOrders = response.data)
-                    .catch(err => { alert(err.response.data) });
+                    }).then(response => {
+                        this.companyOrders = response.data.companyOrdersFilter;
+                        this.totalDataCount = response.data.totalDataCount;
+                        this.totalPage = Number.isInteger((response.data.totalDataCount) / (pageSize)) ? parseInt((response.data.totalDataCount) / (pageSize)) : parseInt((response.data.totalDataCount) / (pageSize)) + 1;
+                    })
+                    .catch(err => { alert(err) });
                 },
+                // bootFilterPage: function () {
+                //     let request = {};
+                //     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                //     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
+                //     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage`, request, {
+                //         headers: {
+                //             'Content-Type':'application/json'
+                //         },
+                //     }).then(response => this.companyOrders = response.data)
+                //     .catch(err => { alert(err.response.data) });
+                // },
                 orderStatus: function (status) {
                     if (status) {
                         return "已付款";
@@ -130,9 +145,40 @@
                         return "尚未付款";
                     }
                 },
+                turnPage: function (page) {
+                    this.pageStart = page;
+                },
+                turnPagePrevious: function () {
+                    if (this.pageStart != 1) {
+                        this.pageStart--;
+                    }
+                },
+                turnPageNext: function () {
+                    if (this.pageStart != this.totalPage) {
+                        this.pageStart++;
+                    }
+                },
+            },
+            watch:{
+                filterInput:function(){
+                    //this.bootFilterPage();
+                    this.bootFilterPaging();
+                },
+                pageLength:function(){
+                    //this.bootFilterPage();
+                    this.bootFilterPaging();
+                    if(this.pageStart > this.totalPage){
+                        this.pageStart = this.totalPage;
+                    }
+                },
+                pageStart:function(){
+                    //this.bootFilterPage();
+                    this.bootFilterPaging();
+                },
             },
             mounted: function(){
-                this.bootFilterPage();
+                //this.bootFilterPage();
+                this.bootFilterPaging();
             },
         };
         let app = Vue.createApp(VueAppCompanyOrders).mount("#CompanyOrdersVue");

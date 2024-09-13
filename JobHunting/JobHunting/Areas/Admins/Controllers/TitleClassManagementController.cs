@@ -29,7 +29,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TitleClassManagement/IndexTitleClasses
         public JsonResult IndexTitleClasses()
         {
-            return Json(_context.TitleClasses.Select(t => new
+            return Json(_context.TitleClasses.AsNoTracking().Select(t => new
             {
                 TitleClassId = t.TitleClassId,
                 TitleCategoryId = t.TitleCategoryId,
@@ -40,7 +40,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TitleClassManagement/IndexTitleCategories
         public JsonResult IndexTitleCategories()
         {
-            return Json(_context.TitleCategories.Where(t => t.TitleCategoryId > 0).Select(t => new
+            return Json(_context.TitleCategories.AsNoTracking().Where(t => t.TitleCategoryId > 0).Select(t => new
             {
                 TitleCategoryId = t.TitleCategoryId,
                 TitleCategoryName = t.TitleCategoryName,

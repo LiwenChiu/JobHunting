@@ -23,9 +23,9 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //GET:Companies/Openings/OpeningJson
         [HttpGet]
-        public JsonResult OpeningJson()
+        public JsonResult OpeningJson(int id)
         {
-            return Json(_context.Openings.Select(o => new
+            return Json(_context.Openings.Where(w=>w.CompanyId == id).Select(o => new
             {
                 OpeningId = o.OpeningId,
                 Title = o.Title,
@@ -50,7 +50,60 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
         [HttpPost]
-
+        public async Task<IEnumerable<OpeningsFilterOutput>> Filter([FromBody]OpeningsFilterInput ofi)
+        {
+            var source = _context.Openings.Where(o=>o.CompanyId == ofi.CompanyId).Include(o => o.TitleClasses).Include(c=>c.Company).ToList();
+            var temp = source.Select(o => new
+            {
+                CompanyId = o.CompanyId,
+                OpeningId = o.OpeningId,
+                Title = o.Title,
+                CompanyName = o.Company.CompanyName,
+                Address = o.Address,
+                ContactName = o.ContactName,
+                ContactPhone = o.ContactPhone,
+                ContactEmail = o.ContactEmail,
+                SalaryMax = o.SalaryMax,
+                SalaryMin = o.SalaryMin,
+                Time = o.Time,
+                Description = o.Description,
+                TitleClassId = o.TitleClasses.Select(tc => tc.TitleClassId),
+                TitleClassName = o.TitleClasses.Select(tc => tc.TitleClassName),
+                TagId = o.Tags.Select(t => t.TagId),
+                TagName = o.Tags.Select(t => t.TagName),
+                Benefits = o.Benefits,
+                Edit = false,
+                Degree = o.Degree,
+                ReleaseYN = o.ReleaseYN
+            }).Where(a =>
+                a.CompanyId == ofi.CompanyId &&
+                a.Address.Contains(ofi.Address) ||
+                a.Title.Contains(ofi.Title) ||
+                a.Time.Contains(ofi.Time)
+             ).Select(o => new OpeningsFilterOutput
+             {
+                 OpeningId = o.OpeningId,
+                 Title = o.Title,
+                 CompanyName = o.CompanyName,
+                 Address = o.Address,
+                 ContactName = o.ContactName,
+                 ContactPhone = o.ContactPhone,
+                 ContactEmail = o.ContactEmail,
+                 SalaryMax = o.SalaryMax,
+                 SalaryMin = o.SalaryMin,
+                 Time = o.Time,
+                 Description = o.Description,
+                 TitleClassId = o.TitleClassId.ToList(),
+                 TitleClassName = o.TitleClassName.ToList(),
+                 TagId = o.TagId.ToList(),
+                 TagName = o.TagName.ToList(),
+                 Benefits = o.Benefits,
+                 Edit = o.Edit,
+                 Degree = o.Degree,
+                 ReleaseYN = o.ReleaseYN
+             });
+            return temp;
+        }
 
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
@@ -95,7 +148,7 @@ namespace JobHunting.Areas.Companies.Controllers
             }));
         }
         [HttpPost]
-        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "ReleaseYN", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
+        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
         {
             var opening = await _context.Openings
                 .Include(o => o.TitleClasses).Include(t=>t.Tags)
@@ -125,9 +178,7 @@ namespace JobHunting.Areas.Companies.Controllers
             opening.Time = oim.Time;
             opening.Benefits = oim.Benefits;
             opening.Description = oim.Description;
-            opening.ReleaseYN = oim.ReleaseYN;
             opening.Degree = oim.Degree;
-
             opening.TitleClasses.Clear();
             opening.Tags.Clear();
 
@@ -236,6 +287,45 @@ namespace JobHunting.Areas.Companies.Controllers
                 return Json(new { message = "新增職缺失敗" });
             };
             return Json(new { success = true, message = "新增職缺成功" });
+        }
+
+        [HttpPost]
+        public async Task<string> ToggleStautsFalse([FromBody]int opId)
+        {
+            if (!ModelState.IsValid) return "下架職缺失敗!";
+            var opening = await _context.Openings.FindAsync(opId);
+            if (opening == null) return $"找不到此職缺ID{opId}";
+
+            opening.ReleaseYN = false;
+            _context.Entry(opening).State=EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException ex)
+            {
+                return "下架職缺失敗!";
+            }
+            return $"下架職缺ID{opId}成功";
+        }
+        [HttpPost]
+        public async Task<string> ToggleStautsTrue([FromBody] int opId)
+        {
+            if (!ModelState.IsValid) return "上架職缺失敗!";
+            var opening = await _context.Openings.FindAsync(opId);
+            if (opening == null) return $"找不到此職缺ID{opId}";
+
+            opening.ReleaseYN = true;
+            _context.Entry(opening).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return "上架職缺失敗!";
+            }
+            return $"上架職缺ID{opId}成功";
         }
     }
 }

@@ -25,7 +25,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var companyList = _context.Companies.Select(p => new
             {
-                CompanyID = p.CompanyId,
+                CompanyId = p.CompanyId,
                 CompanyName = p.CompanyName,
                 GUINumber = p.GUINumber,
                 ContactName = p.ContactName,

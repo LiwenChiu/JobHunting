@@ -22,7 +22,6 @@ public partial class Resume
     public string WorkExperience { get; set; }
 
     public byte[] Certification { get; set; }
-
     public string Time { get; set; }
 
     public string Address { get; set; }
@@ -31,9 +30,9 @@ public partial class Resume
 
     public virtual Candidate Candidate { get; set; }
 
-    public virtual ICollection<CompanyResumeRecord> CompanyResumeRecords { get; set; } = new List<CompanyResumeRecord>();
-
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
+
+    public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 

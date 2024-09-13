@@ -27,21 +27,20 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/GetCandidateMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<GetCandidateMemberDataViewModel>> GetCandidateMemberData([FromBody] int id)
+        public async Task<GetCandidateMemberDataViewModel> GetCandidateMemberData([FromBody] int id)
         {
-            return _context.Candidates
+            return _context.Candidates.AsNoTracking()
                 .Where(cmd => cmd.CandidateId == id)
-                .Include(cmd => cmd.TitleClass)
                 .Select(cmd => new GetCandidateMemberDataViewModel
                 {
                     Name = cmd.Name,
                     Headshot = cmd.Headshot,
-                    TitleClassName = cmd.TitleClass.TitleClassName,
+                    TitleClass = cmd.TitleClass,
                     Email = cmd.Email,
                     Phone = cmd.Phone,
                     Address = cmd.Address,
                     EmploymentStatus = cmd.EmploymentStatus,
-                });
+                }).Single();
         }
 
         // POST: Candidates/Home/GetCandidateMemberData
@@ -70,6 +69,43 @@ namespace JobHunting.Areas.Candidates.Controllers
                     OpeningId = ror.OpeningId,
                     OpeningTitle = ror.OpeningTitle,
                 }).Take(2);
+        }
+
+        // POST: Candidates/Home/ChangeTitleClass
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<Array> ChangeTitleClass([FromBody][Bind("CandidateId,TitleClass")] ChangeTitleClassViewModel ctcvm)
+        {
+            string[] returnStatus = new string[2];
+
+            if (!ModelState.IsValid)
+            {
+                returnStatus = ["格式不正確", "失敗"];
+                return returnStatus;
+            }
+
+            var candidate = await _context.Candidates.FindAsync(ctcvm.CandidateId);
+            if (candidate == null)
+            {
+                returnStatus = ["錯誤", "失敗"];
+                return returnStatus;
+            }
+
+            candidate.TitleClass = ctcvm.TitleClass;
+
+            _context.Entry(candidate).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                returnStatus = ["修改職業失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = ["修改職業成功", "成功"];
+            return returnStatus;
         }
 
         /*-------------------------------畫面顯示-------------------------------*/

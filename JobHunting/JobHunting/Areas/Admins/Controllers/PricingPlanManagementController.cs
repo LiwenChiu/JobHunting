@@ -47,7 +47,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IEnumerable<PricingPlanManagementFilterOutputViewModel>> BootFilterPage([FromBody][Bind("PlanId,Title,Intro,Duration,Price,Discount,Status")] PricingPlanManagementFilterViewModel ppfvm)
        {
-            return _context.PricingPlans.Select(pp => new PricingPlanManagementFilterViewModel
+            return _context.PricingPlans.AsNoTracking().Select(pp => new PricingPlanManagementFilterViewModel
             {
                 PlanId = pp.PlanId,
                 Title = pp.Title,
@@ -178,7 +178,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"停用方案ID:{planID}成功", "成功"];
+            returnStatus = [$"停用方案:{plan.Title}成功", "成功"];
             return returnStatus;
         }
 
@@ -214,7 +214,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"啟用方案ID:{planID}成功", "成功"];
+            returnStatus = [$"啟用方案:{plan.Title}成功", "成功"];
             return returnStatus;
         }
 
