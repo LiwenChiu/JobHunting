@@ -300,6 +300,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.WorkExperience = rm.WorkExperience;
                 r.Time = rm.Time;
                 r.ReleaseYN = rm.ReleaseYN;
+                r.TitleClasses.Clear();
+                r.Tags.Clear();
 
             if (rm.HeadshotImageFile != null)
             {
