@@ -12,14 +12,34 @@
 }
 
 
-<div class="container py-2" id="indexApp">
+<div class="container py-2" id="indexApp" style="position: relative">
+
+    @* 通知 *@
+    <template v-if="alertStatus == '成功'">
+        <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+    <template v-else-if="alertStatus == '失敗'">
+        <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+
     <div class="row">
         <div class="col-lg-4">
             <div class="card mb-1">
                 <div class="card-body text-center">
                     <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
                     <h5 class="my-1">{{CandidateMemberData.name}}</h5>
-                    <p class="text-muted mb-1">{{CandidateMemberData.titleClassName}}</p>
+                    <template v-if="titleClassEdit == false">
+                        <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
+                    </template>
+                    <template v-else>
+                        <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" /><button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
+                    </template>
                     <p class="text-muted mb-4">台灣</p>
                 </div>
             </div>
@@ -158,46 +178,10 @@
                     CandidateMemberData: {},
                     CandidateResumes: [],
                     CandidateOpeningLikeRecords: [],
-                    pageStatus: 0,
-                    perpage: 3, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
-                    jobclass: [
-                        { id: 1, companyName: "星宇航空", jobName: "軟體工程師", resume: "履歷1", data: "2024/10/02" },
-                        { id: 2, companyName: "台積電", jobName: "硬體工程師", resume: "履歷2", data: "2024/10/12" },
-                        { id: 3, companyName: "台達電", jobName: "作業員", resume: "履歷3", data: "2024/10/05" },
-                        { id: 4, companyName: "台大醫院", jobName: "護理師", resume: "履歷4", data: "2024/10/04" },                        
-                    ],
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學"},
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
-                    TagCheckedResume: [],
+                    titleClassEdit: false,
+                    alertText: "",
+                    alertStatus: "",
                 };
-            },
-            computed: {
-                totalPage() {
-                    return Math.ceil(this.jobclass.length / this.perpage)
-                    //Math.ceil()取最小整數
-                },
-                pageStart() {
-                    return (this.currentPage - 1) * this.perpage
-                    //取得該頁第一個值的index
-                },
-                pageEnd() {
-                    return this.currentPage * this.perpage
-                    //取得該頁最後一個值的index
-                }
             },
             methods: {
                 getCandidateMemberData:function(){
@@ -242,6 +226,25 @@
                 changeTagNameTo: function (TagName) {
                     let _this = this;
                     return `${TagName}BindID`;
+                },
+                changeTitleClass: function () {
+                    let request = {};
+                    request.CandidateId = this.CandidateId;
+                    request.TitleClass = this.CandidateMemberData.titleClass;
+                    axios.post(`${this.baseAddress}/Candidates/Home/ChangeTitleClass`, request, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        this.alertText = response.data[0];
+                        this.alertStatus = response.data[1];
+                        this.titleClassEdit = false;
+                        this.getCandidateMemberData();
+                        this.alertOut();
+                    })
+                },
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
             },
             mounted:function(){

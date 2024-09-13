@@ -96,9 +96,7 @@ CREATE TABLE Candidates
 	Sex bit,
 	Birthday date,
 	Headshot varbinary(Max),
-	TitleClassId int
-		references TitleClasses(TitleClassId)
-		on delete set null,
+	TitleClass nvarchar(30),
 	Phone nvarchar(24),
 	[Address] nvarchar(100),
 	Degree nvarchar(30),
@@ -141,27 +139,31 @@ CREATE TABLE ResumeOpeningRecords
 		on delete cascade,
 	OpeningId int
 		references Openings(OpeningId)
-		on delete set null,
-	CompanyId int not null,
-	CompanyName nvarchar(40) not null,
-	OpeningTitle nvarchar(60) not null,
+		on delete cascade,
 	ApplyDate date,
-	LikeYN bit not null default(0),
 	InterviewYN bit not null default(0),
 	HireYN bit not null default(0)
 )
 GO
-CREATE TABLE CompanyResumeRecords
+CREATE TABLE CandidateOpeningLikeRecords
 (
-	CompanyId int not null
+	CandidateId int
+		references Candidates(CandidateId)
+		on delete cascade,
+	OpeningId int
+		references Openings(OpeningId)
+		on delete cascade
+	primary key(CandidateId,OpeningId)
+)
+GO
+CREATE TABLE CompanyResumeLikeRecords
+(
+	CompanyId int
 		references Companies(CompanyId)
 		on delete cascade,
-	ResumeId int not null
+	ResumeId int
 		references Resumes(ResumeId)
-		on delete cascade,
-	LikeYN bit not null default(0),
-	InterviewYN bit,
-	HireYN bit
+		on delete cascade
 	primary key(CompanyId,ResumeId)
 )
 GO
@@ -244,8 +246,8 @@ CREATE TABLE Notifications
 	CandidateId int
 		references Candidates(CandidateId)
 		on delete set null,
-	ResumeId int,
 	OpeningId int,
+	ResumeId int,
 	[Status] nvarchar(10),
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
