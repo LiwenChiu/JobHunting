@@ -1,6 +1,7 @@
 USE [master]
 GO
 CREATE DATABASE [Duck]
+COLLATE Chinese_PRC_CI_AS;
 GO
 USE [Duck]
 GO
@@ -36,7 +37,7 @@ CREATE TABLE Companies
     ContactEmail nvarchar(320) not null,
 	[Status] bit not null default(0),
 	[Date] datetime not null,
-	Deadline datetime
+	Deadline datetime,
 )
 GO
 CREATE TABLE TitleCategories

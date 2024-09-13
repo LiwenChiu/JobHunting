@@ -1,57 +1,135 @@
-﻿@section Styles
+﻿@{
+    ViewData["Title"] = "訂單紀錄";
+}
+
+@section Styles
 {
-    <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" asp-append-version="true" />
     <style>
 
     </style>
 }
 
 
-<table class="table table-striped table-hover">
-    <thead class="table-primary">
-        <tr>
-            <td>訂單ID</td>
-            <td>公司名稱</td>
-            <td>統一編號</td>
-            <td>方案名稱</td>
-            <td>價格</td>
-            <td>訂購日期</td>
-            <td>付款狀態</td>
-        </tr>
-    </thead>
-</table>
+<div class="container tableOutside pt-1" id="appCompanyOrders" style="position: relative">
+
+    @* 通知 *@
+    <template v-if="alertStatus == '成功'">
+        <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+    <template v-else-if="alertStatus == '失敗'">
+        <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+
+    <div class="row">
+        <h1 class="col-sm-8">最終日期: {{deadline}}</h1>
+        <div class="col-sm-4">
+            <input id="searchOrder" class="form-control" placeholder="搜尋關鍵字" v-model="searchOrderInput" />
+        </div>
+    </div>
+
+    <div style="overflow-y:auto;height:81vh">
+        <table id="orderTable" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>方案</td>
+                    <td>價格</td>
+                    <td>下單時間</td>
+                    <td>付款時間</td>
+                    <td>天數</td>
+                    <td>付款狀態</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="order in orders">
+                    <td>{{order.title}}</td>
+                    <td>{{order.price}}</td>
+                    <td>{{order.orderDate}}</td>
+                    <td>{{order.payDate == null ? "無" : order.payDate}}</td>
+                    <td>{{order.duration}}</td>
+                    <td>{{order.status ? "已付款" : "尚未付款"}}</td>
+                    <td><template v-if="!order.status"><button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button></template></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>
 
 @section Scripts
 {
-    <script src="~/lib/datatables/js/jquery.datatables.min.js" asp-append-version="true"></script>
-    <script src="//cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // alert("ready");
-            $("table").dataTable({
-                ajax: {
-                    type:"GET",
-                    url: "/Companies/CompanyOrders/IndexJson",
-                    dataSrc: function (data) {
-                        return data;
-                    },
+        let vueAppCompanyOrders = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    CompanyId: 1,
+                    orders: [],
+                    deadline: null,
+                    searchOrderInput: "",
+                    alertText: "",
+                    alertStatus: "",
+                }
+            },
+            computed: {},
+            methods: {
+                getCompanyOrders: function () {
+                    let request = {};
+                    request.CompanyId = this.CompanyId;
+                    request.Price = request.Duration = Number.isNaN(Number(this.searchOrderInput)) ? -1 : Number(this.searchOrderInput);
+                    request.Title = request.OrderDate = request.PayDate = this.searchOrderInput;
+                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    }).then(response => this.orders = response.data )
+                    .catch(err => { alert(err) });
+
+                    // 拿Companies裡的Deadline
+                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`, this.CompanyId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    }).then(response => this.deadline = response.data == null ? "無" : response.data)
+                        .catch(err => { alert(err) });
                 },
-                columns:[
-                    { "data": "orderID", "width": "10%" },
-                    { "data": "companyName", "width": "10%" },
-                    { "data": "guiNumber", "width": "10%" },
-                    { "data": "planTitle", "width": "10%" },
-                    { "data": "price", "width": "10%" },
-                    { "data": "orderDate", "width": "10%" },
-                    { "data": "status", "width": "10%" },
-                        ],
-                fixedHeader: {
-                    header:false
+                showDeadline() {
+                    return this.deadline === null ? "無" : this.deadline;
                 },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/2.1.3/i18n/zh-HANT.json',
+                cancelOrder: function (orderId) {
+                    let request = {};
+                    request.CompanyId = this.CompanyId;
+                    request.orderId = orderId;
+                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    }).then(response => {
+                        this.alertText = response.data[0];
+                        this.alertStatus = response.data[1];
+                        this.getCompanyOrders();
+                        this.alertOut();
+                    }).catch(err => { alert(err) });
                 },
-            });
-        });
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
+                },
+            },
+            watch:{
+                searchOrderInput:function(){
+                    this.getCompanyOrders();
+                },
+            },
+            mounted:function(){
+                this.getCompanyOrders();
+            },
+        };
+        let app = Vue.createApp(vueAppCompanyOrders).mount("#appCompanyOrders");
     </script>
 }
