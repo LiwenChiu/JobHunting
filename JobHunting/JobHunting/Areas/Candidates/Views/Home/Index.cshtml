@@ -38,7 +38,10 @@
                         <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
                     </template>
                     <template v-else>
-                        <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" /><button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
+                        <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" />
+                        <button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
+                        <button type="button" class="px-1 astext" v-on:click="cancelChangeTitleClass()"><i class="fa-regular fa-rectangle-xmark"></i></button>
+                        
                     </template>
                     <p class="text-muted mb-4">台灣</p>
                 </div>
@@ -242,6 +245,10 @@
                         this.getCandidateMemberData();
                         this.alertOut();
                     })
+                },
+                cancelChangeTitleClass:function(){
+                    this.getCandidateMemberData();
+                    this.titleClassEdit = false;
                 },
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);

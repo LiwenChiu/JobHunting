@@ -178,7 +178,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"停用方案ID:{planID}成功", "成功"];
+            returnStatus = [$"停用方案:{plan.Title}成功", "成功"];
             return returnStatus;
         }
 
@@ -214,7 +214,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 return returnStatus;
             }
 
-            returnStatus = [$"啟用方案ID:{planID}成功", "成功"];
+            returnStatus = [$"啟用方案:{plan.Title}成功", "成功"];
             return returnStatus;
         }
 
