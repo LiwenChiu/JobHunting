@@ -258,6 +258,7 @@ CREATE TABLE Notifications
 	SendDate date not null,
 	AppointmentDate date,
 	AppointmentTime time,
+	[Address] nvarchar(100)
 )
 GO
 CREATE TABLE Admins
