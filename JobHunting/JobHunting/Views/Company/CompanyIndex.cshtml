@@ -29,9 +29,7 @@
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">學歷</label>
                 <select class="select" v-model="edu" style="width:150px;height:30px">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                    <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
         </div>
@@ -220,7 +218,8 @@
                     axios.post('https://localhost:7169/Company/CompanyIndexList', {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        self.resumes = res.data
+                        self.resumes = res.data;
+                        self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
                     });
@@ -233,7 +232,7 @@
                         serchText: self.filter,
                         area: self.city,
                         zipCode: self.zipCode,
-                        // edu: self.edu,
+                        edu: self.edu,
                         skill: self.skill
                     };
                     if (self.filter == "男") {
@@ -245,7 +244,7 @@
                     else {
                         request.sex = null;
                     }
-                    if (self.filter == self.city == self.zipCode == "" &&  self.skill == null) {
+                    if (self.filter == self.city == self.edu == self.zipCode == "" && self.skill == null) {
                         self.indexList();
                     }
                     else {
@@ -254,7 +253,7 @@
                             }).then(res => {
                                 self.resumes = res.data;
                                 self.skill = null;
-                                self.city = self.zipCode = self.filter = "";
+                                self.city = self.zipCode = self.filter = self.edu = "";
                             }).catch(err => JSON.stringify(err))
                     }
 
@@ -279,10 +278,9 @@
                         });
                 },
                 getCity(){
-                    axios.get('/json/CityCountyData.json')  //根目錄資料
+                    axios.get('/cityjson/CityCountyData.json')  //根目錄資料
                         .then(model => {
                             this.cityList = model.data;
-                            // 在這裡處理你的 JSON 資料
                         })
                         .catch(function (error) {
                             console.error(error);
