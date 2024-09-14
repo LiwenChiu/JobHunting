@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-10">
-                                <span class="card-title pb-3">職缺:{{item.jobTitle}}</span>
+                                <span class="card-title pb-3">職缺:{{item.openingTitle}}</span>
                             </div>
                             <div class="col-2">
                                 <button type="button" class="btn-close justify-content-end" disabled aria-label="Close"></button>
@@ -380,18 +380,23 @@
                 // 撈出暫存的履歷資料
                 resumeStorageData: function () {
                     let _this = this
-                    let companyId = 1;
-                    fetch(`${_this.baseAddress}/companies/C_Resume/ResumeStorageResult/${companyId}`, {
-                        method: "GET",
+                    let CompanyId = 1;
+                    console.log("CompanyId being sent:", CompanyId); 
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/ResumeStorageJson?id=${CompanyId}`, {
+                        method: "Post",
+                        headers: {
+                            "Content-Type": "application/json"  // 指定 JSON 格式
+                        },
+                        body: JSON.stringify(),  // 將數據序列化為 JSON
                     }).then(response => {
                         return response.json();
                     })
                     .then(data => {
-
                         return this.resumes = data
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     });
+
                     //職業類型
                     fetch(`${_this.baseAddress}/Companies/C_Resume/TitleClassJson`, {
                         method: "GET",

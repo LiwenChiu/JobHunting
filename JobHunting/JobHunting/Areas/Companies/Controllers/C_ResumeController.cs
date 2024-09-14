@@ -47,44 +47,46 @@ namespace JobHunting.Areas.Companies.Controllers
         //}
         //GET:compaines/C_Resume/ResumeStorageResult
 
-        [HttpGet]
-        public JsonResult ResumeStorageResult(int id)
+        [HttpPost]
+        public async Task<IEnumerable<ResumeStorageViewModel>> ResumeStorageJson( int id)
+            
         {
 
+            var Result = await _context.Companies.Include(i => i.Resumes).ThenInclude(ti => ti.Tags)
+                          .Include(i => i.Resumes).ThenInclude(ti => ti.TitleClasses)
+                          .Include(i => i.Resumes).ThenInclude(ti => ti.Candidate)
+                          .Include(i=>i.Openings).ThenInclude(ti=>ti.ResumeOpeningRecords)
+                          .FirstOrDefaultAsync(rs => rs.CompanyId == id);
+             if(Result == null)
+            {
+                return new List<ResumeStorageViewModel>();
+            }
+            var companies = Result.Resumes.Select(n => new ResumeStorageViewModel
+            {
+                Name = n.Candidate.Name,
+                Address = n.Candidate.Address,
+                Sex = n.Candidate.Sex,
+                Birthday = n.Candidate.Birthday,
+                Phone = n.Candidate.Phone,
+                Degree = n.Candidate.Degree,
+                Email = n.Candidate.Email,
+                EmploymentStatus = n.Candidate.EmploymentStatus,
+                Time = n.Time,
+                ResumeId = n.ResumeId,
+                CandidateId = n.CandidateId,
+                Certification = n.Certification, /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
+                WorkExperience = n.WorkExperience,
+                Autobiography = n.Autobiography,
+                OpeningTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == n.ResumeId).Select(ror => ror.OpeningTitle).Single(),
+                Intro = n.Intro,
+                TitleClassId = n.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
+                TagId = n.Tags.Select(t => t.TagId).ToList(),
+                Headshot = n.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
+            });
 
-            var result = (from cd in _context.Companies 
-                         join op in _context.Openings on cd.CompanyId equals op.CompanyId
-                         join ror in _context.ResumeOpeningRecords on op.OpeningId equals ror.OpeningId
-                         join r in _context.Resumes on ror.ResumeId equals r.ResumeId
-                         join c in  _context.Candidates on r.CandidateId equals c.CandidateId
-                         where cd.CompanyId == id
-                         select new 
-                         {
-                             Name = c.Name,
-                             Address = c.Address,
-                             Sex = c.Sex,
-                             Birthday = c.Birthday,
-                             Phone = c.Phone,
-                             Degree = c.Degree,
-                             Email = c.Email,
-                             EmploymentStatus = c.EmploymentStatus,
-                             Time = r.Time,
-                             Certification = r.Certification != null ? Convert.ToBase64String(r.Headshot) : null,
-                             WorkExperience = r.WorkExperience,
-                             Autobiography = r.Autobiography,
-                             jobTitle = ror.OpeningTitle,
-                             InterviewYN = ror.InterviewYN,
-                             Intro = r.Intro,
-                             TitleClassId = r.TitleClasses.Select(rtc => rtc.TitleClassId),
-                             TitleClassName = r.TitleClasses.Select(rtc => rtc.TitleClassName),
-                             TagId = r.Tags.Select(t => t.TagId),
-                             TagName = r.Tags.Select(t => t.TagName),
-                             Headshot = r.Headshot != null ? Convert.ToBase64String(r.Headshot) : null,
-                         }).ToList();
 
 
-            return Json(result);
-            
+            return companies;
         }
 
 
