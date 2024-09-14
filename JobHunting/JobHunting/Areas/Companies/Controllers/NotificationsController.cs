@@ -68,14 +68,14 @@ namespace JobHunting.Areas.Companies.Controllers
             return filterPaging;
         }
 
-        public async Task<> GetNotification([FromBody] int notificationId)
-        {
-            var notification = await _context.Notifications.FindAsync(notificationId);
-            if (notification == null)
-            {
-                return
-            }
+        //public async Task<> GetNotification([FromBody] int notificationId)
+        //{
+        //    var notification = await _context.Notifications.FindAsync(notificationId);
+        //    if (notification == null)
+        //    {
+        //        return
+        //    }
 
-        }
+        //}
     }
 }
