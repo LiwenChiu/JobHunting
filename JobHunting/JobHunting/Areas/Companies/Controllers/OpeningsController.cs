@@ -264,7 +264,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Benefits = coim.Benefits,
                     Description = coim.Description,
                     CompanyId = coim.CompanyId,
-                    ReleaseYN = coim.ReleaseYN,
+                    ReleaseYN = true,
                     Degree = coim.Degree,
                     
                 };

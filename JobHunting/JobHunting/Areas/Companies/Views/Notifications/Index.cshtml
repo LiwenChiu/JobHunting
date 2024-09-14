@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "會員中心";
+}
+
+@section Styles
+{
+    <style>
+        .card{
+            overflow:hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+}
+
+<div id="NotificationsVue">
+
+    <div class="selectbutton text-center pt-2">
+        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '面試邀請';">面試邀請</button>
+        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '結果通知';">結果通知</button>
+        <input type="text" class="" placeholder="搜尋關鍵字" v-model.trim="filterInput"/>
+        <button type="button" class="btn btn-warning text-light btn-sm mx-1" v-on:click="filterInput = '';">清空</button>
+    </div>
+
+    <div class="container-fluid py-1">
+        <div class="letters row" style="height:77vh">
+
+                <template v-for="notification in notifications">
+                    <div class="col-md-3 mb-1">
+                        <div class="card" style="width: 15rem; height: 15rem;">
+                        <div class="card-header text-center">
+                            <span class="card-title">{{notification.status}}</span>
+                            @* <button type="button" class="btn-close ms-5" ></button> *@
+                        </div>
+                        <div class="card-body">
+                            <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人: {{notification.candidateName}}</span><br />
+                            <span class="card-text"><i class="fa-solid fa-caret-right"></i> 主旨: {{notification.subjectLine}}</span><br />
+                            <span class="card-text"><i class="fa-solid fa-caret-right"></i> 日期: {{notification.appointmentDate}}</span>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modalId" v-on:click="showModal(notification.notificationId)">
+                                查看
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                </template>
+
+        </div>
+
+        <div>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center" style="margin: 0;">
+                    <li class="page-item">
+                        <button class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()">
+                            <span aria-hidden="true">&laquo;</span>
+                        </button>
+                    </li>
+                    <template v-for="page in totalPage">
+                        <li class="page-item"><button type="button" class="page-link" v-on:click="turnPage(page)">{{page}}</button></li>
+                    </template>
+                    <li class="page-item">
+                        <button class="page-link" aria-label="Next" v-on:click="turnPageNext()">
+                            <span aria-hidden="true">&raquo;</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+    </div>
+
+    @* 錄取狀態modal *@
+    <div class="modal fade" id="modalId" tabindex="-1" data-bs-keyboard="false" role="dialog"
+         aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                        <div class="inputOutAreas">
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                <input type="date" class="form-control inputDate">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                <input type="time" class="form-control inputTime">
+                            </div>
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                <input type="text" class="form-control inputPlace">
+                            </div>
+
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                            </div>
+                        </div>
+                        <div class="text-center pb-3 "><label class="fw-bold">回復狀態 : 尚未回覆/已回覆</label></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+        let vueAppNotifications = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    companyId: 2,
+                    filterInput: null,
+                    notifications: [],
+                    notificationModal: [],
+                    pageStart: 1,
+                    totalDataCount: null,   //總共幾筆資料
+                    totalPage: null,    //總共幾頁
+                };
+            },
+            methods: {
+                bootFilterPage: function () {
+                    let request = {};
+                    request.CompanyId = this.companyId;
+                    request.filterInput = this.filterInput == null ? "" : this.filterInput;
+                    request.pageStart = this.pageStart
+                    axios.post(`${this.baseAddress}/Companies/Notifications/GetNotificationLess`, request, { 
+                        headers: { 'Content-Type': 'application/json' } 
+                    })
+                        .then(response => {
+                            this.notifications = response.data.companyNotificationsFilter;
+                            this.totalDataCount = response.data.totalDataCount;
+                            this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
+                        })
+                        .catch(err => { alert(err) });
+                },
+                showModal(notificationId) {
+                    axios.get(`${this.baseAddress}/Companies/Notifications/GetNotification`, notificationId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.notificationModal = response.data)
+                        .catch(err => { alert(err) });
+                },
+                turnPage: function (page) {
+                    this.pageStart = page;
+                },
+                turnPagePrevious: function () {
+                    if (this.pageStart != 1) {
+                        this.pageStart--;
+                    }
+                },
+                turnPageNext: function () {
+                    if (this.pageStart != this.totalPage) {
+                        this.pageStart++;
+                    }
+                },
+            },
+            watch: {
+                filterInput:function(){
+                    this.bootFilterPage();
+                },
+                pageStart: function () {
+                    this.bootFilterPage();
+                },
+            },
+            mounted: function () {
+                this.bootFilterPage();
+            },
+        };
+        let app = Vue.createApp(vueAppNotifications).mount("#NotificationsVue")
+    </script>
+}

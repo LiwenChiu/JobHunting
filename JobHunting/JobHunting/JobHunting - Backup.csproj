@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-JobHunting-1c802562-e1d4-4ad8-a643-97f20a747956</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\images\Alice Chen_22\**" />
+    <Compile Remove="wwwroot\images\Alice Chen_23\**" />
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\images\Alice Chen_22\**" />
+    <Content Remove="wwwroot\images\Alice Chen_23\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\images\Alice Chen_22\**" />
+    <EmbeddedResource Remove="wwwroot\images\Alice Chen_23\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\images\Alice Chen_22\**" />
+    <None Remove="wwwroot\images\Alice Chen_23\**" />
+    <None Remove="wwwroot\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admins\Data\" />
+    <Folder Include="Areas\Candidates\Data\" />
+    <Folder Include="Areas\Candidates\Models\" />
+    <Folder Include="Areas\Companies\Data\" />
+    <Folder Include="Areas\Companies\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bundleconfig.json" />
+    <None Include="efpt.config.json.user" />
+    <None Include="wwwroot\js\site.js" />
+  </ItemGroup>
+
+</Project>

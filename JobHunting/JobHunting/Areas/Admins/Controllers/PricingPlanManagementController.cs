@@ -47,7 +47,7 @@ namespace JobHunting.Areas.Admins.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IEnumerable<PricingPlanManagementFilterOutputViewModel>> BootFilterPage([FromBody][Bind("PlanId,Title,Intro,Duration,Price,Discount,Status")] PricingPlanManagementFilterViewModel ppfvm)
        {
-            return _context.PricingPlans.Select(pp => new PricingPlanManagementFilterViewModel
+            return _context.PricingPlans.AsNoTracking().Select(pp => new PricingPlanManagementFilterViewModel
             {
                 PlanId = pp.PlanId,
                 Title = pp.Title,

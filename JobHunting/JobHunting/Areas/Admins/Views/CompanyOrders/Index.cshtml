@@ -44,12 +44,13 @@
         </div>
     </div>
     
-    <div class="container tableOutside" style="overflow-y:auto;height:70vh">
+    <div class="container tableOutside" style="overflow-y:auto;height:73vh">
         <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">訂單ID</th>
                     <th scope="col">公司名稱</th>
+                    <th scope="col">統一編號</th>
                     <th scope="col">方案名稱</th>
                     <th scope="col">付款時間/截止時間</th>
                     <th scope="col">到期時間</th>
@@ -60,6 +61,7 @@
                 <tr v-for="order in companyOrders">
                     <td>{{order.orderId}}</td>
                     <td>{{order.companyName}}</td>
+                    <td>{{order.guiNumber}}</td>
                     <td>{{order.title}}</td>
                     <td>{{order.payDate}}</td>
                     <td>{{order.expiration}}</td>
@@ -68,10 +70,8 @@
             </tbody>
         </table>
     </div>
-
-    <div>
-        <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
-            <ul class="pagination">
+    <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
+            <ul class="pagination" style="margin: 0;">
                 <li class="page-item">
                     <button type="button" id="turnPagePreviousBtn" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()">
                         <span aria-hidden="true">&laquo;</span>
@@ -87,9 +87,6 @@
                 </li>
             </ul>
         </nav>
-
-    </div>
-
 </div>
 
 @section Scripts
@@ -124,8 +121,8 @@
                         },
                     }).then(response => {
                         this.companyOrders = response.data.companyOrdersFilter;
-                        this.totalDataCount = response.data.totalPage;
-                        this.totalPage = parseInt((response.data.totalPage) / (pageSize)) + 1;
+                        this.totalDataCount = response.data.totalDataCount;
+                        this.totalPage = Number.isInteger((response.data.totalDataCount) / (pageSize)) ? parseInt((response.data.totalDataCount) / (pageSize)) : parseInt((response.data.totalDataCount) / (pageSize)) + 1;
                     })
                     .catch(err => { alert(err) });
                 },
@@ -170,6 +167,9 @@
                 pageLength:function(){
                     //this.bootFilterPage();
                     this.bootFilterPaging();
+                    if(this.pageStart > this.totalPage){
+                        this.pageStart = this.totalPage;
+                    }
                 },
                 pageStart:function(){
                     //this.bootFilterPage();

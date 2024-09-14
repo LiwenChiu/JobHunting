@@ -7,7 +7,13 @@
 @section Styles
 {
     <style>
+       /*  #headshotBtn{
+            visibility: hidden;
+        }
 
+        #headshotBtn:hover{
+            visibility: visible;
+        } */
     </style>
 }
 
@@ -32,7 +38,12 @@
         <div class="col-lg-4">
             <div class="card mb-1">
                 <div class="card-body text-center">
-                    <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
+                    <div style="position: relative">
+                        <div style="position: absolute; z-index:70;">
+                            <button type="button" id="headshotBtn" class="astext">更改圖片</button>
+                        </div>
+                        <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
+                    </div>
                     <h5 class="my-1">{{CandidateMemberData.name}}</h5>
                     <template v-if="titleClassEdit == false">
                         <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
@@ -123,9 +134,9 @@
                     <div class="card mb-4 mb-md-0 h-100">
                         <div class="card-body">
                             <button type="button" class="mb-2 astext" v-on:click="function(){pageStatus=2}">
-                                <h4>
+                                <a class="astext" style="font-size:1.25rem; font-weight:bold;" asp-area="Candidates" asp-controller="Resume" asp-action="ResumeManage">
                                     <span class="text-primary font-italic me-1">我的</span>履歷
-                                </h4>
+                                </a>
                             </button>
                             <div class="row row-cols-1 row-cols-md-1 g-4">
                                 <template v-for="Resume in CandidateResumes">
@@ -192,7 +203,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    }).then(response => this.CandidateMemberData = response.data[0])
+                    }).then(response => this.CandidateMemberData = response.data)
                         .catch(err => alert(err));
                 },
                 getCandidateResumes: function () {

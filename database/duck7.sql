@@ -256,7 +256,9 @@ CREATE TABLE Notifications
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
 	SendDate date not null,
-	AppointmentTime datetime,
+	AppointmentDate date,
+	AppointmentTime time,
+	[Address] nvarchar(100)
 )
 GO
 CREATE TABLE Admins
@@ -286,7 +288,8 @@ CREATE TABLE OpinionLetters
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
 	Attachment varbinary(MAX),
-	[Status] bit not null default(0)
+	[Status] bit not null default(0),
+	SendTime datetime not null,
 )
 GO
 CREATE TABLE AdminRecords

@@ -29,7 +29,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TagManagement/IndexTags
         public JsonResult IndexTags()
         {
-            return Json(_context.Tags.Select(t => new
+            return Json(_context.Tags.AsNoTracking().Select(t => new
             {
                 TagId = t.TagId,
                 TagClassId = t.TagClassId,
@@ -40,7 +40,7 @@ namespace JobHunting.Areas.Admins.Controllers
         // GET: Admins/TagManagement/IndexTagClasses
         public JsonResult IndexTagClasses()
         {
-            return Json(_context.TagClasses.Where(t => t.TagClassId > 0).Select(t => new
+            return Json(_context.TagClasses.AsNoTracking().Where(t => t.TagClassId > 0).Select(t => new
             {
                 TagClassId = t.TagClassId,
                 TagClassName = t.TagClassName,

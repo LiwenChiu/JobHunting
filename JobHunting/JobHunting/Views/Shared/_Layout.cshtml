@@ -57,7 +57,7 @@
                             <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li>
                             <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li>
                             <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="CompanyIndex">公司首頁</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -65,35 +65,12 @@
             </div>
         </div>
     </nav>
-    <!-- Header-->
-    <header class="bg-warning py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                @* <h1 class="display-4 fw-bolder">Home Page</h1> *@
-                <label style="font-size:700%;">小鴨<img src="~/gif/9e25a15f2aae61fb18f7782b65b6baf7.gif" style="width:30%;"/>上工</label>
-            </div>
-        </div>
-    </header>
-    <br />
-    <br />
     <div id="layoutSidenav_content">
         <main>
             <div>
                 @RenderBody()
             </div>
         </main>
-        @* <footer class="py-4 bg-light mt-auto">
-        <div class="container-fluid px-4">
-        <div class="d-flex align-items-center justify-content-between small">
-        <div class="text-muted">Copyright &copy; Your Website 2023</div>
-        <div>
-        <a href="#">Privacy Policy</a>
-        &middot;
-        <a href="#">Terms &amp; Conditions</a>
-        </div>
-        </div>
-        </div>
-        </footer> *@
     </div>
 
     @* 意見處理Modal *@
@@ -178,11 +155,13 @@
             methods: {
                 addletter() {
                     let self = this;
+                    let today = new Date().toISOString();
                     var form = new FormData();
                     form.append("CompanyId", 3);
                     form.append("Letterclass", self.letterclass);
                     form.append("SubjectLine", self.subjectLine);
                     form.append("Content", self.content);
+                    form.append("SendTime",today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
                         axios.post('https://localhost:7169/Home/AddLetter', form, {
                         headers: { 'Content-Type': 'multipart/form-data' },

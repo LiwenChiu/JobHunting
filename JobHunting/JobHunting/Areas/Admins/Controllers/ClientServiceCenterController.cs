@@ -29,13 +29,14 @@ namespace JobHunting.Areas.Admins.Controllers
         [HttpGet]
         public JsonResult IndexJson_opinionletter()
         {
-            var opinionletter = _context.OpinionLetters.Select(p => new
+            var opinionletter = _context.OpinionLetters.OrderByDescending(p => p.SendTime).Select(p => new
             {
                 id = p.LetterId,
                 Class = p.Class,
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
                 Content = p.Content,
+                SendTime = p.SendTime,
             });
             return Json(opinionletter);
         }
@@ -63,14 +64,14 @@ namespace JobHunting.Areas.Admins.Controllers
 
         //Post: Admins/ClientServiceCenter/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinioLetterCardViewModel>> Filter([FromBody] OpinioLetterCardViewModel olcvm)
+        public async Task<IEnumerable<OpinioLetterFilterOutputViewModel>> Filter([FromBody] OpinioLetterFilterViewModel olfvm)
         {
             return _context.OpinionLetters
                 .Where(olfilter =>
-                olfilter.Class.Contains(olcvm.Class) ||
-                olfilter.SubjectLine.Contains(olcvm.SubjectLine) ||
-                olfilter.Status == olcvm.Status)
-                .Select(p => new OpinioLetterCardViewModel
+                olfilter.Class.Contains(olfvm.Class) ||
+                olfilter.SubjectLine.Contains(olfvm.SubjectLine) ||
+                olfilter.Status == olfvm.Status)
+                .Select(p => new OpinioLetterFilterOutputViewModel
                 {
                     Class = p.Class,
                     SubjectLine = p.SubjectLine,

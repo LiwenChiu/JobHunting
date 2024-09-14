@@ -34,7 +34,7 @@
     <div class="container-fluid py-1 mt-5">
         <div class="letters row">
             <div class="col-md-3 mb-4">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#insertmodelID" style="text-decoration:none;">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#insertmodelID" style="text-decoration:none;" v-on:click="selectedTagId=[];selectedtitleClassId=[]">
                     <div class="card" style="width: 16rem; height: 16rem;">
                         <div class="card-body">
                             <h2 class="text-center mt-5">
@@ -60,18 +60,18 @@
                         <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
                         <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
                         @* 履歷內容按鈕 *@
-                        <div class="text-center">
+                    </div>
+                    <div class="card-footer text-center" style="background-color:transparent">
                             <button type="button" data-bs-toggle="modal"
                                     :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
                                 詳細
                             </button>
-                            <template v-if="item.releaseYN == true">
+                            <template v-if="item.releaseYN==true">
                                 <button type="button" class="btn btn-danger ms-1" v-on:click="toggleStatusToFalse(item);">停用</button>
                             </template>
                             <template v-else>
                                 <button type="button" class="btn btn-warning ms-1" v-on:click="toggleStatusToTrue(item);">啟用</button>
                             </template>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -96,7 +96,7 @@
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"
-                                    style="width:5% ;" v-on:click="TagCheckedOpening=[]">
+                                    style="width:5% ;" v-on:click="selectedTagId=[];selectedtitleClassId=[]">
                             </button>
                         </div>
                         <div class="modal-body">
@@ -221,18 +221,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
-                                <span class="form-control text-center ">
-                                    是否上架：
-                                    <select v-model="ReleaseYN" class="btn btn-primary ms-4" disabled>
-                                        <option :value="true">上架</option>
-                                        <option :value="false">關閉</option>
-                                    </select>
-                                </span>
-                            </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success " v-on:click="createOpening">新增</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="TagCheckedOpening=[]">取消</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="ReceiveOpeningData">取消</button>
                             </div>
                         </div>
                     </div>
@@ -285,7 +276,7 @@
                                                 <label class="">薪資條件:</label>
                                                 <div class="">
                                                     <input type="text" v-model="item.salaryMin" class="text-center" placeholder="最低薪資" />
-                                                    <span> -- </span>
+                                                    <span> - </span>
                                                     <input type="text" v-model="item.salaryMax" class="text-center" placeholder="最高薪資" />
                                                 </div>
                                                 <label class="">上班時段:</label>
@@ -391,8 +382,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-success " v-on:click="editConfirm(item)">編輯完成</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancel(item)">取消</button>
+                                <button type="submit" class="btn btn-success" v-on:click="editConfirm(item)">編輯完成</button>
+                                <button type="button" class="btn btn-secondary" v-on:click="cancel(item)">取消</button>
                             </div>
                         </template>
                         @* 職缺顯示 *@
@@ -426,7 +417,7 @@
                                                 <label class="">電子郵件:</label>
                                                 <p>{{item.contactEmail}}</p>
                                                 <label class="">薪資條件:</label>
-                                                <p>{{item.salaryMin}} --- {{item.salaryMax}}</p>
+                                                <p>{{item.salaryMin}} - {{item.salaryMax}}</p>
                                                 <label class="">上班時段:</label>
                                                 <p>{{item.time}}</p>
                                             </div>
@@ -504,6 +495,7 @@
                     selectedDegreeName: '',
                     alertText: "",
                     alertStatus: "",
+                    originalItem: {},
                     //data
                     Title: "",
                     Address: "",
@@ -515,7 +507,6 @@
                     Time: "",
                     Description: "",
                     Benefits: "",
-                    ReleaseYN: true,
                     //分頁
                     pageStatus: 0,
                     perpage: 7, //一頁的資料數
@@ -629,10 +620,7 @@
                     let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
                     return CategoryNameId.replace(" ", "");
                 },
-                //編輯取消
-                cancel(item) {
-                    return item.edit = false;
-                },
+               
                 //綁modal target
                 mergeID(item) {
                     let str = item.title.replace(/\s/g, "");
@@ -701,14 +689,27 @@
                             alert(err);
                         });
                 },
+                editCopy:function(item){
+                    this.originalItem = JSON.parse(JSON.stringify(item));
+                    item.edit = true;
+                    this.selectedtitleClassId = item.titleClassId;
+                    this.selectedTagId = item.tagId;
+
+                },
                 //編輯確認
                 editConfirm: function (item) {
                     const Confirmed = confirm("確定要編輯嗎?");
                     if (Confirmed) {
                         this.editOpening(item);
                     } else {
-                        alert("已取消編輯");
+                        this.cancel(item);
                     };
+                },
+                //編輯取消
+                cancel(item) {
+                    this.ReceiveOpeningData();
+                    item.edit = false;
+                    alert("已取消編輯");
                 },
                 //編輯職缺並修改資料庫資料
                 editOpening: function (item) {
@@ -728,7 +729,6 @@
                     request.TitleClassId = _this.selectedtitleClassId;
                     request.TagId = _this.selectedTagId;
                     request.Degree = item.degree;
-                    console.log(request);
                     axios.post("https://localhost:7169/Companies/Openings/EditOpening", request, {
                         headers: {
                             "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
@@ -737,17 +737,17 @@
                         let data = response.data;
                         alert(data.message);
                         _this.ReceiveOpeningData();
+                        item.edit = false;
                     }).catch(err => {
                         alert(err);
                     });
                     // 關閉編輯模式
-                    item.edit = false;
+                   
                 },
                 //資料初始
                 ReceiveOpeningData() {
                     let _this = this;
-                    let companyId = 1;
-                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${companyId}`).then(
+                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${_this.CompanyId}`).then(
                         res => {
                             _this.openings = res.data;
                         }
@@ -825,6 +825,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         _this.openings = res.data
+                            this.ReceiveOpeningData();
                     }).catch(err => JSON.stringify(err))
                 },
                 //切換成下架職缺

@@ -2,7 +2,7 @@
 {
     public class CompanyOrdersOutputViewModel
     {
-        public int totalPage { get; set; }
+        public int totalDataCount { get; set; }
 
         public IEnumerable<CompanyOrdersFilterViewModel> companyOrdersFilter { get; set; } = new List<CompanyOrdersFilterViewModel>();
     }
