@@ -23,26 +23,34 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IEnumerable<CandidateOpeningStorageOutputModel>> CandidateOpenings([FromBody] int id)
         {
-            return _context.ResumeOpeningRecords.Include(o=>o.Opening)
-                .Where(ror => ror.Resume.CandidateId == id)
-                .Select(ror => new CandidateOpeningStorageOutputModel
-                {
-                    OpeningId = ror.OpeningId,
-                    Title = ror.OpeningTitle,
-                    CompanyName = ror.CompanyName,
-                    Address = ror.Opening.Address,
-                    ContactName = ror.Opening.ContactName,
-                    ContactPhone = ror.Opening.ContactPhone,
-                    ContactEmail = ror.Opening.ContactEmail,
-                    SalaryMax = ror.Opening.SalaryMax,
-                    SalaryMin = ror.Opening.SalaryMin,
-                    Time = ror.Opening.Time,
-                    Description = ror.Opening.Description,
-                    TitleClassId = ror.Opening.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
-                    TagId = ror.Opening.Tags.Select(t => t.TagId).ToList(),
-                    Benefits = ror.Opening.Benefits,
-                    Degree = ror.Opening.Degree,
-                });
+            var query =await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
+                .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
+                .Include(x => x.Openings).ThenInclude(x => x.Company)
+                .FirstOrDefaultAsync(x => x.CandidateId == id);
+            if (query == null)
+            {
+                return new List<CandidateOpeningStorageOutputModel>();
+            }
+            var opening =  query.Openings.Select(ror => new CandidateOpeningStorageOutputModel
+            {
+                OpeningId = ror.OpeningId,
+                Title = ror.Title,
+                CompanyName = ror.Company.CompanyName,
+                Address = ror.Address,
+                ContactName = ror.ContactName,
+                ContactPhone = ror.ContactPhone,
+                ContactEmail = ror.ContactEmail,
+                SalaryMax = ror.SalaryMax,
+                SalaryMin = ror.SalaryMin,
+                Time = ror.Time,
+                Description = ror.Description,
+                TitleClassId = ror.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
+                TagId = ror.Tags.Select(t => t.TagId).ToList(),
+                Benefits = ror.Benefits,
+                Degree = ror.Degree,
+            });
+
+            return opening;
         }
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]

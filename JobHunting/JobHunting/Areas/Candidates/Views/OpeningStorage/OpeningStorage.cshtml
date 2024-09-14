@@ -218,7 +218,7 @@
                         })
                         .join('/ ');
                 },
-                 ReceiveOpeningData() {
+                ReceiveOpeningData() {
                     let _this = this;
                     axios.post(`${_this.baseAddress}/Candidates/OpeningStorage/CandidateOpenings`, _this.CandidateId, {
                     headers: {
