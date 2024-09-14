@@ -1,0 +1,98 @@
+﻿using JobHunting.Areas.Candidates.Models;
+using JobHunting.Areas.Candidates.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace JobHunting.Areas.Candidates.Controllers
+{
+    [Area("Candidates")]
+    public class OpeningStorageController : Controller
+    {
+        private readonly DuckCandidatesContext _context;
+
+
+        public OpeningStorageController(DuckCandidatesContext context)
+        {
+            _context = context;
+        }
+        public IActionResult OpeningStorage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<CandidateOpeningStorageOutputModel>> CandidateOpenings([FromBody] int id)
+        {
+            var query =await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
+                .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
+                .Include(x => x.Openings).ThenInclude(x => x.Company)
+                .FirstOrDefaultAsync(x => x.CandidateId == id);
+            if (query == null)
+            {
+                return new List<CandidateOpeningStorageOutputModel>();
+            }
+            var opening =  query.Openings.Select(ror => new CandidateOpeningStorageOutputModel
+            {
+                OpeningId = ror.OpeningId,
+                Title = ror.Title,
+                CompanyName = ror.Company.CompanyName,
+                Address = ror.Address,
+                ContactName = ror.ContactName,
+                ContactPhone = ror.ContactPhone,
+                ContactEmail = ror.ContactEmail,
+                SalaryMax = ror.SalaryMax,
+                SalaryMin = ror.SalaryMin,
+                Time = ror.Time,
+                Description = ror.Description,
+                TitleClassId = ror.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
+                TagId = ror.Tags.Select(t => t.TagId).ToList(),
+                Benefits = ror.Benefits,
+                Degree = ror.Degree,
+            });
+
+            return opening;
+        }
+        //GET:Companies/Openings/TitleClassJson
+        [HttpGet]
+        public JsonResult TitleClassJson()
+        {
+            return Json(_context.TitleClasses.Select(tc => new
+            {
+                TitleClassId = tc.TitleClassId,
+                TitleClassName = tc.TitleClassName,
+                TitleCategoryId = tc.TitleCategoryId
+            }));
+        }
+        //GET:Companies/Openings/TitleCategoryJosn
+        [HttpGet]
+        public JsonResult TitleCategoryJson()
+        {
+            return Json(_context.TitleCategories.Select(tc => new
+            {
+                TitleCategoryId = tc.TitleCategoryId,
+                TitleCategoryName = tc.TitleCategoryName
+            }));
+        }
+        //GET:Compaines/Openings/TagsJson
+        [HttpGet]
+        public JsonResult TagJson()
+        {
+            return Json(_context.Tags.Select(t => new
+            {
+                TagId = t.TagId,
+                TagName = t.TagName,
+                TagClassId = t.TagClassId
+            }));
+        }
+        //GET:Companies/Openings/TagClassJson
+        [HttpGet]
+        public JsonResult TagClassJson()
+        {
+            return Json(_context.TagClasses.Select(tc => new
+            {
+                TagClassId = tc.TagClassId,
+                TagClassName = tc.TagClassName
+            }));
+        }
+    }
+}
