@@ -175,12 +175,21 @@
 
                                         <div class="modal-footer">
                                             @* 發送面試通知按鈕 *@
-                                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                                            <template v-if="InterviewYN == true">
+                                                <button  type="button" class="btn btn-primary btn-md"  data-bs-toggle="modal"
                                                     data-bs-target="#interviewMailBtn">
                                                 面試
-                                            </button>
+                                                </button>
+                                            </template>
+                                            <template v-else="InterviewYN == false">
+                                                <button  type="button" class="btn btn-primary btn-md"  data-bs-toggle="modal"
+                                                    data-bs-target="#interviewMailBtn">
+                                                 已發送面試信件
+                                                </button>
+                                            </template>
+
                                             @* 發送錄取通知按鈕 *@
-                                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                                            <button v-else-if="" type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                                                     data-bs-target="#OfferMailBtn">
                                                 錄取
                                             </button>
@@ -199,6 +208,7 @@
                                             <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        @* 錄取通知內容 *@
                                         <div class="modal-body">
                                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                                                 <div class="inputOutAreas">
@@ -238,6 +248,7 @@
                                             <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        @* 面試通知內容 *@
                                         <div class="modal-body">
                                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                                                 <div class="inputOutAreas">
@@ -256,7 +267,7 @@
 
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                        <textarea class="form-control " style="height:150px" name="錄用通知訊息"></textarea>
+                                                        <textarea class="form-control " style="height:150px" name="面試通知訊息"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,6 +282,7 @@
                     </div>
                 </div>
             </div>
+            @* 上下分頁數 *@
             <div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
@@ -337,31 +349,15 @@
                     }
                     this.currentPage = page
                 },
+                selectSex(item) {
+                    return item == true ? '男' : '女'
+                },
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeId;
                     strID = str + num;
                     return strID;
                 },
-                // ReturnNameId: function (item) {
-                //     let NameId = `NameId${item.tagName}${item.tagId}`;
-                //     return NameId.replace(" ", "");
-                // },
-                // ReturnTitleClassNameId: function (item) {
-                //     let NameId = `NameId${item.titleClassName}${item.titleClassId}`;
-                //     return NameId.replace(" ", "");
-                // },
-                // ReturnClassNameId: function (item) {
-                //     let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
-                //     return ClassNameId.replace(" ", "");
-                // },
-                // Returnhashtag: function (item) {
-                //     return `#${item}`;
-                // },
-                // ReturnCategoryNameId: function (item) {
-                //     let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
-                //     return CategoryNameId.replace(" ", "");
-                // },
                 getTitleClassName(titleClassId) {
                     if (!Array.isArray(titleClassId)) return '未指定';
                     return titleClassId
@@ -381,15 +377,17 @@
                         })
                         .join('/ ');
                 },
+                // 撈出暫存的履歷資料
                 resumeStorageData: function () {
                     let _this = this
-                    let CompanyId = 1;
-                    fetch(`${_this.baseAddress}/companies/C_Resume/ResumeStorageResult/${CompanyId}`, {
+                    let companyId = 1;
+                    fetch(`${_this.baseAddress}/companies/C_Resume/ResumeStorageResult/${companyId}`, {
                         method: "GET",
                     }).then(response => {
                         return response.json();
                     })
                     .then(data => {
+
                         return this.resumes = data
                     }).catch(err => {
                         alert(JSON.stringify(err))
@@ -416,9 +414,7 @@
                     });
                 },
 
-                selectSex(item) {
-                    return item == true ? '男' : '女'
-                },
+
             },
             watch: {
 

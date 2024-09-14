@@ -52,54 +52,41 @@ namespace JobHunting.Areas.Companies.Controllers
         {
 
 
-            var result = from cd in _context.Candidates
-                         join r in _context.Resumes on cd.CandidateId equals r.CandidateId
-                         join ror in _context.ResumeOpeningRecords on r.ResumeId equals ror.ResumeId
-                         join op in _context.Openings on ror.OpeningId equals op.OpeningId
-                         join cp in _context.Companies on op.CompanyId equals cp.CompanyId
-                         where cp.CompanyId == id
-                         select new
+            var result = (from cd in _context.Companies 
+                         join op in _context.Openings on cd.CompanyId equals op.CompanyId
+                         join ror in _context.ResumeOpeningRecords on op.OpeningId equals ror.OpeningId
+                         join r in _context.Resumes on ror.ResumeId equals r.ResumeId
+                         join c in  _context.Candidates on r.CandidateId equals c.CandidateId
+                         where cd.CompanyId == id
+                         select new 
                          {
-                             Name = cd.Name,
-                             Address = cd.Address,
-                             Sex = cd.Sex,
-                             Birthday = cd.Birthday,
-                             Phone = cd.Phone,
-                             Degree = cd.Degree,
-                             Email = cd.Email,
-                             EmploymentStatus = cd.EmploymentStatus,
+                             Name = c.Name,
+                             Address = c.Address,
+                             Sex = c.Sex,
+                             Birthday = c.Birthday,
+                             Phone = c.Phone,
+                             Degree = c.Degree,
+                             Email = c.Email,
+                             EmploymentStatus = c.EmploymentStatus,
                              Time = r.Time,
                              Certification = r.Certification != null ? Convert.ToBase64String(r.Headshot) : null,
                              WorkExperience = r.WorkExperience,
                              Autobiography = r.Autobiography,
                              jobTitle = ror.OpeningTitle,
+                             InterviewYN = ror.InterviewYN,
                              Intro = r.Intro,
                              TitleClassId = r.TitleClasses.Select(rtc => rtc.TitleClassId),
                              TitleClassName = r.TitleClasses.Select(rtc => rtc.TitleClassName),
                              TagId = r.Tags.Select(t => t.TagId),
                              TagName = r.Tags.Select(t => t.TagName),
                              Headshot = r.Headshot != null ? Convert.ToBase64String(r.Headshot) : null,
-
-                         };
-
-
-
+                         }).ToList();
 
 
             return Json(result);
             
         }
 
-        [HttpGet]
-        public JsonResult ResumeStorageJson()
-        {
-
-            return Json(_context.Resumes.Include(i=>i.Companies).Include(c => c.Candidate).Include(t => t.TitleClasses).Select(n => new
-            {
-                
-            }));
-
-        }
 
 
 
@@ -146,6 +133,11 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
 
+        //[HttpPost]
+        //public async Task<IActionResult> 
+
+
+
 
 
 
@@ -156,6 +148,9 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
+
+
+
         //GET:compaines/C_Resume/ReceiveResumeJson
         [HttpGet]
         public JsonResult ReceiveResumeJson()
