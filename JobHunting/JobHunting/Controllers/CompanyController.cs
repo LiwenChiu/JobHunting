@@ -9,10 +9,11 @@ namespace JobHunting.Controllers
 {
     public class CompanyController : Controller
     {
-        private readonly DuckContext _context;
-        public CompanyController(DuckContext context)
+        private readonly DuckContext _context; IWebHostEnvironment _hostingEnvironment;
+        public CompanyController(DuckContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
@@ -22,9 +23,32 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro(int id)
+        public async Task<IActionResult> ResumeIntro()
         {
-            return PartialView();
+            return View();
+        }
+        public async Task<IActionResult> ResumeIntroData(int id)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
+            {
+                ResumeId = c.ResumeId,
+                CandidateId = c.CandidateId,
+                Title = c.Title,
+                Intro = c.Intro,
+                Autobiography = c.Autobiography,
+                WorkExperience = c.WorkExperience,
+                Time =c.Time,
+                WishAddress = c.Address,
+                Name = c.Candidate.Name,
+                Sex = c.Candidate.Sex,
+                Degree = c.Candidate.Degree,
+                Address = c.Candidate.Address,
+                EmploymentStatus = c.Candidate.EmploymentStatus,
+                MilitaryService = c.Candidate.MilitaryService,
+                TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+            }));
         }
 
         public async Task<IActionResult> CompanyIndexList()
@@ -38,8 +62,6 @@ namespace JobHunting.Controllers
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
-                Certification = c.Certification,
-                Time = c.Time,
                 WishAddress = c.Address,
                 Name = c.Candidate.Name,
                 Sex = c.Candidate.Sex,
@@ -64,9 +86,7 @@ namespace JobHunting.Controllers
                     Intro = c.Intro,
                     Autobiography = c.Autobiography,
                     WorkExperience = c.WorkExperience,
-                    Certification = c.Certification,
                     WishAddress = c.Address,
-                    Time = c.Time,
                     Name = c.Candidate.Name,
                     Sex = c.Candidate.Sex,
                     Birthday = c.Candidate.Birthday,
@@ -87,9 +107,6 @@ namespace JobHunting.Controllers
                     Title = x.Title,
                     Intro = x.Intro,
                     Autobiography = x.Autobiography,
-                    WorkExperience = x.WorkExperience,
-                    Certification = x.Certification,
-                    Time = x.Time,
                     Address = x.Address,
                     Name = x.Name,
                     Sex = x.Sex,
@@ -168,6 +185,14 @@ namespace JobHunting.Controllers
                 age--;
             }
             return age;
+        }
+        public async Task<FileResult> GetPicture(int id)
+        {
+            string webRootPath = _hostingEnvironment.WebRootPath;
+            string FileName = Path.Combine(webRootPath, "images", "No_Image_Available.jpg");
+            Resume c = await _context.Resumes.FindAsync(id);
+            byte[] ImageContent = c?.Headshot != null ? c.Headshot : System.IO.File.ReadAllBytes(FileName);
+            return File(ImageContent, "image/jpeg");
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
