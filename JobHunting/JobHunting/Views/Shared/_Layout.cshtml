@@ -155,11 +155,13 @@
             methods: {
                 addletter() {
                     let self = this;
+                    let today = new Date().toISOString();
                     var form = new FormData();
                     form.append("CompanyId", 3);
                     form.append("Letterclass", self.letterclass);
                     form.append("SubjectLine", self.subjectLine);
                     form.append("Content", self.content);
+                    form.append("SendTime",today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
                         axios.post('https://localhost:7169/Home/AddLetter', form, {
                         headers: { 'Content-Type': 'multipart/form-data' },
