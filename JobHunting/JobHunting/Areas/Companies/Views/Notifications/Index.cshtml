@@ -38,7 +38,7 @@
                             <span class="card-text"><i class="fa-solid fa-caret-right"></i> 日期: {{notification.appointmentTime}}</span>
                         </div>
                         <div class="card-footer text-center">
-                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modalId" v-on:click="showModal(notification)">
+                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modalId" v-on:click="showModal(notification.notificationId)">
                                 查看
                             </button>
                         </div>
@@ -123,11 +123,10 @@
                     companyId: 2,
                     filterInput: null,
                     notifications: [],
+                    notificationModal: [],
                     pageStart: 1,
                     totalDataCount: null,   //總共幾筆資料
                     totalPage: null,    //總共幾頁
-                    clickedNotificationId: null,
-                    clickedNotificationStatus: "",
                 };
             },
             methods: {
@@ -146,9 +145,13 @@
                         })
                         .catch(err => { alert(err) });
                 },
-                showModal(notification) {
-                    clickedNotificationId = notification.notificationId;
-                    clickedNotificationStatus = notification.status;
+                showModal(notificationId) {
+                    axios.get(`${this.baseAddress}/Companies/Notifications/GetNotification`, notificationId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.notificationModal = response.data)
+                        .catch(err => { alert(err) });
                 },
                 turnPage: function (page) {
                     this.pageStart = page;

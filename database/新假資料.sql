@@ -365,27 +365,27 @@ INSERT INTO CompanyOrders (CompanyId, PlanId, CompanyName, GUINumber, Title, Pri
 (7, 19, N'永信藥品工業股份有限公司', N'87654321', N'完整計畫訂單', 2400, '2024-09-06', '2024-09-07', 90, 1),
 (2, 20, N'漁業科技公司', N'23456789', N'定制計畫訂單', 12000, '2024-09-08', '2024-09-09', 365, 1);
 GO
-INSERT INTO Notifications (CompanyId, CandidateId, OpeningId, ResumeId, [Status], SubjectLine, Content, SendDate, AppointmentTime) VALUES
-(1, 1, 1, 1, N'待處理', N'您的申請已收到，請等待後續通知。', N'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', '2024-08-01', NULL),
-(2, 2, 2, 2, N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'ssssssssssssssssssssssssssssssssssssss', '2024-08-02', '2024-08-05 09:00:00'),
-(3, 3, 3, 3, N'申請確認', N'我們已收到您的申請，我們將在3個工作日內聯繫您。', N'agegefFSFDSDFDSEF', '2024-08-03', NULL),
-(4, 4, 4, 4, N'面試確認', N'您的面試已確認，請按照下列時間參加。', N'Edfvcdssdcgedsfgstrefdsgtrsef', '2024-08-04', '2024-08-06 10:00:00'),
-(5, 5, 5, 5, N'審核進度', N'您的申請正在審核中，請耐心等待。', N'EAFDfgdsghdjgfrdesdhgfgfds', '2024-08-05', NULL),
-(6, 6, 6, 6, N'面試安排', N'面試安排已完成，請準時到達。', N'sdfaewfdsFESDeSDedesFF', '2024-08-06', '2024-08-07 14:00:00'),
-(7, 7, 7, 7, N'面試結果', N'您的面試結果已出，請查看詳細資訊。', N'DDSTRHRSHREGDSSDf', '2024-08-07', NULL),
-(8, 8, 8, 8, N'申請回覆', N'我們已回覆您的申請，請查看郵件。', N'aremyse4567tkf.65erghj65', '2024-08-08', NULL),
-(9, 9, 9, 9, N'面試邀請', N'您已被選中參加面試，請確認參加。', N'WRTU645EHTJ,I75U6EHT756urthdretyj6y5esrhghdyu6y5erty6453wrhgdmcj,yfu6y5erg', '2024-08-09', '2024-08-10 15:00:00'),
-(10, 10, 10, 10, N'申請狀態更新', N'您的申請狀態已更新，請查看。', N'jgdhmjtdkyrj kurytergd m7urgf mudtr hg tydyergfdxhdjyhfdbvngftr', '2024-08-10', NULL),
-(11, 1, 11, 1, N'面試通知', N'面試時間已安排，請準時參加。', N'asgehrehtjhz', '2024-08-11', '2024-08-12 11:00:00'),
-(12, 2, 12, 2, N'結果通知', N'我們已經完成了面試，請查看結果。', N'eehte5454rdfgr3', '2024-08-12', NULL),
-(13, 3, 13, 3, N'申請確認', N'我們已確認您的申請，請耐心等待。', N'24354ytujmhngesr', '2024-08-13', NULL),
-(14, 4, 14, 4, N'面試安排', N'面試安排已完成，請按時參加。', N'2345ytyresdgnbmhgfdresdx', '2024-08-14', '2024-08-15 16:00:00'),
-(15, 5, 15, 5, N'進度更新', N'您的申請進度已更新，請查看詳情。', N'salkjbgikjsfdks;ikjsf', '2024-08-15', NULL),
-(2, 6, 2, 6, N'面試邀請', N'我們邀請您參加面試，請查看詳細安排。', N'dhgnyhtddjytywrsfng', '2024-08-16', '2024-08-17 09:30:00'),
-(13, 7, 13, 7, N'面試通知', N'面試時間已確認，請準時參加。', N'TGyajstjyhdf', '2024-08-17', '2024-08-18 13:00:00'),
-(8, 8, 8, 8, N'申請結果', N'我們已經審核您的申請，請查看結果。', N'Sfgdzrggnhfstrhsfb', '2024-08-18', NULL),
-(5, 9, 5, 9, N'面試安排', N'面試時間已安排，請務必準時。', N'awdfgcgrfftrgs', '2024-08-19', '2024-08-20 10:30:00'),
-(10, 10, 10, 10, N'申請狀態', N'您的申請狀態已更新，請查看。', N'sgfgegsfh', '2024-08-20', NULL);
+INSERT INTO Notifications (CompanyId, CandidateId, OpeningId, ResumeId, [Status], SubjectLine, Content, SendDate, AppointmentDate, AppointmentTime) VALUES
+(1, 1, 1, 1, N'待處理', N'您的申請已收到，請等待後續通知。', N'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', '2024-08-01', NULL, NULL),
+(2, 2, 2, 2, N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'ssssssssssssssssssssssssssssssssssssss', '2024-08-02', '2024-08-05','09:00:00'),
+(3, 3, 3, 3, N'申請確認', N'我們已收到您的申請，我們將在3個工作日內聯繫您。', N'agegefFSFDSDFDSEF', '2024-08-03', NULL, NULL),
+(4, 4, 4, 4, N'面試確認', N'您的面試已確認，請按照下列時間參加。', N'Edfvcdssdcgedsfgstrefdsgtrsef', '2024-08-04', '2024-08-06', '10:00:00'),
+(5, 5, 5, 5, N'審核進度', N'您的申請正在審核中，請耐心等待。', N'EAFDfgdsghdjgfrdesdhgfgfds', '2024-08-05', NULL, NULL),
+(6, 6, 6, 6, N'面試安排', N'面試安排已完成，請準時到達。', N'sdfaewfdsFESDeSDedesFF', '2024-08-06', '2024-08-07', '14:00:00'),
+(7, 7, 7, 7, N'面試結果', N'您的面試結果已出，請查看詳細資訊。', N'DDSTRHRSHREGDSSDf', '2024-08-07', NULL, NULL),
+(8, 8, 8, 8, N'申請回覆', N'我們已回覆您的申請，請查看郵件。', N'aremyse4567tkf.65erghj65', '2024-08-08', NULL, NULL),
+(9, 9, 9, 9, N'面試邀請', N'您已被選中參加面試，請確認參加。', N'WRTU645EHTJ,I75U6EHT756urthdretyj6y5esrhghdyu6y5erty6453wrhgdmcj,yfu6y5erg', '2024-08-09', '2024-08-10', '15:00:00'),
+(10, 10, 10, 10, N'申請狀態更新', N'您的申請狀態已更新，請查看。', N'jgdhmjtdkyrj kurytergd m7urgf mudtr hg tydyergfdxhdjyhfdbvngftr', '2024-08-10', NULL, NULL),
+(11, 1, 11, 1, N'面試通知', N'面試時間已安排，請準時參加。', N'asgehrehtjhz', '2024-08-11', '2024-08-12', '11:00:00'),
+(12, 2, 12, 2, N'結果通知', N'我們已經完成了面試，請查看結果。', N'eehte5454rdfgr3', '2024-08-12', NULL, NULL),
+(13, 3, 13, 3, N'申請確認', N'我們已確認您的申請，請耐心等待。', N'24354ytujmhngesr', '2024-08-13', NULL, NULL),
+(14, 4, 14, 4, N'面試安排', N'面試安排已完成，請按時參加。', N'2345ytyresdgnbmhgfdresdx', '2024-08-14', '2024-08-15', '16:00:00'),
+(15, 5, 15, 5, N'進度更新', N'您的申請進度已更新，請查看詳情。', N'salkjbgikjsfdks;ikjsf', '2024-08-15', NULL, NULL),
+(2, 6, 2, 6, N'面試邀請', N'我們邀請您參加面試，請查看詳細安排。', N'dhgnyhtddjytywrsfng', '2024-08-16', '2024-08-17', '09:30:00'),
+(13, 7, 13, 7, N'面試通知', N'面試時間已確認，請準時參加。', N'TGyajstjyhdf', '2024-08-17', '2024-08-18', '13:00:00'),
+(8, 8, 8, 8, N'申請結果', N'我們已經審核您的申請，請查看結果。', N'Sfgdzrggnhfstrhsfb', '2024-08-18', NULL, NULL),
+(5, 9, 5, 9, N'面試安排', N'面試時間已安排，請務必準時。', N'awdfgcgrfftrgs', '2024-08-19', '2024-08-20', '10:30:00'),
+(10, 10, 10, 10, N'申請狀態', N'您的申請狀態已更新，請查看。', N'sgfgegsfh', '2024-08-20', NULL, NULL);
 GO
 INSERT INTO Admins (PersonnelCode, Email, [Password], [Name], Authority, [Status]) VALUES
 (1001, N'admin1@example.com', N'password1', N'張三', 1, 1),
