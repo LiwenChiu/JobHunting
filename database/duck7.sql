@@ -256,7 +256,8 @@ CREATE TABLE Notifications
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
 	SendDate date not null,
-	AppointmentTime datetime,
+	AppointmentDate date,
+	AppointmentTime time,
 )
 GO
 CREATE TABLE Admins
