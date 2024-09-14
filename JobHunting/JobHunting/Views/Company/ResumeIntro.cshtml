@@ -1,9 +1,4 @@
-﻿@section Styles{
-    <style>
-
-    </style>
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,21 +15,21 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/resumeInrro/css/styles.css" rel="stylesheet" />
 </head>
-<body id="page-top">
+<body>
+    <div id ="pagetop">
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav" style="background-color:aqua">
         <a class="navbar-brand js-scroll-trigger" href="#page-top">
             <span class="d-block d-lg-none">Clarence Taylor</span>
-            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="~/resumeInrro/assets/img/profile.jpg" alt="..." /></span>
+                <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" @* :src=`${baseAddress}/Company//GetPicture/${item.companyId}` *@ alt="..." /></span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav">
+            <div class="collapse navbar-collapse" id="navbarResponsive" >
+            <ul class="navbar-nav" >
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about">About</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#experience">Experience</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#education">Education</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skills">Skills</a></li>
-                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#interests">Interests</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#awards">Awards</a></li>
             </ul>
         </div>
@@ -65,7 +60,7 @@
         <!-- Experience-->
         <section class="resume-section" id="experience">
             <div class="resume-section-content">
-                <h2 class="mb-5">Experience</h2>
+                <h2 class="mb-5">工作經驗</h2>
                 <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                     <div class="flex-grow-1">
                         <h3 class="mb-0">Senior Web Developer</h3>
@@ -104,7 +99,7 @@
         <!-- Education-->
         <section class="resume-section" id="education">
             <div class="resume-section-content">
-                <h2 class="mb-5">Education</h2>
+                <h2 class="mb-5">學歷</h2>
                 <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                     <div class="flex-grow-1">
                         <h3 class="mb-0">University of Colorado Boulder</h3>
@@ -128,7 +123,7 @@
         <!-- Skills-->
         <section class="resume-section" id="skills">
             <div class="resume-section-content">
-                <h2 class="mb-5">Skills</h2>
+                <h2 class="mb-5">專業技能</h2>
                 <div class="subheading mb-3">Programming Languages & Tools</div>
                 <ul class="list-inline dev-icons">
                     <li class="list-inline-item"><i class="fab fa-html5"></i></li>
@@ -166,19 +161,10 @@
             </div>
         </section>
         <hr class="m-0" />
-        <!-- Interests-->
-        <section class="resume-section" id="interests">
-            <div class="resume-section-content">
-                <h2 class="mb-5">Interests</h2>
-                <p>Apart from being a web developer, I enjoy most of my time being outdoors. In the winter, I am an avid skier and novice ice climber. During the warmer months here in Colorado, I enjoy mountain biking, free climbing, and kayaking.</p>
-                <p class="mb-0">When forced indoors, I follow a number of sci-fi and fantasy genre movies and television shows, I am an aspiring chef, and I spend a large amount of my free time exploring the latest technology advancements in the front-end web development world.</p>
-            </div>
-        </section>
-        <hr class="m-0" />
         <!-- Awards-->
         <section class="resume-section" id="awards">
             <div class="resume-section-content">
-                <h2 class="mb-5">Awards & Certifications</h2>
+                <h2 class="mb-5">證書與獎項</h2>
                 <ul class="fa-ul mb-0">
                     <li>
                         <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
@@ -222,14 +208,39 @@
             </div>
         </section>
     </div>
-</body>
-</html>
-@section Scripts{
+    </div>
+
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     <script>
-
+        let vueList = {
+            data() {
+                return {
+                    resumes: [],
+                    resumeId: 3,
+                    baseAddress: "https://localhost:7169"
+                };
+            },
+            methods: {
+                getResumesIntro() {
+                    let self = this
+                    axios.get(`${self.baseAddress}/Company/ResumeIntroData/${self.resumeId}`, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        self.resumes = res.data;
+                        console.log(res.data)
+                    }).catch(err => JSON.stringify(err));
+                },
+            },
+            mounted() {
+                // this.getResumesIntro();
+            },
+        };
+        Vue.createApp(vueList).mount("#pagetop")
     </script>
-}
+</body>
+</html>
