@@ -59,6 +59,8 @@ namespace JobHunting.Areas.Candidates.Controllers
             }));
         }
 
+
+
         //撈全部的履歷資料
         //{
 
@@ -121,7 +123,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagClassId = rt.TagClassId
             }));
         }
-        //GET:Companies/Openings/TagClassJson
+        //GET:Candidates/Resume/TagClassJson
         [HttpGet]
         public JsonResult TagClassJson()
         {
@@ -300,6 +302,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.WorkExperience = rm.WorkExperience;
                 r.Time = rm.Time;
                 r.ReleaseYN = rm.ReleaseYN;
+                r.TitleClasses.Clear();
+                r.Tags.Clear();
 
             if (rm.HeadshotImageFile != null)
             {

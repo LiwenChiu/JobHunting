@@ -4,7 +4,7 @@
     {
         public int NotificationId { get; set; }
 
-        public DateTime? AppointmentTime { get; set; }
+        //public ? AppointmentTime { get; set; }
 
     }
 }
