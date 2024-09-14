@@ -46,38 +46,104 @@ namespace JobHunting.Areas.Companies.Controllers
         //    }));
         //}
         //GET:compaines/C_Resume/ResumeStorageResult
+
         [HttpGet]
-        public JsonResult ResumeStorageResult()
+        public JsonResult ResumeStorageResult(int id)
         {
+
+
+            var result = from cd in _context.Candidates
+                         join r in _context.Resumes on cd.CandidateId equals r.CandidateId
+                         join ror in _context.ResumeOpeningRecords on r.ResumeId equals ror.ResumeId
+                         join op in _context.Openings on ror.OpeningId equals op.OpeningId
+                         join cp in _context.Companies on op.CompanyId equals cp.CompanyId
+                         where cp.CompanyId == id
+                         select new
+                         {
+                             Name = cd.Name,
+                             Address = cd.Address,
+                             Sex = cd.Sex,
+                             Birthday = cd.Birthday,
+                             Phone = cd.Phone,
+                             Degree = cd.Degree,
+                             Email = cd.Email,
+                             EmploymentStatus = cd.EmploymentStatus,
+                             Time = r.Time,
+                             Certification = r.Certification != null ? Convert.ToBase64String(r.Headshot) : null,
+                             WorkExperience = r.WorkExperience,
+                             Autobiography = r.Autobiography,
+                             jobTitle = ror.OpeningTitle,
+                             Intro = r.Intro,
+                             TitleClassId = r.TitleClasses.Select(rtc => rtc.TitleClassId),
+                             TitleClassName = r.TitleClasses.Select(rtc => rtc.TitleClassName),
+                             TagId = r.Tags.Select(t => t.TagId),
+                             TagName = r.Tags.Select(t => t.TagName),
+                             Headshot = r.Headshot != null ? Convert.ToBase64String(r.Headshot) : null,
+
+                         };
+
+
+
+
+
+            return Json(result);
             
-            return Json(_context.Resumes.Include(cd => cd.Companies).Include(c => c.Candidate).Select(n => new
+        }
+
+        [HttpGet]
+        public JsonResult ResumeStorageJson()
+        {
+
+            return Json(_context.Resumes.Include(i=>i.Companies).Include(c => c.Candidate).Include(t => t.TitleClasses).Select(n => new
             {
-                ResumeId = n.ResumeId,
-                CandidateId = n.CandidateId,
-                CandidateName = n.Candidate.Name,
-                CandidateAddress = n.Address,
-                CandidateSex = n.Candidate.Sex,
-                CandidateBirthday = n.Candidate.Birthday,
-                CandidatePhone = n.Candidate.Phone,
-                CandidateDegree = n.Candidate.Degree,
-                CandidateEmail = n.Candidate.Email,
-                CandidateEmploymentStatus = n.Candidate.EmploymentStatus,
-                ResumeTime = n.Time,
-                ResumeCertification = n.Certification,
-                ResumeWorkExperience = n.WorkExperience,
-                ResumeAutobiography = n.Autobiography,
-                jobTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == n.ResumeId).Select(ror => ror.OpeningTitle).Single(),
-                ResumeTitle = n.Title,
-                ResumeIntro = n.Intro,
-                ResumeTitleClassId = n.TitleClasses.Select(rtc => rtc.TitleClassId),
-                ResumeTitleClassName = n.TitleClasses.Select(rtc => rtc.TitleClassName),
-                ResumeTagId = n.Tags.Select(t => t.TagId),
-                ResumeTagName = n.Tags.Select(t => t.TagName),
-                ResumeHeadshot = n.Headshot != null ? Convert.ToBase64String(n.Headshot) : null,
+                
             }));
 
         }
 
+
+
+        [HttpGet]
+        public JsonResult TitleCategoryJson()
+        {
+            return Json(_context.TitleCategories.Select(rtc => new
+            {
+                TitleCategoryId = rtc.TitleCategoryId,
+                TitleCategoryName = rtc.TitleCategoryName
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TitleClassJson()
+        {
+            return Json(_context.TitleClasses.Select(rtc => new
+            {
+                TitleClassId = rtc.TitleClassId,
+                TitleClassName = rtc.TitleClassName,
+                TitleCategoryId = rtc.TitleCategoryId
+            }));
+        }
+
+        [HttpGet]
+        public JsonResult TagJson()
+        {
+            return Json(_context.Tags.Select(rt => new
+            {
+                TagId = rt.TagId,
+                TagName = rt.TagName,
+                TagClassId = rt.TagClassId
+            }));
+        }
+        //GET:Companies/C_Resume/TagClassJson
+        [HttpGet]
+        public JsonResult TagClassJson()
+        {
+            return Json(_context.TagClasses.Select(rtc => new
+            {
+                TagClassId = rtc.TagClassId,
+                TagClassName = rtc.TagClassName
+            }));
+        }
 
 
 
