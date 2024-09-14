@@ -286,7 +286,8 @@ CREATE TABLE OpinionLetters
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
 	Attachment varbinary(MAX),
-	[Status] bit not null default(0)
+	[Status] bit not null default(0),
+	SendTime datetime not null,
 )
 GO
 CREATE TABLE AdminRecords
