@@ -38,7 +38,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     SubjectLine = cn.SubjectLine,
                     Content = cn.Content,
                     SendDate = cn.SendDate,
-                    AppointmentTime = cn.AppointmentTime,
+                    AppointmentDate = cn.AppointmentDate,
                     CompanyName = cn.Company.CompanyName,
                     CandidateName = cn.Candidate.Name,
                 })
@@ -55,8 +55,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     ResumeId = cn.ResumeId,
                     Status = cn.Status,
                     SubjectLine = cn.SubjectLine,
-                    Content = cn.Content,
-                    AppointmentTime = cn.AppointmentTime,
+                    AppointmentDate = cn.AppointmentDate,
                     CandidateName = cn.CandidateName,
                 });
 
@@ -68,5 +67,15 @@ namespace JobHunting.Areas.Companies.Controllers
 
             return filterPaging;
         }
+
+        //public async Task<> GetNotification([FromBody] int notificationId)
+        //{
+        //    var notification = await _context.Notifications.FindAsync(notificationId);
+        //    if (notification == null)
+        //    {
+        //        return
+        //    }
+
+        //}
     }
 }
