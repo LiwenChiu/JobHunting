@@ -1,64 +1,88 @@
 ﻿@{
     ViewData["Title"] = "會員中心";
 }
+@section Styles{
+    <style>
+        .box {
+            height: 300px;
+        }
+    </style>
+    
+}
     @* ---------------------------清單--------------------------------------- *@
 <div id="intro">
     <div class="container bg-light position-relative mt-3" style="border-radius:30px;" >
-        <div class="position-absolute">
-            <h3 class="text-center" >公司介紹</h3>
-        </div>
-        <div class="mt-2" v-for="item in companyIntro">
+        <div v-for="item in companyIntro">
+            <div class="mb-3">
+                <h3 class="text-center">公司介紹</h3>
+            </div>
+            <hr>
             <template v-if="item.edit == false">
-                <img class="card-img-top img-fluid"
-                     :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
-                     style="width:320px;height:240px" />
-                <div class="inputOutAreas text-center pt-3">
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="companyName" class="col-sm-2 col-form-label labelCompanyName">
-                            公司名稱
-                        </label>
-                        <label>{{item.companyName}}</label>
+                <div class="container">
+                    <div class="row ">
+                        <div class="col-3">
+                            <img class="card-img-top img-fluid "
+                                 :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}`
+                                 style="width:320px;height:240px" />
+                        </div>
+                        <div class="col-9" >
+                            <div class="">
+                                <label for="companyName" class="col-sm-2 col-form-label labelCompanyName">
+                                    公司名稱
+                                </label>
+                                <label><small>{{item.companyName}}</small></label>
+                                <hr>
+                            </div>
+                            <div class="">
+                                <label for="companyClassName" class="col-sm-2 col-form-label labelCompanyName">
+                                    公司類別
+                                </label>
+                                <label><small>{{item.companyClassName}}</small></label>
+                                <hr>
+                            </div>
+                            <div class="">
+                                <label for="contactEmail" class="col-sm-2 col-form-label labelCompanyName">
+                                    電子郵件
+                                </label>
+                                <label><small>{{item.contactEmail}}</small></label>
+                                <hr>
+                            </div>
+                            <div class="">
+                                <label for="contactPhone" class="col-sm-2 col-form-label labelCompanyName">
+                                    通訊電話
+                                </label>
+                                <label>{{item.contactPhone}}</label>
+                                <hr>
+                            </div>
+                            <div class="">
+                                <label for="address" class="col-sm-2 col-form-label labelCompanyName">
+                                    通訊地址
+                                </label>
+                                <label>{{item.address}}</label>
+                                <hr>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="companyClassName" class="col-sm-2 col-form-label labelCompanyName">
-                            公司類別
-                        </label>
-                        <label>{{item.companyClassName}}</label>
+                    <div class="row mb-3 border border-secondary ">
+                        <div class="inputAreas col-6">
+                            <label for="benefits" class=" col-form-label">
+                                福利制度
+                            </label>
+                            <p>{{item.benefits}}</p>
+                        </div>
+                        <div class="box inputAreas col-6 ">
+                            <label for="intro" class=" col-form-label">
+                                簡介
+                            </label>
+                            <label>{{item.intro}}</label>
+                            
+                        </div>
                     </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="contactEmail" class="col-sm-2 col-form-label labelCompanyName">
-                            電子郵件
-                        </label>
-                        <label>{{item.contactEmail}}</label>
+                    <div class="text-center mb-3">
+                        <button type="submit" class="btn btn-outline-secondary" v-on:click="edit(item)">編輯</button>
                     </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="contactPhone" class="col-sm-2 col-form-label labelCompanyName">
-                            通訊電話
-                        </label>
-                        <label>{{item.contactPhone}}</label>
-                    </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="address" class="col-sm-2 col-form-label labelCompanyName">
-                            通訊地址
-                        </label>
-                        <label>{{item.address}}</label>
-                    </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="benefits" class="col-sm-2 col-form-label labelCompanyName">
-                            福利制度
-                        </label>
-                        <label>{{item.benefits}}</label>
-                    </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for="intro" class="col-sm-2 col-form-label labelCompanyName">
-                            簡介
-                        </label>
-                        <label>{{item.intro}}</label>
-                    </div>
-                    <button type="submit" class="btn btn-outline-secondary" v-on:click="edit(item)">編輯</button>
                 </div>
             </template>
-        
     @* ---------------------------編輯--------------------------------------- *@
             <template v-if="item.edit == true">
                  <div class="inputOutAreas text-center pt-3">
@@ -68,7 +92,7 @@
                         </label>
                         <input type="text" class="form-control inputCompanyName col" v-model="item.companyName">
                     </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around ">
                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
                             公司類別<span class="text-danger">*</span>
                         </label>

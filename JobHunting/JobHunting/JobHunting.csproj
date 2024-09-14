@@ -10,12 +10,16 @@
   <ItemGroup>
     <Compile Remove="wwwroot\images\Alice Chen_22\**" />
     <Compile Remove="wwwroot\images\Alice Chen_23\**" />
+    <Compile Remove="wwwroot\NewFolder\**" />
     <Content Remove="wwwroot\images\Alice Chen_22\**" />
     <Content Remove="wwwroot\images\Alice Chen_23\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
     <EmbeddedResource Remove="wwwroot\images\Alice Chen_22\**" />
     <EmbeddedResource Remove="wwwroot\images\Alice Chen_23\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
     <None Remove="wwwroot\images\Alice Chen_22\**" />
     <None Remove="wwwroot\images\Alice Chen_23\**" />
+    <None Remove="wwwroot\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
