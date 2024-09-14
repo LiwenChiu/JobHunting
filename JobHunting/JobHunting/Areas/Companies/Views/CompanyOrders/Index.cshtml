@@ -38,10 +38,10 @@
             <thead>
                 <tr>
                     <td>方案</td>
+                    <td>天數</td>
                     <td>價格</td>
                     <td>下單時間</td>
                     <td>付款時間</td>
-                    <td>天數</td>
                     <td>付款狀態</td>
                     <td></td>
                 </tr>
@@ -49,10 +49,10 @@
             <tbody>
                 <tr v-for="order in orders">
                     <td>{{order.title}}</td>
+                    <td>{{order.duration}}</td>
                     <td>{{order.price}}</td>
                     <td>{{order.orderDate}}</td>
                     <td>{{order.payDate == null ? "無" : order.payDate}}</td>
-                    <td>{{order.duration}}</td>
                     <td>{{order.status ? "已付款" : "尚未付款"}}</td>
                     <td><template v-if="!order.status"><button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button></template></td>
                 </tr>
