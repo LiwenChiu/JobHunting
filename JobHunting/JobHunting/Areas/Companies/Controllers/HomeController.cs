@@ -48,10 +48,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-        public IActionResult Notifications()
-        {
-            return View();
-        }
+
         public IActionResult OpinionLetters()
         {
             return View();
