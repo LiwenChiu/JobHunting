@@ -26,7 +26,7 @@
                 <button class="btn btn-warning "
                         data-bs-toggle="modal"
                         data-bs-target="#modalId"
-                        v-on:click="OpinionLetterModalShow(item.id);">
+                        v-on:click="OpinionLetterModalShow(item.letterId);">
                     意見信件
                 </button>
             </div>
@@ -55,23 +55,25 @@
                             <div class="container bg-light" style="border-radius: 30px;">
                                 <div class="inputOutAreas" style="width:95%">
 
-                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label">意見類別：{{opinionLetterModal.class}}</label>
+                                    <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-form-label">意見類別：{{opinionLetterModal.class}}</label>
                                     </div>
-                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨:{{opinionLetterModal.subjectLine}}</label>
-
+                                    <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-form-label ">主旨：{{opinionLetterModal.subjectLine}}</label>
                                     </div>
-                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-form-label ">發送日期：{{opinionLetterModal.sendTime}}</label>
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
                                         <img class="img-fluid" id="showPicture"
                                              v-bind:src=`${baseAddress}/Admins/ClientServiceCenter/GetPicture/${opinionLetterModal.letterId}`
                                              v-bind:title="opinionLetterModal.subjectLine"
                                              style="width:480px;height:320px"/>
                                     </div>
 
-                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                        <textarea class="form-control" style="height:150px" name="意見信件訊息" readonly>{{opinionLetterModal.content}}</textarea>
+                                    <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-form-label">訊息：</label>
+                                        <textarea class="form-control" style="height:100px;width:600px" name="意見信件訊息" readonly>{{opinionLetterModal.content}}</textarea>
                                     </div>
 
                                 </div>
@@ -173,7 +175,7 @@
                     })
                 },
                 OpinionLetterModalShow: function (id) {
-                    // alert(id);
+                    alert(id);
                     // let request ={
                     //     LetterId: id,
                     // };
@@ -200,9 +202,10 @@
 
                     request.Class = request.SubjectLine = _this.filter;
                     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                    .then(response => { 
+                    .then(response => {                             
+                            _this.opinionlist = response.data;
                             alert(JSON.stringify(response.data));
-                            // _this.opinionlist = response.data;
+
                     })
                     .catch(err => { alert(JSON.stringify(err)); })
                 },
@@ -213,18 +216,21 @@
                     let _this = this;
                     _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
                   
-                    axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
+                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
                         letterId,
                         { headers: { 'Content-Type': 'application/json' } })
                         .then(response => {
                             alert(response.data);
-                            this.OpinionData();
+                            _this.OpinionData();
                         })
                         .catch(err => { alert(err) });
 
                 }
             },
-            mounted() { this.OpinionData() },
+            mounted() {
+                let _this = this;
+                _this.OpinionData();
+            },
             }).mount("#app");
     </script>
 }

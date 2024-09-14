@@ -31,7 +31,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             var opinionletter = _context.OpinionLetters.OrderByDescending(p => p.SendTime).Select(p => new
             {
-                id = p.LetterId,
+                LetterId = p.LetterId,
                 Class = p.Class,
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
@@ -56,6 +56,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 Attachment = opinionLetter.Attachment,
                 Content = opinionLetter.Content,
                 Status = opinionLetter.Status,
+                SendTime = opinionLetter.SendTime,
             };
 
             return olovm;
@@ -73,6 +74,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 olfilter.Status == olfvm.Status)
                 .Select(p => new OpinioLetterFilterOutputViewModel
                 {
+                    LetterId=p.LetterId,
                     Class = p.Class,
                     SubjectLine = p.SubjectLine,
                     Status = p.Status,
