@@ -153,7 +153,7 @@ namespace JobHunting.Areas.Admins.Controllers
                     //Expiration = DateTime.Parse(co.Expiration).ToString(cultureTW),
                     Intro = co.Intro,
                     Status = co.Status,
-                });
+                }).OrderBy(co => co.Status).ThenByDescending(co => co.OrderId);
 
             var filterPaging = new CompanyOrdersOutputViewModel
             {

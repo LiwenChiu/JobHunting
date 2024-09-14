@@ -7,13 +7,13 @@
 @section Styles
 {
     <style>
-        input[type="file"] {
-            display: none;
+       /*  #headshotBtn{
+            visibility: hidden;
         }
 
-        .uploadStyle {
-            
-        }
+        #headshotBtn:hover{
+            visibility: visible;
+        } */
     </style>
 }
 
@@ -40,10 +40,7 @@
                 <div class="card-body text-center">
                     <div style="position: relative">
                         <div style="position: absolute; z-index:70;">
-                            <input id="upload" type="file">
-                            <label type="button" for="upload" class="uploadStyle">
-                                更改圖片
-                            </label>
+                            <button type="button" id="headshotBtn" class="astext">更改圖片</button>
                         </div>
                         <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
                     </div>
@@ -137,9 +134,9 @@
                     <div class="card mb-4 mb-md-0 h-100">
                         <div class="card-body">
                             <button type="button" class="mb-2 astext" v-on:click="function(){pageStatus=2}">
-                                <h4>
+                                <a class="astext" style="font-size:1.25rem; font-weight:bold;" asp-area="Candidates" asp-controller="Resume" asp-action="ResumeManage">
                                     <span class="text-primary font-italic me-1">我的</span>履歷
-                                </h4>
+                                </a>
                             </button>
                             <div class="row row-cols-1 row-cols-md-1 g-4">
                                 <template v-for="Resume in CandidateResumes">

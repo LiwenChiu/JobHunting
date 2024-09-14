@@ -48,7 +48,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IEnumerable<GetCandidateResumesViewModel>> GetCandidateResumes([FromBody] int id)
         {
-            return _context.Resumes
+            return _context.Resumes.AsNoTracking()
                 .Where(r => r.CandidateId == id)
                 .Select(r => new GetCandidateResumesViewModel
                 {
@@ -57,18 +57,28 @@ namespace JobHunting.Areas.Candidates.Controllers
                 }).Take(2);
         }
 
+        
+
         // POST: Candidates/Home/GetCandidateOpeningLikeRecords
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IEnumerable<GetCandidateOpeningLikeRecordsViewModel>> GetCandidateOpeningLikeRecords([FromBody] int id)
         {
-            return _context.ResumeOpeningRecords.Include(ror => ror.Resume)
+            return _context.ResumeOpeningRecords.Include(ror => ror.Resume).AsNoTracking()
                 .Where(ror => ror.Resume.CandidateId == id)
                 .Select(ror => new GetCandidateOpeningLikeRecordsViewModel
                 {
                     OpeningId = ror.OpeningId,
                     OpeningTitle = ror.OpeningTitle,
                 }).Take(2);
+        }
+
+        public async Task<FileResult> GetPicture(int CandidateId)
+        {
+            string noImageFilename = Path.Combine("StaticFiles", "images", "No_Image_Available.jpg");
+            Candidate? candidate = await _context.Candidates.FindAsync(CandidateId);
+            byte[] imageContent = candidate.Headshot != null ? candidate.Headshot : System.IO.File.ReadAllBytes(noImageFilename);
+            return File(imageContent, "image/jpeg");
         }
 
         // POST: Candidates/Home/ChangeTitleClass

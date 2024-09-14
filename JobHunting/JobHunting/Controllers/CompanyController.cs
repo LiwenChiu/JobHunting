@@ -22,7 +22,7 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro()
+        public async Task<IActionResult> ResumeIntro(int id)
         {
             return PartialView();
         }
@@ -75,9 +75,10 @@ namespace JobHunting.Controllers
                     skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
-                    b.Address.Substring(4, 3) == resume.Area ||
-                    (b.Address.Substring(4, 3) == resume.Area && b.Address.Substring(0, 3) == resume.zipCode) ||
-                    //b.Degree.Contains(resume.Edu) ||
+                    b.Address.Substring(0, 3) == resume.Area ||
+                    //b.Address.Contains(resume.Area) ||
+                    //(b.Address.Substring(0, 3) == resume.Area && b.Address.Substring(0, 3) == resume.zipCode) ||
+                    b.Degree.Contains(resume.Edu) ||
                     b.skill.Any(z => z.TagId == resume.Skill)
                 ).Select(x => new ResumesOutput
                 {
@@ -191,7 +192,5 @@ namespace JobHunting.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-
     }
 }
