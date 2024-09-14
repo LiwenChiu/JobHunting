@@ -14,24 +14,25 @@
 
     @* 意見信件card *@
     <div class="row">  
-        <div class="card rounded-5 col-3 m-2" style="width: 15rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
+        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>            
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
+                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 發送日期：{{item.sendTime}}</p>
             </div>
             <div class="card-footer text-center" style="background-color:transparent">
-                        @* <partial name="_OpinionLettersBtnPartial" />                     *@
+                @* 意見信件modalBtn *@
+                <button class="btn btn-warning "
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalId"
+                        v-on:click="OpinionLetterModalShow(item.id);">
+                    意見信件
+                </button>
             </div>
 
 
-            @* 意見信件modalBtn *@
-            <button class="btn btn-warning "
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalId"
-                    v-on:click="OpinionLetterModalShow(item.id);">
-                意見信件
-            </button>
+            
 
             @* 意見信件modal *@
 
@@ -130,7 +131,7 @@
                 return {
                     opinionlist:[],
                     pageStatus: 0,
-                    perpage: 8, //一頁的資料數
+                    perpage: 6, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
                     opinionLetterModal: {},
@@ -187,23 +188,24 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
-                // filterOpinionLetter: function () { 
-                //     // alert(`${this.filter}`);
-                //     let _this = this;
-                //     let request = {};
-                //     // if (_this.filter == "已處理") 
-                    // { request.Status = true; }
-                    // else if (_this.filter == "處理中")
-                    // { requst.Status = false; }
+                filterOpinionLetter: function () { 
+                    // alert(`${this.filter}`);
+                    let _this = this;                    
+                    let request = {};
 
-                //     request.Class = request.SubjectLine = _this.filter;
-                //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                //     .then(response => { 
-                //             // alert(JSON.stringify(response.data));
-                //             _this.opinionlist = response.data;
-                //     })
-                //     .catch(err => { alert(JSON.stringify(err)); })
-                // },
+                    // if (_this.filter.Contains("已處理")) 
+                    //     request.Status = true;
+                    // else if (_this.filter.Contains("處理中"))
+                    //     requst.Status = false;
+
+                    request.Class = request.SubjectLine = _this.filter;
+                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
+                    .then(response => { 
+                            alert(JSON.stringify(response.data));
+                            // _this.opinionlist = response.data;
+                    })
+                    .catch(err => { alert(JSON.stringify(err)); })
+                },
 
                 toggleStatus: function (letterId) {
                     // alert(letterId);
