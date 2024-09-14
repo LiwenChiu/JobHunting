@@ -1,20 +1,24 @@
 ﻿namespace JobHunting.ViewModel
 {
-    public class CompanyResumeListViewModel
+    public class ResumesIntroViewModel
     {
-        public int ResumeID { get; set; }
+        public int ResumeId { get; set; }
 
-        public int CandidateID { get; set; }
+        public int CandidateId { get; set; }
 
         public string Title { get; set; }
 
-        public string TitleClassID { get; set; }
-
         public string Intro { get; set; }
+
+        public byte[] Headshot { get; set; }
 
         public string Autobiography { get; set; }
 
         public string WorkExperience { get; set; }
+
+        public byte[] Certification { get; set; }
+
+        public string Time { get; set; }
 
         public string Address { get; set; }
         public string Email { get; set; }
@@ -32,7 +36,6 @@
         public string EmploymentStatus { get; set; }
 
         public string MilitaryService { get; set; }
-        public object TagObj  { get; set; }
+        public object TagObj { get; set; }
     }
 }
-
