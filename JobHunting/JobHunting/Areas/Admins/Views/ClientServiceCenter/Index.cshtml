@@ -188,23 +188,24 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
-                // filterOpinionLetter: function () { 
-                //     // alert(`${this.filter}`);
-                //     let _this = this;
-                //     let request = {};
-                //     // if (_this.filter == "已處理") 
-                    // { request.Status = true; }
-                    // else if (_this.filter == "處理中")
-                    // { requst.Status = false; }
+                filterOpinionLetter: function () { 
+                    // alert(`${this.filter}`);
+                    let _this = this;                    
+                    let request = {};
 
-                //     request.Class = request.SubjectLine = _this.filter;
-                //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                //     .then(response => { 
-                //             // alert(JSON.stringify(response.data));
-                //             _this.opinionlist = response.data;
-                //     })
-                //     .catch(err => { alert(JSON.stringify(err)); })
-                // },
+                    // if (_this.filter.Contains("已處理")) 
+                    //     request.Status = true;
+                    // else if (_this.filter.Contains("處理中"))
+                    //     requst.Status = false;
+
+                    request.Class = request.SubjectLine = _this.filter;
+                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
+                    .then(response => { 
+                            alert(JSON.stringify(response.data));
+                            // _this.opinionlist = response.data;
+                    })
+                    .catch(err => { alert(JSON.stringify(err)); })
+                },
 
                 toggleStatus: function (letterId) {
                     // alert(letterId);
