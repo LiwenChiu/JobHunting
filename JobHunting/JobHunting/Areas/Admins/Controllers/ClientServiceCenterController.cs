@@ -77,6 +77,7 @@ namespace JobHunting.Areas.Admins.Controllers
                     LetterId=p.LetterId,
                     Class = p.Class,
                     SubjectLine = p.SubjectLine,
+                    SendTime=p.SendTime,
                     Status = p.Status,
                 });
         }
