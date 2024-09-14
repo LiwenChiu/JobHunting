@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class OpinioLetterCardViewModel
+    public class OpinioLetterFilterViewModel
     {
         public int LetterId { get; set; }
 
