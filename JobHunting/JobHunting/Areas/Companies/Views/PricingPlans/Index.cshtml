@@ -36,7 +36,7 @@
                                 <p class="col-sm-2">{{plan.duration}}天</p>
                                 <p class="col-sm-2">${{plan.price}}</p>
                                 <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                <button type="button" class="btn btn-warning col-sm-3" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
+                                <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
                             </div>
                         </div>
                     </div>
@@ -73,17 +73,16 @@
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
-                        <h3 class="modal-title text-light" id="paymentAgreementLabel">確認購買</h3>
+                        <h3 class="modal-title text-light" id="paymentAgreementLabel">請問是否要購買此方案</h3>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
                     </div>
                     <div class="modal-body">
-                        <h3>請問是否要購買此方案: </h3>
-                        <p>方案: {{selectedPlanTitle}} </p>
+                        <h5>方案: {{selectedPlanTitle}} </h5>
                         <template v-if="selectedPlanDiscount === 1">
-                            <p>應付金額: NT${{selectedPlanPrice}} = NT${{selectedPlanPrice}}</p>
+                            <h5>應付金額: NT${{selectedPlanPrice}} = NT${{selectedPlanPrice}}</h5>
                         </template>
                         <template v-else>
-                            <p>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</p>
+                            <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
                         </template>
                     </div>
                     <div class="modal-footer">

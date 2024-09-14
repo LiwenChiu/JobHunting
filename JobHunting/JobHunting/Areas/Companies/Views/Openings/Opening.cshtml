@@ -276,7 +276,7 @@
                                                 <label class="">薪資條件:</label>
                                                 <div class="">
                                                     <input type="text" v-model="item.salaryMin" class="text-center" placeholder="最低薪資" />
-                                                    <span> -- </span>
+                                                    <span> - </span>
                                                     <input type="text" v-model="item.salaryMax" class="text-center" placeholder="最高薪資" />
                                                 </div>
                                                 <label class="">上班時段:</label>
@@ -417,7 +417,7 @@
                                                 <label class="">電子郵件:</label>
                                                 <p>{{item.contactEmail}}</p>
                                                 <label class="">薪資條件:</label>
-                                                <p>{{item.salaryMin}} --- {{item.salaryMax}}</p>
+                                                <p>{{item.salaryMin}} - {{item.salaryMax}}</p>
                                                 <label class="">上班時段:</label>
                                                 <p>{{item.time}}</p>
                                             </div>
@@ -747,8 +747,7 @@
                 //資料初始
                 ReceiveOpeningData() {
                     let _this = this;
-                    let companyId = 1;
-                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${companyId}`).then(
+                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${_this.CompanyId}`).then(
                         res => {
                             _this.openings = res.data;
                         }
