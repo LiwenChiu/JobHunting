@@ -29,13 +29,14 @@ namespace JobHunting.Areas.Admins.Controllers
         [HttpGet]
         public JsonResult IndexJson_opinionletter()
         {
-            var opinionletter = _context.OpinionLetters.Select(p => new
+            var opinionletter = _context.OpinionLetters.OrderByDescending(p => p.SendTime).Select(p => new
             {
                 id = p.LetterId,
                 Class = p.Class,
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
                 Content = p.Content,
+                SendTime = p.SendTime,
             });
             return Json(opinionletter);
         }
