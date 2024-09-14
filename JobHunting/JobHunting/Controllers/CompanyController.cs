@@ -24,7 +24,7 @@ namespace JobHunting.Controllers
         }
         public async Task<IActionResult> ResumeIntro()
         {
-            return View();
+            return PartialView();
         }
 
         public async Task<IActionResult> CompanyIndexList()
