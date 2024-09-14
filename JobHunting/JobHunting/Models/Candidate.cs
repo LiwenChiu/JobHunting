@@ -23,7 +23,7 @@ public partial class Candidate
 
     public byte[] Headshot { get; set; }
 
-    public string TitleClass { get; set; }
+    public int? TitleClassId { get; set; }
 
     public string Phone { get; set; }
 
@@ -41,5 +41,5 @@ public partial class Candidate
 
     public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
 
-    public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
+    public virtual TitleClass TitleClass { get; set; }
 }
