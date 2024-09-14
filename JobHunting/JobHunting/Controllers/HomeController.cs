@@ -30,15 +30,17 @@ namespace JobHunting.Controllers
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {
+
             OpinionLetter opinionLetter = new OpinionLetter();
             opinionLetter.CompanyId = letter.CompanyId;
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
+            opinionLetter.SendTime = letter.SendTime;
             IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
-            _context.Entry(opinionLetter).State = EntityState.Modified;
+            
             return "新增信件成功";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
