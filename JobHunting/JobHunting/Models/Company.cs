@@ -46,4 +46,6 @@ public partial class Company
     public virtual ICollection<Opening> Openings { get; set; } = new List<Opening>();
 
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
+
+    public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
 }

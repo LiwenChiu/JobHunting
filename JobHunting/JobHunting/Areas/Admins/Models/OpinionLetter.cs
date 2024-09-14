@@ -25,6 +25,8 @@ public partial class OpinionLetter
 
     public bool Status { get; set; }
 
+    public DateTime SendTime { get; set; }
+
     public virtual Admin Admin { get; set; }
 
     public virtual Candidate Candidate { get; set; }
