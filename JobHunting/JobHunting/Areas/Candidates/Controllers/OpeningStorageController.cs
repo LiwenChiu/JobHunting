@@ -15,7 +15,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             _context = context;
         }
-        public IActionResult OpeningStorage()
+        public IActionResult index()
         {
             return View();
         }
