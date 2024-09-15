@@ -270,7 +270,7 @@
                                                 <label class="">連絡人:</label>
                                                 <input type="text" v-model="item.contactName" class="form-control" />
                                                 <label class="">連絡電話:</label>
-                                                <input type="text" v-model="item.contactNumber" class="form-control" />
+                                                <input type="text" v-model="item.contactPhone" class="form-control" />
                                                 <label class="">電子郵件:</label>
                                                 <input type="text" v-model="item.contactEmail" class="form-control" />
                                                 <label class="">薪資條件:</label>
@@ -413,7 +413,7 @@
                                                 <label class="">連絡人:</label>
                                                 <p>{{item.contactName}}</p>
                                                 <label class="">連絡電話:</label>
-                                                <p>{{item.contactNumber}}</p>
+                                                <p>{{item.contactPhone}}</p>
                                                 <label class="">電子郵件:</label>
                                                 <p>{{item.contactEmail}}</p>
                                                 <label class="">薪資條件:</label>
@@ -633,7 +633,7 @@
                     if (!Array.isArray(titleClassId)) return '未指定';
                     return titleClassId
                         .map(id => {
-                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                            let titleClassItem = this.titleClass.find(item => item.titleClassId == id);
                             return titleClassItem ? titleClassItem.titleClassName : '未指定';
                         })
                         .join('/ ');
@@ -643,7 +643,7 @@
                     if (!Array.isArray(tagId)) return '未指定';
                     return tagId
                         .map(id => {
-                            let tagItem = this.Tags.find(item => item.tagId === id);
+                            let tagItem = this.Tags.find(item => item.tagId == id);
                             return tagItem ? tagItem.tagName : '未指定';
                         })
                         .join('/ ');

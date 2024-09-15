@@ -2,7 +2,7 @@
 {
 
 }
-
+@* 收藏職缺 *@
 <div class="container-fluid py-1 mt-5" id="OpeningApp">
     <div class="letters row">
         @* 職缺card *@
@@ -13,14 +13,14 @@
                         <div class="col-10">
                             <span class="card-title mb-3">{{item.title}}</span>
                         </div>
-                        @* 刪除履歷 *@
+                        @* 刪除收藏職缺 *@
                         <div class="col-2">
-                            <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpening(item)"></button>
+                            <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteCandidateOpeningRelation(item)"></button>
                         </div>
                     </div>
                     <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
                     <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
-                    @* 履歷內容按鈕 *@
+                    @* 職缺內容按鈕 *@
                 </div>
                 <div class="card-footer text-center" style="background-color:transparent">
                     <button type="button" data-bs-toggle="modal"
@@ -68,7 +68,7 @@
                                         <label class="">連絡人:</label>
                                         <p>{{item.contactName}}</p>
                                         <label class="">連絡電話:</label>
-                                        <p>{{item.contactNumber}}</p>
+                                        <p>{{item.contactPhone}}</p>
                                         <label class="">電子郵件:</label>
                                         <p>{{item.contactEmail}}</p>
                                         <label class="">薪資條件:</label>
@@ -203,7 +203,7 @@
                     if (!Array.isArray(titleClassId)) return '未指定';
                     return titleClassId
                         .map(id => {
-                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                            let titleClassItem = this.titleClass.find(item => item.titleClassId == id);
                             return titleClassItem ? titleClassItem.titleClassName : '未指定';
                         })
                         .join('/ ');
@@ -213,11 +213,14 @@
                     if (!Array.isArray(tagId)) return '未指定';
                     return tagId
                         .map(id => {
-                            let tagItem = this.Tags.find(item => item.tagId === id);
+                            let tagItem = this.Tags.find(item => item.tagId == id);
                             return tagItem ? tagItem.tagName : '未指定';
                         })
                         .join('/ ');
                 },
+                // deleteOpening:function(item.){
+
+                // },
                 ReceiveOpeningData() {
                     let _this = this;
                     axios.post(`${_this.baseAddress}/Candidates/OpeningStorage/CandidateOpenings`, _this.CandidateId, {
@@ -256,7 +259,25 @@
                         err => { alert(err) }
                     );
                 },
+                deleteCandidateOpeningRelation(item) {
+                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, {
+                        OpeningId: item.openingId,
+                        CandidateId: this.CandidateId  // 假設你有已選取的 candidateId
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            alert(response.data.message);
+                            this.ReceiveOpeningData(); // 刷新資料
+                        })
+                        .catch(err => {
+                            alert(err);
+                        });
+                }
             },
+
             mounted() {
                 this.ReceiveOpeningData();
             },
