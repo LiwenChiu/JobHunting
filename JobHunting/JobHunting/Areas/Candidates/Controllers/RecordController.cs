@@ -38,8 +38,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 .Select(p => new RecordOutputmodel
                 {
                     ResumeOpeningRecordID = p.ResumeOpeningRecordId, 
-                    ResumeId = (int)p.ResumeId,
-                    OpeningId = (int)p.OpeningId,
+                    ResumeId = p.ResumeId,
+                    OpeningId = p.OpeningId,
                     ApplyDate = p.ApplyDate,
                     CompanyName = p.CompanyName,
                     OpeningTitle = p.OpeningTitle,

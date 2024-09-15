@@ -2,7 +2,7 @@
 
 <div class="container py-2" id="RecordApp">
     <label>篩選關鍵字：
-        <input type="text" class="form-control"  v-model.lazy="filter" v-on:keyup.enter="filterRecord">
+        <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:keyup.enter="filterRecord">
      </label>
     <div class="card mb-4">
         <table class="table">
@@ -26,7 +26,7 @@
                      <td>{{item.applyDate}}</td>
                     <td><button type="button" data-bs-toggle="modal"
                             :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
-                        詳細
+                        職缺內容
                     </button></td>
                 </tr>
             </tbody>
