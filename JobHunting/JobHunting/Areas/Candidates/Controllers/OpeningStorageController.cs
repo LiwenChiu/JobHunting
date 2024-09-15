@@ -94,5 +94,28 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagClassName = tc.TagClassName
             }));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveCdOpRelation([FromBody]RemoveCdOpRelationInputModel rcor)
+        {
+            var candidate = await _context.Candidates
+                .Include(c => c.Openings)
+                .FirstOrDefaultAsync(c => c.CandidateId == rcor.CandidateId);
+
+            if (candidate == null)
+            {
+                return NotFound(new { message = "Candidate not found!" });
+            }
+
+            var opening = candidate.Openings.FirstOrDefault(o => o.OpeningId == rcor.OpeningId);
+
+            if (opening != null)
+            {
+                candidate.Openings.Remove(opening); // 從關聯表中移除
+                await _context.SaveChangesAsync();   // 保存變更
+            }
+
+            return Ok(new { message = "刪除收藏職缺成功!" });
+        }
     }
 }

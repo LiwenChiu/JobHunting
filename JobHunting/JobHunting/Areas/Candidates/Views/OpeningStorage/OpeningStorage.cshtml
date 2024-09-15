@@ -15,7 +15,7 @@
                         </div>
                         @* 刪除收藏職缺 *@
                         <div class="col-2">
-                            <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpening(item)"></button>
+                            <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteCandidateOpeningRelation(item)"></button>
                         </div>
                     </div>
                     <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
@@ -259,7 +259,25 @@
                         err => { alert(err) }
                     );
                 },
+                deleteCandidateOpeningRelation(item) {
+                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, {
+                        OpeningId: item.openingId,
+                        CandidateId: this.CandidateId  // 假設你有已選取的 candidateId
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            alert(response.data.message);
+                            this.ReceiveOpeningData(); // 刷新資料
+                        })
+                        .catch(err => {
+                            alert(err);
+                        });
+                }
             },
+
             mounted() {
                 this.ReceiveOpeningData();
             },
