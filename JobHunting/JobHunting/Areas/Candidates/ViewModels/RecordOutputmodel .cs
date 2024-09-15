@@ -19,9 +19,9 @@ namespace JobHunting.Areas.Candidates.ViewModels
 
         public int ResumeOpeningRecordID { get; set; }
 
-        public int ResumeId { get; set; }
+        public int? ResumeId { get; set; }
 
-        public int OpeningId { get; set; }
+        public int? OpeningId { get; set; }
 
         public string Address { get; set; }
 

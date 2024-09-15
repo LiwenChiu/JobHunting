@@ -3,7 +3,10 @@
 
 }
 @* 收藏職缺 *@
-<div class="container-fluid py-1 mt-5" id="OpeningApp">
+<div class="container-fluid py-2" id="OpeningApp">
+    <label>篩選關鍵字：
+        <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
+     </label>
     <div class="letters row">
         @* 職缺card *@
         <div class="col-md-3 mb-4" v-for="item in openings.slice(pageStart,pageEnd)">
@@ -146,7 +149,7 @@
                     titleCategory:[],
                     Tags:[],
                     TagClasses:[],
-
+                    filter:'',
 
                     //分頁
                     pageStatus: 0,
@@ -154,7 +157,6 @@
                     currentPage: 1,
                     MessageStatus: 1,
                     
-                    TagCheckedResume: [],
                 };
             },
             computed: {
@@ -218,12 +220,16 @@
                         })
                         .join('/ ');
                 },
-                // deleteOpening:function(item.){
-
-                // },
+                //資料初始
                 ReceiveOpeningData() {
                     let _this = this;
-                    axios.post(`${_this.baseAddress}/Candidates/OpeningStorage/CandidateOpenings`, _this.CandidateId, {
+                    var request={
+                        CandidateId : _this.CandidateId,
+                        Title : _this.filter,
+                        Address: _this.filter,
+                        Time : _this.filter
+                    }
+                    axios.post(`${_this.baseAddress}/Candidates/OpeningStorage/CandidateOpenings`, request, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -259,16 +265,17 @@
                         err => { alert(err) }
                     );
                 },
+                //刪除收藏職缺
                 deleteCandidateOpeningRelation(item) {
-                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, {
+                    let request = {
                         OpeningId: item.openingId,
-                        CandidateId: this.CandidateId  // 假設你有已選取的 candidateId
-                    }, {
+                        CandidateId: this.CandidateId
+                    }
+                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, request ,{
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    })
-                        .then(response => {
+                    }).then(response => {
                             alert(response.data.message);
                             this.ReceiveOpeningData(); // 刷新資料
                         })
