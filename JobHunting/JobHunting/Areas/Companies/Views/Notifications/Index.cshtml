@@ -78,31 +78,45 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                    <template v-if="notificationModal.status == '面試邀請'">
+                        <h3 class="CompanyNameh3 text-center text-light">面試通知</h3>
+                    </template>
+                    <template v-else>
+                        <h3 class="CompanyNameh3 text-center text-light">錄用通知</h3>
+                    </template>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                         <div class="inputOutAreas">
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                <input type="date" class="form-control inputDate">
+                            <div class="inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="">主旨：</label>
+                                <p>{{notificationModal.subjectLine}}</p>
                             </div>
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                <input type="time" class="form-control inputTime">
+                            <div class="inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="">日期：</label>
+                                <p>{{notificationModal.appointmentDate}}</p>
                             </div>
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                <input type="text" class="form-control inputPlace">
+                            <div class="inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="">時間：</label>
+                                <p>{{notificationModal.appointmentTime}}</p>
                             </div>
-
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                            <div class="inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="">地點：</label>
+                                <p>{{notificationModal.Address}}</p>
+                            </div>
+                            <p>您好，{{notificationModal.candidateName}}，我們是{{notificationModal.companyName}}</p>
+                            <p>履歷:{{notificationModal.openingTitle}}，職缺:{{notificationModal.openingTitle}}</p>
+                            <div class="inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="">訊息﹕</label>
+                                <p>{{notificationModal.content}}</p>
                             </div>
                         </div>
-                        <div class="text-center pb-3 "><label class="fw-bold">回復狀態 : 尚未回覆/已回覆</label></div>
+                        <div class="container">
+                            <div class="text-center"><label class="fw-bold">回覆狀態 : {{notificationModal.replyYN ? "已回覆" : "尚未回覆"}}</label></div>
+                            <div class="border border-3" v-if="notificationModal.replyYN"><p>{{notificationModal.reply}}</p></div>
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -146,11 +160,14 @@
                         .catch(err => { alert(err) });
                 },
                 showModal(notificationId) {
-                    axios.get(`${this.baseAddress}/Companies/Notifications/GetNotification`, notificationId, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }).then(response => this.notificationModal = response.data)
+                    let request = {};
+                    request.CompanyId = this.companyId,
+                    request.NotificationId = notificationId,
+                        axios.post(`${this.baseAddress}/Companies/Notifications/GetNotification`, request, {
+                            headers:{
+                                'Content-Type':'application/json'
+                            }
+                        }).then(response => this.notificationModal = response.data)
                         .catch(err => { alert(err) });
                 },
                 turnPage: function (page) {

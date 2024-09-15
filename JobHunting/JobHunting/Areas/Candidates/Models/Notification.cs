@@ -31,6 +31,10 @@ public partial class Notification
 
     public string Address { get; set; }
 
+    public bool ReplyYN { get; set; }
+
+    public string Reply { get; set; }
+
     public virtual Candidate Candidate { get; set; }
 
     public virtual Company Company { get; set; }
