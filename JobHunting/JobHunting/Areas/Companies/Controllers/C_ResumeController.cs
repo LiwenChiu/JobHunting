@@ -1,7 +1,10 @@
 ﻿using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobHunting.Areas.Companies.Controllers
@@ -30,22 +33,8 @@ namespace JobHunting.Areas.Companies.Controllers
 
 
 
-        //GET:compaines/C_Resume/ResumeStorageJson
-        //[HttpGet]
-        //public JsonResult ResumeStorageJson()
-        //{
-        //    var Candidate = _context.Candidates;
-        //    return Json(_context.Resumes.Select(p => new
-        //    {
-        //        jobTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == p.ResumeId).Select(ror => ror.OpeningTitle).Single(),
-        //        candidateName = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Name).Single(),
-        //        candidateSex = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Sex).Single(),
-        //        candidateDegree = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.Degree).Single(),
-        //        candidateEmpStatus = Candidate.Where(c => c.CandidateId == p.CandidateId).Select(c => c.EmploymentStatus).Single(),
 
-        //    }));
-        //}
-        //GET:compaines/C_Resume/ResumeStorageResult
+        //GET:Compaines/C_Resume/ResumeStorageJson
 
         [HttpPost]
         public async Task<IEnumerable<ResumeStorageViewModel>> ResumeStorageJson( int id)
@@ -63,6 +52,10 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             var companies = Result.Resumes.Select(n => new ResumeStorageViewModel
             {
+                ResumeId = n.ResumeId,
+                CandidateId = n.CandidateId,
+                CompanyId = n.Companies.Select(c => c.CompanyId).FirstOrDefault(),
+                OpeningId = _context.Openings.Select(o=>o.OpeningId).FirstOrDefault(),
                 Name = n.Candidate.Name,
                 Address = n.Candidate.Address,
                 Sex = n.Candidate.Sex,
@@ -72,8 +65,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 Email = n.Candidate.Email,
                 EmploymentStatus = n.Candidate.EmploymentStatus,
                 Time = n.Time,
-                ResumeId = n.ResumeId,
-                CandidateId = n.CandidateId,
                 Certification = n.Certification, /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
                 WorkExperience = n.WorkExperience,
                 Autobiography = n.Autobiography,
@@ -82,12 +73,128 @@ namespace JobHunting.Areas.Companies.Controllers
                 TitleClassId = n.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
                 TagId = n.Tags.Select(t => t.TagId).ToList(),
                 Headshot = n.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
+
             });
-
-
 
             return companies;
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendInterview([FromBody] SendinterviewInputModel siv)
+        {
+            try
+            {
+                var company = await _context.Companies.FindAsync(siv.CompanyId);
+                if (company == null)
+                {
+                    return NotFound(new { company = "Resume not found" });
+                }
+
+                Notification send = new Notification
+                {
+                     CompanyId = siv.CompanyId,
+                     CandidateId = siv.CandidateId,
+                     OpeningId = siv.OpeningId,
+                     ResumeId = siv.ResumeId,
+                     Status = siv.Status,
+                     SubjectLine = siv.SubjectLine,
+                     Content = siv.Content,
+                     SendDate = siv.SendDate,
+                     AppointmentDate = siv.AppointmentDate,
+                     AppointmentTime = siv.AppointmentTime,
+                     Address = siv.Address,
+                };
+
+                _context.Notifications.Add(send);
+                await _context.SaveChangesAsync();
+                
+            }
+            catch(Exception ex)
+            {
+                return Json(new { success = true, message = "發送信件失敗", });
+            }
+            return Json(new { success = true, message = "發送信件成功", });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendAdmission([FromBody] SendAdmissionInputModel siv)
+        {
+            try
+            {
+                var company = await _context.Companies.FindAsync(siv.CompanyId);
+                if (company == null)
+                {
+                    return NotFound(new { company = "Resume not found" });
+                }
+
+                Notification send = new Notification
+                {
+                    CompanyId = siv.CompanyId,
+                    CandidateId = siv.CandidateId,
+                    OpeningId = siv.OpeningId,
+                    ResumeId = siv.ResumeId,
+                    Status = siv.Status,
+                    SubjectLine = siv.SubjectLine,
+                    Content = siv.Content,
+                    SendDate = siv.SendDate,
+                    AppointmentDate = siv.AppointmentDate,
+                    AppointmentTime = siv.AppointmentTime,
+                    Address = siv.Address,
+                };
+
+                _context.Notifications.Add(send);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = true, message = "發送信件失敗", });
+            }
+            return Json(new { success = true, message = "發送信件成功", });
+        }
+
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddCompanyResumeLikeRecords(int companyId, int resumeId)
+        {
+            var query = "INSERT INTO CompanyResumeLikeRecords(CompnaId,ResumeId) VALUES (@CompnaId ,@ResumeId)";
+
+            var companyIdParam = new SqlParameter("@CompanyId", companyId);
+            var resumeIdParam = new SqlParameter("@ResumeId", resumeId);
+
+            await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
+
+            return Json(new { success = true, message = "暫存成功" });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveCompanyResumeLikeRecords([FromBody]RemoveCompanyResumeLikeRecordsViewModel rcrlv)
+        {
+            Console.WriteLine($"Received CompanyId: {rcrlv.CompanyId}, ResumeId: {rcrlv.ResumeId}");
+            var query = "DELETE FROM CompanyResumeLikeRecords WHERE CompanyId = @CompanyId AND ResumeId = @ResumeId";
+
+            var companyIdParam = new SqlParameter("@CompanyId", rcrlv.CompanyId);
+            var resumeIdParam = new SqlParameter("@ResumeId", rcrlv.ResumeId);
+
+            int rowsAffected = await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
+
+            if (rowsAffected > 0)
+            {
+                return Json(new { success = true, message = "删除成功" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "删除失败，记录不存在" });
+            }
+        }
+
+
 
 
 
