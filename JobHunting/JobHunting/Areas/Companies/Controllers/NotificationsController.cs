@@ -26,7 +26,7 @@ namespace JobHunting.Areas.Companies.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<NotificationCompanyFullOutputViewModel> GetNotificationLess([FromBody][Bind("CompanyId,filterInput")] NotificationsFilterViewModel nfvm)
         {
-            var companyNotifications = _context.Notifications.Include(cn => cn.Candidate).Include(cn => cn.Company).AsNoTracking()
+            var companyNotifications = _context.Notifications.Include(n => n.Candidate).Include(n => n.Company).AsNoTracking()
                 .Select(cn => new
                 {
                     NotificationId = cn.NotificationId,
@@ -39,7 +39,6 @@ namespace JobHunting.Areas.Companies.Controllers
                     Content = cn.Content,
                     SendDate = cn.SendDate,
                     AppointmentDate = cn.AppointmentDate,
-                    CompanyName = cn.Company.CompanyName,
                     CandidateName = cn.Candidate.Name,
                 })
                 .Where(cn => cn.CompanyId == nfvm.CompanyId)
@@ -68,14 +67,38 @@ namespace JobHunting.Areas.Companies.Controllers
             return filterPaging;
         }
 
-        //public async Task<> GetNotification([FromBody] int notificationId)
-        //{
-        //    var notification = await _context.Notifications.FindAsync(notificationId);
-        //    if (notification == null)
-        //    {
-        //        return
-        //    }
 
-        //}
+        //POST: Companies/Notifications/GetNotification
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<NotificationCompanyModalOutputViewModel> GetNotification([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyModalInputViewModel ncmvm)
+        {
+            var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
+                .Where(n => n.CompanyId == ncmvm.CompanyId)
+                .Where(n => n.NotificationId == ncmvm.NotificationId)
+                .Select(n => new NotificationCompanyModalOutputViewModel
+                {
+                    NotificationId = n.NotificationId,
+                    Status = n.Status,
+                    SubjectLine = n.SubjectLine,
+                    Content = n.Content,
+                    AppointmentDate = n.AppointmentDate,
+                    AppointmentTime = n.AppointmentTime,
+                    Address = n.Address,
+                    CompanyName = n.Company.CompanyName,
+                    CandidateName = n.Candidate.Name,
+                    OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).Single(),
+                    ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).Single(),
+                    ReplyYN = n.ReplyYN,
+                    Reply = n.Reply,
+                }).Single();
+
+            if (notification == null)
+            {
+                return new NotificationCompanyModalOutputViewModel();
+            }
+
+            return notification;
+        }
     }
 }

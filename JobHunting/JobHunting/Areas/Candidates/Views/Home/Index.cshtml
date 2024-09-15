@@ -7,13 +7,13 @@
 @section Styles
 {
     <style>
-       /*  #headshotBtn{
-            visibility: hidden;
-        }
+        /*  #headshotBtn{
+                    visibility: hidden;
+                }
 
-        #headshotBtn:hover{
-            visibility: visible;
-        } */
+                #headshotBtn:hover{
+                    visibility: visible;
+                } */
     </style>
 }
 
@@ -52,7 +52,7 @@
                         <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" />
                         <button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
                         <button type="button" class="px-1 astext" v-on:click="cancelChangeTitleClass()"><i class="fa-regular fa-rectangle-xmark"></i></button>
-                        
+
                     </template>
                     <p class="text-muted mb-4">台灣</p>
                 </div>
@@ -133,11 +133,10 @@
                 <div class="col-md-6">
                     <div class="card mb-4 mb-md-0 h-100">
                         <div class="card-body">
-                            <button type="button" class="mb-2 astext" v-on:click="function(){pageStatus=2}">
-                                <a class="astext" style="font-size:1.25rem; font-weight:bold;" asp-area="Candidates" asp-controller="Resume" asp-action="ResumeManage">
-                                    <span class="text-primary font-italic me-1">我的</span>履歷
-                                </a>
-                            </button>
+                            <span class="text-primary font-italic me-1" style="font-size:20px">我的</span>
+                            <a class="astext" style="font-size:1.25rem; font-weight:bold; text-decoration:none" asp-area="Candidates" asp-controller="Resume" asp-action="ResumeManage">
+                                履歷
+                            </a>
                             <div class="row row-cols-1 row-cols-md-1 g-4">
                                 <template v-for="Resume in CandidateResumes">
                                     <div class="col">
@@ -155,11 +154,10 @@
                 <div class="col-md-6">
                     <div class="card mb-4 mb-md-0 h-100">
                         <div class="card-body">
-                            <button type="button" class="mb-2 astext" v-on:click="function(){pageStatus=3}">
-                                <h4>
-                                    <span class="text-primary font-italic me-1">收藏</span>職缺
-                                </h4>
-                            </button>
+                            <span class="text-primary font-italic me-1" style="font-size:20px">收藏</span>
+                            <a class="astext" style="font-size:1.25rem; font-weight:bold; text-decoration:none" asp-area="Candidates" asp-controller="OpeningStorage" asp-action="index">
+                                職缺
+                            </a>
                             <div class="row row-cols-1 row-cols-md-1 g-4">
                                 <template v-for="Opening in CandidateOpeningLikeRecords">
                                     <div class="col">
@@ -198,7 +196,7 @@
                 };
             },
             methods: {
-                getCandidateMemberData:function(){
+                getCandidateMemberData: function () {
                     axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateMemberData`, this.CandidateId, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -228,13 +226,13 @@
                     }
                     this.currentPage = page
                 },
-                filterTagClass:function(ClassID) {
+                filterTagClass: function (ClassID) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
                         return item.TagClassID == ClassID;
                     });
                 },
-                ReturnhashtagID:function(item){
+                ReturnhashtagID: function (item) {
                     return `#${item.TagClass}`;
                 },
                 changeTagNameTo: function (TagName) {
@@ -257,7 +255,7 @@
                         this.alertOut();
                     })
                 },
-                cancelChangeTitleClass:function(){
+                cancelChangeTitleClass: function () {
                     this.getCandidateMemberData();
                     this.titleClassEdit = false;
                 },
@@ -265,7 +263,7 @@
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
             },
-            mounted:function(){
+            mounted: function () {
                 this.getCandidateMemberData();
                 this.getCandidateResumes();
                 this.getCandidateOpeningLikeRecords();
