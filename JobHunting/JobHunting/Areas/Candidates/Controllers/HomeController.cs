@@ -64,13 +64,21 @@ namespace JobHunting.Areas.Candidates.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IEnumerable<GetCandidateOpeningLikeRecordsViewModel>> GetCandidateOpeningLikeRecords([FromBody] int id)
         {
-            return _context.ResumeOpeningRecords.Include(ror => ror.Resume).AsNoTracking()
-                .Where(ror => ror.Resume.CandidateId == id)
-                .Select(ror => new GetCandidateOpeningLikeRecordsViewModel
-                {
-                    OpeningId = ror.OpeningId,
-                    OpeningTitle = ror.OpeningTitle,
-                }).Take(2);
+
+            var query = await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
+                .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
+                .Include(x => x.Openings).ThenInclude(x => x.Company)
+                .FirstOrDefaultAsync(x => x.CandidateId == id);
+            if (query == null)
+            {
+                return new List<GetCandidateOpeningLikeRecordsViewModel>();
+            }
+
+            return query.Openings.Select(ror=>new GetCandidateOpeningLikeRecordsViewModel
+            {
+                OpeningId = ror.OpeningId,
+                OpeningTitle = ror.Title,
+            }).Take(2);
         }
 
         public async Task<FileResult> GetPicture(int CandidateId)
