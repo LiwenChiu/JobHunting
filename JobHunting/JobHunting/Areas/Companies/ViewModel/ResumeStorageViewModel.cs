@@ -15,6 +15,7 @@
         public string Phone { get; set; }
 
         public string Address { get; set; }
+        public int CompanyId { get; set; }
 
         public string Degree { get; set; }
         public string? Time { get; set; }
@@ -26,6 +27,7 @@
         public string? Autobiography { get; set; }
         public int CandidateId { get; set; }
         public int ResumeId { get; set; }
+        public int OpeningId { get; set; }
         public bool ReleaseYN { get; set; }
         public string? Intro { get; set; }
         public List<int> TagId { get; set; }

@@ -22,7 +22,7 @@ namespace JobHunting.Areas.Candidates.ViewModels
 
         public string TitleClassName { get; set; }
 
-        public List<IFormFile>? CertificationImageFile { get; set; }
+        public IFormFile? CertificationImageFile { get; set; }
         public IFormFile? HeadshotImageFile { get; set; }
     }
 }

@@ -21,7 +21,7 @@
                                 <span class="card-title pb-3">職缺:{{item.openingTitle}}</span>
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn-close justify-content-end" disabled aria-label="Close"></button>
+                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item.companyId,item.resumeId)"></button>
                             </div>
                         </div>
                             <div class="text-start">
@@ -139,7 +139,8 @@
                                                                      </div>
                                                                      <div class="col">
                                                                          <label for="" class="mb-2">
-                                                                             證照
+                                                                             證照 : 
+                                                                        <img v-if="item.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="待上傳" />
                                                                          </label>
                                                                      </div>
                                                                      <div>
@@ -175,37 +176,40 @@
 
                                         <div class="modal-footer">
                                             @* 發送面試通知按鈕 *@
-                                            <template v-if="InterviewYN == true">
                                                 <button  type="button" class="btn btn-primary btn-md"  data-bs-toggle="modal"
                                                     data-bs-target="#interviewMailBtn">
                                                 面試
                                                 </button>
-                                            </template>
-                                            <template v-else="InterviewYN == false">
-                                                <button  type="button" class="btn btn-primary btn-md"  data-bs-toggle="modal"
-                                                    data-bs-target="#interviewMailBtn">
-                                                 已發送面試信件
-                                                </button>
-                                            </template>
+
 
                                             @* 發送錄取通知按鈕 *@
-                                            <button v-else-if="" type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                                            <button  type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                                                     data-bs-target="#OfferMailBtn">
                                                 錄取
                                             </button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button>
+                                           @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                            @* 發送錄取通知 *@
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+               
+            </div>
+            <div v-for="item in resumes">
+                @* 發送錄取通知 *@
                             <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
                                  aria-labelledby="modalTitleId " aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header bg-warning">
-                                            <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
+                                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         @* 錄取通知內容 *@
@@ -213,27 +217,31 @@
                                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                                                 <div class="inputOutAreas">
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                        <input type="date" class="form-control inputDate">
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate" >主旨：</label>
+                                                        <input type="text" class="form-control inputDate" v-model="SendAdmission.AdmissionSubjectLine">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                        <input type="time" class="form-control inputTime">
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate" >日期：</label>
+                                                        <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                        <input type="text" class="form-control inputPlace">
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime" >時間：</label>
+                                                        <input type="time" class="form-control inputTime" v-model="SendAdmission.AdmissionTime">
+                                                    </div>
+                                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace" >地點：</label>
+                                                        <input type="text" class="form-control inputPlace" v-model="SendAdmission.AdmissionPlace">
                                                     </div>
 
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                        <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText" >訊息﹕</label>
+                                                        <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer bg-warning">
-                                            <button type="submit" class="btn btn-outline-secondary">發送</button>
+                                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendAdmissionLetter(item.companyId,item.candidateId,item.openingId,item.resumeId)">發送</button>
                                         </div>
                                     </div>
                                 </div>
@@ -245,7 +253,7 @@
                                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header bg-warning">
-                                            <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
+                                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         @* 面試通知內容 *@
@@ -253,35 +261,38 @@
                                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                                                 <div class="inputOutAreas">
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
+                                                        <input type="text" class="form-control inputDate" v-model="Sendinterview.Purpose">
+                                                    </div>
+                                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                        <input type="date" class="form-control inputDate">
+                                                        <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                        <input type="time" class="form-control inputTime">
+                                                        <input type="time" class="form-control inputTime" v-model="Sendinterview.Interviewtime">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                        <input type="text" class="form-control inputPlace">
+                                                        <input type="text" class="form-control inputPlace" v-model="Sendinterview.place">
                                                     </div>
 
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                        <textarea class="form-control " style="height:150px" name="面試通知訊息"></textarea>
+                                                        <textarea class="form-control " style="height:150px" name="面試通知訊息" v-model="Sendinterview.Content"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer bg-warning">
-                                            <button type="submit" class="btn btn-outline-secondary">發送</button>
+                                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter((item.companyId,item.candidateId,item.openingId,item.resumeId))">發送</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            
             </div>
+                            
             @* 上下分頁數 *@
             <div>
                 <nav aria-label="Page navigation example">
@@ -310,6 +321,22 @@
 @section Scripts {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
+        function convertDateOnly(dateString) {
+            if (!dateString) return null; // 检查是否为空
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return null; // 检查日期是否有效
+            return date.toISOString().split('T')[0]; // 只取日期部分
+        };
+
+        function convertTimeOnly(timeString) {
+            if (!timeString) return null; // 检查是否为空
+            const [hours, minutes] = timeString.split(':');
+            if (!hours || !minutes) return null; // 确保分割结果有效
+            const date = new Date();
+            date.setHours(hours, minutes);
+            return date.toTimeString().split(' ')[0]; // 返回时间部分
+        };
+
         let VueApp = {
             data() {
                 return {
@@ -323,9 +350,28 @@
                     filter: "",
                     TagClasses: [],
                     Tags: [],
-
                     titleClass: [],
                     titleCategory: [],
+                    InterviewYN:false,
+                    Sendinterview:{
+                        Purpose:"",
+                        Interviewdate:"",
+                        Interviewtime:"",
+                        place:"",
+                        Content:"",
+                        Interviewnotice:"面試通知",
+                        sendDate:new Date(),
+                    },
+                    SendAdmission:{
+                        AdmissionSubjectLine:"",
+                        AdmissionDate:"",
+                        AdmissionTime:"",
+                        AdmissionPlace:"",
+                        AdmissionContent:"",
+                        AdmissionStatus:"錄取通知",
+                        AdmissionsendDate:new Date(),
+                    },
+
                 };
             },
             computed: {
@@ -341,6 +387,7 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 }
+
             },
             methods: {
                 setPage(page) {
@@ -352,6 +399,7 @@
                 selectSex(item) {
                     return item == true ? '男' : '女'
                 },
+
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeId;
@@ -381,7 +429,6 @@
                 resumeStorageData: function () {
                     let _this = this
                     let CompanyId = 1;
-                    console.log("CompanyId being sent:", CompanyId); 
                     fetch(`${_this.baseAddress}/Companies/C_Resume/ResumeStorageJson?id=${CompanyId}`, {
                         method: "Post",
                         headers: {
@@ -418,7 +465,102 @@
                         alert(JSON.stringify(err))
                     });
                 },
-
+                //發送面試通知
+                SendInterviewLetter:function(companyId,candidateId,openingId,resumeId){
+                    let _this = this;
+                    let request = {};
+                    // let companyId = 1;
+                    // let OpeningId = 1;
+                    // let CandidateId = 1;
+                    // let ResumeId = 1;
+                    request.CompanyId = companyId,
+                    request.CandidateId = candidateId, // 從前端表單獲取的候選人 ID
+                    request.OpeningId = openingId, // 從前端表單獲取的職位 ID
+                    request.ResumeId = resumeId, // 從前端表單獲取的職位 ID
+                    request.Status = _this.Sendinterview.Interviewnotice,
+                    request.SubjectLine = _this.Sendinterview.Purpose,
+                    request.Content = _this.Sendinterview.Content,
+                    request.SendDate = convertDateOnly(_this.Sendinterview.sendDate),
+                    request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate),
+                    request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime),
+                    request.Address = _this.Sendinterview.place,
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`,{
+                        method:"POST",
+                        headers: {
+                            "Content-Type": "application/json"  // 指定 JSON 格式
+                        },
+                        body: JSON.stringify(request),  // 將數據序列化為 JSON
+                    }).then(res=>{
+                        return res.json();
+                    }).then(data=>{
+                        if(data.success == true){
+                            alert("已發送面試通知");
+                            location.reload(); // 刷新页面
+                        }else{
+                            alert("發送失敗");
+                        };
+                    }).catch(err=>{
+                        alert(JSON.stringify(err));
+                    })
+                },
+                SendAdmissionLetter:function(companyId,candidateId,openingId,resumeId){
+                    let _this = this;
+                    let request = {};
+                    // let companyId = 1;
+                    // let OpeningId = 2;
+                    // let CandidateId = 1;
+                    // let ResumeId = 1;
+                    request.CompanyId = companyId,
+                    request.CandidateId = candidateId, // 從前端表單獲取的候選人 ID
+                    request.OpeningId = openingId, // 從前端表單獲取的職位 ID
+                    request.ResumeId = resumeId, // 從前端表單獲取的職位 ID
+                    request.Status = _this.SendAdmission.AdmissionStatus,
+                    request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
+                    request.Content = _this.SendAdmission.AdmissionContent,
+                    request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
+                    request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
+                    request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
+                    request.Address = _this.SendAdmission.AdmissionPlace,
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`,{
+                        method:"POST",
+                        headers: {
+                            "Content-Type": "application/json"  // 指定 JSON 格式
+                        },
+                        body: JSON.stringify(request),  // 將數據序列化為 JSON
+                    }).then(res=>{
+                        return res.json();
+                    }).then(data=>{
+                        if(data.success == true){
+                            alert("已發送錄用通知");
+                            location.reload(); // 刷新页面
+                        }else{
+                            alert("發送失敗");
+                        };
+                    }).catch(err=>{
+                        alert(JSON.stringify(err));
+                    })
+                },
+                removeCompanyResumeLikeRecords:function(companyId,resumeId){
+                    let _this = this
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/RemoveCompanyResumeLikeRecords`,{
+                        method: 'POST',
+                        headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        body: JSON.stringify({ CompanyId: companyId, ResumeId: resumeId })
+                    }).then(res=>{
+                        return res.json();
+                    }).then(data=>{
+                        if(data.success){
+                            alert("已刪除暫存");
+                            location.reload(); // 刷新页面
+                        }else{
+                            alert("刪除失敗");
+                        };
+                    }).catch(err=>{
+                        alert(JSON.stringify(err));
+                    })
+                },
 
             },
             watch: {
