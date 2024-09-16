@@ -11,22 +11,16 @@
     <link href="~/resumeInrro/css/styles.css" rel="stylesheet" />
 </head> 
 <div id ="pagetop">
-    <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
-            data-bs-target="#interviewMailBtn" >
-        面試
-    </button>
-    <button type="button" class="btn btn-primary btn-md" v-on:click="">
-        暫存
-    </button>
+
 
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-warning fixed-top" id="sideNav" >
     <a class="navbar-brand js-scroll-trigger" href="#page-top">
         <span class="d-block d-lg-none">Clarence Taylor</span>
-            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" @* :src=`${baseAddress}/Company//GetPicture/${item.companyId}` *@ alt="..." /></span>
+            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" :src=`${baseAddress}/Company/GetPicture/${resumeId}` alt="..." /></span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarResponsive" >
+    <div class="collapse navbar-collapse" id="navbarResponsive" >
         <ul class="navbar-nav" >
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about">About</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#experience">Experience</a></li>
@@ -34,6 +28,13 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skills">Skills</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#awards">Awards</a></li>
         </ul>
+        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
+                data-bs-target="#interviewMailBtn">
+            面試
+        </button>
+            <button type="button" class="btn btn-primary btn-md" v-on:click="addFavorite">
+            暫存
+        </button>    
     </div>
 </nav>
 <!-- Page Content-->
@@ -223,7 +224,7 @@
                     <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                         <div class="inputOutAreas">
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
                                 <select v-model="openingId">
                                     <option v-for="(item,index) in openings" :key="item.openingId" :value="item.openingId">{{item.title}}</option>
                                 </select>
@@ -284,10 +285,17 @@
                     };
                 },
                 methods: {
+                    convertTimeOnly(timeString) {
+                        if (!timeString) return null; 
+                        const [hours, minutes] = timeString.split(':');
+                        if (!hours || !minutes) return null; 
+                        const date = new Date();
+                        date.setHours(hours, minutes);
+                        return date.toTimeString().split(' ')[0]; 
+                    },
                     sendLetter(){
-                    let self = this;
-
-                    let request = {
+                        let self = this;
+                        let request = {
                             ResumeId:self.resumeId,
                             CandidateId:self.candidateId,
                             CompanyId:self.companyId,
@@ -299,9 +307,23 @@
                             SubjectLine:self.subjectLine,
                             Content: self.content,
                         };
-                        request.AppointmentTime = self.time.toTimeString()
+                        request.AppointmentTime = self.convertTimeOnly(self.time);
                         axios.post(`${self.baseAddress}/Company/AddInterview`,request, {
                             headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            alert(res.data)
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+                    addFavorite(){
+                        let self = this;
+                        request = {
+                            compnyId: self.companyId,
+                            resumeId: self.resumeId
+                        };
+                        axios.post(`${self.baseAddress}/Company/AddInterview`, request, {
+                        headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             alert(res.data)
                         }).catch(error => {

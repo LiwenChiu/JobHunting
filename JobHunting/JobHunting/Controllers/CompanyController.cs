@@ -1,4 +1,5 @@
-﻿using JobHunting.Models;
+﻿using JobHunting.Areas.Companies.ViewModel;
+using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -208,6 +209,11 @@ namespace JobHunting.Controllers
             await _context.SaveChangesAsync();
             return "發送面試成功";
         }
+        [HttpPost]
+   //     public async Task<string> AddFavorite([FromBody] AddFavoriteResumeViewModel favorite)
+   //     {
+   //;
+   //     }
 
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)
