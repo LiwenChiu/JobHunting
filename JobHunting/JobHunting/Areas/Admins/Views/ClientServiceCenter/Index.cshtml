@@ -5,19 +5,24 @@
     </style>
 }
 
-@* 篩選搜尋 *@
+
 <div class="container-fluid py-1" id="app">
-    <div class="container-fluid row py-2">
+    @* 篩選搜尋 *@
+    <div class="row" style="width:30%; margin-left:10px; margin-right:auto">
         <label class="form-label">關鍵字搜尋：</label>
-        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpinionLetter" />
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
     </div>
 
     @* 意見信件card *@
     <div class="row">  
-        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 15rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
+        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
+                @* 刪除信件 *@
+                <div class="col-1" style="margin-left:auto">
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpinionLetter(item.letterId)"></button>
+                </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
-                <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>            
+                <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 發送日期：{{item.sendTime}}</p>
             </div>
@@ -200,14 +205,13 @@
                     // else if (_this.filter.Contains("處理中"))
                     //     requst.Status = false;
 
-                    request.Class = request.SubjectLine = _this.filter;
+                    request.Class = request.SubjectLine =_this.filter;
                     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                    .then(response => {                             
+                        .then(response => {                             
                             _this.opinionlist = response.data;
-                            alert(JSON.stringify(response.data));
-
-                    })
-                    .catch(err => { alert(JSON.stringify(err)); })
+                            // alert(JSON.stringify(response.data));
+                        })
+                        .catch(err => { alert(err); });
                 },
 
                 toggleStatus: function (letterId) {
@@ -224,8 +228,22 @@
                             _this.OpinionData();
                         })
                         .catch(err => { alert(err) });
+                },
 
-                }
+                deleteOpinionLetter: function (letterId) {
+                    let _this = this;
+                    let c = confirm(`確定要刪除${letterId}嗎?`);
+                    if (c == true) {
+                        axios.delete(`${_this.baseAddress}/Admins/ClientServiceCenter/DeleteLetter/${letterId}`)
+                            .then(response => {
+                                _this.OpinionData();
+                                alert(response.data);
+
+                            }).catch(err => {
+                                alert("刪除失敗");
+                            });
+                    }
+                },
             },
             mounted() {
                 let _this = this;

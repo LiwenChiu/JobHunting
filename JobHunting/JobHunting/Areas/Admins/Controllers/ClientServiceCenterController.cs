@@ -65,21 +65,20 @@ namespace JobHunting.Areas.Admins.Controllers
 
         //Post: Admins/ClientServiceCenter/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinioLetterFilterOutputViewModel>> Filter([FromBody] OpinioLetterFilterViewModel olfvm)
+        public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter)
         {
-            return _context.OpinionLetters
-                .Where(olfilter =>
-                olfilter.Class.Contains(olfvm.Class) ||
-                olfilter.SubjectLine.Contains(olfvm.SubjectLine) ||
-                olfilter.Status == olfvm.Status)
-                .Select(p => new OpinioLetterFilterOutputViewModel
+            return _context.OpinionLetters.Where(
+                o =>o.Class.Contains(opinionLetter.Class) ||
+                o.SubjectLine.Contains(opinionLetter.SubjectLine))
+                .OrderByDescending(p => p.SendTime).Select(o => new OpinionLetter
                 {
-                    LetterId=p.LetterId,
-                    Class = p.Class,
-                    SubjectLine = p.SubjectLine,
-                    SendTime=p.SendTime,
-                    Status = p.Status,
+                    LetterId = o.LetterId,
+                    Class = o.Class,
+                    SubjectLine = o.SubjectLine,
+                    SendTime = o.SendTime,
+                    Status = o.Status,
                 });
+
         }
 
 
@@ -121,6 +120,27 @@ namespace JobHunting.Areas.Admins.Controllers
             return File(ImageContent,"image/jpg");            
         }
 
+
+
+        //Post: Admins/ClientServiceCenter/DeleteLetter/{letterId}
+        [HttpDelete]
+        public async Task<IActionResult> DeleteLetter(int letterId)
+        {
+            var opinionLetter = await _context.OpinionLetters.FindAsync(letterId);
+            if (opinionLetter != null)
+            {
+                _context.OpinionLetters.Remove(opinionLetter);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex) 
+            {
+                return StatusCode(500, "刪除失敗");
+            }
+            return Ok("刪除成功");
+        }
 
 
 

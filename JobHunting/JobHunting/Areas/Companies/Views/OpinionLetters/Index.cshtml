@@ -5,19 +5,25 @@
     </style>
 }
 
-@* 篩選搜尋 *@
+
 <div class="container-fluid py-1" id="app">
-    <div class="container-fluid row py-2">
+    @* 篩選搜尋 *@
+    <div class="row" style="width:30%; margin-left:10px; margin-right:auto">
         <label class="form-label">關鍵字搜尋：</label>
-        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="" />
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
     </div>
 
+
     @* 意見信件card *@
-    <div class="row">
-        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 15rem;" @* v-for="item in opinionlist.slice(pageStart,pageEnd) *@">
+    <div class="row">  
+        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
+                @* 刪除信件 *@
+                <div class="col-1" style="margin-left:auto">
+                    <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
-                <p class="card-subtitle mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
+                <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 發送日期：{{item.sendTime}}</p>
             </div>
@@ -26,17 +32,17 @@
                 <button class="btn btn-warning "
                         data-bs-toggle="modal"
                         data-bs-target="#modalId"
-                        @* v-on:click="OpinionLetterModalShow(item.letterId) *@;">
+                        v-on:click="OpinionLetterModalShow(item.letterId);">
                     意見信件
                 </button>
             </div>
 
 
-
+            
 
             @* 意見信件modal *@
 
-            <div class="modal fade"
+            <div class="modal fade" 
                  id="modalId"
                  tabindex="-1"
                  data-bs-backdrop="static"
@@ -68,7 +74,7 @@
                                         <img class="img-fluid" id="showPicture"
                                              v-bind:src=`${baseAddress}/Admins/ClientServiceCenter/GetPicture/${opinionLetterModal.letterId}`
                                              v-bind:title="opinionLetterModal.subjectLine"
-                                             style="width:480px;height:320px" />
+                                             style="width:480px;height:320px"/>
                                     </div>
 
                                     <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
@@ -79,48 +85,35 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <div class="fw-bold">目前處理狀態：@* {{letterstatus(opinionLetterModal.status)}} *@</div>
-                                    <div class="row-6">
-                                        <template v-if="opinionLetterModal.status">
-                                            <button type="button" class="btn btn-success m-3" disabled>已處理</button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" class="btn btn-secondary m-3" v-on:click="toggleStatus(opinionLetterModal.letterId)">
-                                                {{ opinionLetterModal.status ? '已處理' : '處理中' }}
-                                            </button>
-                                        </template>
-
-
-
-                                    </div>
+                                    <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div>          
+        </div>   
 
 
         @* 分頁 *@
         <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" v-on:click="setPage(currentPage-1)">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                    <a class="page-link" href="#">{{item}}</a>
-                </li>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" v-on:click="setPage(currentPage-1)">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                <a class="page-link" href="#">{{item}}</a>
+            </li>
 
-                <li class="page-item" v-on:click="setPage(currentPage+1)">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <li class="page-item" v-on:click="setPage(currentPage+1)">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     </div>
 </div>
 
@@ -128,109 +121,89 @@
 {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        // Vue.createApp({
-        //     data() {
-        //         return {
-        //             // opinionlist:[],
-        //             // pageStatus: 0,
-        //             // perpage: 6, //一頁的資料數
-        //             // currentPage: 1,
-        //             // MessageStatus: 1,
-        //             // opinionLetterModal: {},
-        //             filter:"",
-        //             baseAddress: "https://localhost:7169",
-        //         }
-        //     },
-        //     computed: {
-        //         totalPage() {
-        //             return Math.ceil(this.opinionlist.length / this.perpage)
-        //             //回傳大於等於的最小整數
-        //         },
-        //         pageStart() {
-        //             return (this.currentPage - 1) * this.perpage
-        //         },
-        //         pageEnd() {
-        //             return this.currentPage * this.perpage
-        //         },
+        Vue.createApp({
+            data() {
+                return {
+                    opinionlist:[],
+                    pageStatus: 0,
+                    perpage: 6, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                    opinionLetterModal: {},
+                    filter:"",
+                    baseAddress: "https://localhost:7169",
+                }
+            },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.opinionlist.length / this.perpage)
+                    //回傳大於等於的最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                },
 
+                
+            },
+            methods: {
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                OpinionData: function () {
+                    // alert("AAA");
+                    fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
+                        method:"GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                            return this.opinionlist=data
+                    }).catch(err => {
+                        alert(JSON.stringify(err))
+                    })
+                },
+                OpinionLetterModalShow: function (id) {
+                    alert(id);
+                    axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
+                    .then(response => this.opinionLetterModal = response.data)
+                    .catch(err => { alert(err) });
+                },
 
-        //     },
-        //     methods: {
-        //         setPage(page) {
-        //             if (page <= 0 || page > this.totalPage) {
-        //                 return
-        //             }
-        //             this.currentPage = page
-        //         },
-        //         // OpinionData: function () {
-        //         //     // alert("AAA");
-        //         //     fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
-        //         //         method:"GET"
-        //         //     }).then(response => {
-        //         //         return response.json();
-        //         //     }).then(data => {
-        //         //             return this.opinionlist=data
-        //         //     }).catch(err => {
-        //         //         alert(JSON.stringify(err))
-        //         //     })
-        //         // },
-        //         // OpinionLetterModalShow: function (id) {
-        //         //     alert(id);
-        //         //     // let request ={
-        //         //     //     LetterId: id,
-        //         //     // };
-        //         //     // axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id,
-        //         //     //         {headers: {'Content-Type': 'application/json'}})
-        //         //     axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
-        //         //     .then(response => this.opinionLetterModal = response.data)
-        //         //     .catch(err => { alert(err) });
-        //         // },
+                letterstatus: function (isDone) {
+                    return isDone ? '已處理' : '處理中';
+                },
 
-        //         // letterstatus: function (isDone) {
-        //         //     return isDone ? '已處理' : '處理中';
-        //         // },
+                filterOpinionLetter: function () {
+                    // alert(`Filter${_this.filter}`)
+                    let _this = this;
+                    let request = {};
+                    
+                    // if (_this.filter == "已處理")
+                    //     return request.Status = true;
+                    // else if (_this.filter == "處理中")
+                    //     return request.Status = false;
 
-        //         // filterOpinionLetter: function () {
-        //         //     // alert(`${this.filter}`);
-        //         //     let _this = this;
-        //         //     let request = {};
+                    request.Class = request.SubjectLine =_this.filter;
 
-        //         //     // if (_this.filter.Contains("已處理"))
-        //         //     //     request.Status = true;
-        //         //     // else if (_this.filter.Contains("處理中"))
-        //         //     //     requst.Status = false;
+                    axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Filter`, request)
+                        .then(response => {
+                            _this.opinionlist = response.data;
+                            // alert(JSON.stringify(response.data));
+                        })
+                        .catch(err => { alert(err); });
 
-        //         //     request.Class = request.SubjectLine = _this.filter;
-        //         //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-        //         //     .then(response => {
-        //         //             _this.opinionlist = response.data;
-        //         //             alert(JSON.stringify(response.data));
+                },
 
-        //         //     })
-        //         //     .catch(err => { alert(JSON.stringify(err)); })
-        //         // },
-
-        //         // toggleStatus: function (letterId) {
-        //         //     // alert(letterId);
-
-        //         //     let _this = this;
-        //         //     _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
-
-        //         //     axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
-        //         //         letterId,
-        //         //         { headers: { 'Content-Type': 'application/json' } })
-        //         //         .then(response => {
-        //         //             alert(response.data);
-        //         //             _this.OpinionData();
-        //         //         })
-        //         //         .catch(err => { alert(err) });
-
-        //         // }
-        //     },
-        //     mounted() {
-        //         // let _this = this;
-        //         // _this.OpinionData();
-        //     },
-        // }).mount("#app");
+            },
+            mounted() {
+                let _this = this;
+                _this.OpinionData();
+            },
+            }).mount("#app");
     </script>
 }
