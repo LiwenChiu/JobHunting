@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Companies.ViewModel
 {
-    public class ResumeStorageViewModel
+    public class ResumeStorageInputModel
     {
         public string Email { get; set; }
 
@@ -35,7 +35,5 @@
 
         public List<IFormFile>? CertificationImageFile { get; set; }
         public IFormFile? HeadshotImageFile { get; set; }
-        
-
     }
 }
