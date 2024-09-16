@@ -123,8 +123,8 @@ namespace JobHunting.Areas.Admins.Controllers
 
 
         //Post: Admins/ClientServiceCenter/DeleteLetter/{letterId}
-        [HttpDelete]
-        public async Task<IActionResult> DeleteLetter(int letterId)
+        [HttpPost]
+        public async Task<IActionResult> DeleteLetter([FromBody]int letterId)
         {
             var opinionLetter = await _context.OpinionLetters.FindAsync(letterId);
             if (opinionLetter != null)
@@ -132,7 +132,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 _context.OpinionLetters.Remove(opinionLetter);
             }
             try
-            {
+            {              
                 await _context.SaveChangesAsync();
             }
             catch(DbUpdateException ex) 
