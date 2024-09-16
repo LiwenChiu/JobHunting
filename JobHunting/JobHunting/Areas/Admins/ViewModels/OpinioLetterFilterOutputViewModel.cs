@@ -7,6 +7,7 @@
         public string Class { get; set; }
 
         public string SubjectLine { get; set; }
+        public DateTime SendTime { get; set; }
 
         public bool Status { get; set; }
     }
