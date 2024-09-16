@@ -10,7 +10,7 @@
         @* 履歷新增 *@
         <div class="col-md-3 mb-4 " >
             <a href="#" data-bs-toggle="modal" style="text-decoration:none;" data-bs-target="#insertmodelID">
-                <div class="card rounded-5 " style="width: 15rem; height: 15rem;">
+                <div class="card " style="width: 16rem; height: 16rem;">
                     <div class="card-body ">
                         <h2 class="text-center mt-5 " >
                             新增<br />履歷
@@ -24,24 +24,31 @@
 
         @* 履歷職缺card *@
         <div class="col-md-3 mb-4" v-for="ResumeD in Resume.slice(pageStart,pageEnd)">
-            <div class="card rounded-5" style="width: 15rem; height: 15rem;">
-                <div class="card-body" style="">
-                    <div class="" style="text-align:right">
-                        @* 刪除履歷 *@
-                        <button type="button" class="btn-close text-right" aria-label="Close" v-on:click="deleteResume(ResumeD)"></button>
+            <div class="card" style="width: 16rem; height: 16rem;">
+                <div class="card-header text-center" style="background-color:transparent">
+                    <div class="row">
+                        <div class="col-10">
+                            <span class="fs-6 fs-4">履歷名稱</span>
+                        </div>
+                        <div class="col-2">
+                            @* 刪除履歷 *@
+                            <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteResume(ResumeD)"></button>
+                        </div>
                     </div>
+                </div>
+                <div class="card-body" style="">
                     <div class="">
-                        <p class="fs-6 text-center fs-4">履歷名稱</p>
-                            <hr>
                         <p  class="card-title pb-3 text-center fs-3">{{ResumeD.title.slice(0,13)}}</p>
                     </div>
-                    @* 履歷內容按鈕 *@
-                        <div class="text-center">
-                            <button type="button" data-bs-toggle="modal"
+                </div>
+                @* 履歷內容按鈕 *@
+                <div class="card-footer" style="background-color:transparent">
+                    <div class="text-center">
+                        <button type="button" data-bs-toggle="modal"
                                 :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary">
-                                詳細
-                            </button>
-                        </div>
+                            詳細
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
