@@ -327,11 +327,11 @@
                                                         <div>
                                                             @* ResumeD.headshot.startsWith('data:') ? ResumeD.headshot : 'data:image/jpeg;base64,' + ResumeD.headshot：如果 ResumeD.headshot 以 data: 開頭，直接使用 ResumeD.headshot；否則，加上 'data:image/jpeg;base64,' 前綴來顯示 Base64 圖片。
                                                             : noImagePreview：如果 ResumeD.headshot 不存在，則顯示預設圖片 noImagePreview。 *@
-                                                            <img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? (ResumeD.headshot.startsWith('data:') ? ResumeD.headshot : 'data:image/jpeg;base64,' + ResumeD.headshot) : noimagepreview" style="width:100px;height:100px" title="待上傳" />
+                                                            <img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? (ResumeD.headshot.startsWith('data:') ? ResumeD.headshot : 'data:image/jpeg;base64,' + ResumeD.headshot) : noimagepreview" style="width:100px;height:100px" title="大頭照" />
                                                         </div>
 
                                                     </a>
-                                                    <input id="HeadshotEditFile" class="" style="" type="file" name="name" accept="image/*" v-on:change="previewImage($event, ResumeD)" />
+                                                    <input id="HeadshotEditFile" class="" style="" type="file"   accept="image/*" v-on:change="previewImage($event, ResumeD)" />
                                                 </div>
                                                 
                                             <p class="card-text">
@@ -440,8 +440,9 @@
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="mb-2">證照
-                                                            <input id="CertificationEditFile" type="file" accept="image/*" multiple/>
-                                                        </label>
+                                                            <img class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
+                                                    </label>
+                                                    <input id="CertificationEditFile" type="file" accept="image/*" />
                                                 </div>
                                                 <div>
                                                      <p>
@@ -586,20 +587,22 @@
                                                         <span class="">希望職缺:    </span> 
                                                          {{ getTitleClassName(ResumeD.titleClassId) }}
                                                     </label>
-                                                    
-
                                                 </div>
                                                     <div class="col">
                                                         <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">證照
+                                                        <label for="" class="mb-2 ">證照: 
+                                                            <br>
+                                                            
+                                                            <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
                                                         </label>
+                                                        
                                                     </div>
+
                                                 <div>
                                                     <label class="">能力標籤:</label>
-
-                                                    {{ getTagName(ResumeD.tagId) }}
+                                                    {{getTagName(ResumeD.tagId)}}
                                                 </div>
                                             </p>
 
@@ -742,7 +745,6 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
-                
                 
             },
             methods: {
@@ -902,8 +904,9 @@
                         })
                         .join('/ ');
                 },
+                
 
-                //履歷編輯與顯示畫面圖片預覽
+                //履歷編輯與顯示大頭貼圖片預覽
                 previewImage: function (event, ResumeD,btn) {
                     let _this = this;
                     let input = event.target.files[0];
@@ -916,25 +919,34 @@
                         }
 
                         reader.readAsDataURL(input);
-
+                        // $("#update").prop("disabled", false);
                     } else {
                         alert("檔案格式不支援上傳");
-                        btn.prop("disabled", true);
+                        // $("#update").prop("disabled", true);
+                        $("#HeadshotEditFile").prop("value","");
                         
                     }
                 },
                 //新增履歷的圖片顯示
                 CreatepreviewImage: function (event) {
-                    var input = event.target;
-                    if (input.files) {
-                        var reader = new FileReader();
+                    let input = event.target.files[0];
+                     let imageType = "image.*";
+                    if (input.type.match(imageType)) {
+                        let reader = new FileReader();
                         reader.onload = (e) => {
                             this.noimagepreview = e.target.result;
                         }
-                        this.image = input.files[0];
-                        reader.readAsDataURL(input.files[0]);
+
+                        // this.image = input.files[0];
+                        reader.readAsDataURL(input);
+                         // $("#insert").prop("disabled", false);
+                    } else {
+                        alert("檔案格式不支援上傳");
+                        // $("#insert").prop("disabled", true);
+                        $("#HeadshotinsertFile").prop("value","");
                     }
                 },
+                        
                 
                 ResumeInformation: function () {
                     //履歷全部資料
@@ -945,7 +957,7 @@
                     }).then(response=>{
                         return response.json();
                     }).then(data=> {
-                        return this.Resume = data
+                        return _this.Resume = data
                     }).catch(err=>{
                         alert(JSON.stringify(err))
                     });
@@ -1015,25 +1027,31 @@
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
                     form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[1]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[2]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[3]);
+                    // const files = document.querySelector('#CertificationInsertFile').files;
+                    // for (let i = 0; i < files.length; i++) {
+                    //     form.append("CertificationImageFile", files[i]);
+                    // };
                     fetch(`${_this.baseAddress}/Candidates/Resume/CreateReasumes`, {
                         method: "POST",
                         body: form
                     }).then(response => {
                         return response.json()
                     }).then(data => {
+                        
                         if (data.success) {
-                            alert("新增履歷成功")
+                            alert("新增履歷成功");
+                            _this.loadResumeImage(data.imageUrls);
                             window.location.reload();
                         } else {
-                            alert("新增履歷失敗")
+                            alert("新增履歷失敗");
                             window.location.reload();
                         }
+                        
+                        
                     }).catch(err => {
                         console.log(err)
                     })
+
                 },
                 
                 //編輯完成再確認，並執行editResumD()
@@ -1048,6 +1066,7 @@
                 //編輯履歷並修改資料庫資料
                 editResumD: function (ResumeD) {
                     let _this = this
+                    
                     let form = new FormData();
                     form.append("ResumeId", ResumeD.resumeid);
                     form.append("CandidateId", ResumeD.candidateId);
@@ -1066,9 +1085,13 @@
                     _this.selectedTagId.forEach((id, index) => {
                         form.append(`TagId[${index}]`, id);
                     });
-                    console.log(_this.selectedtitleClassId);
-                    console.log(_this.selectedTagId);
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
+                    form.append("CertificationImageFile", document.querySelector('#CertificationEditFile').files[0]);
+                    // const files = document.querySelector('#CertificationEditFile').files;
+                    // for (let i = 0; i < files.length; i++) {
+                    //     form.append("CertificationImageFile", files[i]);
+                    // };
+
                     // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
                     fetch(`${_this.baseAddress}/Candidates/Resume/EditResume`, {
                         method: "POST",
@@ -1148,12 +1171,11 @@
                     }
                 }
             },
-
-            watch:{
-            },
+           
             mounted:function(){
                 this.ResumeInformation();
-            }
+            },
+            
         };
         let app = Vue.createApp(VueApp).mount("#ResumeApp");
     </script>

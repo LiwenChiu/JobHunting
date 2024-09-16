@@ -5,7 +5,9 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Protocol.Plugins;
+using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -13,11 +15,12 @@ namespace JobHunting.Areas.Candidates.Controllers
     public class ResumeController : Controller
     {
         private readonly DuckCandidatesContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-
-        public ResumeController(DuckCandidatesContext context)
+        public ResumeController(DuckCandidatesContext context , IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         public IActionResult ResumeManage()
         {
@@ -58,6 +61,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 ReleaseYNedit = false,
             }));
         }
+
+
 
         //撈全部的履歷資料
         //{
@@ -121,7 +126,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagClassId = rt.TagClassId
             }));
         }
-        //GET:Companies/Openings/TagClassJson
+        //GET:Candidates/Resume/TagClassJson
         [HttpGet]
         public JsonResult TagClassJson()
         {
@@ -185,6 +190,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     }
                 }
 
+                if (Creatr.CertificationImageFile != null)
+                {
+                    using (BinaryReader br = new BinaryReader(Creatr.CertificationImageFile.OpenReadStream()))
+                    {
+                        insert.Certification = br.ReadBytes((int)Creatr.CertificationImageFile.Length);
+                    }
+                }
+
                 foreach (var titleClass in titleClasses)
                 {
                     insert.TitleClasses.Add(titleClass);
@@ -195,13 +208,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                     insert.Tags.Add(tag);
                 }
 
-                _context.Resumes.Add(insert);
-                await _context.SaveChangesAsync();
+               
 
                 //var resumeId = insert.ResumeId;
                 //List<string> uploadedFilePaths = new List<string>();
                 ////在wwwroot的images根據求職者的名稱與履歷id建立資料夾
-                //var candidateFolderName = $"{candidate.Name}_{resumeId}";
+                //var candidateFolderName = $"{resumeId}";
                 //var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", candidateFolderName);
 
                 //// 如果資料夾不存在，就建立資料夾
@@ -229,22 +241,35 @@ namespace JobHunting.Areas.Candidates.Controllers
                 //    }
                 //}
 
-                //return Json(new { success = true, message = "新增履歷成功", files = uploadedFilePaths });
+                // 將 Resume 實體加入資料庫上下文
+                _context.Resumes.Add(insert);
 
+                // 儲存變更並將 ResumeId 自動生成
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex) 
             {
                 return Json(new { message = "新增履歷失敗" });
             }
-            return Json(new { success = true, message = "新增履歷成功" });
+            //return Json(new { success = true, message = "新增履歷成功" });
 
-
+            return Json(new { success = true, message = "新增履歷成功",});
 
         }
+
+
+
+
+
+
+
+
+
         //return View(Creatr);
         //}
 
-        //Post: /Candidates/Resume/EditResume
+
+        //Post: /Candidates/Resume/EditResume   //修改履歷狀態
         [HttpPost]
         public async Task<IActionResult> EditReleaseYN([FromBody][Bind("ReleaseYN", "ResumeId")] ResumeInputModel rm)
         {
@@ -275,7 +300,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro")] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro", "CertificationImageFile")] ResumeInputModel rm)
         {
             
 
@@ -300,6 +325,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.WorkExperience = rm.WorkExperience;
                 r.Time = rm.Time;
                 r.ReleaseYN = rm.ReleaseYN;
+                r.TitleClasses.Clear();
+                r.Tags.Clear();
 
             if (rm.HeadshotImageFile != null)
             {
@@ -308,7 +335,13 @@ namespace JobHunting.Areas.Candidates.Controllers
                     r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
                 }
             }
-
+            if (rm.CertificationImageFile != null)
+            {
+                using (BinaryReader br = new BinaryReader(rm.CertificationImageFile.OpenReadStream()))
+                {
+                    r.Certification = br.ReadBytes((int)rm.CertificationImageFile.Length);
+                }
+            }
 
 
             foreach (var titleClass in titleClasses)
@@ -322,11 +355,13 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
 
 
+
             _context.Update(r);
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "修改成功" });
 
         }
+
 
 
 

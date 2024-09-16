@@ -14,6 +14,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -23,16 +24,11 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             return View();
         }
-        
-        public IActionResult ClientServiceCenter()
-        {
-            return View();
-        }
        
-
         public IActionResult Login()
         {
             return View();
         }
+
     }
 }

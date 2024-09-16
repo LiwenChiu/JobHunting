@@ -182,7 +182,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-success">暫存</button>
+                                        <button type="button" class="btn btn-success" v-on:click="addCompanyResumeLikeRecords(companyId, resumeId)">暫存</button>
                                         @* 發送面試通知按鈕 *@
                                         <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                                                 data-bs-target="#interviewMailBtn">
@@ -366,6 +366,24 @@
                         }).catch(err => {
                             alert(JSON.stringify(err))
                         });
+                },
+                addCompanyResumeLikeRecords:function(companyId, resumeId){
+                        let _this = this;
+                    fetch(`${_this.baseAddress}/companies/C_Resume/AddCompanyResumeLikeRecords`,{
+                        method:"POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                            },
+                        body: JSON.stringify({ companyId, resumeId }),
+                    }).then(res=>{
+                        return res.JSON();
+                    }).then(data=>{
+                        if(data.success){
+                            alert("履歷已成功收藏");
+                        }else{
+                            alert("履歷收藏失敗");
+                        }
+                    });
                 },
             },
             watch: {

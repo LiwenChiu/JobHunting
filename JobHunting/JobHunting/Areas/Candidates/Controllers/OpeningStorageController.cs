@@ -15,42 +15,47 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             _context = context;
         }
-        public IActionResult OpeningStorage()
+        public IActionResult index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IEnumerable<CandidateOpeningStorageOutputModel>> CandidateOpenings([FromBody] int id)
+        public async Task<IEnumerable<CandidateOpeningStorageOutputModel>> CandidateOpenings([FromBody] CandidateOpeningStorageInputModel cosm)
         {
-            var query =await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
+            var query = _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
                 .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
                 .Include(x => x.Openings).ThenInclude(x => x.Company)
-                .FirstOrDefaultAsync(x => x.CandidateId == id);
+                .Where(x => x.CandidateId == cosm.CandidateId)
+                .SelectMany(x => x.Openings)
+                .Where (o => 
+                    o.Title.Contains(cosm.Title) ||
+                    o.Address.Contains(cosm.Address) ||
+                    o.Time.Contains(cosm.Time))
+                .Select(ror => new CandidateOpeningStorageOutputModel
+                {
+                    OpeningId = ror.OpeningId,
+                    Title = ror.Title,
+                    CompanyName = ror.Company.CompanyName,
+                    Address = ror.Address,
+                    ContactName = ror.ContactName,
+                    ContactPhone = ror.ContactPhone,
+                    ContactEmail = ror.ContactEmail,
+                    SalaryMax = ror.SalaryMax,
+                    SalaryMin = ror.SalaryMin,
+                    Time = ror.Time,
+                    Description = ror.Description,
+                    TitleClassId = ror.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
+                    TagId = ror.Tags.Select(t => t.TagId).ToList(),
+                    Benefits = ror.Benefits,
+                    Degree = ror.Degree,
+                });
+
             if (query == null)
             {
                 return new List<CandidateOpeningStorageOutputModel>();
             }
-            var opening =  query.Openings.Select(ror => new CandidateOpeningStorageOutputModel
-            {
-                OpeningId = ror.OpeningId,
-                Title = ror.Title,
-                CompanyName = ror.Company.CompanyName,
-                Address = ror.Address,
-                ContactName = ror.ContactName,
-                ContactPhone = ror.ContactPhone,
-                ContactEmail = ror.ContactEmail,
-                SalaryMax = ror.SalaryMax,
-                SalaryMin = ror.SalaryMin,
-                Time = ror.Time,
-                Description = ror.Description,
-                TitleClassId = ror.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
-                TagId = ror.Tags.Select(t => t.TagId).ToList(),
-                Benefits = ror.Benefits,
-                Degree = ror.Degree,
-            });
-
-            return opening;
+            return await query.ToListAsync();
         }
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
@@ -93,6 +98,29 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagClassId = tc.TagClassId,
                 TagClassName = tc.TagClassName
             }));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveCdOpRelation([FromBody]RemoveCdOpRelationInputModel rcor)
+        {
+            var candidate = await _context.Candidates
+                .Include(c => c.Openings)
+                .FirstOrDefaultAsync(c => c.CandidateId == rcor.CandidateId);
+
+            if (candidate == null)
+            {
+                return NotFound(new { message = "Candidate not found!" });
+            }
+
+            var opening = candidate.Openings.FirstOrDefault(o => o.OpeningId == rcor.OpeningId);
+
+            if (opening != null)
+            {
+                candidate.Openings.Remove(opening); // 從關聯表中移除
+                await _context.SaveChangesAsync();   // 保存變更
+            }
+
+            return Ok(new { message = "刪除收藏職缺成功!" });
         }
     }
 }
