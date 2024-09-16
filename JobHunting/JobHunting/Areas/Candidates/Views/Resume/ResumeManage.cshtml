@@ -1037,15 +1037,14 @@
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        
-                        if (data.success) {
-                            alert("新增履歷成功");
-                            _this.loadResumeImage(data.imageUrls);
-                            window.location.reload();
-                        } else {
-                            alert("新增履歷失敗");
-                            window.location.reload();
-                        }
+
+                        if (data.success == true) {
+                            alert(data.message);
+                            location.reload(); // 刷新页面
+                        } else if (data.success == false) {
+                            alert(data.message);
+                            location.reload();
+                        };
                         
                         
                     }).catch(err => {
@@ -1099,13 +1098,13 @@
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        if (data.success) {
-                            alert("編輯履歷成功")
-                            window.location.reload();
-                        } else {
-                            alert("編輯履歷失敗")
-                            window.location.reload();
-                        }
+                        if (data.success == true) {
+                            alert(data.message);
+                            location.reload(); // 刷新页面
+                        } else if (data.success == false) {
+                            alert(data.message);
+                            location.reload();
+                        };
                     }).catch(err => {
                         alert(err)
                     });
@@ -1126,13 +1125,13 @@
                     }).then(response => {
                         return response.json()
                     }).then(data => {
-                        if (data.success) {
-                            alert("履歷狀態已更改")
-                            window.location.reload();
-                        } else {
-                            alert("履歷狀態更改失敗")
-                            window.location.reload();
-                        }
+                        if (data.success == true) {
+                            alert(data.message);
+                            location.reload(); // 刷新页面
+                        } else if (data.success == false) {
+                            alert(data.message);
+                            location.reload();
+                        };
                     }).catch(err => {
                         alert(err)
                     });
@@ -1153,14 +1152,13 @@
                         }).then(response => {
                             return response.json();
                         }).then(data=>{
-                            if (data.success) {
-                                alert("刪除履歷成功")
-                                window.location.reload();
-                            } else {
-                                alert("刪除履歷失敗")
-                                window.location.reload();
-
-                            }
+                            if (data.success == true) {
+                            alert(data.message);
+                            location.reload(); // 刷新页面
+                        } else if (data.success == false) {
+                            alert(data.message);
+                            location.reload();
+                        };
                             // alert(data.message);
                         }).catch(err => {
                             alert(err)
