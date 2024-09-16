@@ -23,14 +23,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro()
+        public async Task<IActionResult> ResumeIntro(int? id)
         {
-            return View();
-        }
-        public async Task<IActionResult> ResumeIntroData(int id)
-        {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var today = DateOnly.FromDateTime(DateTime.Now);
-            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
+            var resume = await _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
             {
                 ResumeId = c.ResumeId,
                 CandidateId = c.CandidateId,
@@ -38,7 +38,7 @@ namespace JobHunting.Controllers
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
-                Time =c.Time,
+                Time = c.Time,
                 WishAddress = c.Address,
                 Name = c.Candidate.Name,
                 Sex = c.Candidate.Sex,
@@ -48,7 +48,13 @@ namespace JobHunting.Controllers
                 MilitaryService = c.Candidate.MilitaryService,
                 TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                 Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            }));
+            }).FirstOrDefaultAsync(m => m.CandidateId == id);
+            if (resume == null)
+            {
+                return NotFound();
+            }
+
+            return View(resume);
         }
 
         public async Task<IActionResult> CompanyIndexList()
@@ -174,6 +180,33 @@ namespace JobHunting.Controllers
                 TagClassName = p.TagClassName,
                 TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
+        }
+        public async Task<IActionResult> GetOpenings(int id)
+        {
+            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == id).Select(p => new OpeningsListViewModel
+            {
+                OpeningId = p.OpeningId,
+                CompanyId = p.CompanyId,
+                Title = p.Title
+            }));
+        }
+        [HttpPost]
+        public async Task<string> AddInterview([FromBody]AddInterviewViewModel letter)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            Notification notificationLetter = new Notification();
+            notificationLetter.CompanyId = letter.CompanyId;
+            notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+            notificationLetter.OpeningId = letter.OpeningId;
+            notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+            notificationLetter.SubjectLine = letter.SubjectLine;
+            notificationLetter.Content = letter.Content;
+            notificationLetter.SendDate = today;
+            notificationLetter.AppointmentDate = letter.AppointmentDate;
+            notificationLetter.AppointmentTime = letter.AppointmentTime;
+            _context.Notifications.Add(notificationLetter);
+            await _context.SaveChangesAsync();
+            return "發送面試成功";
         }
 
         [NonAction]

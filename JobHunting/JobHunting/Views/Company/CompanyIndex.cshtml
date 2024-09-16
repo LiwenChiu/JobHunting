@@ -23,10 +23,10 @@
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
                 <select v-model="city" v-on:change="getArea">
-                    <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
+                    <option v-for="(item,index) in cityList" :key="item.cityName" :value="item.cityName">{{item.CityName}}</option>
                 </select>
                 <select v-model="zipCode">
-                    <option v-for="item in area" :value="item.ZipCode">{{item.AreaName}}</option>
+                    <option v-for="item in area" :value="item.zipCode">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
@@ -55,7 +55,7 @@
     </div>
 
     <br />
-
+    
     @* 履歷清單 *@
     <div id="homeList" class="container">
         <table class="table table-striped table-hover">
@@ -73,7 +73,7 @@
             </thead>
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
-                    <td><a class="" asp-area="" asp-controller="Company" asp-action="ResumeIntro">{{item.name}}</a></td>
+                    <td><a class="" :href=`${baseAddress}/Company/ResumeIntro/${item.resumeID}`>{{item.name}}</a></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
@@ -183,7 +183,8 @@
                     currentPage: 1,
                     cityList:[],
                     city:"",
-                    zipCode:""
+                    zipCode:"",
+                    baseAddress: "https://localhost:7169"
                 };
             },
             computed: {
@@ -211,13 +212,6 @@
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
-                // selectTagName(item){
-                //     let s = "";
-                //     for (let i = 0; i < item.length; i++) {
-                //         s += `${item[i].tagName}、`;
-                //     }
-                //     return s
-                // },
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeID;
