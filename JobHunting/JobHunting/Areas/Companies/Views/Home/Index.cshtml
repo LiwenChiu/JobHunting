@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JobHunting.Areas.Companies.ViewModel.ReceiveResumeViewModel>
+﻿
 
 @{
     ViewData["Title"] = "會員中心";
@@ -6,150 +6,120 @@
 
 @section Styles
 {
-    
+
 }
-<div class="container py-2">
-    <div class="col-lg">
-        <div class="card mb-1">
-            <div class="card-body">
-                <h1 class="card-title">公司名稱</h1>
-                <p class="card-text">公司簡介sdjfjsadijfailgasjfoisjgiujfkmdsijkdjgmdsjgk</p>
-                <p class="card-text"><small class="text-muted">成立於1920年</small></p>
 
-                <div class="card text-white col-lg-11 align-self-center">
-                    <img src="~/images/memelovetriangle_297886754.jpg" style="height: 200px" />
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="indexApp">
+    <div class="container py-2">
+        <div class="col-lg">
+            <div class="card mb-1">
+                <div class="card-body">
+                    <h1 class="card-title">{{CompanyMemberData.companyName}}</h1>
+                    <p class="card-text">公司簡介 : {{CompanyMemberData.intro}}</p>
+                    <p class="card-text"><small class="text-muted">成立於1920年</small></p>
 
-    <div class="col-lg">
-        <div class="card mb-1">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <p class="mb-0">統一編號</p>
-                    </div>
-                    <div class="col-sm-9">
-                        <p class="text-muted mb-0">748937464
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <p class="mb-0">地址</p>
-                    </div>
-                    <div class="col-sm-9">
-                        <p class="text-muted mb-0">100 台北市 中正區 重慶南路一段 122號</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <p class="mb-0">聯絡人姓名</p>
-                    </div>
-                    <div class="col-sm-9">
-                        <p class="text-muted mb-0">佩佩蛙</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <p class="mb-0">聯絡人電話</p>
-                    </div>
-                    <div class="col-sm-9">
-                        <p class="text-muted mb-0">0987-654-321</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <p class="mb-0">聯絡人信箱</p>
-                    </div>
-                    <div class="col-sm-9">
-                        <p class="text-muted mb-0">example@exam.com</p>
+                    <div class="card text-white col-lg-11 align-self-center">
+                        <img class="card-img-top img-fluid "
+                             :src=`${baseAddress}/Companies/Home/GetPicture/${CompanyMemberData.companyId}`
+                             style="height:240px" />
+                        @* <img src="~/images/memelovetriangle_297886754.jpg" style="height: 200px" /> *@
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-4 mb-md-0 h-100">
-                    <div class="card-body">
-                        <button type="button" class="mb-4 astext" v-on:click="function(){pageStatus=3}">
-                            <h4>
-                                <span class="text-primary font-italic me-1">我的</span>職缺
-                            </h4>
-                        </button>
-                        <div class="row row-cols-1 row-cols-md-1 g-4">
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">職缺名稱</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">職缺名稱</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">職缺名稱</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">職缺名稱</h5>
-                                    </div>
-                                </div>
-                            </div>
+
+        <div class="col-lg">
+            <div class="card mb-1">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">統一編號</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{CompanyMemberData.guiNumber}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">地址</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{CompanyMemberData.address}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">聯絡人姓名</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{CompanyMemberData.contactName}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">聯絡人電話</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{CompanyMemberData.contactPhone}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">聯絡人信箱</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{CompanyMemberData.contactEmail}}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4 mb-md-0 h-100">
-                    <div class="card-body">
-                        <button type="button" class="mb-4 astext" v-on:click="function(){pageStatus=4}">
-                            <h4>
-                                <span class="text-primary font-italic me-1">收藏</span>履歷
-                            </h4>
-                        </button>
-                        <div class="row row-cols-1 row-cols-md-1 g-4">
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">履歷名稱</h5>
-                                    </div>
-                                </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4 mb-md-0 h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <span class="text-primary font-italic me-1" style="font-size:20px">我的</span>
+                                <a class="astext" style="font-size:1.25rem; font-weight:bold; text-decoration:none" asp-area="Companies" asp-controller="Openings" asp-action="Opening">
+                                    職缺
+                                </a>
                             </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">履歷名稱</h5>
+                            <div class="row row-cols-1 row-cols-md-1 g-4">
+                                <template v-for="Opening in CompanyOpenings">
+                                    <div class="col">
+                                        <div class="card overcard">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{Opening.title}}</h5>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">履歷名稱</h5>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4 mb-md-0 h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <span class="text-primary font-italic me-1" style="font-size:20px">收藏</span>
+                                <a class="astext" style="font-size:1.25rem; font-weight:bold; text-decoration:none" asp-area="Companies" asp-controller="C_Resume" asp-action="ResumeStorageList">
+                                    履歷
+                                </a>
                             </div>
-                            <div class="col">
-                                <div class="card overcard">
-                                    <div class="card-body">
-                                        <h5 class="card-title">履歷名稱</h5>
+                            <div class="row row-cols-1 row-cols-md-1 g-4">
+                                <template v-for="Resume in CompanyResumesLikeRecords">
+                                    <div class="col">
+                                        <div class="card overcard">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{Resume.title}}</h5>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -157,6 +127,8 @@
             </div>
         </div>
     </div>
+</div>
+
 
 @section Scripts
 {
@@ -165,47 +137,51 @@
         let VueApp = {
             data() {
                 return {
-                    pageStatus: 0,
-                    ResumeStatus: 1,
-                    MessageStatus: 1,
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學" },
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
-                    TagCheckedResume: [],
+                    baseAddress: "https://localhost:7169",
+                    CompanyId: 1,
+                    CompanyMemberData: {},
+                    CompanyOpenings: [],
+                    CompanyResumesLikeRecords: [],
                 };
             },
-            methods:{
-                changeTagNameTo: function (TagName) {
-                    let _this = this;
-                    return `${TagName}BindID`;
+            methods: {
+                getCompanyMemberData: function () {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyMemberData`, this.CompanyId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.CompanyMemberData = response.data)
+                        .catch(err => alert(err));
                 },
-                filterTagClass: function (ClassID) {
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
-                    });
+
+                getCompanyOpenings: function () {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyOpenings`, this.CompanyId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.CompanyOpenings = response.data)
+                        .catch(err => alert(err));
                 },
-                ReturnhashtagID: function (item) {
-                    return `#${item.TagClass}`;
+                getCompanyResumesLikeRecords: function () {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyResumeLikeRecords`, this.CompanyId, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => this.CompanyResumesLikeRecords = response.data)
+                        .catch(err => alert(err));
                 },
+            },
+            mounted: function () {
+                this.getCompanyMemberData();
+                this.getCompanyOpenings();
+                this.getCompanyResumesLikeRecords();
             },
         };
 
-        let app = Vue.createApp(VueApp).mount("#app");
+        let app = Vue.createApp(VueApp).mount("#indexApp");
 
     </script>
 
 }
-    
+
 

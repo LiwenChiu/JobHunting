@@ -57,6 +57,10 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             return await query.ToListAsync();
         }
+
+
+
+
         //GET:Companies/Openings/TitleClassJson
         [HttpGet]
         public JsonResult TitleClassJson()

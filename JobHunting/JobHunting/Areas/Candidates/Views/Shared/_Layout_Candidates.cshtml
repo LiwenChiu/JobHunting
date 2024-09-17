@@ -45,7 +45,9 @@
             </div>
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="mx-2"><a class="nav-link" role="button" asp-area="" asp-controller="Home" asp-action="Index">返回首頁</a></li>
-                <li class="mx-2"><a class="nav-link" role="button">登出</a></li>
+                <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
+                    <button type="submit" class="btn">登出</button>
+                </form>
             </ul>
         </nav>
 
@@ -80,7 +82,7 @@
                                         <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Notifications" asp-action="Index">應徵訊息</a>
                                     </nav>
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="Home" asp-action="OpinionLetters">意見訊息</a>
+                                        <a type="button" class="nav-link astext" asp-area="Candidates" asp-controller="OpinionLetters" asp-action="Index">意見訊息</a>
                                     </nav>
                                 </div>
                             </nav>

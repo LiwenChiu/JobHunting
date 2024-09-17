@@ -13,13 +13,14 @@
         <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
     </div>
 
+
     @* 意見信件card *@
     <div class="row">  
         <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
-                @* 刪除信件 *@
+                @* 隱藏信件 *@
                 <div class="col-1" style="margin-left:auto">
-                    <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpinionLetter(item.letterId)"></button>
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hideLetter(item.letterId)"></button>
                 </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
@@ -85,19 +86,6 @@
 
                                 <div class="text-center">
                                     <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
-                                    <div class="row-6">
-                                        <template v-if="opinionLetterModal.status">
-                                            <button type="button" class="btn btn-success m-3" disabled>已處理</button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" class="btn btn-secondary m-3" v-on:click="toggleStatus(opinionLetterModal.letterId)">
-                                                {{ opinionLetterModal.status ? '已處理' : '處理中' }}
-                                            </button>
-                                        </template>
-
-                                        
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -167,9 +155,11 @@
                     }
                     this.currentPage = page
                 },
+
+                // 撈出清單Card
                 OpinionData: function () {
                     // alert("AAA");
-                    fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
+                    fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
                         method:"GET"
                     }).then(response => {
                         return response.json();
@@ -179,13 +169,10 @@
                         alert(JSON.stringify(err))
                     })
                 },
+
+                //Card Modal
                 OpinionLetterModalShow: function (id) {
                     alert(id);
-                    // let request ={
-                    //     LetterId: id,
-                    // };
-                    // axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
-                    //         {headers: {'Content-Type': 'application/json'}})
                     axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
                     .then(response => this.opinionLetterModal = response.data)
                     .catch(err => { alert(err) });
@@ -195,56 +182,44 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
-                filterOpinionLetter: function () { 
-                    // alert(`${this.filter}`);
-                    let _this = this;                    
+                //篩選Card
+                filterOpinionLetter: function () {
+                    // alert(`Filter${_this.filter}`)
+                    let _this = this;
                     let request = {};
-
-                    // if (_this.filter.Contains("已處理")) 
-                    //     request.Status = true;
-                    // else if (_this.filter.Contains("處理中"))
-                    //     requst.Status = false;
+                    
+                    // if (_this.filter == "已處理")
+                    //     return request.Status = true;
+                    // else if (_this.filter == "處理中")
+                    //     return request.Status = false;
 
                     request.Class = request.SubjectLine =_this.filter;
-                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                        .then(response => {                             
+
+                    axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Filter`, request)
+                        .then(response => {
                             _this.opinionlist = response.data;
                             // alert(JSON.stringify(response.data));
                         })
                         .catch(err => { alert(err); });
                 },
 
-                toggleStatus: function (letterId) {
-                    // alert(letterId);
-
-                    let _this = this;
-                    _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
-                  
-                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
-                        letterId,
+                //隱藏Card
+                hideLetter: function(letterId)
+                {
+                    let _this=this;
+                    let m = confirm("確定要隱藏嗎?");
+                    if(m==true){
+                        axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Hide`, letterId,
                         { headers: { 'Content-Type': 'application/json' } })
-                        .then(response => {
-                            alert(response.data);
+                            .then(response=>{
                             _this.OpinionData();
-                        })
-                        .catch(err => { alert(err) });
-                },
-
-                deleteOpinionLetter: function (letterId) {
-                    let _this = this;
-                    let c = confirm(`確定要刪除${letterId}嗎?`);
-                    if (c == true) {
-                        axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/DeleteLetter`, letterId,
-                        { headers: { 'Content-Type': 'application/json' } })
-                            .then(response => {
-                                _this.OpinionData();
-                                alert(response.data);
-
+                            alert(response.data);
                             }).catch(err => {
-                                alert("刪除失敗");
+                                alert("隱藏失敗");
                             });
                     }
                 },
+
             },
             mounted() {
                 let _this = this;
