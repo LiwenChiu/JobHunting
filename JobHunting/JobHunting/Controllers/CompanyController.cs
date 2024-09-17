@@ -2,6 +2,7 @@
 using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
@@ -42,6 +43,8 @@ namespace JobHunting.Controllers
                 Time = c.Time,
                 WishAddress = c.Address,
                 Name = c.Candidate.Name,
+                Phone = c.Candidate.Phone,
+                Email = c.Candidate.Email,
                 Sex = c.Candidate.Sex,
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
@@ -200,8 +203,10 @@ namespace JobHunting.Controllers
             notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
             notificationLetter.OpeningId = letter.OpeningId;
             notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+            notificationLetter.Status = letter.Status;
             notificationLetter.SubjectLine = letter.SubjectLine;
             notificationLetter.Content = letter.Content;
+            notificationLetter.Address = letter.Address;
             notificationLetter.SendDate = today;
             notificationLetter.AppointmentDate = letter.AppointmentDate;
             notificationLetter.AppointmentTime = letter.AppointmentTime;
@@ -210,11 +215,23 @@ namespace JobHunting.Controllers
             return "發送面試成功";
         }
         [HttpPost]
-   //     public async Task<string> AddFavorite([FromBody] AddFavoriteResumeViewModel favorite)
-   //     {
-   //;
-   //     }
+        public async Task<string> AddFavorite([FromBody] AddFavoriteResumeViewModel favorite)
+        {
+            try
+            {
+                var query = "INSERT INTO CompanyResumeLikeRecords(CompanyId,ResumeId) VALUES (@CompanyId ,@ResumeId)";
+                var companyIdParam = new SqlParameter("@CompanyId", Convert.ToInt32(favorite.CompanyId));
+                var resumeIdParam = new SqlParameter("@ResumeId", Convert.ToInt32(favorite.ResumeId));
+                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
+            }
+            catch (Exception ex)
+            {
+                return "履歷收藏失敗";
+            }
 
+
+            return "履歷已成功收藏";
+        }
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)
         {

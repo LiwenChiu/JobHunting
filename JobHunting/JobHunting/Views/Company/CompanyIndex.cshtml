@@ -23,7 +23,7 @@
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
                 <select v-model="city" v-on:change="getArea">
-                    <option v-for="(item,index) in cityList" :key="item.cityName" :value="item.cityName">{{item.CityName}}</option>
+                    <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
                 <select v-model="zipCode">
                     <option v-for="item in area" :value="item.zipCode">{{item.AreaName}}</option>
@@ -73,7 +73,7 @@
             </thead>
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
-                    <td><a class="" :href=`${baseAddress}/Company/ResumeIntro/${item.resumeID}`>{{item.name}}</a></td>
+                    <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.resumeID}`>{{item.name}}</a></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
@@ -249,7 +249,7 @@
                     else {
                         request.sex = null;
                     }
-                    if (self.filter == self.city == self.edu == self.zipCode == "" && self.skill == null) {
+                    if (self.filter == "" && self.city == "" && self.edu == "" && self.zipCode == "" && self.skill == null) {
                         self.indexList();
                     }
                     else {

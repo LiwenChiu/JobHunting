@@ -13,6 +13,7 @@
         public string SubjectLine { get; set; }
 
         public string Content { get; set; }
+        public string Address { get; set; }
         public DateOnly? AppointmentDate { get; set; }
 
         public TimeOnly? AppointmentTime { get; set; }
