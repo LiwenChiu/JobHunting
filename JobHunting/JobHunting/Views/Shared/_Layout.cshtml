@@ -28,6 +28,11 @@
         .overcard:hover {
             background-color: #e6e6e6;
         }
+
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="sb-nav-fixed bgcolor">
@@ -54,9 +59,10 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
                             <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Register">求職者註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li>
+                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
+                            @* <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li> *@
                             <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li>
+                            @* <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li> *@
                             <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
                         </ul>
                     </li>
@@ -149,6 +155,13 @@
                     letterclass: "",
                     subjectLine: "",
                     content: "",
+
+                    baseAddress: "https://localhost:7169",
+                    role: 'candidate',
+                    NationalId: '',
+                    Email: '',
+                    Password: '',
+                    GUINumber: '',
                 };
             },
             methods: {
@@ -190,6 +203,40 @@
                             btn.prop("disabled", true);
                         }
                     }
+                },
+                DoLogin: function (event) {
+                    let _this = this;
+                    event.preventDefault(); // 防止表單默認提交
+
+                    let request = {
+                        Role: _this.role,
+                        CandidateLoginVM: _this.role == 'candidate' ? {
+                            NationalId: _this.NationalId,
+                            Email: _this.Email,
+                            Password: _this.Password
+                        } : null,
+                        CompanyLoginVM: _this.role == 'company' ? {
+                            GUINumber: _this.GUINumber,
+                            Password: _this.Password
+                        } : null
+                    };
+
+                    axios.post(`${_this.baseAddress}/Home/DoLogin`, request)
+                        .then(response => {
+                            if (response.data.success) {
+                            if (response.data.role === 'candidate') {
+                                window.location.href = '/Candidates'; // 或者其他求職者頁面
+                            } else if (response.data.role === 'company') {
+                                window.location.href = '/Companies'; // 或者其他公司頁面
+                            }
+                            } else {
+                                alert('登入失敗：' + response.data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('登入過程中發生錯誤');
+                        });
                 }
 
             }

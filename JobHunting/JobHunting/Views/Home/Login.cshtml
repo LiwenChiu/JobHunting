@@ -1,70 +1,67 @@
 ﻿@using JobHunting.ViewModel
-@model LoginViewModel
+@model CompositeLogin
 
-@section Styles {
+@* @section Styles {
     <style>
         .form-label {
             color: steelblue;
             font-weight: bold;
         }
     </style>
-}
+} *@
 <div id="app">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <h2 class="text-center">會員登入</h2>
             <section>
-                <form id="account" method="post">
-                    <hr />
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                    <div class="text-center pb-3">
-                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="candidate" v-model="role">
-                            <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="text-center pb-3">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="candidate" v-model="role">
+                        <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="company" v-model="role">
-                            <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
-                        </div>
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="company" v-model="role">
+                        <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
                     </div>
-                    <template v-if="role == 'candidate'">
-                        <div class="form-floating mb-3">
-                            <input asp-for="NationalID" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" />
-                            <label asp-for="NationalID" class="form-label">身分證字號</label>
-                            <span asp-validation-for="NationalID" class="text-danger"></span>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                            <label asp-for="Email" class="form-label">電子信箱</label>
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
-                            <label asp-for="Password" class="form-label">密碼</label>
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="form-floating mb-3">
-                            <input asp-for="GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
-                                   autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
-                            <label asp-for="GUINumber" class="form-label">統一編號</label>
-                            <span asp-validation-for="GUINumber" class="text-danger"></span>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Password" class="form-control rounded-pill bg-danger bg-opacity-25"
-                                   autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
-                            <label asp-for="Password" class="form-label">密碼</label>
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                    </template>
-                    <div class="text-center">
-                        <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2">登入</button><br />
-                        <p>
-                            <a asp-controller="Home" asp-action="Register">註冊會員</a>
-                            @* <partial name="_BtnLogin" /> *@
-                        </p>
+                </div>
+                <template v-if="role == 'candidate'">
+                    <div class="form-floating mb-3">
+                        <input v-model="NationalId" asp-for="CandidateLoginVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" required />
+                        <label class="form-label">身分證字號</label>
+                        <span asp-validation-for="CandidateLoginVM.NationalId" class="text-danger"></span>
                     </div>
-                </form>
+                    <div class="form-floating mb-3">
+                        <input v-model="Email" asp-for="CandidateLoginVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="CandidateLoginVM.Email" class="form-label">電子信箱</label>
+                        <span asp-validation-for="CandidateLoginVM.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input v-model="Password" asp-for="CandidateLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                        <label asp-for="CandidateLoginVM.Password" class="form-label">密碼</label>
+                        <span asp-validation-for="CandidateLoginVM.Password" class="text-danger"></span>
+                    </div>
+                </template>
+                <template v-else-if="role == 'company'">
+                    <div class="form-floating mb-3">
+                        <input v-model="GUINumber" asp-for="CompanyLoginVM.GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
+                        <label asp-for="CompanyLoginVM.GUINumber" class="form-label">統一編號</label>
+                        <span asp-validation-for="CompanyLoginVM.GUINumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input v-model="Password" asp-for="CompanyLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                        <label asp-for="CompanyLoginVM.Password" class="form-label">密碼</label>
+                        <span asp-validation-for="CompanyLoginVM.Password" class="text-danger"></span>
+                    </div>
+                </template>
+                <div class="text-center">
+                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin">登入</button><br />
+                    <p>
+                        <a asp-controller="Home" asp-action="Register">註冊會員</a>
+                    </p>
+                </div>
             </section>
         </div>
     </div>
@@ -72,19 +69,52 @@
 
 
 @section Scripts {
-    <script>
-        let vueLetter = {
+   
+   @*  <script>
+        const vueLetter = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
                     role: 'candidate',
+                    NationalId: '',
+                    Email: '',
+                    Password: '',
+                    GUINumber: ''
                 };
             },
             methods: {
+                DoLogin: function () {
+                    let _this = this;
+                    let request = {
+                        Role: _this.role,
+                        CandidateLoginVM: _this.role == 'candidate' ? {
+                            NationalId: _this.NationalId,
+                            Email: _this.Email,
+                            Password: _this.Password
+                        } : null,
+                        CompanyLoginVM: _this.role == 'company' ? {
+                            GUINumber: _this.GUINumber,
+                            Password: _this.Password
+                        } : null
+                    };
 
+                    axios.post(`${_this.baseAddress}/Home/DoLogin`, request)
+                        .then(response => {
+                            if (response.data.success) {
+                                window.location.href = 'https://localhost:7169/home';
+                            } else {
+                                alert('登入失敗：' + response.data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('登入過程中發生錯誤');
+                        });
+                }
 
             }
         };
         Vue.createApp(vueLetter).mount("#app")
-    </script>
+    </script> *@
 }
 
