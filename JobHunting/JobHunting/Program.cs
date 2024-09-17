@@ -3,6 +3,7 @@ using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Data;
 using JobHunting.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,34 +33,22 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
-builder.Services.Configure<IdentityOptions>(options => {
-    options.Password.RequireDigit = true; //阿拉伯數字
-    options.Password.RequireLowercase = true; //小寫英文字
-    options.Password.RequireNonAlphanumeric = true; //特殊符號
-    options.Password.RequireUppercase = true; //大寫英文字
-    options.Password.RequiredLength = 8; //要求8個字
-    options.Password.RequiredUniqueChars = 1; //至少要有一個不重複的字元
-
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); //帳號鎖定五分鐘
-    options.Lockout.MaxFailedAccessAttempts = 3; //錯3次要鎖帳號
-    options.Lockout.AllowedForNewUsers = true; //建好帳號先鎖，要電子郵件驗證
-
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; //帳號允許文字
-    options.User.RequireUniqueEmail = true; //電子郵件不能重複
-    options.SignIn.RequireConfirmedEmail = true; //電子郵件確認，要收信驗證
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Home/Login";  // 設定登入頁面
+    //options.AccessDeniedPath = "/Account/AccessDenied";  // 設定拒絕存取頁面
 });
-builder.Services.ConfigureApplicationCookie(options => {
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.SlidingExpiration = true;
-});
+
+builder.Services.AddAuthorization();  // 添加授權服務
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

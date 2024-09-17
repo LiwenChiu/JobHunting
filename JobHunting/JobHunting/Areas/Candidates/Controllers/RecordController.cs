@@ -56,7 +56,9 @@ namespace JobHunting.Areas.Candidates.Controllers
                     TagId = p.Opening.Tags.Select(t => t.TagId).ToList(),
                     Benefits = p.Opening.Benefits,
                     Degree = p.Opening.Degree,
-                    CandidateId = p.Resume.CandidateId
+                    CandidateId = p.Resume.CandidateId,
+                    InterviewYN = p.InterviewYN,
+                    HireYN = p.HireYN
                 });
 
             if (query == null)

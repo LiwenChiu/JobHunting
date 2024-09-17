@@ -7,8 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Numerics;
 using JobHunting.Areas.Candidates.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 namespace JobHunting.Areas.Companies.Controllers
 {
+    //[Authorize(Roles = "company")]
     [Area("Companies")]
     public class HomeController : Controller
     {
@@ -79,7 +81,7 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         /*------------------------------------------*/
 
-
+        
         public IActionResult Index()
         {
             return View();

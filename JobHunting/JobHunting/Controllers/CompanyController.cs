@@ -1,6 +1,8 @@
-﻿using JobHunting.Models;
+﻿using JobHunting.Areas.Companies.ViewModel;
+using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
@@ -23,14 +25,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro()
+        public async Task<IActionResult> ResumeIntro(int? id)
         {
-            return View();
-        }
-        public async Task<IActionResult> ResumeIntroData(int id)
-        {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var today = DateOnly.FromDateTime(DateTime.Now);
-            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
+            var resume = await _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
             {
                 ResumeId = c.ResumeId,
                 CandidateId = c.CandidateId,
@@ -38,9 +40,11 @@ namespace JobHunting.Controllers
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
-                Time =c.Time,
+                Time = c.Time,
                 WishAddress = c.Address,
                 Name = c.Candidate.Name,
+                Phone = c.Candidate.Phone,
+                Email = c.Candidate.Email,
                 Sex = c.Candidate.Sex,
                 Degree = c.Candidate.Degree,
                 Address = c.Candidate.Address,
@@ -48,7 +52,13 @@ namespace JobHunting.Controllers
                 MilitaryService = c.Candidate.MilitaryService,
                 TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                 Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            }));
+            }).FirstOrDefaultAsync(m => m.CandidateId == id);
+            if (resume == null)
+            {
+                return NotFound();
+            }
+
+            return View(resume);
         }
 
         public async Task<IActionResult> CompanyIndexList()
@@ -175,7 +185,53 @@ namespace JobHunting.Controllers
                 TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
         }
+        public async Task<IActionResult> GetOpenings(int id)
+        {
+            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == id).Select(p => new OpeningsListViewModel
+            {
+                OpeningId = p.OpeningId,
+                CompanyId = p.CompanyId,
+                Title = p.Title
+            }));
+        }
+        [HttpPost]
+        public async Task<string> AddInterview([FromBody]AddInterviewViewModel letter)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            Notification notificationLetter = new Notification();
+            notificationLetter.CompanyId = letter.CompanyId;
+            notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+            notificationLetter.OpeningId = letter.OpeningId;
+            notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+            notificationLetter.Status = letter.Status;
+            notificationLetter.SubjectLine = letter.SubjectLine;
+            notificationLetter.Content = letter.Content;
+            notificationLetter.Address = letter.Address;
+            notificationLetter.SendDate = today;
+            notificationLetter.AppointmentDate = letter.AppointmentDate;
+            notificationLetter.AppointmentTime = letter.AppointmentTime;
+            _context.Notifications.Add(notificationLetter);
+            await _context.SaveChangesAsync();
+            return "發送面試成功";
+        }
+        [HttpPost]
+        public async Task<string> AddFavorite([FromBody] AddFavoriteResumeViewModel favorite)
+        {
+            try
+            {
+                var query = "INSERT INTO CompanyResumeLikeRecords(CompanyId,ResumeId) VALUES (@CompanyId ,@ResumeId)";
+                var companyIdParam = new SqlParameter("@CompanyId", Convert.ToInt32(favorite.CompanyId));
+                var resumeIdParam = new SqlParameter("@ResumeId", Convert.ToInt32(favorite.ResumeId));
+                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
+            }
+            catch (Exception ex)
+            {
+                return "履歷收藏失敗";
+            }
 
+
+            return "履歷已成功收藏";
+        }
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)
         {

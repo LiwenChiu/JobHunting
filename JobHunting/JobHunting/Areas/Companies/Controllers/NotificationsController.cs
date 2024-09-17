@@ -24,7 +24,7 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/Notifications/GetNotificationLess
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCompanyFullOutputViewModel> GetNotificationLess([FromBody][Bind("CompanyId,filterInput")] NotificationsFilterViewModel nfvm)
+        public async Task<NotificationCompanyFullOutputViewModel> GetNotificationLess([FromBody][Bind("CompanyId,filterInput,pageStart")] NotificationsFilterViewModel nfvm)
         {
             var companyNotifications = _context.Notifications.Include(n => n.Candidate).Include(n => n.Company).AsNoTracking()
                 .Select(cn => new
@@ -39,6 +39,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Content = cn.Content,
                     SendDate = cn.SendDate,
                     AppointmentDate = cn.AppointmentDate,
+                    ReplyYN = cn.ReplyYN,
                     CandidateName = cn.Candidate.Name,
                 })
                 .Where(cn => cn.CompanyId == nfvm.CompanyId)
@@ -46,6 +47,7 @@ namespace JobHunting.Areas.Companies.Controllers
                              cn.Status.Contains(nfvm.filterInput) ||
                              cn.SubjectLine.Contains(nfvm.filterInput) ||
                              cn.Content.Contains(nfvm.filterInput))
+                .OrderByDescending(cn => cn.ReplyYN)
                 .OrderByDescending(cn => cn.SendDate)
                 .Select(cn => new NotificationCompanyLessOutputViewModel
                 {
@@ -55,6 +57,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Status = cn.Status,
                     SubjectLine = cn.SubjectLine,
                     AppointmentDate = cn.AppointmentDate,
+                    ReplyYN = cn.ReplyYN,
                     CandidateName = cn.CandidateName,
                 });
 
@@ -89,8 +92,10 @@ namespace JobHunting.Areas.Companies.Controllers
                     CandidateName = n.Candidate.Name,
                     OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).Single(),
                     ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).Single(),
+                    ReplyFirstYN = n.ReplyFirstYN,
                     ReplyYN = n.ReplyYN,
                     Reply = n.Reply,
+                    ReplyTime = n.ReplyTime,
                 }).Single();
 
             if (notification == null)
@@ -99,6 +104,106 @@ namespace JobHunting.Areas.Companies.Controllers
             }
 
             return notification;
+        }
+
+        //POST: Companies/Notifications/ConfirmReply
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<NotificationCompanyConfirmReplyOutputViewModel> ConfirmReply([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyConfirmReplyInputViewModel nccrivm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new NotificationCompanyConfirmReplyOutputViewModel
+                {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            var notification = await _context.Notifications.Where(n => n.CompanyId == nccrivm.CompanyId).Where(n => n.NotificationId == nccrivm.NotificationId).SingleAsync();
+            if (notification == null)
+            {
+                return new NotificationCompanyConfirmReplyOutputViewModel {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            notification.ReplyYN = false;
+
+            _context.Entry(notification).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException ex)
+            {
+                return new NotificationCompanyConfirmReplyOutputViewModel
+                {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            return new NotificationCompanyConfirmReplyOutputViewModel
+            {
+                AlertText = "成功",
+                AlertStatus = true,
+            };
+        }
+
+        //POST: Companies/Notifications/DeleteNotification
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<NotificationCompanyDeleteNotificationOutputViewModel> DeleteNotification([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyDeleteNotificationInputViewModel ncdnivm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new NotificationCompanyDeleteNotificationOutputViewModel
+                {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            var notification = await _context.Notifications.Where(n => n.CompanyId == ncdnivm.CompanyId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
+            if (notification == null)
+            {
+                return new NotificationCompanyDeleteNotificationOutputViewModel
+                {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            notification.CompanyId = null;
+
+            _context.Entry(notification).State = EntityState.Modified;
+
+            if (notification.CompanyId == null && notification.CandidateId == null)
+            {
+                _context.Notifications.Remove(notification);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return new NotificationCompanyDeleteNotificationOutputViewModel
+                {
+                    AlertText = "錯誤",
+                    AlertStatus = false,
+                };
+            }
+
+            return new NotificationCompanyDeleteNotificationOutputViewModel
+            {
+                AlertText = "成功",
+                AlertStatus = true,
+            };
         }
     }
 }

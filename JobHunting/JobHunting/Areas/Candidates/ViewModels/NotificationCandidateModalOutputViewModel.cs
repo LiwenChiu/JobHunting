@@ -1,6 +1,6 @@
-﻿namespace JobHunting.Areas.Companies.ViewModel
+﻿namespace JobHunting.Areas.Candidates.ViewModels
 {
-    public class NotificationCompanyModalOutputViewModel
+    public class NotificationCandidateModalOutputViewModel
     {
         public int NotificationId { get; set; }
 
@@ -28,9 +28,10 @@
 
         public bool ReplyYN { get; set; }
 
-        public string Reply { get; set; }
+        public string? Reply { get; set; }
 
         public DateTime? ReplyTime { get; set; }
 
+        public bool EditReplyYN { get; set; }
     }
 }
