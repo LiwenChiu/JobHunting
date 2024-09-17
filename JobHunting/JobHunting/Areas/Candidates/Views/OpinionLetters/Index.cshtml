@@ -13,13 +13,14 @@
         <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
     </div>
 
+
     @* 意見信件card *@
-    <div class="row">  
-        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
+    <div class="row">
+        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">
             <div class="card-body">
                 @* 刪除信件 *@
                 <div class="col-1" style="margin-left:auto">
-                    <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpinionLetter(item.letterId)"></button>
+                    <button type="button" class="btn-close" aria-label="Close"></button>
                 </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
@@ -37,11 +38,11 @@
             </div>
 
 
-            
+
 
             @* 意見信件modal *@
 
-            <div class="modal fade" 
+            <div class="modal fade"
                  id="modalId"
                  tabindex="-1"
                  data-bs-backdrop="static"
@@ -73,7 +74,7 @@
                                         <img class="img-fluid" id="showPicture"
                                              v-bind:src=`${baseAddress}/Admins/ClientServiceCenter/GetPicture/${opinionLetterModal.letterId}`
                                              v-bind:title="opinionLetterModal.subjectLine"
-                                             style="width:480px;height:320px"/>
+                                             style="width:480px;height:320px" />
                                     </div>
 
                                     <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
@@ -85,47 +86,34 @@
 
                                 <div class="text-center">
                                     <div class="fw-bold">目前處理狀態：{{letterstatus(opinionLetterModal.status)}}</div>
-                                    <div class="row-6">
-                                        <template v-if="opinionLetterModal.status">
-                                            <button type="button" class="btn btn-success m-3" disabled>已處理</button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" class="btn btn-secondary m-3" v-on:click="toggleStatus(opinionLetterModal.letterId)">
-                                                {{ opinionLetterModal.status ? '已處理' : '處理中' }}
-                                            </button>
-                                        </template>
-
-                                        
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>          
-        </div>   
+            </div>
+        </div>
 
 
         @* 分頁 *@
         <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" v-on:click="setPage(currentPage-1)">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                <a class="page-link" href="#">{{item}}</a>
-            </li>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
 
-            <li class="page-item" v-on:click="setPage(currentPage+1)">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
@@ -158,7 +146,7 @@
                     return this.currentPage * this.perpage
                 },
 
-                
+
             },
             methods: {
                 setPage(page) {
@@ -169,7 +157,7 @@
                 },
                 OpinionData: function () {
                     // alert("AAA");
-                    fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
+                    fetch("/Candidates/OpinionLetters/IndexJson_opinionletter", {
                         method:"GET"
                     }).then(response => {
                         return response.json();
@@ -181,11 +169,6 @@
                 },
                 OpinionLetterModalShow: function (id) {
                     alert(id);
-                    // let request ={
-                    //     LetterId: id,
-                    // };
-                    // axios.post(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow`, id, 
-                    //         {headers: {'Content-Type': 'application/json'}})
                     axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
                     .then(response => this.opinionLetterModal = response.data)
                     .catch(err => { alert(err) });
@@ -195,56 +178,22 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
-                filterOpinionLetter: function () { 
-                    // alert(`${this.filter}`);
-                    let _this = this;                    
+                filterOpinionLetter: function () {
+                    // alert(`Filter${_this.filter}`)
+                    let _this = this;
                     let request = {};
 
-                    // if (_this.filter.Contains("已處理")) 
-                    //     request.Status = true;
-                    // else if (_this.filter.Contains("處理中"))
-                    //     requst.Status = false;
-
                     request.Class = request.SubjectLine =_this.filter;
-                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/Filter`,request)
-                        .then(response => {                             
+
+                    axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Filter`, request)
+                        .then(response => {
                             _this.opinionlist = response.data;
                             // alert(JSON.stringify(response.data));
                         })
                         .catch(err => { alert(err); });
+
                 },
 
-                toggleStatus: function (letterId) {
-                    // alert(letterId);
-
-                    let _this = this;
-                    _this.opinionLetterModal.status = !_this.opinionLetterModal.status;
-                  
-                    axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/ToggleStatus`,
-                        letterId,
-                        { headers: { 'Content-Type': 'application/json' } })
-                        .then(response => {
-                            alert(response.data);
-                            _this.OpinionData();
-                        })
-                        .catch(err => { alert(err) });
-                },
-
-                deleteOpinionLetter: function (letterId) {
-                    let _this = this;
-                    let c = confirm(`確定要刪除${letterId}嗎?`);
-                    if (c == true) {
-                        axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/DeleteLetter`, letterId,
-                        { headers: { 'Content-Type': 'application/json' } })
-                            .then(response => {
-                                _this.OpinionData();
-                                alert(response.data);
-
-                            }).catch(err => {
-                                alert("刪除失敗");
-                            });
-                    }
-                },
             },
             mounted() {
                 let _this = this;

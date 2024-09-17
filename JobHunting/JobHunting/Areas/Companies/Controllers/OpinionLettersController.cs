@@ -54,5 +54,23 @@ namespace JobHunting.Areas.Companies.Controllers
                 });
         }
 
+        //Post:Companies/OpinionLetters/Hide/{letterId}
+        [HttpPost]
+        public async Task<IActionResult> HideLetter([FromBody]int letterId) 
+        {
+            var letter = await _context.OpinionLetters.FindAsync(letterId);
+            if (letter != null) {
+                letter.CompanyId = null;
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) {
+                return StatusCode(500, "隱藏失敗");
+            }
+            return Ok("隱藏成功");
+        }
+
     }
 }
