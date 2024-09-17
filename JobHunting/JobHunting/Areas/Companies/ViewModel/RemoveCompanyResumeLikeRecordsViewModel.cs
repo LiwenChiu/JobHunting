@@ -1,4 +1,4 @@
-﻿namespace JobHunting.Areas.Companies.Models
+﻿namespace JobHunting.Areas.Companies.ViewModel
 {
     public class RemoveCompanyResumeLikeRecordsViewModel
     {

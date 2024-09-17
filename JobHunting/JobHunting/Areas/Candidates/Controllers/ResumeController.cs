@@ -292,31 +292,32 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { message = "修改失敗" });
+                return Json(new { success = false,message = "履歷狀態更改失敗" });
             }
 
-            return Json(new { success = true, message = "修改成功" });
+            return Json(new { success = true, message = "履歷狀態已更改" });
         }
 
 
         [HttpPost]
         public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro", "CertificationImageFile")] ResumeInputModel rm)
         {
-            
 
-            var r = await _context.Resumes
+            try
+            {
+                var r = await _context.Resumes
             .Include(o => o.TitleClasses).Include(t => t.Tags)
             .FirstOrDefaultAsync(o => o.ResumeId == rm.ResumeId);
 
-            var titleClasses = await _context.TitleClasses
-                   .Where(tc => rm.TitleClassId.Contains(tc.TitleClassId))
-                   .ToListAsync();
+                var titleClasses = await _context.TitleClasses
+                       .Where(tc => rm.TitleClassId.Contains(tc.TitleClassId))
+                       .ToListAsync();
 
-            var tags = await _context.Tags
-                .Where(t => rm.TagId.Contains(t.TagId))
-                .ToListAsync();
+                var tags = await _context.Tags
+                    .Where(t => rm.TagId.Contains(t.TagId))
+                    .ToListAsync();
 
-            //Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
+                //Resume r = await _context.Resumes.FindAsync(rm.ResumeId);
 
                 r.Intro = rm.Intro;
                 r.Address = rm.Address;
@@ -328,37 +329,42 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.TitleClasses.Clear();
                 r.Tags.Clear();
 
-            if (rm.HeadshotImageFile != null)
-            {
-                using (BinaryReader br = new BinaryReader(rm.HeadshotImageFile.OpenReadStream()))
+                if (rm.HeadshotImageFile != null)
                 {
-                    r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
+                    using (BinaryReader br = new BinaryReader(rm.HeadshotImageFile.OpenReadStream()))
+                    {
+                        r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
+                    }
                 }
-            }
-            if (rm.CertificationImageFile != null)
-            {
-                using (BinaryReader br = new BinaryReader(rm.CertificationImageFile.OpenReadStream()))
+                if (rm.CertificationImageFile != null)
                 {
-                    r.Certification = br.ReadBytes((int)rm.CertificationImageFile.Length);
+                    using (BinaryReader br = new BinaryReader(rm.CertificationImageFile.OpenReadStream()))
+                    {
+                        r.Certification = br.ReadBytes((int)rm.CertificationImageFile.Length);
+                    }
                 }
+
+
+                foreach (var titleClass in titleClasses)
+                {
+                    r.TitleClasses.Add(titleClass);
+                }
+
+                foreach (var tag in tags)
+                {
+                    r.Tags.Add(tag);
+                }
+
+
+
+                _context.Update(r);
+                await _context.SaveChangesAsync();
             }
-
-
-            foreach (var titleClass in titleClasses)
+            catch (DbUpdateException ex)
             {
-                r.TitleClasses.Add(titleClass);
+                return Json(new { success = false, message = "修改履歷失敗" });
             }
-
-            foreach (var tag in tags)
-            {
-                r.Tags.Add(tag);
-            }
-
-
-
-            _context.Update(r);
-            await _context.SaveChangesAsync();
-            return Json(new { success = true, message = "修改成功" });
+            return Json(new { success = true, message = "修改履歷成功" });
 
         }
 
@@ -384,7 +390,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             catch (DbUpdateException ex) 
             {
-                return Json(new { message = "刪除履歷失敗" });
+                return Json(new { success = false,message = "刪除履歷失敗" });
             }
             return Json(new { success = true,message = "刪除履歷成功" });
         }

@@ -18,9 +18,9 @@
     <div class="row">  
         <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
-                @* 刪除信件 *@
+                @* 隱藏信件 *@
                 <div class="col-1" style="margin-left:auto">
-                    <button type="button" class="btn-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hideLetter(item.letterId)"></button>
                 </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
@@ -155,6 +155,8 @@
                     }
                     this.currentPage = page
                 },
+
+                // 撈出清單Card
                 OpinionData: function () {
                     // alert("AAA");
                     fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
@@ -167,6 +169,8 @@
                         alert(JSON.stringify(err))
                     })
                 },
+
+                //Card Modal
                 OpinionLetterModalShow: function (id) {
                     alert(id);
                     axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
@@ -178,6 +182,7 @@
                     return isDone ? '已處理' : '處理中';
                 },
 
+                //篩選Card
                 filterOpinionLetter: function () {
                     // alert(`Filter${_this.filter}`)
                     let _this = this;
@@ -196,7 +201,23 @@
                             // alert(JSON.stringify(response.data));
                         })
                         .catch(err => { alert(err); });
+                },
 
+                //隱藏Card
+                hideLetter: function(letterId)
+                {
+                    let _this=this;
+                    let m = confirm("確定要隱藏嗎?");
+                    if(m==true){
+                        axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Hide`, letterId,
+                        { headers: { 'Content-Type': 'application/json' } })
+                            .then(response=>{
+                            _this.OpinionData();
+                            alert(response.data);
+                            }).catch(err => {
+                                alert("隱藏失敗");
+                            });
+                    }
                 },
 
             },
