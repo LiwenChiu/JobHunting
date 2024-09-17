@@ -31,9 +31,13 @@ public partial class Notification
 
     public string Address { get; set; }
 
+    public bool ReplyFirstYN { get; set; }
+
     public bool ReplyYN { get; set; }
 
     public string Reply { get; set; }
+
+    public DateTime? ReplyTime { get; set; }
 
     public virtual Candidate Candidate { get; set; }
 
