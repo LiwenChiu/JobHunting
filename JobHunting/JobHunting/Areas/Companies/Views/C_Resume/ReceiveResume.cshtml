@@ -28,12 +28,10 @@
                     </select>
                 </template> *@
 
-                <select class="form-control mb-2" style=" width:70%" v-model="selectedOpTitleId">
-                    <option value="" selected>---------職缺名稱篩選-----------</option>
-                    <option v-for="item in uniqueResumes" v-bind:value="item.openingId">{{item.openingTitle}}</option>
-                </select>
-                <label style=" width:70%">
-                    <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:change="receiveResumeData" placeholder="篩選關鍵字">
+                
+                <label style=" width:60%">
+                    <input type="text" class="form-control mb-2"  v-model.trim.lazy="filter" v-on:change="receiveResumeData" placeholder="篩選關鍵字">
+                    @* <button class="btn btn-warning" v-on:click="clearfilter">清空全部篩選</button> *@
                 </label>
                 
 
@@ -52,7 +50,12 @@
                 <tr>
                     <th class="col">應徵日期</th>
                     @* <th class="col">職缺類別</th> *@
-                    <th class="col">職缺名稱</th>
+                    <th class="col">
+                        <select class="btn btn-outline-dark" v-model="selectedOpTitleId">
+                            <option :value="undefined" selected>職缺名稱</option>
+                            <option v-for="item in uniqueResumes" v-bind:value="item.openingTitle">{{item.openingTitle}}</option>
+                        </select>
+                    </th>
                     <th class="col">求職者</th>
                     <th class="col">
                         <select v-model.lazy="selectedInterviewYN" v-on:change="receiveResumeData" class="btn btn-outline-dark">
@@ -379,7 +382,8 @@
 
                     selectedHireYN: undefined,
                     selectedOpClassTitleId: '',
-                    selectedOpTitleId: '',
+                    selectedOpTitleId: undefined,
+
                 };
             },
             computed: {
@@ -400,7 +404,7 @@
                     if (!this.selectedOpTitleId) {
                         return this.resumes;
                     } else {
-                        return this.resumes.filter(item => item.openingId == this.selectedOpTitleId);
+                        return this.resumes.filter(item => item.openingTitle == this.selectedOpTitleId);
                     }
                     return this.resumes
                 },
@@ -408,12 +412,12 @@
                 uniqueResumes() {
                     // 使用 reduce 去除重復
                     return this.resumes.reduce((accumulator, current) => {
-                        if (!accumulator.some(item => item.openingId === current.openingId)) {
+                        if (!accumulator.some(item => item.openingTitle === current.openingTitle)) {
                             accumulator.push(current);
                         }
                         return accumulator;
                     }, []);
-                }
+                },
             },
             methods: {
                 setPage(page) {

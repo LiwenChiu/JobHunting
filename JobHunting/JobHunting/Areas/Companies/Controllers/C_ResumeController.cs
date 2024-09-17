@@ -111,6 +111,7 @@ namespace JobHunting.Areas.Companies.Controllers
                      AppointmentTime = siv.AppointmentTime,
                      Address = siv.Address,
                      ReplyYN = siv.ReplyYN,
+                     ReplyFirstYN = siv.ReplyFirstYN,
                 };
 
                 _context.Notifications.Add(send);
@@ -149,6 +150,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     AppointmentTime = siv.AppointmentTime,
                     Address = siv.Address,
                     ReplyYN = siv.ReplyYN,
+                    ReplyFirstYN = siv.ReplyFirstYN,
                 };
 
                 _context.Notifications.Add(send);
