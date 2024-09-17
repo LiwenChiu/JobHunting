@@ -10,9 +10,11 @@ using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Net;
 using NuGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
+    //[Authorize(Roles = "candidate")]
     [Area("Candidates")]
     public class HomeController : Controller
     {
