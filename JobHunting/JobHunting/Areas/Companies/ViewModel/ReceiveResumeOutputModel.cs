@@ -29,9 +29,9 @@ namespace JobHunting.Areas.Companies.ViewModel
         public string CompanyName { get; set; }
 
 
-        public bool InterviewYN { get; set; }
+        public bool? InterviewYN { get; set; }
 
-        public bool HireYN { get; set; }
+        public bool? HireYN { get; set; }
 
 
         public string Email { get; set; }
