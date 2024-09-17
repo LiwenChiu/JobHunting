@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace JobHunting.Controllers
 {
@@ -27,9 +28,26 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult Privacy()
+        public IActionResult OpeningsList()
         {
-            return View();
+            return Json(_context.Openings.Include(a => a.Company).Select(b => new OpeningsIndexViewModel
+            {
+                OpeningId = b.OpeningId,
+                CompanyId = b.CompanyId,
+                Title = b.Title,
+                Address = b.Address,
+                Description = b.Description,
+                Degree = b.Degree,
+                Benefits = b.Benefits,
+                SalaryMax = b.SalaryMax,
+                SalaryMin = b.SalaryMin,
+                Time = b.Time,
+                ContactEmail = b.ContactEmail,
+                ContactName = b.ContactName,
+                ContactPhone = b.ContactPhone,
+                CompanyName = b.Company.CompanyName,
+
+            }));
         }
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
