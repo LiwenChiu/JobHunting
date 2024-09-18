@@ -80,7 +80,9 @@
                     <td>{{item.description}}</td>
                     <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
                     <td>
-                        <button class="btn btn-info">應徵</button>
+                        <button type="button" class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#applyJobModal" v-on:click="getOpening(item.openingId)">
+                            應徵
+                        </button>
                         <template v-if="item.likeYN == false">
                             <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
                         </template>
@@ -91,6 +93,70 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="modal fade" id="applyJobModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center text-light">{{openingModal.openingTitle}} - </h3>
+                        <button class="astext h3 text-light" style="margin: 0 0 7px;">{{openingModal.companyName}}</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelApplyJob()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="h3">介紹: </label>
+                        <h5>{{openingModal.description}}</h5>
+                        <hr />
+                        <label class="h4">職業類別: </label>
+                        <template v-for="(titleClass,index) in openingModal.titleClassName">
+                            <template v-if="index + 1 == openingModal.titleClassName.length">
+                                <button class="astext h5">{{titleClass}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{titleClass}}</button>、
+                            </template>
+                        </template>
+                        <br />
+                        <label class="h4">薪資:  </label>
+                        <span class="h5 text-warning">月薪{{openingModal.salaryMin}}~{{openingModal.salaryMax}}元</span>
+                        <br />
+                        <label class="h4">工作時段: </label>
+                        <button class="astext h5">{{openingModal.time}}</button>
+                        <br />
+                        <label class="h4">工作地址: </label>
+                        <span class="h5">{{openingModal.address}}</span>
+                        <hr />
+                        <label class="h4">學歷要求: </label>
+                        <span class="h5">{{openingModal.degree}}</span>
+                        <br />
+                        <label class="h4">擅長能力: </label>
+                        <template v-for="(tag,index) in openingModal.tagName">
+                            <template v-if="index + 1 == openingModal.tagName.length">
+                                <button class="astext h5">{{tag}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{tag}}</button>、
+                            </template>
+                        </template>
+                        <hr />
+                        <label class="h4">福利制度: </label>
+                        <h5>{{openingModal.benefit}}</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <template v-if="applyJobYN == false">
+                            <button class="btn btn-primary" v-on:click="getResumes()">應徵</button>
+                        </template>
+                        <template v-else>
+                            <select v-model="selectedResumeId">
+                                <option v-for="resume in resumes" v-bind:value="resume.resumeId">{{resume.resumeTitle}}</option>
+                            </select>
+                            <button class="btn btn-primary" v-on:click="applyJob()">確認送出</button>
+                            <button class="btn btn-secondary" v-on:click="cancelApplyJob()">取消</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -132,6 +198,15 @@
                     zipCode: "",
                     companyClassList: [],
                     skill: null,
+
+                    alertStatus: null,
+                    alertText: "",
+
+                    openingModal: {},
+                    resumes: [],
+                    applyJobYN: false,
+                    selectedOpeningId: null,
+                    selectedResumeId: null,
                 };
             },
             computed: {
@@ -193,6 +268,9 @@
                             console.error(error);
                         });
                 },
+                applyJob: function () {
+
+                },
                 addFavorite(item) {
                     let self = this;
                     request = {
@@ -224,6 +302,51 @@
                     }).catch(error => {
                         console.error(error);
                     })
+                },
+                getOpening: function (openingId) {
+                    this.selectedOpeningId = openingId;
+                    axios.get(`${this.baseAddress}/Home/GetOpening`,
+                        {
+                            params: { id: this.selectedOpeningId },
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => this.openingModal = response.data)
+                        .catch(err => { alert(err) });
+                },
+                getResumes: function () {
+                    this.applyJobYN = true;
+                    axios.get(`${this.baseAddress}/Home/ResumesJson`,
+                        {
+                            params: { id: this.candidateId },
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => this.resumes = response.data)
+                        .catch(err => { alert(err) });
+                },
+                applyJob: function () {
+                    let request = {};
+                    request.candidateId = this.candidateId;
+                    request.resumeId = this.selectedResumeId;
+                    request.openingId = this.selectedOpeningId;
+                    axios.post(`${this.baseAddress}/Home/ApplyJob`, request, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    })
+                        .then(response => {
+                            alert(response.data.alertText);
+                            this.alertStatus = response.data.alertStatus;
+                        })
+                        .catch(err => { alert(err) })
+                        .finally(() => this.applyJobYN = false);
+                },
+                cancelApplyJob: function () {
+                    this.applyJobYN = false;
+                    this.selectedResumeId = null;
                 },
             },
             mounted() {
