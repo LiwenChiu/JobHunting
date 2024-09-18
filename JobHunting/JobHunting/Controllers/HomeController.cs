@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace JobHunting.Controllers
 {
@@ -85,7 +86,7 @@ namespace JobHunting.Controllers
                 {
                     // 驗證通過，建立 claims
                     var claims = new List<Claim>
-            {
+                {
                 new Claim(ClaimTypes.Name, candidateLogin.NationalId),  // 使用身分證字號作為名稱
                 new Claim(ClaimTypes.Role, "candidate")                 // 設定角色為 candidate
             };
@@ -160,6 +161,69 @@ namespace JobHunting.Controllers
             // 比對密碼，假設密碼是明文儲存的，實際情況應該使用加密
             return company.Password == companyLogin.Password;
         }
+
+
+        /*------------------  求職端註冊 ----------------------------------*/
+        //POST : Home/Register/AddCandidateRedgister
+
+        [HttpPost]
+        public async Task<IActionResult> AddCandidateRedgister([FromBody] CandidateRegisterVM cr)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "未填寫完成註冊所需資料" });
+            }
+
+            // 檢查重複註冊
+            if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId || c.Email == cr.Email))
+            {
+                return Json(new { success = false, message = "此身份證或電子郵件已被註冊" });
+            }
+
+            //// 密碼加密
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+
+            try
+            {
+                Candidate inster = new Candidate
+                {
+                    NationalId = cr.NationalId,
+                    Email = cr.Email,
+                    Password = cr.Password,
+
+                };
+
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Candidates.Add(inster);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
+            }
+
+            return Json(new { success = true, message = "已註冊成功", });
+        }
+
+
+
+
+
+
 
         [Authorize]
         [HttpPost]

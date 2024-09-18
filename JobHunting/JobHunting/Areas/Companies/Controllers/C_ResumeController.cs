@@ -182,7 +182,14 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "履歷收藏失敗" });
+                if(arlv.CompanyId !=null && arlv.ResumeId != null)
+                {
+                    return Json(new { success = false, message = "收藏失敗。履歷已收藏過" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "履歷收藏失敗" });
+                }
             }
             
 

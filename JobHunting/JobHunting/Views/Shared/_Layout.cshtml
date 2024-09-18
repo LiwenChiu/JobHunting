@@ -60,10 +60,11 @@
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Register">求職者註冊</a></li>
+                            @* <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Register">求職者註冊</a></li> *@
                             <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
+                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
                             @* <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li> *@
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li>
+                            @* <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li> *@
                             @* <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li> *@
                             <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
                         </ul>
