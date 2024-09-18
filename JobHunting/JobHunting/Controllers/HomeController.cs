@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
+using Microsoft.Data.SqlClient;
 
 namespace JobHunting.Controllers
 {
@@ -27,9 +29,77 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult Privacy()
+
+        public async Task<IActionResult> OpeningsList(int id)
         {
-            return View();
+            return Json(_context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
+            {
+                OpeningId = b.OpeningId,
+                CompanyId = b.CompanyId,
+                Title = b.Title,
+                Address = b.Address,
+                Description = b.Description,
+                Degree = b.Degree,
+                Benefits = b.Benefits,
+                SalaryMax = b.SalaryMax,
+                SalaryMin = b.SalaryMin,
+                Time = b.Time,
+                ContactEmail = b.ContactEmail,
+                ContactName = b.ContactName,
+                ContactPhone = b.ContactPhone,
+                CompanyName = b.Company.CompanyName,
+                LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+            }));
+        }
+        [HttpPost]
+        public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
+        {
+            try
+            {
+                var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
+                var candidateIdParam = new SqlParameter("@CandidateId", favorite.CandidateId);
+                var openingIdParam = new SqlParameter("@OpeningId", favorite.OpeningId);
+                await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
+            }
+            catch (Exception ex)
+            {
+                return "此職缺已收藏";
+            }
+
+
+            return "職缺已成功收藏";
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteOpeningsViewModel dfovm)
+        {
+            try
+            {
+                var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CandidateId = @CandidateId AND OpeningId = @OpeningId";
+                var candidateIdParam = new SqlParameter("@CandidateId", dfovm.CandidateId);
+                var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
+                await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
+            }
+            catch(Exception ex)
+            {
+                return "取消收藏職缺失敗";
+            }
+
+            return "取消收藏職缺成功";
+        }
+
+
+        public IActionResult CompanyClassSelect()
+        {
+            var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
+            var temp = source.Select(b => new CompanyClassSelectViewModelcs
+            {
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
+                CompanyCategoryId = b.CompanyCategoryId,
+                CompanyCategoryName = b.CompanyCategoryName,
+            });
+            return Json(temp);
         }
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)

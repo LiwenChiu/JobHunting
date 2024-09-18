@@ -25,42 +25,53 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro(int? id)
+        //public async Task<IActionResult> ResumeIntro(int candidateId, int resumeId)
+        //{
+        //    if (candidateId == null)
+        //    {
+        //        return NotFound();
+        //    }
+            //var resume = await _context.Candidates.Include(a => a.Resumes).Where(c => c.CandidateId == candidateId).Select(c => new ResumeIDViewModel
+            //{
+            //    ResumeId = c.Resumes.Where(x => x.ResumeId == resumeId).Select(y => y.ResumeId),
+            //    CandidateId = c.CandidateId
+            //});
+            //if (resume == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(resume);
+        //}
+        public async Task<IActionResult> ResumeDetail(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var resume = await _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
+            else
             {
-                ResumeId = c.ResumeId,
-                CandidateId = c.CandidateId,
-                Title = c.Title,
-                Intro = c.Intro,
-                Autobiography = c.Autobiography,
-                WorkExperience = c.WorkExperience,
-                Time = c.Time,
-                WishAddress = c.Address,
-                Name = c.Candidate.Name,
-                Phone = c.Candidate.Phone,
-                Email = c.Candidate.Email,
-                Sex = c.Candidate.Sex,
-                Degree = c.Candidate.Degree,
-                Address = c.Candidate.Address,
-                EmploymentStatus = c.Candidate.EmploymentStatus,
-                MilitaryService = c.Candidate.MilitaryService,
-                TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            }).FirstOrDefaultAsync(m => m.CandidateId == id);
-            if (resume == null)
-            {
-                return NotFound();
+                var today = DateOnly.FromDateTime(DateTime.Now);
+                var resume = await _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
+                {
+                    ResumeId = c.ResumeId,
+                    CandidateId = c.CandidateId,
+                    Title = c.Title,
+                    Intro = c.Intro,
+                    Autobiography = c.Autobiography,
+                    WorkExperience = c.WorkExperience,
+                    WishAddress = c.Address,
+                    Name = c.Candidate.Name,
+                    Sex = c.Candidate.Sex,
+                    Degree = c.Candidate.Degree,
+                    Address = c.Candidate.Address,
+                    TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                    Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+                }).FirstOrDefaultAsync(m => m.CandidateId == id);
+                return Json(resume);
             }
-
-            return View(resume);
+           
         }
-
         public async Task<IActionResult> CompanyIndexList()
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
@@ -106,9 +117,7 @@ namespace JobHunting.Controllers
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
                     b.Address.Substring(0, 3) == resume.Area ||
-                    //b.Address.Contains(resume.Area) ||
-                    //(b.Address.Substring(0, 3) == resume.Area && b.Address.Substring(0, 3) == resume.zipCode) ||
-                    b.Degree.Contains(resume.Edu) ||
+                    b.Degree == resume.Edu ||
                     b.skill.Any(z => z.TagId == resume.Skill)
                 ).Select(x => new ResumesOutput
                 {
@@ -148,11 +157,13 @@ namespace JobHunting.Controllers
                     skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
+                    resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
                     b.Sex == resume.Sex ||
                     b.Age.ToString().Contains(resume.serchText) ||
-                    b.Address.Contains(resume.serchText.Replace("臺", "台")) ||
-                    b.Address.Substring(4, 3) == resume.Area ||
-                    resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
+                    b.Address.Contains(resume.serchText) ||
+                    b.Address.Substring(0, 3) == resume.Area ||
+                    b.Degree == resume.Edu ||
+                    b.Degree.Contains(resume.serchText) ||
                     b.skill.Any(z => z.TagId == resume.Skill)
                 ).Select(x => new ResumesOutput
                 {
