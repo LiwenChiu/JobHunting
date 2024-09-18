@@ -172,7 +172,7 @@
 
                 //Card Modal
                 OpinionLetterModalShow: function (id) {
-                    alert(id);
+                    // alert(id);
                     axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
                     .then(response => this.opinionLetterModal = response.data)
                     .catch(err => { alert(err) });
