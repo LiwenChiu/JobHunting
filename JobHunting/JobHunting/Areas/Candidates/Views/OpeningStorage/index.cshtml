@@ -59,7 +59,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
-                                style="width:5% ;">
+                                style="width:5% ;" v-on:click="applyJobYN = false">
                         </button>
                     </div>
                     <div class="modal-body">
@@ -175,7 +175,8 @@
                     resumes: [],
                     selectedOpeningId: null,
                     selectedResumeId: null,
-                    
+
+                    alertStatus: null,
                 };
             },
             computed: {
@@ -324,15 +325,18 @@
                             "Content-Type": "application/json",
                         }
                     })
-                    .then(response => console.log(response.data))
-                    .catch(err => { alert(err) });
+                    .then(response => {
+                        alert(response.data.alertText);
+                        this.alertStatus = response.data.alertStatus;
+                    })
+                    .catch(err => { alert(err) })
+                    .finally(() => this.applyJobYN = false);
                 },
                 cancelApplyJob: function () {
                     this.applyJobYN = false;
                     this.selectedResumeId = null;
                 },
             },
-
             mounted() {
                 this.ReceiveOpeningData();
             },
