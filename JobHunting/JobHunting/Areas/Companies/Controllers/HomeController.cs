@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Numerics;
 using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 namespace JobHunting.Areas.Companies.Controllers
 {
-    //[Authorize(Roles = "company")]
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class HomeController : Controller
     {
@@ -23,53 +24,84 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
         [HttpPost]
-        public async Task<CompanyMemberDataOutputModel> GetCompanyMemberData([FromBody] int id)
+        public async Task<CompanyMemberDataOutputModel> GetCompanyMemberData()
         {
-            return _context.Companies.AsNoTracking()
-                .Where(cmd => cmd.CompanyId == id)
-                .Select(cmd => new CompanyMemberDataOutputModel
-                {
-                    CompanyId = cmd.CompanyId,
-                    CompanyName = cmd.CompanyName,
-                    Intro = cmd.Intro,
-                    GUINumber = cmd.GUINumber,
-                    Address = cmd.Address,
-                    ContactName = cmd.ContactName,
-                    ContactPhone = cmd.ContactPhone,
-                    ContactEmail = cmd.ContactEmail
-                }).Single();
+            // 從 claims 中取得 CompanyId
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new CompanyMemberDataOutputModel(); // 或處理未授權訪問的情況
+            }
+
+            var companyData = await _context.Companies.AsNoTracking()
+        .Where(cmd => cmd.CompanyId.ToString() == userId)
+        .Select(cmd => new CompanyMemberDataOutputModel
+        {
+            CompanyId = cmd.CompanyId,
+            CompanyName = cmd.CompanyName,
+            Intro = cmd.Intro,
+            GUINumber = cmd.GUINumber,
+            Address = cmd.Address,
+            ContactName = cmd.ContactName,
+            ContactPhone = cmd.ContactPhone,
+            ContactEmail = cmd.ContactEmail
+        }).SingleOrDefaultAsync();
+
+            // 如果 companyData 為 null，返回空的 CompanyMemberDataOutputModel
+            return companyData ?? new CompanyMemberDataOutputModel();
         }
 
         [HttpPost]
-        public async Task<IEnumerable<CompanyOpeningsOutputModel>> GetCompanyOpenings([FromBody] int id)
+        public async Task<IEnumerable<CompanyOpeningsOutputModel>> GetCompanyOpenings()
         {
-            return _context.Openings.AsNoTracking()
-                .Where(o => o.CompanyId == id)
+            // 從 claims 中取得 CompanyId
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new List<CompanyOpeningsOutputModel>(); // 或處理未授權訪問的情況
+            }
+
+            // 使用 CompanyId 查詢開放職位
+            return await _context.Openings.AsNoTracking()
+                .Where(o => o.Company.CompanyId.ToString() == userId)
                 .Select(o => new CompanyOpeningsOutputModel
                 {
                     OpeningId = o.OpeningId,
                     Title = o.Title
-                }).Take(4);
+                }).Take(4).ToListAsync();
         }
 
-        [HttpPost]
-        public async Task<IEnumerable<CompanyResumeLikeRecordsOutputModel>> GetCompanyResumeLikeRecords([FromBody] int id)
-        {
-            var query = await _context.Companies.AsNoTracking()
-                .Include(c => c.Resumes)
-                .FirstOrDefaultAsync(c => c.CompanyId == id);
 
-            if(query == null)
+        [HttpPost]
+        public async Task<IEnumerable<CompanyResumeLikeRecordsOutputModel>> GetCompanyResumeLikeRecords()
+        {
+            // 從 claims 中取得 CompanyId
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new List<CompanyResumeLikeRecordsOutputModel>(); // 或處理未授權訪問的情況
+            }
+
+            // 使用 CompanyId 查詢公司喜好紀錄
+            var company = await _context.Companies.AsNoTracking()
+                .Include(c => c.Resumes)
+                .FirstOrDefaultAsync(c => c.CompanyId.ToString() == userId);
+
+            if (company == null)
             {
                 return new List<CompanyResumeLikeRecordsOutputModel>();
             }
 
-            return query.Resumes.Select(crlro => new CompanyResumeLikeRecordsOutputModel
+            return company.Resumes.Select(crlro => new CompanyResumeLikeRecordsOutputModel
             {
                 ResumeId = crlro.ResumeId,
                 Title = crlro.Title
-            }).Take(4);
+            }).Take(4).ToList();
         }
+
 
         public async Task<FileResult> GetPicture(int id)
         {
@@ -81,7 +113,7 @@ namespace JobHunting.Areas.Companies.Controllers
         }
         /*------------------------------------------*/
 
-        
+
         public IActionResult Index()
         {
             return View();

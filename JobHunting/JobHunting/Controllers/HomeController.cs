@@ -140,36 +140,6 @@ namespace JobHunting.Controllers
             return Json(new { success = false, message = "無效的角色" });
         }
 
-
-
-        //private bool ValidateCandidate(CandidateLoginVM candidateLogin)
-        //{
-        //    var candidate = _context.Candidates
-        //    .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
-
-        //    if (candidate == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    // 比對密碼，假設密碼是明文儲存的，實際情況應該使用加密
-        //    return candidate.Password == candidateLogin.Password;
-        //}
-
-        //private bool ValidateCompany(CompanyLoginVM companyLogin)
-        //{
-        //    var company = _context.Companies
-        //    .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
-
-        //    if (company == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    // 比對密碼，假設密碼是明文儲存的，實際情況應該使用加密
-        //    return company.Password == companyLogin.Password;
-        //}
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -178,7 +148,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Login", "Home"); // 或 RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home"); 
         }
     }
 }

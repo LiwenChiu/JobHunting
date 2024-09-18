@@ -489,7 +489,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CompanyId : 1,
                     openings: [],
                     openingsfilter: [],
                     selectedDegreeName: '',
@@ -656,7 +655,6 @@
                 createOpening: function () {
                     let _this = this;
                     let request = {};
-                    request.CompanyId = _this.CompanyId;
                     request.Title = _this.Title;
                     request.Address = _this.Address;
                     request.ContactName = _this.ContactName;
@@ -747,7 +745,7 @@
                 //資料初始
                 ReceiveOpeningData() {
                     let _this = this;
-                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson/${_this.CompanyId}`).then(
+                    axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson`).then(
                         res => {
                             _this.openings = res.data;
                         }
@@ -816,7 +814,6 @@
                 filterOpenings: function () {
                     let _this = this;
                     var request = {
-                        CompanyId: _this.CompanyId,
                         Title: _this.filter,
                         Address: _this.filter,
                         Time: _this.filter
