@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using Microsoft.Data.SqlClient;
 
 namespace JobHunting.Controllers
 {
@@ -48,6 +49,35 @@ namespace JobHunting.Controllers
                 CompanyName = b.Company.CompanyName,
 
             }));
+        }
+        [HttpPost]
+        public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
+        {
+            try
+            {
+                var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
+                var candidateIdParam = new SqlParameter("@CandidateId", favorite.CandidateId);
+                var openingIdParam = new SqlParameter("@OpeningId", favorite.OpeningId);
+                await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
+            }
+            catch (Exception ex)
+            {
+                return "此職缺已收藏";
+            }
+
+
+            return "職缺已成功收藏";
+        }
+        public IActionResult CompanyClassSelect()
+        {
+            var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
+            var temp = source.Select(b => new CompanyClassSelectViewModelcs
+            {
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
+                CompanyCategoryId = b.CompanyCategoryId,
+                CompanyCategoryName = b.CompanyCategoryName,
+            });
+            return Json(temp);
         }
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)

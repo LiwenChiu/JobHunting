@@ -152,8 +152,8 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-warning">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">暫存</button>
-                    <button type="button" class="btn btn-primary">詳細</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="addFavorite(item.resumeID)">暫存</button>
+                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item.resumeID)">詳細</button>
                 </div>
             </div>
         </div>
@@ -180,6 +180,7 @@
                     cityList:[],
                     city:"",
                     zipCode:"",
+                    companyId: 2,
                     baseAddress: "https://localhost:7169"
                 };
             },
@@ -196,9 +197,12 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
-
+                
             },
             methods: {
+                goToPage(item){
+                    window.open(`${this.baseAddress}/Company/ResumeIntro/${item}`)
+                },
                 setPage(page) {
                     if (page <= 0 || page > this.totalPage) {
                         return
@@ -216,7 +220,7 @@
                 },
                 indexList() {
                     let self = this;
-                    axios.post('https://localhost:7169/Company/CompanyIndexList', {
+                    axios.post(`${self.baseAddress}/Company/CompanyIndexList`, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.resumes = res.data;
@@ -249,7 +253,7 @@
                         self.indexList();
                     }
                     else {
-                        axios.post('https://localhost:7169/Company/SelectIndexList', request, {
+                        axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
                                 headers: { 'Content-Type': 'application/json' },
                             }).then(res => {
                                 self.resumes = res.data;
@@ -259,22 +263,27 @@
                     }
 
                 },
-                getTag() {
-                    let request = {
-                        method: 'GET',
-                        cache: 'no-cache',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        })
+                addFavorite(item) {
+                    let self = this;
+                    request = {
+                        companyId: self.companyId,
+                        resumeId: item,
                     };
-                    fetch('https://localhost:7169/Company/TagClasses', request)
-                        .then(response => {
-                            return response.json();
-                        })
+                    axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                getTag() {
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Company/TagClasses`)  
                         .then(model => {
-                            return this.tagClasses = model
+                            self.tagClasses = model.data;
                         })
-                        .catch(error => {
+                        .catch(function (error) {
                             console.error(error);
                         });
                 },
