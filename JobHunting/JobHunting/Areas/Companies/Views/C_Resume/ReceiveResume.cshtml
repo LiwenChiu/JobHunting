@@ -28,12 +28,10 @@
                     </select>
                 </template> *@
 
-                <select class="form-control mb-2" style=" width:70%" v-model="selectedOpTitleId">
-                    <option value="" selected>---------職缺名稱篩選-----------</option>
-                    <option v-for="item in uniqueResumes" v-bind:value="item.openingId">{{item.openingTitle}}</option>
-                </select>
-                <label style=" width:70%">
-                    <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:change="receiveResumeData" placeholder="篩選關鍵字">
+                
+                <label style=" width:60%">
+                    <input type="text" class="form-control mb-2"  v-model.trim.lazy="filter" v-on:change="receiveResumeData" placeholder="篩選關鍵字">
+                    @* <button class="btn btn-warning" v-on:click="clearfilter">清空全部篩選</button> *@
                 </label>
                 
 
@@ -52,7 +50,12 @@
                 <tr>
                     <th class="col">應徵日期</th>
                     @* <th class="col">職缺類別</th> *@
-                    <th class="col">職缺名稱</th>
+                    <th class="col">
+                        <select class="btn btn-outline-dark" v-model="selectedOpTitleId">
+                            <option :value="undefined" selected>職缺名稱</option>
+                            <option v-for="item in uniqueResumes" v-bind:value="item.openingId">{{item.openingTitle}}</option>
+                        </select>
+                    </th>
                     <th class="col">求職者</th>
                     <th class="col">
                         <select v-model.lazy="selectedInterviewYN" v-on:change="receiveResumeData" class="btn btn-outline-dark">
@@ -215,7 +218,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
 
                                         </div>
@@ -226,14 +228,14 @@
                                         <button type="button" class="btn btn-success" v-on:click="addCompanyResumeLikeRecords(item.companyId, item.resumeId)">暫存</button>
                                         @* 發送面試通知按鈕 *@
                                         <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
-                                                data-bs-target="#interviewMailBtn">
+                                        @* data-bs-target="#interviewMailBtn" *@ v-on:click="openInterviewModal(item)">
                                             面試
                                         </button>
 
 
                                         @* 發送錄取通知按鈕 *@
                                         <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
-                                                data-bs-target="#OfferMailBtn">
+                                        @* data-bs-target="#OfferMailBtn" *@ v-on:click="openAdmissionModal(item)">
                                             錄取
                                         </button>
                                         @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
@@ -243,100 +245,100 @@
                             </div>
                         </div>
 
-                        @* 發送錄取通知 *@
-
-                        <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
-                             aria-labelledby="modalTitleId " aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-warning">
-                                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    @* 錄取通知內容 *@
-                                    <div class="modal-body">
-                                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
-                                            <div class="inputOutAreas">
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
-                                                    <input type="text" class="form-control inputDate" >
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                    <input type="date" class="form-control inputDate" >
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                    <input type="time" class="form-control inputTime" >
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                    <input type="text" class="form-control inputPlace" >
-                                                </div>
-
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                    <textarea class="form-control" style="height:150px" name="錄用通知訊息"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer bg-warning">
-                                        <button type="submit" class="btn btn-outline-secondary" >發送</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @* 發送面試通知 *@
-
-                        <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
-                             aria-labelledby="modalTitleId " aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-warning">
-                                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    @* 面試通知內容 *@
-                                    <div class="modal-body">
-                                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
-                                            <div class="inputOutAreas">
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
-                                                    <input type="text" class="form-control inputDate" >
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                    <input type="date" class="form-control inputDate" >
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                    <input type="time" class="form-control inputTime">
-                                                </div>
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                    <input type="text" class="form-control inputPlace" >
-                                                </div>
-
-                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                    <textarea class="form-control " style="height:150px" name="面試通知訊息"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer bg-warning">
-                                        <button type="submit" class="btn btn-outline-secondary" >發送</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </td> 
                 </tr>
             </tbody>
         </table>
+        @* 發送錄取通知 *@
 
+        <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+             aria-labelledby="modalTitleId " aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @* 錄取通知內容 *@
+                    <div class="modal-body">
+                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                            <div class="inputOutAreas">
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
+                                    <input type="text" class="form-control inputDate" v-model="SendAdmission.AdmissionSubjectLine">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                    <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                    <input type="time" class="form-control inputTime" v-model="SendAdmission.AdmissionTime">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                    <input type="text" class="form-control inputPlace" v-model="SendAdmission.AdmissionPlace">
+                                </div>
+
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                    <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-warning">
+                        <button type="submit" class="btn btn-outline-secondary" v-on:click="SendAdmissionLetter">發送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* 發送面試通知 *@
+
+        <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+             aria-labelledby="modalTitleId " aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @* 面試通知內容 *@
+                    <div class="modal-body">
+                        <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                            <div class="inputOutAreas">
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
+                                    <input type="text" class="form-control inputDate" v-model="Sendinterview.Purpose">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                    <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                    <input type="time" class="form-control inputTime" v-model="Sendinterview.Interviewtime">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                    <input type="text" class="form-control inputPlace" v-model="Sendinterview.place">
+                                </div>
+
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                    <textarea class="form-control " style="height:150px" name="面試通知訊息" v-model="Sendinterview.Content"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-warning">
+                        <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter">發送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -365,6 +367,22 @@
 @section Scripts {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
+        function convertDateOnly(dateString) {
+            if (!dateString) return null; // 檢查是否為空
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return null; // 檢查日期是否有效
+            return date.toISOString().split('T')[0]; // 只取日期部分
+        };
+
+        function convertTimeOnly(timeString) {
+            if (!timeString) return null; // 檢查是否為空
+            const [hours, minutes] = timeString.split(':');
+            if (!hours || !minutes) return null; // 确保分割结果有效
+            const date = new Date();
+            date.setHours(hours, minutes);
+            return date.toTimeString().split(' ')[0]; // 返回時間部分
+        };
+
         let VueApp = {
             data() {
                 return {
@@ -379,7 +397,30 @@
 
                     selectedHireYN: undefined,
                     selectedOpClassTitleId: '',
-                    selectedOpTitleId: '',
+                    selectedOpTitleId: undefined,
+                    Sendinterview: {
+                        Purpose: "",
+                        Interviewdate: "",
+                        Interviewtime: "",
+                        place: "",
+                        Content: "",
+                        Interviewnotice: "面試通知",
+                        sendDate: new Date(),
+                        interviewReplyYN: false,
+                        interviewReplyFirstYN: false,
+                    },
+                    SendAdmission: {
+                        AdmissionSubjectLine: "",
+                        AdmissionDate: "",
+                        AdmissionTime: "",
+                        AdmissionPlace: "",
+                        AdmissionContent: "",
+                        AdmissionStatus: "錄取通知",
+                        AdmissionsendDate: new Date(),
+                        AdmissionsendReplyYN: false,
+                        AdmissionsendReplyFirstYN: false,
+                    },
+                    selectedItem: {}, // 用儲存選中的資料
                 };
             },
             computed: {
@@ -400,7 +441,7 @@
                     if (!this.selectedOpTitleId) {
                         return this.resumes;
                     } else {
-                        return this.resumes.filter(item => item.openingId == this.selectedOpTitleId);
+                        return this.resumes.filter(item => item.openingTitle == this.selectedOpTitleId);
                     }
                     return this.resumes
                 },
@@ -408,12 +449,12 @@
                 uniqueResumes() {
                     // 使用 reduce 去除重復
                     return this.resumes.reduce((accumulator, current) => {
-                        if (!accumulator.some(item => item.openingId === current.openingId)) {
+                        if (!accumulator.some(item => item.openingTitle === current.openingTitle)) {
                             accumulator.push(current);
                         }
                         return accumulator;
                     }, []);
-                }
+                },
             },
             methods: {
                 setPage(page) {
@@ -533,8 +574,116 @@
                         alert(JSON.stringify(err))
                     });
                 },
-                    
+                //打開面試modal
+                openInterviewModal(item) {
+                    // 將資料賦予 selectedItem
+                    this.selectedItem = {
+                        companyId: item.companyId,
+                        candidateId: item.candidateId,
+                        openingId: item.openingId,
+                        resumeId: item.resumeId
+                    };
+                    // 打開modal
+                    let modal = new bootstrap.Modal(document.getElementById('interviewMailBtn'));
+                    modal.show();
+                },
+                //打開錄取modal
+                openAdmissionModal(item) {
+                    // 將資料賦予 selectedItem
+                    this.selectedItem = {
+                        companyId: item.companyId,
+                        candidateId: item.candidateId,
+                        openingId: item.openingId,
+                        resumeId: item.resumeId
+                    };
+                    // 打開modal
+                    let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
+                    modal.show();
+                },
+                //發送面試通知
+                SendInterviewLetter: function () {
+                    let _this = this;
+                    let request = {};
 
+                    const confirmdel = confirm("確定要發送?");
+
+                    if (confirmdel == true) {
+                        request.CompanyId = _this.selectedItem.companyId;
+                        request.CandidateId = _this.selectedItem.candidateId;
+                        request.OpeningId = _this.selectedItem.openingId;
+                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.Status = _this.Sendinterview.Interviewnotice;
+                        request.SubjectLine = _this.Sendinterview.Purpose;
+                        request.Content = _this.Sendinterview.Content;
+                        request.SendDate = convertDateOnly(_this.Sendinterview.sendDate);
+                        request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate);
+                        request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime);
+                        request.Address = _this.Sendinterview.place;
+                        request.ReplyYN = _this.SendAdmission.interviewReplyYN;
+                        request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
+                        fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"  // 指定 JSON 格式
+                            },
+                            body: JSON.stringify(request),  // 將數據序列化為 JSON
+                        }).then(res => {
+                            return res.json();
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                            };
+                        }).catch(err => {
+                            alert(JSON.stringify(err));
+                        })
+                    } else {
+                        alert("已取消操作")
+                    }
+
+                },
+                SendAdmissionLetter: function () {
+                    let _this = this;
+                    let request = {};
+                    let confirmdel = confirm("確定要發送?");
+                    if (confirmdel == true) {
+                        request.CompanyId = _this.selectedItem.companyId;
+                        request.CandidateId = _this.selectedItem.candidateId;
+                        request.OpeningId = _this.selectedItem.openingId;
+                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.Status = _this.SendAdmission.AdmissionStatus,
+                            request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
+                            request.Content = _this.SendAdmission.AdmissionContent,
+                            request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
+                            request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
+                            request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
+                            request.Address = _this.SendAdmission.AdmissionPlace,
+                            request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
+                            fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"  // 指定 JSON 格式
+                                },
+                                body: JSON.stringify(request),  // 將數據序列化為 JSON
+                            }).then(res => {
+                                return res.json();
+                            }).then(data => {
+                                if (data.success == true) {
+                                    alert(data.message);
+                                    location.reload(); // 刷新页面
+                                } else if (data.success == false) {
+                                    alert(data.message);
+                                };
+                            }).catch(err => {
+                                alert(JSON.stringify(err));
+                            })
+                    } else {
+                        alert("已取消操作")
+                    }
+                },
+                    
                 addCompanyResumeLikeRecords:function(companyId, resumeId){
                      let _this = this;
                     let confirmdel = confirm("確定要收藏?");

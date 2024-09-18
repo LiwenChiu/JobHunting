@@ -28,6 +28,6 @@
 
         public bool ReplyYN { get; set; }
 
-        public string Reply { get; set; }
+        public bool ReplyFirstYN { get; set; }
     }
 }
