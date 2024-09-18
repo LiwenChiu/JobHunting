@@ -69,7 +69,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CompanyId: 1,
                     orders: [],
                     deadline: null,
                     searchOrderInput: "",
@@ -81,7 +80,6 @@
             methods: {
                 getCompanyOrders: function () {
                     let request = {};
-                    request.CompanyId = this.CompanyId;
                     request.Price = request.Duration = Number.isNaN(Number(this.searchOrderInput)) ? -1 : Number(this.searchOrderInput);
                     request.Title = request.OrderDate = request.PayDate = this.searchOrderInput;
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
@@ -92,7 +90,7 @@
                     .catch(err => { alert(err) });
 
                     // 拿Companies裡的Deadline
-                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`, this.CompanyId, {
+                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`, {
                         headers: {
                             'Content-Type': 'application/json'
                         },
@@ -104,7 +102,6 @@
                 },
                 cancelOrder: function (orderId) {
                     let request = {};
-                    request.CompanyId = this.CompanyId;
                     request.orderId = orderId;
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
                         headers: {

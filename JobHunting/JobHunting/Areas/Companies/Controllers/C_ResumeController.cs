@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
     public class C_ResumeController : Controller
-    {
+    {   
         private readonly DuckCompaniesContext _context;
 
         public C_ResumeController(DuckCompaniesContext context)
@@ -39,15 +40,20 @@ namespace JobHunting.Areas.Companies.Controllers
         //GET:Compaines/C_Resume/ResumeStorageJson
 
         [HttpGet]
-        public async Task<IEnumerable<ResumeStorageViewModel>> ResumeStorageJson( int id)
+        public async Task<IEnumerable<ResumeStorageViewModel>> ResumeStorageJson()
             
         {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new List<ResumeStorageViewModel>(); // 或處理未授權訪問的情況
+            }
             var Result = await _context.Companies.Include(i => i.Resumes).ThenInclude(ti => ti.Tags)
                           .Include(i => i.Resumes).ThenInclude(ti => ti.TitleClasses)
                           .Include(i => i.Resumes).ThenInclude(ti => ti.Candidate)
                           .Include(i => i.Openings).ThenInclude(ti => ti.ResumeOpeningRecords)
-                          .Where(rs => rs.CompanyId == id).ToListAsync();
+                          .Where(rs => rs.CompanyId.ToString() == CompanyId).ToListAsync();
              if(Result == null || !Result.Any())
             {
                 return new List<ResumeStorageViewModel>();
@@ -91,7 +97,13 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
-                var company = await _context.Companies.FindAsync(siv.CompanyId);
+                var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(CompanyId) || !int.TryParse(CompanyId, out int companyId))
+                {
+                    return Unauthorized(new { message = "未授權訪問" });
+                }
+
+                var company = await _context.Companies.FindAsync(companyId);
                 if (company == null)
                 {
                     return NotFound(new { company = "Resume not found" });
@@ -99,7 +111,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
                 Notification send = new Notification
                 {
-                     CompanyId = siv.CompanyId,
+                     CompanyId = companyId,
                      CandidateId = siv.CandidateId,
                      OpeningId = siv.OpeningId,
                      ResumeId = siv.ResumeId,
@@ -130,7 +142,14 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
-                var company = await _context.Companies.FindAsync(siv.CompanyId);
+
+                var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(CompanyId) || !int.TryParse(CompanyId, out int companyId))
+                {
+                    return Unauthorized(new { message = "未授權訪問" });
+                }
+
+                var company = await _context.Companies.FindAsync(companyId);
                 if (company == null)
                 {
                     return NotFound(new { company = "Resume not found" });
@@ -138,7 +157,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
                 Notification send = new Notification
                 {
-                    CompanyId = siv.CompanyId,
+                    CompanyId = companyId,
                     CandidateId = siv.CandidateId,
                     OpeningId = siv.OpeningId,
                     ResumeId = siv.ResumeId,
@@ -173,9 +192,16 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
+                var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(CompanyId))
+                {
+                    return Unauthorized(new { message = "未授權訪問" });
+                }
+
                 var query = "INSERT INTO CompanyResumeLikeRecords(CompanyId,ResumeId) VALUES (@CompanyId ,@ResumeId)";
 
-                var companyIdParam = new SqlParameter("@CompanyId", arlv.CompanyId);
+                var companyIdParam = new SqlParameter("@CompanyId", CompanyId);
                 var resumeIdParam = new SqlParameter("@ResumeId", arlv.ResumeId);
 
                 await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
@@ -193,10 +219,16 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveCompanyResumeLikeRecords([FromBody]RemoveCompanyResumeLikeRecordsViewModel rcrlv)
         {
-            
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return Unauthorized(new { message = "未授權訪問" });
+            }
+
             var query = "DELETE FROM CompanyResumeLikeRecords WHERE CompanyId = @CompanyId AND ResumeId = @ResumeId";
 
-            var companyIdParam = new SqlParameter("@CompanyId", rcrlv.CompanyId);
+            var companyIdParam = new SqlParameter("@CompanyId", CompanyId);
             var resumeIdParam = new SqlParameter("@ResumeId", rcrlv.ResumeId);
 
             int rowsAffected = await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
@@ -347,12 +379,19 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //POST: compaines/C_Resume/ReceiveResumefilter
         [HttpPost]
-        public async Task<IEnumerable<ReceiveResumeOutputModel>> ReceiveResumefilter([FromBody][Bind("ApplyDate", "InterviewYN", "HireYN", "Name", "CompanyId", "OpeningTitle")] ReceiveResumeinputModel rrim)
+        public async Task<IEnumerable<ReceiveResumeOutputModel>> ReceiveResumefilter([FromBody][Bind("ApplyDate", "InterviewYN", "HireYN", "Name", "OpeningTitle")] ReceiveResumeinputModel rrim)
         {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new List<ReceiveResumeOutputModel>(); // 或處理未授權訪問的情況
+            }
+
             var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Company)
                           .Include(x => x.Opening).ThenInclude(x => x.TitleClasses).Include(x => x.Opening).ThenInclude(x => x.Tags)
                           .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory).AsNoTracking()
-                          .Where(x => x.CompanyId == rrim.CompanyId &&
+                          .Where(x => x.CompanyId.ToString() == CompanyId &&
                                  (x.OpeningTitle.Contains(rrim.OpeningTitle) ||
                                  x.Resume.Candidate.Name.Contains(rrim.Name) ||
                                  x.ApplyDate.ToString().Contains(rrim.ApplyDate)));
@@ -376,7 +415,7 @@ namespace JobHunting.Areas.Companies.Controllers
                           .Select(n => new ReceiveResumeOutputModel
                           {
                               ResumeId = n.ResumeId,
-                              CompanyId = n.CompanyId,
+                              CompanyId = int.Parse(CompanyId),
                               OpeningId = n.OpeningId,
                               CandidateId = n.Resume.Candidate.CandidateId,
                               Name = n.Resume.Candidate.Name,

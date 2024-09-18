@@ -151,13 +151,17 @@ namespace JobHunting.Controllers
                 var candidateLogin = loginRequest.CandidateLoginVM;
 
                 // 求職者驗證邏輯
-                if (ValidateCandidate(candidateLogin))
+                var candidate = _context.Candidates
+                    .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
+
+                if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
                 {
-                    // 驗證通過，建立 claims
+                    // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),  // 使用身分證字號作為名稱
-                new Claim(ClaimTypes.Role, "candidate")                 // 設定角色為 candidate
+                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
+                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
+                new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -177,13 +181,17 @@ namespace JobHunting.Controllers
                 var companyLogin = loginRequest.CompanyLoginVM;
 
                 // 公司驗證邏輯
-                if (ValidateCompany(companyLogin))
+                var company = _context.Companies
+                    .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
+
+                if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
                 {
-                    // 驗證通過，建立 claims
+                    // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),    // 使用統一編號作為名稱
-                new Claim(ClaimTypes.Role, "company")                  // 設定角色為 company
+                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
+                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
+                new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -202,35 +210,6 @@ namespace JobHunting.Controllers
             return Json(new { success = false, message = "無效的角色" });
         }
 
-
-        private bool ValidateCandidate(CandidateLoginVM candidateLogin)
-        {
-            var candidate = _context.Candidates
-            .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
-
-            if (candidate == null)
-            {
-                return false;
-            }
-
-            // 比對密碼，假設密碼是明文儲存的，實際情況應該使用加密
-            return candidate.Password == candidateLogin.Password;
-        }
-
-        private bool ValidateCompany(CompanyLoginVM companyLogin)
-        {
-            var company = _context.Companies
-            .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
-
-            if (company == null)
-            {
-                return false;
-            }
-
-            // 比對密碼，假設密碼是明文儲存的，實際情況應該使用加密
-            return company.Password == companyLogin.Password;
-        }
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -239,7 +218,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Login", "Home"); // 或 RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home"); 
         }
     }
 }

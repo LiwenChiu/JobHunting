@@ -2,7 +2,6 @@
 {
     public class NotificationsFilterViewModel
     {
-        public int CompanyId { get; set; }
 
         public string? filterInput { get; set; }
 

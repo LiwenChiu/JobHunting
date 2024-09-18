@@ -4,8 +4,6 @@
     {
         public int NotificationId { get; set; }
 
-        public int? CompanyId { get; set; }
-
         public int? CandidateId { get; set; }
 
         public int? OpeningId { get; set; }
