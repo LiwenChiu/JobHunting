@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<JobHunting.Areas.Candidates.ViewModels.RecordViewmodel>
 
 <div class="container py-2" id="RecordApp">
-    <label>篩選關鍵字：
-        <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:keyup.enter="filterRecord">
-     </label>
+    <label>
+        篩選關鍵字：
+        <input type="text" class="form-control mb-2" v-model.lazy="filter" v-on:keyup.enter="filterRecord">
+    </label>
     <div class="card mb-4">
         <table class="table">
             <thead>
@@ -13,6 +14,8 @@
                     <th>職缺</th>
                     <th>履歷</th>
                     <th>應徵日期</th>
+                    <th>是否面試</th>
+                    <th>是否錄取</th>
                     <th></th>
                 </tr>
             </thead>
@@ -20,14 +23,24 @@
                 @* item後面帶入的參數要小寫 *@
                 <tr v-for="item,idx in openings.slice(pageStart,pageEnd)">
                     @* <th>{{item.resumeOpeningRecordID}}</th> *@
-                    <td>{{item.companyName}}</td> 
+                    <td>{{item.companyName}}</td>
                     <td>{{item.openingTitle}}</td>
-                     <td>{{item.title}}</td> 
-                     <td>{{item.applyDate}}</td>
-                    <td><button type="button" data-bs-toggle="modal"
-                            :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
-                        職缺內容
-                    </button></td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.applyDate}}</td>
+                    <td>
+                        <template v-if="item.interviewYN == true"><i class="fa-solid fa-square-check" style="font-size:30px"></i></template>
+                        <template v-else><i class="fa-solid fa-square-xmark" style="font-size:30px"></i></template>
+                    </td>
+                    <td>
+                        <template v-if="item.hireYN == true"><i class="fa-solid fa-square-check" style="font-size:30px"></i></template>
+                        <template v-else><i class="fa-solid fa-square-xmark" style="font-size:30px"></i></template>
+                    </td>   
+                    <td>
+                        <button type="button" data-bs-toggle="modal"
+                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                            職缺內容
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -104,8 +117,8 @@
                             </div>
                         </div>
                     </div>
-                   @*  <div class="modal-footer">
-                        <button class="btn btn-primary">應徵</button>
+                    @*  <div class="modal-footer">
+                    <button class="btn btn-primary">應徵</button>
                     </div> *@
                 </div>
             </div>
@@ -149,12 +162,12 @@
                     currentPage: 1,
                     MessageStatus: 1,
 
-                    filter:"",
+                    filter: "",
                     //Title:"",
-                    titleClass:[],
-                    titleCategory:[],
-                    Tags:[],
-                    TagClasses:[],
+                    titleClass: [],
+                    titleCategory: [],
+                    Tags: [],
+                    TagClasses: [],
                     TagCheckedResume: [],
                 };
             },
@@ -179,13 +192,13 @@
                     }
                     this.currentPage = page
                 },
-                filterTagClass:function(ClassID) {
+                filterTagClass: function (ClassID) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
                         return item.TagClassID == ClassID;
                     });
                 },
-                ReturnhashtagID:function(item){
+                ReturnhashtagID: function (item) {
                     return `#${item.TagClass}`;
                 },
                 changeTagNameTo: function (TagName) {
@@ -230,12 +243,12 @@
                         Title: _this.filter
                     };
                     axios.post(`${_this.baseAddress}/Candidates/Record/filter`, request, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     }).then(response => _this.openings = response.data)
-                    .catch(err => alert(err));
-                    
+                        .catch(err => alert(err));
+
 
                     axios.get(`${_this.baseAddress}/Candidates/Record/TitleClassJson`).then(
                         res => {
@@ -266,7 +279,7 @@
                     );
                 },
             },
-            mounted:function(){
+            mounted: function () {
                 let _this = this;
                 _this.filterRecord();
             }

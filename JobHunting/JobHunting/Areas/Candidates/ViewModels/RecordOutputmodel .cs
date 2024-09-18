@@ -48,5 +48,9 @@ namespace JobHunting.Areas.Candidates.ViewModels
         public List<int> TagId { get; set; }
 
         public int CandidateId { get; set; }
+
+        public bool InterviewYN { get; set; }
+
+        public bool HireYN { get; set; }
     }
 }

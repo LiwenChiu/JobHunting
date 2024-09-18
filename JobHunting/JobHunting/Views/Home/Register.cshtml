@@ -1,0 +1,126 @@
+﻿@using JobHunting.ViewModel
+@model CompositeRegister
+
+@section Styles {
+    <style>
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
+    </style>
+}
+<div id="app">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <form id="registerForm" method="post">
+                <h2 class="text-center">會員註冊</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="text-center pb-3">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="candidate" v-model="role">
+                        <label class="btn btn-outline-warning" for="btnradio1">求職者</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="company" v-model="role">
+                        <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
+                    </div>
+                </div>
+                <template v-if="role=='candidate'">
+                    <div class="form-floating mb-3">
+                        <input asp-for="CandidateRegisterVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" aria-required="true" placeholder="身分證字號" />
+                        <label asp-for="CandidateRegisterVM.NationalId" class="form-label">身分證字號</label>
+                        <span asp-validation-for="CandidateRegisterVM.NationalId" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CandidateRegisterVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="CandidateRegisterVM.Email" class="form-label">電子信箱</label>
+                        <span asp-validation-for="CandidateRegisterVM.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CandidateRegisterVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="CandidateRegisterVM.Password" class="form-label">密碼</label>
+                        <span asp-validation-for="CandidateRegisterVM.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CandidateRegisterVM.ConfirmPassword" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="CandidateRegisterVM.ConfirmPassword" class="form-label">確認密碼</label>
+                        <span asp-validation-for="CandidateRegisterVM.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.CompanyName" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="CompanyName" aria-required="true" placeholder="公司名稱" />
+                        <label asp-for="CompanyRegisterVM.CompanyName" class="form-label">公司名稱</label>
+                        <span asp-validation-for="CompanyRegisterVM.CompanyName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.ContactEmail" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="Email" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="CompanyRegisterVM.ContactEmail" class="form-label">電子郵件</label>
+                        <span asp-validation-for="CompanyRegisterVM.ContactEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
+                        <label asp-for="CompanyRegisterVM.GUINumber" class="form-label">統一編號</label>
+                        <span asp-validation-for="CompanyRegisterVM.GUINumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.ContactPhone" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="ContactPhone" aria-required="true" placeholder="通訊電話" />
+                        <label asp-for="CompanyRegisterVM.ContactPhone" class="form-label">通訊電話</label>
+                        <span asp-validation-for="CompanyRegisterVM.ContactPhone" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.Address" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="Address" aria-required="true" placeholder="通訊地址" />
+                        <label asp-for="CompanyRegisterVM.Address" class="form-label">通訊地址</label>
+                        <span asp-validation-for="CompanyRegisterVM.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.ContactName" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="ContactName" aria-required="true" placeholder="聯絡人" />
+                        <label asp-for="CompanyRegisterVM.ContactName" class="form-label">聯絡人</label>
+                        <span asp-validation-for="CompanyRegisterVM.ContactName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
+                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                        <label asp-for="CompanyRegisterVM.Password" class="form-label">密碼</label>
+                        <span asp-validation-for="CompanyRegisterVM.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CompanyRegisterVM.ConfirmPassword" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" type="password" />
+                        <label asp-for="CompanyRegisterVM.ConfirmPassword" class="form-label">確認密碼</label>
+                        <span asp-validation-for="CompanyRegisterVM.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </template>
+                
+                <div class="text-center">
+                    <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill">註冊</button>
+                    <p>
+                        <a  asp-controller="Home" asp-action="Login">已有會員?登入</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let vueLetter = {
+            data() {
+                return {
+                    role: 'candidate',
+                };
+            },
+            methods: {
+
+
+            }
+        };
+        Vue.createApp(vueLetter).mount("#app")
+    </script>
+}
