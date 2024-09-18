@@ -18,9 +18,9 @@
     <div class="row">
         <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">
             <div class="card-body">
-                @* 刪除信件 *@
+                @* 隱藏信件 *@
                 <div class="col-1" style="margin-left:auto">
-                    <button type="button" class="btn-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hideLetter(item.letterId)"></button>
                 </div>
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
@@ -192,6 +192,22 @@
                         })
                         .catch(err => { alert(err); });
 
+                },
+
+                hideLetter: function (letterId) 
+                {
+                    let _this = this;
+                    let m = confirm("確定要隱藏嗎?");
+                    if (m == true) {
+                        axios.post(`${_this.baseAddress}/Candidates/OpinionLetters/HideLetter`, letterId,
+                            { headers: { 'Content-Type': 'application/json' } })
+                            .then(response => {
+                                _this.OpinionData();
+                                alert(response.data);
+                            }).catch(err => {
+                                alert("隱藏失敗");
+                            });
+                    }                   
                 },
 
             },

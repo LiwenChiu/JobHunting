@@ -54,7 +54,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 });
         }
 
-        //Post:Companies/OpinionLetters/Hide/{letterId}
+        //Post:Companies/OpinionLetters/HideLetter/{letterId}
         [HttpPost]
         public async Task<IActionResult> HideLetter([FromBody]int letterId) 
         {
