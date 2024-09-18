@@ -29,9 +29,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult OpeningsList()
+
+        public async Task<IActionResult> OpeningsList(int id)
         {
-            return Json(_context.Openings.Include(a => a.Company).Select(b => new OpeningsIndexViewModel
+            return Json(_context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
                 OpeningId = b.OpeningId,
                 CompanyId = b.CompanyId,
@@ -47,7 +48,7 @@ namespace JobHunting.Controllers
                 ContactName = b.ContactName,
                 ContactPhone = b.ContactPhone,
                 CompanyName = b.Company.CompanyName,
-
+                LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
             }));
         }
         [HttpPost]
@@ -68,6 +69,27 @@ namespace JobHunting.Controllers
 
             return "職缺已成功收藏";
         }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteOpeningsViewModel dfovm)
+        {
+            try
+            {
+                var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CandidateId = @CandidateId AND OpeningId = @OpeningId";
+                var candidateIdParam = new SqlParameter("@CandidateId", dfovm.CandidateId);
+                var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
+                await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
+            }
+            catch(Exception ex)
+            {
+                return "取消收藏職缺失敗";
+            }
+
+            return "取消收藏職缺成功";
+        }
+
+
         public IActionResult CompanyClassSelect()
         {
             var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
