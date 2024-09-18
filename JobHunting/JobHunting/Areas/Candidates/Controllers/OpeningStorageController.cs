@@ -149,8 +149,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return "失敗";
             }
 
-            var record = await _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == cajvm.resumeId && ror.OpeningId == cajvm.openingId).SingleAsync();
-            if(record != null)
+            List<ResumeOpeningRecord> record = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == cajvm.resumeId && ror.OpeningId == cajvm.openingId).ToList();
+            if(record.Count > 0)
             {
                 return "已有應徵紀錄";
             }
