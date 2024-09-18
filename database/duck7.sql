@@ -259,8 +259,10 @@ CREATE TABLE Notifications
 	AppointmentDate date,
 	AppointmentTime time,
 	[Address] nvarchar(100),
+	ReplyFirstYN bit not null default(0),
 	ReplyYN bit not null default(0),
 	Reply nvarchar(200), 
+	ReplyTime datetime,
 )
 GO
 CREATE TABLE Admins

@@ -209,7 +209,7 @@
                     let _this=this;
                     let m = confirm("確定要隱藏嗎?");
                     if(m==true){
-                        axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Hide`, letterId,
+                        axios.post(`${_this.baseAddress}/Companies/OpinionLetters/HideLetter`, letterId,
                         { headers: { 'Content-Type': 'application/json' } })
                             .then(response=>{
                             _this.OpinionData();

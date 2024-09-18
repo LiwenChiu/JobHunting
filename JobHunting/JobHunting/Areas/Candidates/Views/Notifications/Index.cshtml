@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "會員中心";
+    ViewData["Title"] = "應徵信件";
 }
 
 @section Styles
@@ -13,7 +13,20 @@
     </style>
 }
 
-<div id="NotificationsVue">
+<div id="NotificationsVue" style="position: relative">
+    @* 通知 *@
+    <template v-if="alertStatus === true">
+        <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
+    <template v-else-if="alertStatus === false">
+        <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
+            <strong>{{alertText}}</strong>
+            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
+        </div>
+    </template>
 
     <div class="selectbutton text-center pt-2">
         <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '面試邀請';">面試邀請</button>
@@ -21,7 +34,6 @@
         <input type="text" class="" placeholder="搜尋關鍵字" v-model.trim="filterInput" />
         <button type="button" class="btn btn-warning text-light btn-sm mx-1" v-on:click="filterInput = '';">清空</button>
     </div>
-
     <template v-if="notifications.length > 0">
         <div class="container-fluid py-1">
             <div class="letters row" style="height:77vh">
@@ -29,8 +41,8 @@
                 <template v-for="notification in notifications">
                     <div class="col-md-3 mb-1">
                         <div class="card" style="width: 15rem; height: 15rem;">
-                            <template v-if="notification.replyYN === true">
-                                <div class="card-header text-center bg-warning row">
+                            <template v-if="notification.companyId == null">
+                                <div class="card-header text-center bg-danger row">
                                     <div class="col-sm-10">
                                         <span class="card-title">{{notification.status}}</span>
                                     </div>
@@ -40,17 +52,12 @@
                                 </div>
                             </template>
                             <template v-else>
-                                <div class="card-header text-center row">
-                                    <div class="col-sm-10">
-                                        <span class="card-title">{{notification.status}}</span>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteNotification(notification.notificationId)"></button>
-                                    </div>
+                                <div class="card-header text-center">
+                                    <span class="card-title">{{notification.status}}</span>
                                 </div>
                             </template>
                             <div class="card-body">
-                                <span class="card-text"><i class="fa-solid fa-caret-right"></i> 收件人: {{notification.candidateName}}</span><br />
+                                <span class="card-text"><i class="fa-solid fa-caret-right"></i> 寄件者: {{notification.companyName}}</span><br />
                                 <span class="card-text"><i class="fa-solid fa-caret-right"></i> 主旨: {{notification.subjectLine}}</span><br />
                                 <span class="card-text"><i class="fa-solid fa-caret-right"></i> 日期: {{notification.appointmentDate}}</span>
                             </div>
@@ -89,7 +96,6 @@
 
         </div>
     </template>
-    
     <template v-else>
         <div class="spinner-border text-warning" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -97,7 +103,7 @@
     </template>
 
     @* 錄取狀態modal *@
-    <div class="modal fade" id="modalId" tabindex="-1" data-bs-keyboard="false" role="dialog"
+    <div class="modal fade" id="modalId" data-bs-backdrop="static" tabindex="-1" data-bs-keyboard="false" role="dialog"
          aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
@@ -108,25 +114,25 @@
                     <template v-else>
                         <h3 class="CompanyNameh3 text-center text-light">錄用通知</h3>
                     </template>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelNotificationModal()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                         <div class="inputOutAreas">
                             <div class="inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="">主旨：</label>
+                                <label for="inputCompanyName" class="">主旨：</label>
                                 <p>{{notificationModal.subjectLine}}</p>
                             </div>
                             <div class="inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="">日期：</label>
+                                <label for="inputCompanyName" class="">日期：</label>
                                 <p>{{notificationModal.appointmentDate}}</p>
                             </div>
                             <div class="inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="">時間：</label>
+                                <label for="inputCompanyName" class="">時間：</label>
                                 <p>{{notificationModal.appointmentTime}}</p>
                             </div>
                             <div class="inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="">地點：</label>
+                                <label for="inputCompanyName" class="">地點：</label>
                                 <p>{{notificationModal.Address}}</p>
                             </div>
                             <p>您好，{{notificationModal.candidateName}}，我們是{{notificationModal.companyName}}</p>
@@ -136,11 +142,36 @@
                                 <p>{{notificationModal.content}}</p>
                             </div>
                         </div>
-                        <div class="container d-grid" v-if="notificationModal.replyYN === true">
-                            <template v-if="notificationModal.replyYN === true">
-                                <button class="btn btn-warning text-light" v-on:click="confirmReply()">確認回覆</button>
+
+
+                        <div class="container d-grid">
+                            <template v-if="notificationModal.replyFirstYN === false">
+                                <template v-if="notificationModal.editReplyYN == false">
+                                    <button class="btn btn-warning text-light" v-on:click="notificationModal.editReplyYN = true">回覆</button>
+                                </template>
+                                <template v-else>
+                                    <div class="row pb-1">
+                                        <button class="btn btn-warning text-light col-sm-9" v-on:click="sendFirstReply()">確認回覆</button>
+                                        <button class="btn btn-secondary text-light col-sm-3" v-on:click="cancalReply()">取消</button>
+                                    </div>
+                                    <textarea rows="8" cols="75" class="form-control" style="width:100%;overflow:auto;word-break:break-all;" v-model.trim="notificationModal.reply">{{notificationModal.reply}}</textarea>
+                                </template>
                             </template>
-                            <div class="border border-3" v-if="notificationModal.replyYN"><p>{{notificationModal.reply}}</p></div>
+                            <template v-else>
+                                <template v-if="notificationModal.editReplyYN == false">
+                                    <button class="btn btn-warning text-light pb-1" v-on:click="notificationModal.editReplyYN = true">修改回覆</button>
+                                    <div class="container border border-1">
+                                        <p>{{notificationModal.reply}}</p>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="row pb-1">
+                                        <button class="btn btn-warning text-light col-sm-9" v-on:click="sendReply()">確認修改</button>
+                                        <button class="btn btn-secondary text-light col-sm-3" v-on:click="cancalReply()">取消</button>
+                                    </div>
+                                    <textarea rows="8" cols="75" class="form-control" style="width:100%;overflow:auto;word-break:break-all;" v-model.trim="notificationModal.reply">{{notificationModal.reply}}</textarea>
+                                </template>
+                            </template>
                         </div>
 
                     </div>
@@ -149,7 +180,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
@@ -160,7 +190,9 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    companyId: 1,
+                    candidateId: 1,
+                    alertText: "",
+                    alertStatus: "",
                     filterInput: null,
                     notifications: [],
                     notificationModal: {},
@@ -172,14 +204,14 @@
             methods: {
                 bootFilterPage: function () {
                     let request = {};
-                    request.CompanyId = this.companyId;
+                    request.CandidateId = this.candidateId;
                     request.filterInput = this.filterInput == null ? "" : this.filterInput;
                     request.pageStart = this.pageStart
-                    axios.post(`${this.baseAddress}/Companies/Notifications/GetNotificationLess`, request, { 
+                    axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotificationLess`, request, { 
                         headers: { 'Content-Type': 'application/json' } 
                     })
                         .then(response => {
-                            this.notifications = response.data.companyNotificationsFilter;
+                            this.notifications = response.data.candidateNotificationsFilter;
                             this.totalDataCount = response.data.totalDataCount;
                             this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
                         })
@@ -187,35 +219,76 @@
                 },
                 showModal(notificationId) {
                     let request = {};
-                    request.CompanyId = this.companyId,
+                    request.CandidateId = this.candidateId,
                     request.NotificationId = notificationId,
-                        axios.post(`${this.baseAddress}/Companies/Notifications/GetNotification`, request, {
+                        axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotification`, request, {
                             headers:{
                                 'Content-Type':'application/json'
                             }
                         }).then(response => this.notificationModal = response.data)
                         .catch(err => { alert(err) });
                 },
-                confirmReply: function () {
+                sendFirstReply: function () {
                     let request = {};
-                    request.CompanyId = this.companyId;
+                    request.CandidateId = this.candidateId;
                     request.NotificationId = this.notificationModal.notificationId;
-                    axios.post(`${this.baseAddress}/Companies/Notifications/ConfirmReply`, request, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(() => {
-                        this.bootFilterPage();
-                        this.showModal(this.notificationModal.notificationId);
-                    })
-                    .catch(err => { alert(err) });
+                    request.Reply = this.notificationModal.reply;
+                    if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
+                        this.alertText = "回覆不可為空";
+                        this.alertStatus = false;
+                        this.alertOut();
+                    }
+                    else{
+                        axios.post(`${this.baseAddress}/Candidates/Notifications/SendFirstReply`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                this.notificationModal.editReplyYN = false;
+                                this.alertText = response.data.alertText;
+                                this.alertStatus = response.data.alertStatus;
+                                this.showModal(this.notificationModal.notificationId);
+                            })
+                            .catch(err => { alert(err) })
+                            .finally(() => {
+                                this.alertOut();
+                            });
+                    }
+                },
+                sendReply: function () {
+                    let request = {};
+                    request.CandidateId = this.candidateId;
+                    request.NotificationId = this.notificationModal.notificationId;
+                    request.Reply = this.notificationModal.reply;
+                    if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
+                        this.alertText = "回覆不可為空";
+                        this.alertStatus = false;
+                        this.alertOut();
+                    }
+                    else {
+                        axios.post(`${this.baseAddress}/Candidates/Notifications/SendReply`, request, {
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                            .then(response => {
+                                this.notificationModal.editReplyYN = false;
+                                this.alertText = response.data.alertText;
+                                this.alertStatus = response.data.alertStatus;
+                                this.showModal(this.notificationModal.notificationId);
+                            })
+                            .catch(err => { alert(err) })
+                            .finally(() => {
+                                this.alertOut();
+                            });
+                    }
+                },
+                cancalReply:function(){
+                    this.notificationModal.editReplyYN = false;
+                    this.showModal(this.notificationModal.notificationId);
                 },
                 deleteNotification:function(notificationId){
                     let request = {};
-                    request.CompanyId = this.companyId;
+                    request.CandidateId = this.candidateId;
                     request.NotificationId = notificationId;
-                    axios.post(`${this.baseAddress}/Companies/Notifications/DeleteNotification`, request, {
+                    axios.post(`${this.baseAddress}/Candidates/Notifications/DeleteNotification`, request, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -237,6 +310,9 @@
                     if (this.pageStart != this.totalPage) {
                         this.pageStart++;
                     }
+                },
+                alertOut: function () {
+                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
             },
             watch: {
