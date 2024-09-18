@@ -86,11 +86,6 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             return View();
         }
-
-        public IActionResult Member()
-        {
-            return View();
-        }
         public IActionResult Intro()
         {
             return View();
