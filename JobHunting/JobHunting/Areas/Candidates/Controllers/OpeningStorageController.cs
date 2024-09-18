@@ -126,5 +126,68 @@ namespace JobHunting.Areas.Candidates.Controllers
 
             return Ok(new { message = "刪除收藏職缺成功!" });
         }
+
+        public async Task<IEnumerable<OpeningStorageResumesOutputViewModel>> ResumesJson(int id)
+        {
+            var resumes = _context.Resumes.AsNoTracking()
+                .Where(r => r.CandidateId == id && r.ReleaseYN == true)
+                .Select(r => new OpeningStorageResumesOutputViewModel
+                {
+                    ResumeId = r.ResumeId,
+                    ResumeTitle = r.Title,
+                });
+
+            return resumes;
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<string> ApplyJob([FromBody][Bind("candidateId,resumeId,openingId")] CandidatesApplyJobViewModel cajvm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return "失敗";
+            }
+
+            var record = await _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == cajvm.resumeId && ror.OpeningId == cajvm.openingId).SingleAsync();
+            if(record != null)
+            {
+                return "已有應徵紀錄";
+            }
+
+            var companyOpening = await _context.Openings.Include(o => o.Company).Where(o => o.OpeningId == cajvm.openingId).Select(o => new
+            {
+                OpeningId = o.OpeningId,
+                OpeningTitle = o.Title,
+                CompanyId = o.CompanyId,
+                CompanyName = o.Company.CompanyName,
+            }).SingleAsync();
+
+
+            ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
+            {
+                ResumeId = cajvm.resumeId,
+                OpeningId = companyOpening.OpeningId,
+                OpeningTitle = companyOpening.OpeningTitle,
+                CompanyId = companyOpening.CompanyId,
+                CompanyName = companyOpening.CompanyName,
+                ApplyDate = DateOnly.FromDateTime(DateTime.Now),
+                InterviewYN = false,
+                HireYN = false,
+            };
+
+            _context.ResumeOpeningRecords.Add(recordResumeOpening);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                return "失敗";
+            }
+
+            return "成功";
+        }
     }
 }

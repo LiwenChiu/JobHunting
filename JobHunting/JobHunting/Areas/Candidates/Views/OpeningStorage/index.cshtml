@@ -1,7 +1,12 @@
-﻿@section Styles
+﻿@{
+    ViewData["Title"] = "職缺收藏";
+}
+
+@section Styles
 {
 
 }
+
 @* 收藏職缺 *@
 <div class="container-fluid py-2" id="OpeningApp">
     <label>篩選關鍵字：
@@ -27,7 +32,7 @@
                 </div>
                 <div class="card-footer text-center" style="background-color:transparent">
                     <button type="button" data-bs-toggle="modal"
-                            :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                            :data-bs-target="'#'+mergeID(item)" class="btn btn-primary" v-on:click="selectedOpeningId = item.openingId">
                         詳細
                     </button>
                 </div>
@@ -107,7 +112,16 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary">應徵</button>
+                        <template v-if="applyJobYN == false">
+                            <button class="btn btn-primary" v-on:click="getResumes()">應徵</button>
+                        </template>
+                       <template v-else>
+                            <select v-model="selectedResumeId">
+                                <option v-for="resume in resumes" v-bind:value="resume.resumeId">{{resume.resumeTitle}}</option>
+                            </select>
+                            <button class="btn btn-primary" v-on:click="applyJob()">確認送出</button>
+                            <button class="btn btn-secondary" v-on:click="cancelApplyJob()">取消</button>
+                       </template>
                     </div>
                 </div>
             </div>
@@ -156,6 +170,11 @@
                     perpage: 8, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
+
+                    applyJobYN: false,
+                    resumes: [],
+                    selectedOpeningId: null,
+                    selectedResumeId: null,
                     
                 };
             },
@@ -282,7 +301,36 @@
                         .catch(err => {
                             alert(err);
                         });
-                }
+                },
+                getResumes:function(){
+                    this.applyJobYN = true;
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/ResumesJson`, 
+                    {
+                        params: { id: this.CandidateId},
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                    .then(response => this.resumes = response.data)
+                    .catch(err => { alert(err) });
+                },
+                applyJob:function(){
+                    let request = {};
+                    request.candidateId = this.CandidateId;
+                    request.resumeId = this.selectedResumeId;
+                    request.openingId = this.selectedOpeningId;
+                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/ApplyJob`, request, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    })
+                    .then(response => console.log(response.data))
+                    .catch(err => { alert(err) });
+                },
+                cancelApplyJob: function () {
+                    this.applyJobYN = false;
+                    this.selectedResumeId = null;
+                },
             },
 
             mounted() {
