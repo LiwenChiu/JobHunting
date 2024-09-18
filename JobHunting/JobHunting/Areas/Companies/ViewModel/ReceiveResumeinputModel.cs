@@ -22,13 +22,12 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         //public bool? Sex { get; set; }
 
-
-        public int CompanyId { get; set; }
-
         public string OpeningTitle { get; set; }
+
         public int CandidateId { get; set; }
 
         public int ResumeId { get; set; }
+
         public int OpeningId { get; set; }
 
     }

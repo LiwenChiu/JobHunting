@@ -9,6 +9,7 @@ using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using System.Globalization;
 using System.Numerics;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -50,12 +51,17 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/CompanyOrders/GetCompanyOrders
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<CompanyOrdersFilterOutputViewModel>> GetCompanyOrders([FromBody][Bind("CompanyId,Title,Price,OrderDate,PayDate,Duration")] CompanyOrdersFilterViewModel cofvm)
+        public async Task<IEnumerable<CompanyOrdersFilterOutputViewModel>> GetCompanyOrders([FromBody][Bind("Title,Price,OrderDate,PayDate,Duration")] CompanyOrdersFilterViewModel cofvm)
         {
             CultureInfo cultureTW = new CultureInfo("zh-TW");
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new List<CompanyOrdersFilterOutputViewModel>(); // 處理未授權的情況
+            }
             return _context.CompanyOrders
-                .Where(co => co.CompanyId == cofvm.CompanyId)
+                .Where(co => co.CompanyId.ToString() == CompanyId)
                 .Where(co => co.Title.Contains(cofvm.Title) ||
                              co.Price.ToString().Contains(cofvm.Price.ToString()) ||
                              co.OrderDate.ToString().Contains(cofvm.OrderDate) ||
@@ -76,15 +82,17 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //POST: Companies/CompanyOrders/GetDeadline
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<DateTime?> GetDeadline([FromBody]int companyId)
+        public async Task<DateTime?> GetDeadline()
         {
-            var companyDeadline = _context.Companies.AsNoTracking().Where(c => c.CompanyId == companyId).Select(c => c.Deadline).Single();
-            if(companyDeadline == null)
+            // 從 claims 中取得 CompanyId
+            var companyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(companyId))
             {
-                return null;
+                return null; // 處理未授權訪問的情況
             }
 
+            var companyDeadline = _context.Companies.AsNoTracking().Where(c => c.CompanyId.ToString() == companyId).Select(c => c.Deadline).SingleOrDefault();
             return companyDeadline;
         }
 
@@ -94,7 +102,19 @@ namespace JobHunting.Areas.Companies.Controllers
         public async Task<Array> CancelOrder([FromBody][Bind("CompanyId,OrderId")] CancelOrderViewModel covm)
         {
             string[] returnStatus = new string[2];
+            var companyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(companyId))
+            {
+                returnStatus = ["未授權訪問", "失敗"];
+                return returnStatus;
+            }
 
+            int parsedCompanyId;
+            if (!int.TryParse(companyId, out parsedCompanyId))
+            {
+                returnStatus = ["公司 ID 無效", "失敗"];
+                return returnStatus;
+            }
             if (!ModelState.IsValid)
             {
                 returnStatus = ["格式不正確", "失敗"];
@@ -102,7 +122,7 @@ namespace JobHunting.Areas.Companies.Controllers
             }
 
             var order = await _context.CompanyOrders.FindAsync(covm.OrderId);
-            if (order == null || order.CompanyId != covm.CompanyId)
+            if (order == null || order.CompanyId != parsedCompanyId)
             {
                 returnStatus = ["訂單不存在", "失敗"];
                 return returnStatus;

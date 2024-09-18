@@ -138,7 +138,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CompanyId: 1,
                     CompanyMemberData: {},
                     CompanyOpenings: [],
                     CompanyResumesLikeRecords: [],
@@ -146,7 +145,7 @@
             },
             methods: {
                 getCompanyMemberData: function () {
-                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyMemberData`, this.CompanyId, {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyMemberData`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -155,7 +154,7 @@
                 },
 
                 getCompanyOpenings: function () {
-                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyOpenings`, this.CompanyId, {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyOpenings`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -163,7 +162,7 @@
                         .catch(err => alert(err));
                 },
                 getCompanyResumesLikeRecords: function () {
-                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyResumeLikeRecords`, this.CompanyId, {
+                    axios.post(`${this.baseAddress}/Companies/Home/GetCompanyResumeLikeRecords`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }

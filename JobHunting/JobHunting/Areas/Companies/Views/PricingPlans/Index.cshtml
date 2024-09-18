@@ -134,7 +134,6 @@
                 },
                 payAgree: function (selectedPlanId) {
                     let request = {};
-                    request.CompanyId = this.CompanyId;
                     request.PlanId = selectedPlanId;
                     axios.post(`${this.baseAddress}/Companies/PricingPlans/PayAgree`, request, {
                         headers: {

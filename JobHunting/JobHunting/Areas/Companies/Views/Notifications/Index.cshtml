@@ -160,7 +160,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    companyId: 1,
                     filterInput: null,
                     notifications: [],
                     notificationModal: {},
@@ -187,7 +186,6 @@
                 },
                 showModal(notificationId) {
                     let request = {};
-                    request.CompanyId = this.companyId,
                     request.NotificationId = notificationId,
                         axios.post(`${this.baseAddress}/Companies/Notifications/GetNotification`, request, {
                             headers:{
@@ -198,7 +196,6 @@
                 },
                 confirmReply: function () {
                     let request = {};
-                    request.CompanyId = this.companyId;
                     request.NotificationId = this.notificationModal.notificationId;
                     axios.post(`${this.baseAddress}/Companies/Notifications/ConfirmReply`, request, {
                         headers: {
@@ -213,7 +210,6 @@
                 },
                 deleteNotification:function(notificationId){
                     let request = {};
-                    request.CompanyId = this.companyId;
                     request.NotificationId = notificationId;
                     axios.post(`${this.baseAddress}/Companies/Notifications/DeleteNotification`, request, {
                         headers: {

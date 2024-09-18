@@ -38,6 +38,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 CompanyId = b.CompanyId,
                 CompanyName = b.CompanyName,
+                GUINumber = b.GUINumber,
                 CompanyClassId = b.CompanyClassId,
                 Address = b.Address,
                 Intro = b.Intro,
@@ -73,6 +74,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 co.CompanyName = companyIntro.CompanyName;
                 co.Address= companyIntro.Address;
                 co.Intro = companyIntro.Intro;
+                co.GUINumber = companyIntro.GUINumber;
                 co.Benefits = companyIntro.Benefits;
                 co.ContactName = companyIntro.ContactName;
                 co.ContactPhone = companyIntro.ContactPhone;

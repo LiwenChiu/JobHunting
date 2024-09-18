@@ -524,12 +524,10 @@
                 //投遞履歷的資料與篩選關鍵字
                 receiveResumeData: function () {
                     let _this = this;
-                    let companyId = 1;
                     let request = {
                         ApplyDate: _this.filter,
                         OpeningTitle: _this.filter,
                         Name: _this.filter,
-                        CompanyId: companyId,
                         InterviewYN: _this.selectedInterviewYN,
                         HireYN: _this.selectedHireYN,
                     };
@@ -608,7 +606,6 @@
                     const confirmdel = confirm("確定要發送?");
 
                     if (confirmdel == true) {
-                        request.CompanyId = _this.selectedItem.companyId;
                         request.CandidateId = _this.selectedItem.candidateId;
                         request.OpeningId = _this.selectedItem.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
@@ -649,7 +646,6 @@
                     let request = {};
                     let confirmdel = confirm("確定要發送?");
                     if (confirmdel == true) {
-                        request.CompanyId = _this.selectedItem.companyId;
                         request.CandidateId = _this.selectedItem.candidateId;
                         request.OpeningId = _this.selectedItem.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
@@ -684,7 +680,7 @@
                     }
                 },
                     
-                addCompanyResumeLikeRecords:function(companyId, resumeId){
+                addCompanyResumeLikeRecords:function(resumeId){
                      let _this = this;
                     let confirmdel = confirm("確定要收藏?");
                     if (confirmdel == true){
@@ -693,7 +689,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ CompanyId: companyId, ResumeId: resumeId }),
+                            body: JSON.stringify({ ResumeId: resumeId }),
                         }).then(res => {
                             return res.json();
                         }).then(data => {

@@ -240,28 +240,27 @@
                         edu: self.edu,
                         skill: self.skill
                     };
-                    if (self.filter == "男") {
-                        request.sex = true;
-                    }
-                    else if (self.filter == "女") {
-                        request.sex = false;
-                    }
-                    else {
-                        request.sex = null;
-                    }
-                    if (self.filter == "" && self.city == "" && self.edu == "" && self.zipCode == "" && self.skill == null) {
+                    if (self.filter === "" && self.city === "" && self.edu === "" && self.zipCode === "" && self.skill === null) {
                         self.indexList();
                     }
                     else {
+                        if (self.filter === "男") {
+                        request.sex = true;
+                        }
+                        else if (self.filter === "女") {
+                            request.sex = false;
+                        }
+                        else {
+                            request.sex = null;
+                        }
                         axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
-                                headers: { 'Content-Type': 'application/json' },
-                            }).then(res => {
-                                self.resumes = res.data;
-                                self.skill = null;
-                                self.city = self.zipCode = self.filter = self.edu = "";
-                            }).catch(err => JSON.stringify(err))
+                                    headers: { 'Content-Type': 'application/json' },
+                                }).then(res => {
+                                    self.resumes = res.data;
+                                    self.skill = null;
+                                    self.city = self.zipCode = self.filter = self.edu = "";
+                                }).catch(err => JSON.stringify(err))
                     }
-
                 },
                 addFavorite(item) {
                     let self = this;
