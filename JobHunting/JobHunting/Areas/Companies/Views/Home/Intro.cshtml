@@ -63,19 +63,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 border border-secondary ">
-                        <div class="inputAreas col-6">
-                            <label for="benefits" class=" col-form-label">
-                                福利制度
-                            </label>
-                            <p>{{item.benefits}}</p>
+                    <div class="row mb-3  ">
+                        <div class="card mb-3 col-6">
+                            <div class="card-body">
+                                <h5 class="card-title" style="text-align:center">福利制度</h5>
+                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                    {{item.benefits}}
+                                </p>
+                            </div>
                         </div>
-                        <div class="box inputAreas col-6 ">
-                            <label for="intro" class=" col-form-label">
-                                簡介
-                            </label>
-                            <label>{{item.intro}}</label>
-                            
+                        <div class="card mb-3 col-6">
+                            <div class="card-body">
+                                <h5 class="card-title" style="text-align:center">簡介</h5>
+                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                    {{item.intro}}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center mb-3">
@@ -125,7 +128,7 @@
                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
                             福利制度
                         </label>
-                        <input type="text" class="form-control inputCompanyName col" v-model="item.benefits">
+                        <textarea class="form-control" style="height:150px" v-model="item.benefits"></textarea>
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas">
                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
