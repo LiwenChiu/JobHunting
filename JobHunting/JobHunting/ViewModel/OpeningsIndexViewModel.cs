@@ -26,6 +26,9 @@
         public string ContactPhone { get; set; }
 
         public string ContactEmail { get; set; }
+
         public string CompanyName { get; set; }
+
+        public bool LikeYN { get; set; }
     }
 }
