@@ -7,11 +7,78 @@
 
 
 <div class="container-fluid py-1" id="app">
-    @* 篩選搜尋 *@
-    <div class="row" style="width:30%; margin-left:10px; margin-right:auto">
-        <label class="form-label">關鍵字搜尋：</label>
-        <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
+    <div class="row">
+        @* 篩選搜尋 *@
+        <div class="row" style="width:30%; margin-left:10px; margin-right:auto">
+            <label class="form-label">關鍵字搜尋：</label>
+            <input type="text" class="form-control" v-model="filter" placeholder="請輸入關鍵字" v-on:keyup="filterOpinionLetter" />
+        </div>
+
+        @* 新增意見信件modal Button *@
+        <div class="row m-2" style="width:20%; height:50%; margin-right:10px; margin-left:auto">
+            <button class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#modalAddLetter">
+                <i class="fa-solid fa-envelope"></i> 新增意見信件
+            </button>
+        </div>
+
+        @* 新增意見信件modal *@
+        <div class="modal fade" id="modalAddLetter" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+             aria-labelledby="modalTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning ">
+                        <h3 class="CompanyNameh3 text-center " style="width:95%">意見信件</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container bg-light" style="border-radius: 30px;">
+                            <div class="inputOutAreas" style="width:95%">
+
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label">客服類別</label>
+                                    <select class="form-control" v-model="letterClass">
+                                        <option value="網站使用問題">網站使用問題</option>
+                                        <option value="申訴/檢舉公司">申訴/檢舉公司</option>
+                                        <option value="建議">建議</option>
+                                    </select>
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
+                                    <input type="text" class="form-control" v-model="subjectLine">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <input id="insertFile" type="file" class="form-control" v-on:change="insertFileChange($event.target)" accept="image/*" />
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <img class="img-fluid" id="insertPreview" src="~/images/no_image_available.jpg" title="待上傳" asp-append-version="true">
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                    <textarea class="form-control" style="height:150px" name="意見信件訊息" v-model="content"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="insert" type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                v-on:click="addLetter">
+                            送出
+                        </button>
+                        <button type="button"
+                                class="btn btn-warning"
+                                data-bs-dismiss="modal">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+   
 
 
     @* 意見信件card *@
@@ -132,6 +199,10 @@
                     opinionLetterModal: {},
                     filter:"",
                     baseAddress: "https://localhost:7169",
+
+                    letterClass: "",
+                    subjectLine: "",
+                    content: "",
                 }
             },
             computed: {
@@ -173,7 +244,7 @@
                 //Card Modal
                 OpinionLetterModalShow: function (id) {
                     // alert(id);
-                    axios.get(`${this.baseAddress}/Admins/ClientServiceCenter/OpinionLetterModalShow/${id}`)
+                    axios.get(`${this.baseAddress}/Companies/OpinionLetters/OpinionLetterModalShow/${id}`)
                     .then(response => this.opinionLetterModal = response.data)
                     .catch(err => { alert(err) });
                 },
@@ -219,6 +290,51 @@
                             });
                     }
                 },
+
+                //新增意見信件
+                addLetter: function () {
+                    let _this = this;
+                    var form = new FormData();
+                    let today = new Date().toISOString();
+                    form.append("CompanyId", 10);
+                    form.append("LetterClass", _this.letterClass);
+                    form.append("SubjectLine", _this.subjectLine);
+                    form.append("Content", _this.content);
+                    form.append("SendTime", today);
+                    form.append("ImageFile", document.querySelector("#insertFile").files[0]);
+                    axios.post(`${_this.baseAddress}/Companies/OpinionLetters/AddLetter`, form,
+                        { headers: { 'Content-Type': 'multipart/form-data' } })
+                        .then(response => {
+                            alert(response.data);
+                            _this.OpinionData();
+                        }).catch(err => { alert("新增失敗"); });
+                },
+
+
+                insertFileChange: function (file) {
+                    let _this = this;
+                    _this.readURL(file, file.parentElement.nextElementSibling.firstChild, $("#insertFile"))
+                },
+
+                readURL: function (input, img, btn) {
+                    if (input.files && input.files[0]) {
+                        var imageType = "image.*";
+                        var btn = $("#insert");
+                        if (input.files[0].type.match(imageType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                            };
+                            reader.readAsDataURL(input.files[0])
+                            btn.prop("disabled", false);
+                        }
+                        else {
+                            alert("不支援的上傳格式");
+                            btn.prop("disabled", true);
+                        }
+                    }
+                },
+
 
             },
             mounted() {
