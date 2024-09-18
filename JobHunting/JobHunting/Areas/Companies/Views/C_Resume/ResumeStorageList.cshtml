@@ -13,7 +13,7 @@
 
     <div class="container-fluid py-2" id="resumeStorage">
         <div class="letters row">
-            <div class="col-md-3 mb-4" v-for="(item, index) in resumes.slice(pageStart,pageEnd)" :key="index">
+            <div class="col-md-3 mb-4" v-for="item in resumes.slice(pageStart,pageEnd)">
                 <div class="card" style="width: 16rem; height: 16rem;">
                     <div class="card-body">
                         <div class="row">
@@ -159,11 +159,6 @@
                                                                  <p class="card-text form-control overflow-auto" style="height:200px">
                                                                 {{item.autobiography}}
                                                                  </p>
-                                                                 {{item.companyId}}
-                                                                 {{item.candidateId}}
-                                                                 {{item.openingId}}
-                                                                 {{item.resumeId}}
-                                                             </div>
                                                          </div>
                                                      </div>
 
@@ -287,29 +282,30 @@
             
             </div>
                             
-            @* 上下分頁數 *@
-            <div>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item" v-on:click="setPage(currentPage-1)">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                            <a class="page-link" href="#">{{item}}</a>
-                        </li>
-                        <li class="page-item" v-on:click="setPage(currentPage+1)">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+            
         </div>
     </div>
-
+    @* 上下分頁數 *@
+    <div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 
 
 @section Scripts {
@@ -372,7 +368,7 @@
                         AdmissionsendReplyYN:false,
                         AdmissionsendReplyFirstYN:false,
                     },
-                    selectedItem: {}, // 用于存储选中的数据
+                    selectedItem: {}, // 用儲存選中的資料
                 };
             },
             computed: {
@@ -498,10 +494,6 @@
                     let request = {};
                     
                     const confirmdel = confirm("確定要發送?");
-                    // let companyId = 1;
-                    // let OpeningId = 1;
-                    // let CandidateId = 1;
-                    // let ResumeId = 1;
                     
                     if (confirmdel==true){
                         request.CompanyId = _this.selectedItem.companyId;

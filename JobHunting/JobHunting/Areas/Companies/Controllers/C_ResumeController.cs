@@ -378,6 +378,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               ResumeId = n.ResumeId,
                               CompanyId = n.CompanyId,
                               OpeningId = n.OpeningId,
+                              CandidateId = n.Resume.Candidate.CandidateId,
                               Name = n.Resume.Candidate.Name,
                               Address = n.Resume.Candidate.Address,
                               Sex = n.Resume.Candidate.Sex,
@@ -393,7 +394,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               Autobiography = n.Resume.Autobiography,
                               OpeningTitle = n.OpeningTitle,
                               TitleClassId = n.Resume.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
-                              TagId = n.Resume.Tags.Select(r => r.TagId).ToList(), // 确保这里正确
+                              TagId = n.Resume.Tags.Select(r => r.TagId).ToList(), 
                               Headshot = n.Resume.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
                               ApplyDate = n.ApplyDate,
                               InterviewYN = n.InterviewYN,
