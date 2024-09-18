@@ -54,5 +54,25 @@ namespace JobHunting.Areas.Candidates.Controllers
                 });
         }
 
+
+        //Post:Candidates/OpinionLetters/HideLetter/{letterId}
+        [HttpPost]
+        public async Task<IActionResult> HideLetter([FromBody] int letterId) 
+        {
+            var letter = await _context.OpinionLetters.FindAsync(letterId);
+            if (letter != null) { 
+                letter.CandidateId = null;
+            }
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "隱藏失敗");
+            }
+            return Ok("隱藏成功");
+        }
+
+
     }
 }
