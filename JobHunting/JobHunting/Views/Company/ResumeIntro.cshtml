@@ -41,8 +41,112 @@
     </div>
 </nav>
 <!-- Page Content-->
- 
-    <div class="container-fluid p-0">
+    <div class="card-body container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" style="text-align:center">個人資料</h5>
+                        
+                        <div class="text-start" style="">
+                            <p class="card-text ">
+                                <div class="col ">
+                                    <label class="" size="10">姓名 :</label>
+                                </div>
+                                <div>
+                                    <label for="" class="mb-2">性別 : </label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">生日 : </label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">電話 : </label>
+                                    <label for="" class="mb-2 mx-3">學歷 : </label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">郵件 : </label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">就業狀態 : </label>
+                                </div>
+                                <div class="card-body ">
+                                    <h5 class="card-title text-center" style="">自我介紹：</h5>
+                                    <p class="card-text form-control overflow-auto" style="height:200px">
+                                        
+                                    </p>
+                                </div>
+                            </p>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body text-start">
+                        <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                        <p class="card-text form-control overflow-auto" style="height:250px">
+                            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body text-start">
+                        <h5 class="card-title" style="text-align:center">求職條件</h5>
+                        <p class="card-text">
+                            <div class="col">
+                                <label class="mb-2">上班時段: </label>
+                            </div>
+                            <div class="col">
+                                <label class="">
+                                    <span class="">希望職缺:    </span>
+                                    
+                                </label>
+
+
+                            </div>
+                            <div class="col">
+                                <label class="mb-2">希望上班地點: </label>
+                            </div>
+                            <div class="col">
+                                <label for="" class="mb-2">
+                                    證照 :
+                                    @* <img v-if="item.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="待上傳" /> *@
+                                </label>
+                            </div>
+                            <div>
+                                <label class="">能力標籤:</label>
+                                
+                            </div>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body text-start">
+                        <h5 class="card-title" style="text-align:center">自傳</h5>
+                        <p class="card-text form-control overflow-auto" style="height:200px">
+                            
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+@*     <div class="container-fluid p-0">
     <!-- About-->
     <section class="resume-section" id="about">
         <div class="resume-section-content">
@@ -63,7 +167,7 @@
             <h2 class="mb-5">工作經驗</h2>
             <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                 <div class="flex-grow-1">
-                        <h3 class="mb-0">@Html.DisplayFor(model => model.WorkExperience)</h3>
+                    <p class="lead mb-5">@Html.DisplayFor(model => model.WorkExperience)</p>    
                 </div>
             </div>
 
@@ -154,7 +258,7 @@
             </ul>
         </div>
     </section>
-</div>
+</div> *@
     @* 發送面試通知 *@
     <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
          aria-labelledby="modalTitleId " aria-hidden="true">
@@ -214,7 +318,8 @@
                 data() {
                     return {
                         resumeId : "@Html.DisplayFor(model => model.ResumeId)",
-                        candidateId: "@Html.DisplayFor(model => model.CandidateId)",
+                        candidateId: "",
+                        resumeList:[],
                         companyId:2,
                         openings: [],
                         openingId:"",
@@ -258,6 +363,16 @@
                             console.error(error);
                         })
                     },
+                    getResumeList(){
+                        let self = this;
+                        axios.get(`${self.baseAddress}/Company/ResumeDetail/${self.resumeId}`, {
+                        headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            self.resumeList = res.data
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
                     addFavorite(){
                         let self = this;
                         request = {
@@ -282,9 +397,14 @@
                             console.error(error);
                         })
                     },
+                    selectSex(item) {
+                        return item == true ? "男" : "女";
+                    },
                 },
                 mounted() {
-                    this.getOpenings();
+                    let self = this;
+                    self.getOpenings();
+                    self.getResumeList();
                 },
             };
             let app3 = Vue.createApp(vueList).mount("#page-top")

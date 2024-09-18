@@ -4,7 +4,6 @@ namespace JobHunting.Areas.Companies.ViewModel
 {
     public class OpeningsFilterInput
     {
-        public int CompanyId { get; set; }
 
         public string Title { get; set; }
 

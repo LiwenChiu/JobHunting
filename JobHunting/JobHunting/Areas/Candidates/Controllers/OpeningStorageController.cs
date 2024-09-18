@@ -140,29 +140,75 @@ namespace JobHunting.Areas.Candidates.Controllers
             return resumes;
         }
 
+        //POST: Candidates/OpeningStorage/ApplyJob
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<string> ApplyJob([FromBody][Bind("candidateId,resumeId,openingId")] CandidatesApplyJobViewModel cajvm)
+        public async Task<CandidatesApplyJobOutputViewModel> ApplyJob([FromBody][Bind("candidateId,resumeId,openingId")] CandidatesApplyJobViewModel cajvm)
         {
             if (!ModelState.IsValid)
             {
-                return "失敗";
+                return new CandidatesApplyJobOutputViewModel
+                { 
+                    AlertText = "失敗",
+                    AlertStatus = false,
+                };
+            }
+
+            var Candidate = await _context.Candidates.FindAsync(cajvm.candidateId);
+            if (Candidate == null)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "失敗",
+                    AlertStatus = false,
+                };
+            }
+
+            var resume = await _context.Resumes.FindAsync(cajvm.resumeId);
+            if (resume == null)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "失敗",
+                    AlertStatus = false,
+                };
+            }
+
+            if(resume.ReleaseYN == false)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "履歷未開放",
+                    AlertStatus = false,
+                };
+            }
+
+            if (Candidate.Name == null || Candidate.Sex == null || Candidate.Birthday == null || Candidate.Phone == null || Candidate.Degree == null)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "會員資料不全",
+                    AlertStatus = false,
+                };
             }
 
             List<ResumeOpeningRecord> record = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == cajvm.resumeId && ror.OpeningId == cajvm.openingId).ToList();
             if(record.Count > 0)
             {
-                return "已有應徵紀錄";
+                return new CandidatesApplyJobOutputViewModel
+                { 
+                    AlertText = "已有應徵紀錄",
+                    AlertStatus = false 
+                };
             }
 
-            var companyOpening = await _context.Openings.Include(o => o.Company).Where(o => o.OpeningId == cajvm.openingId).Select(o => new
+            var companyOpening = await _context.Openings.AsNoTracking().Include(o => o.Company).Where(o => o.OpeningId == cajvm.openingId).Select(o => new
             {
                 OpeningId = o.OpeningId,
                 OpeningTitle = o.Title,
                 CompanyId = o.CompanyId,
                 CompanyName = o.Company.CompanyName,
             }).SingleAsync();
-
 
             ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
             {
@@ -184,10 +230,18 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             catch(DbUpdateException ex)
             {
-                return "失敗";
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "失敗",
+                    AlertStatus = false
+                };
             }
 
-            return "成功";
+            return new CandidatesApplyJobOutputViewModel
+            {
+                AlertText = $"以 {resume.Title} 應徵 {companyOpening.CompanyName} 的 {companyOpening.OpeningTitle} 成功",
+                AlertStatus = true,
+            };
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿@{
-    ViewData["Title"] = "首頁";
-}
-
+﻿
 @section Styles
 {
-    <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" asp-append-version="true" />
+    
 }
 
 <div class="pt-2" id="app1">
@@ -13,7 +10,7 @@
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center text-white">
                 @* <h1 class="display-4 fw-bolder">Home Page</h1> *@
-                <label style="font-size:700%;">小鴨<img src="~/gif/9e25a15f2aae61fb18f7782b65b6baf7.gif" style="width:30%;" />上工</label>
+                <label style="font-size:700%;">小鴨<img src="~/gif/9e25a15f2aae61fb18f7782b65b6baf7.gif" style="width:30%" />上工</label>
             </div>
         </div>
     </header>
@@ -23,15 +20,16 @@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="">選擇地區</label>
-                <select class="select" name="" id="" style="width:150px;height:30px">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
+                <select v-model="city" v-on:change="getArea">
+                    <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
+                </select>
+                <select v-model="zipCode">
+                    <option v-for="item in area" :value="item.zipCode">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="">選擇工時</label>
+                <label class="calculator-dropdown-label" for="">選擇薪資範圍</label>
                 <select class="select" name="" id="" style="width:150px;height:30px">
                     <option value="A">A</option>
                     <option value="B">B</option>
@@ -40,15 +38,15 @@
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="">職業類別</label>
-                <select class="select" name="" id="" style="width:150px;height:30px">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                <select v-model="skill">
+                    <optgroup v-for="(item,index) in companyClassList" :label="item.companyCategoryName">
+                        <option v-for="tag in companyClassList[index].companyClassObj" :value="tag.companyClassId">{{tag.companyClassName}}</option>
+                    </optgroup>
                 </select>
             </div>
-            <div class="col-sm-3">
+@*             <div class="col-sm-3">
                 <partial name="_TagsBtnModal" />
-            </div>
+            </div> *@
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
@@ -56,6 +54,23 @@
             </div>
             <div class="col-2 mb-0">
                 <button class="btn btn-warning">搜尋</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+       <div class="col-sm-2 row">
+            <div class="col-sm-6 ms-auto">
+                <label>第</label>
+                <input style="width:3vh;" v-model.number.trim="currentPage" />
+                <label>頁</label>
+            </div>
+       </div>
+        <div class="col-sm-2 ms-auto row">
+            <div class="col-sm-10">
+                <label>共</label>
+                <input style="width:3vh;" v-model.number.trim="perpage" />
+                <label>筆職缺</label>
             </div>
         </div>
     </div>
@@ -69,104 +84,298 @@
                     <td>公司名稱</td>
                     <td>地區</td>
                     <td>工作內容</td>
+                    <td>薪資條件</td>
                     <td>應徵 / 儲存</td>
                 </tr>
             </thead>
             <tbody align="center">
-                <tr>
-                    <td>助理工程師</td>
-                    <td>XX公司</td>
-                    <td>台北市信義區</td>
-                    <td>dhfjfodshfl</td>
+                <tr v-for="(item,index) in openings.slice(pageStart,pageEnd)">
+                    @* <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.opeingID}`>{{item.title}}</a></td> *@
+                    <td>{{item.title}}</td>
+                    <td>{{item.companyName}}</td>
+                    <td>{{item.address}}</td>
+                    <td>{{item.description}}</td>
+                    <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
                     <td>
-                        <button class="btn btn-info">應徵</button>
-                        <button class="btn btn-danger">儲存</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>工程師</td>
-                    <td>KK公司</td>
-                    <td>台北市信義區</td>
-                    <td>eieuwla</td>
-                    <td>
-                        <button class="btn btn-info">應徵</button>
-                        <button class="btn btn-danger">儲存</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>資深工程師</td>
-                    <td>UU公司</td>
-                    <td>台北市信義區</td>
-                    <td>hfihwflaifh</td>
-                    <td>
-                        <button class="btn btn-info">應徵</button>
-                        <button class="btn btn-danger">儲存</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>AAAAA</td>
-                    <td>AA公司</td>
-                    <td>台北市信義區</td>
-                    <td>hfihwflaifh</td>
-                    <td>
-                        <button class="btn btn-info">應徵</button>
-                        <button class="btn btn-danger">儲存</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>AAAAA</td>
-                    <td>AA公司</td>
-                    <td>台北市信義區</td>
-                    <td>hfihwflaifh</td>
-                    <td>
-                        <button class="btn btn-info">應徵</button>
-                        <button class="btn btn-danger">儲存</button>
+                        <button type="button" class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#applyJobModal" v-on:click="getOpening(item.openingId)">
+                            應徵
+                        </button>
+                        <template v-if="item.likeYN == false">
+                            <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
+                        </template>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <div class="modal fade" id="applyJobModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center text-light">{{openingModal.openingTitle}} - </h3>
+                        <button class="astext h3 text-light" style="margin: 0 0 7px;">{{openingModal.companyName}}</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelApplyJob()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="h3">介紹: </label>
+                        <h5>{{openingModal.description}}</h5>
+                        <hr />
+                        <label class="h4">職業類別: </label>
+                        <template v-for="(titleClass,index) in openingModal.titleClassName">
+                            <template v-if="index + 1 == openingModal.titleClassName.length">
+                                <button class="astext h5">{{titleClass}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{titleClass}}</button>、
+                            </template>
+                        </template>
+                        <br />
+                        <label class="h4">薪資:  </label>
+                        <span class="h5 text-warning">月薪{{openingModal.salaryMin}}~{{openingModal.salaryMax}}元</span>
+                        <br />
+                        <label class="h4">工作時段: </label>
+                        <button class="astext h5">{{openingModal.time}}</button>
+                        <br />
+                        <label class="h4">工作地址: </label>
+                        <span class="h5">{{openingModal.address}}</span>
+                        <hr />
+                        <label class="h4">學歷要求: </label>
+                        <span class="h5">{{openingModal.degree}}</span>
+                        <br />
+                        <label class="h4">擅長能力: </label>
+                        <template v-for="(tag,index) in openingModal.tagName">
+                            <template v-if="index + 1 == openingModal.tagName.length">
+                                <button class="astext h5">{{tag}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{tag}}</button>、
+                            </template>
+                        </template>
+                        <hr />
+                        <label class="h4">福利制度: </label>
+                        <h5>{{openingModal.benefit}}</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <template v-if="applyJobYN == false">
+                            <button class="btn btn-primary" v-on:click="getResumes()">應徵</button>
+                        </template>
+                        <template v-else>
+                            <select v-model="selectedResumeId">
+                                <option v-for="resume in resumes" v-bind:value="resume.resumeId">{{resume.resumeTitle}}</option>
+                            </select>
+                            <button class="btn btn-primary" v-on:click="applyJob()">確認送出</button>
+                            <button class="btn btn-secondary" v-on:click="cancelApplyJob()">取消</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" v-on:click="setPage(currentPage-1)">
+                        <a class="page-link" href="#homeList" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                        <a class="page-link" href="#homeList">{{item}}</a>
+                    </li>
+                    <li class="page-item" v-on:click="setPage(currentPage+1)">
+                        <a class="page-link" href="#homeList" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 
 @section Scripts
 {
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        Vue.createApp({
+        let vueList = {
             data() {
                 return {
-                    TagClasses: [
-                        { TagClassID: 1, TagClass: "電腦科學" },
-                        { TagClassID: 2, TagClass: "數學" },
-                        { TagClassID: 3, TagClass: "醫學" },
-                    ],
-                    Tags: [
-                        { TagClassID: 1, TagID: 1, TagName: "C#" },
-                        { TagClassID: 1, TagID: 2, TagName: "JavaScript" },
-                        { TagClassID: 1, TagID: 3, TagName: "Azure" },
-                        { TagClassID: 2, TagID: 4, TagName: "高等微積分" },
-                        { TagClassID: 2, TagID: 5, TagName: "複變數函數" },
-                        { TagClassID: 3, TagID: 6, TagName: "肛腸科" },
-                        { TagClassID: 3, TagID: 7, TagName: "精神科" },
-                    ],
-                    TagCheckedResume: [],
+                    baseAddress: "https://localhost:7169",
+                    perpage: 5, //一頁的資料數
+                    currentPage: 1,
+                    candidateId: 2,
+                    openings: [],
+                    cityList: [],
+                    city: "",
+                    area: [],
+                    zipCode: "",
+                    companyClassList: [],
+                    skill: null,
+
+                    alertStatus: null,
+                    alertText: "",
+
+                    openingModal: {},
+                    resumes: [],
+                    applyJobYN: false,
+                    selectedOpeningId: null,
+                    selectedResumeId: null,
                 };
             },
+            computed: {
+                totalPage() {
+                    return Math.ceil(this.openings.length / this.perpage)
+                    //Math.ceil()取最小整數
+                },
+                pageStart() {
+                    return (this.currentPage - 1) * this.perpage
+                    //取得該頁第一個值的index
+                },
+                pageEnd() {
+                    return this.currentPage * this.perpage
+                    //取得該頁最後一個值的index
+                },
+
+            },
             methods: {
-                filterTagClass: function (ClassID) {
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.TagClassID == ClassID;
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                },
+                openingsList() {
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Home/OpeningsList`,
+                        {
+                            params: 
+                            { 
+                                id: this.candidateId,
+                            },
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        }).then(res => {
+                            self.openings = res.data;
+                            // self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
+                    }).catch(error => {
+                        console.error(error);
                     });
                 },
-                ReturnhashtagID: function (item) {
-                    return `#${item.TagClass}`;
+                getCity() {
+                    axios.get('/cityjson/CityCountyData.json')  //根目錄資料
+                        .then(model => {
+                            this.cityList = model.data;
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
                 },
-                changeTagNameTo: function (TagName) {
-                    let _this = this;
-                    return `${TagName}BindID`;
+                getArea() {
+                    this.area = this.cityList.find(x => x.CityName === this.city).AreaList;
+                },
+                getCompanyClass() {
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Home/CompanyClassSelect`)  
+                        .then(model => {
+                            self.companyClassList = model.data;
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                },
+                applyJob: function () {
+
+                },
+                addFavorite(item) {
+                    let self = this;
+                    request = {
+                        candidateId: self.candidateId,
+                        openingId: item,
+                    };
+                    axios.post(`${self.baseAddress}/Home/AddFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                        self.openingsList();
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                deleteFavorite: function (openingId) {
+                    let self = this;
+
+                    let request = {
+                        CandidateId: self.candidateId,
+                        OpeningId: openingId,
+                    };
+
+                    axios.post(`${self.baseAddress}/Home/DeleteFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                        this.openingsList();
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                getOpening: function (openingId) {
+                    this.selectedOpeningId = openingId;
+                    axios.get(`${this.baseAddress}/Home/GetOpening`,
+                        {
+                            params: { id: this.selectedOpeningId },
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => this.openingModal = response.data)
+                        .catch(err => { alert(err) });
+                },
+                getResumes: function () {
+                    this.applyJobYN = true;
+                    axios.get(`${this.baseAddress}/Home/ResumesJson`,
+                        {
+                            params: { id: this.candidateId },
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => this.resumes = response.data)
+                        .catch(err => { alert(err) });
+                },
+                applyJob: function () {
+                    let request = {};
+                    request.candidateId = this.candidateId;
+                    request.resumeId = this.selectedResumeId;
+                    request.openingId = this.selectedOpeningId;
+                    axios.post(`${this.baseAddress}/Home/ApplyJob`, request, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    })
+                        .then(response => {
+                            alert(response.data.alertText);
+                            this.alertStatus = response.data.alertStatus;
+                        })
+                        .catch(err => { alert(err) })
+                        .finally(() => this.applyJobYN = false);
+                },
+                cancelApplyJob: function () {
+                    this.applyJobYN = false;
+                    this.selectedResumeId = null;
                 },
             },
-        }).mount("#app1");
+            mounted() {
+                let self = this;
+                self.openingsList();
+                self.getCity();
+                self.getCompanyClass();
+            }
+        };
+        let listData = Vue.createApp(vueList).mount("#app1");
     </script>
 }

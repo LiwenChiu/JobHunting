@@ -1,8 +1,10 @@
-﻿namespace JobHunting.Areas.Companies.ViewModel
+﻿namespace JobHunting.ViewModel
 {
-    public class CreateOpeningInputModel
+    public class OpeningsIndexViewModel
     {
         public int OpeningId { get; set; }
+
+        public int CompanyId { get; set; }
 
         public string Title { get; set; }
 
@@ -10,8 +12,9 @@
 
         public string Description { get; set; }
 
-        public string Benefits { get; set; }
+        public string Degree { get; set; }
 
+        public string Benefits { get; set; }
         public decimal? SalaryMax { get; set; }
 
         public decimal? SalaryMin { get; set; }
@@ -24,14 +27,8 @@
 
         public string ContactEmail { get; set; }
 
-        public bool ReleaseYN { get; set; }
+        public string CompanyName { get; set; }
 
-        public string TitleClassName { get; set; }
-
-        public string Degree { get; set; }
-
-        public List<int> TitleClassId { get; set; }
-
-        public List<int> TagId { get; set; }
+        public bool LikeYN { get; set; }
     }
 }

@@ -4,8 +4,6 @@
     {
         public int NotificationId { get; set; }
 
-        public int? CompanyId { get; set; }
-
         public int? CandidateId { get; set; }
 
         public int? OpeningId { get; set; }
@@ -26,7 +24,7 @@
 
         public string Address { get; set; }
         public bool ReplyYN { get; set; }
+        public bool ReplyFirstYN { get; set; }
 
-        public string Reply { get; set; }
     }
 }

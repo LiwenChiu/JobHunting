@@ -3,6 +3,7 @@ using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -24,8 +25,14 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/Notifications/GetNotificationLess
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCompanyFullOutputViewModel> GetNotificationLess([FromBody][Bind("CompanyId,filterInput,pageStart")] NotificationsFilterViewModel nfvm)
+        public async Task<NotificationCompanyFullOutputViewModel> GetNotificationLess([FromBody][Bind("filterInput,pageStart")] NotificationsFilterViewModel nfvm)
         {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new NotificationCompanyFullOutputViewModel(); // 或處理未授權訪問的情況
+            }
             var companyNotifications = _context.Notifications.Include(n => n.Candidate).Include(n => n.Company).AsNoTracking()
                 .Select(cn => new
                 {
@@ -42,7 +49,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     ReplyYN = cn.ReplyYN,
                     CandidateName = cn.Candidate.Name,
                 })
-                .Where(cn => cn.CompanyId == nfvm.CompanyId)
+                .Where(cn => cn.CompanyId.ToString() == CompanyId)
                 .Where(cn => cn.CandidateName.Contains(nfvm.filterInput) ||
                              cn.Status.Contains(nfvm.filterInput) ||
                              cn.SubjectLine.Contains(nfvm.filterInput) ||
@@ -74,10 +81,16 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/Notifications/GetNotification
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCompanyModalOutputViewModel> GetNotification([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyModalInputViewModel ncmvm)
+        public async Task<NotificationCompanyModalOutputViewModel> GetNotification([FromBody][Bind("NotificationId")] NotificationCompanyModalInputViewModel ncmvm)
         {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new NotificationCompanyModalOutputViewModel(); // 或處理未授權訪問的情況
+            }
             var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
-                .Where(n => n.CompanyId == ncmvm.CompanyId)
+                .Where(n => n.CompanyId.ToString() == CompanyId)
                 .Where(n => n.NotificationId == ncmvm.NotificationId)
                 .Select(n => new NotificationCompanyModalOutputViewModel
                 {
@@ -109,7 +122,7 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/Notifications/ConfirmReply
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCompanyConfirmReplyOutputViewModel> ConfirmReply([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyConfirmReplyInputViewModel nccrivm)
+        public async Task<NotificationCompanyConfirmReplyOutputViewModel> ConfirmReply([FromBody][Bind("NotificationId")] NotificationCompanyConfirmReplyInputViewModel nccrivm)
         {
             if (!ModelState.IsValid)
             {
@@ -119,8 +132,13 @@ namespace JobHunting.Areas.Companies.Controllers
                     AlertStatus = false,
                 };
             }
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var notification = await _context.Notifications.Where(n => n.CompanyId == nccrivm.CompanyId).Where(n => n.NotificationId == nccrivm.NotificationId).SingleAsync();
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new NotificationCompanyConfirmReplyOutputViewModel(); // 或處理未授權訪問的情況
+            }
+            var notification = await _context.Notifications.Where(n => n.CompanyId.ToString() == CompanyId).Where(n => n.NotificationId == nccrivm.NotificationId).SingleAsync();
             if (notification == null)
             {
                 return new NotificationCompanyConfirmReplyOutputViewModel {
@@ -156,7 +174,7 @@ namespace JobHunting.Areas.Companies.Controllers
         //POST: Companies/Notifications/DeleteNotification
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCompanyDeleteNotificationOutputViewModel> DeleteNotification([FromBody][Bind("CompanyId,NotificationId")] NotificationCompanyDeleteNotificationInputViewModel ncdnivm)
+        public async Task<NotificationCompanyDeleteNotificationOutputViewModel> DeleteNotification([FromBody][Bind("NotificationId")] NotificationCompanyDeleteNotificationInputViewModel ncdnivm)
         {
             if (!ModelState.IsValid)
             {
@@ -166,8 +184,13 @@ namespace JobHunting.Areas.Companies.Controllers
                     AlertStatus = false,
                 };
             }
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var notification = await _context.Notifications.Where(n => n.CompanyId == ncdnivm.CompanyId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new NotificationCompanyDeleteNotificationOutputViewModel(); // 或處理未授權訪問的情況
+            }
+            var notification = await _context.Notifications.Where(n => n.CompanyId.ToString() == CompanyId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
             if (notification == null)
             {
                 return new NotificationCompanyDeleteNotificationOutputViewModel
