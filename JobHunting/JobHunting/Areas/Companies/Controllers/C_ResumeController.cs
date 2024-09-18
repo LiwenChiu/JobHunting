@@ -341,15 +341,36 @@ namespace JobHunting.Areas.Companies.Controllers
         //    return companies;
         //}
 
+        
 
-        //投遞履歷
+        //POST: compaines/C_Resume/ReceiveResumefilter
         [HttpPost]
-        public async Task<IEnumerable<ReceiveResumeOutputModel>> ReceiveResumeres(int id)
+        public async Task<IEnumerable<ReceiveResumeOutputModel>> ReceiveResumefilter([FromBody][Bind("ApplyDate", "InterviewYN", "HireYN", "Name", "CompanyId", "OpeningTitle")] ReceiveResumeinputModel rrim)
         {
-            var Result = await _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Company)
+            var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Company)
                           .Include(x => x.Opening).ThenInclude(x => x.TitleClasses).Include(x => x.Opening).ThenInclude(x => x.Tags)
-                          .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory)
-                          .Where(x => x.CompanyId == id)
+                          .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory).AsNoTracking()
+                          .Where(x => x.CompanyId == rrim.CompanyId &&
+                                 (x.OpeningTitle.Contains(rrim.OpeningTitle) ||
+                                 x.Resume.Candidate.Name.Contains(rrim.Name) ||
+                                 x.ApplyDate.ToString().Contains(rrim.ApplyDate)));
+                             //x.ApplyDate.HasValue && rrim.ApplyDate.HasValue &&
+                             //x.ApplyDate.Value.Year == rrim.ApplyDate.Value.Year &&
+                             //x.ApplyDate.Value.Month == rrim.ApplyDate.Value.Month&&
+                             //x.ApplyDate.Value.Day == rrim.ApplyDate.Value.Day)
+
+                            //篩選 InterviewYN 的value
+                             if (rrim.InterviewYN.HasValue)
+                             {
+                                 query = query.Where(x => x.InterviewYN == rrim.InterviewYN.Value);
+                             }
+                             // 篩選是否錄取
+                             if (rrim.HireYN.HasValue)
+                             {
+                                 query = query.Where(x => x.HireYN == rrim.HireYN.Value);
+                             }
+
+                            var result = await query
                           .Select(n => new ReceiveResumeOutputModel
                           {
                               ResumeId = n.ResumeId,
@@ -379,65 +400,14 @@ namespace JobHunting.Areas.Companies.Controllers
                           }).ToListAsync();
 
 
-            if (Result == null)
+            if (result == null)
             {
                 return new List<ReceiveResumeOutputModel>();
             }
 
-            return Result;
+            return result;
 
         }
-
-
-        //    [HttpPost]
-        //    public async Task<IEnumerable<ReceiveResumeOutputModel>> ReceiveResumefilter([FromBody]ReceiveResumeinputModel rrim)
-        //    {
-        //        var Result = await _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Company)
-        //                      .Include(x => x.Opening).ThenInclude(x => x.TitleClasses).Include(x => x.Opening).ThenInclude(x => x.Tags)
-        //                      .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory).ToList()
-        //                      .Where(x => x.CompanyId == rrim.CompanyId ||
-        //                       x.OpeningTitle.Contains(rrim.OpeningTitle)||
-        //                       x.Resume.Candidate.Name.Contains(rrim.Name)||
-        //                       x.ApplyDate.HasValue && rrim.ApplyDate.HasValue &&
-        //                       x.ApplyDate.Value.Year == rrim.ApplyDate.Value.Year &&
-        //                       x.ApplyDate.Value.Month == rrim.ApplyDate.Value.Month)
-        //                      .Select(n => new ReceiveResumeOutputModel
-        //                      {
-        //                          ResumeId = n.ResumeId,
-        //                          CompanyId = n.CompanyId,
-        //                          OpeningId = n.OpeningId,
-        //                          Name = n.Resume.Candidate.Name,
-        //                          Address = n.Resume.Candidate.Address,
-        //                          Sex = n.Resume.Candidate.Sex,
-        //                          Birthday = n.Resume.Candidate.Birthday,
-        //                          Phone = n.Resume.Candidate.Phone,
-        //                          Degree = n.Resume.Candidate.Degree,
-        //                          Email = n.Resume.Candidate.Email,
-        //                          EmploymentStatus = n.Resume.Candidate.EmploymentStatus,
-        //                          Time = n.Resume.Time,
-        //                          Intro = n.Resume.Intro,
-        //                          Certification = n.Resume.Certification, /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
-        //                          WorkExperience = n.Resume.WorkExperience,
-        //                          Autobiography = n.Resume.Autobiography,
-        //                          OpeningTitle = n.OpeningTitle,
-        //                          TitleClassId = n.Resume.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
-        //                          TagId = n.Resume.Tags.Select(r => r.TagId).ToList(), // 确保这里正确
-        //                          Headshot = n.Resume.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
-        //                          ApplyDate = n.ApplyDate,
-        //                          InterviewYN = n.InterviewYN,
-        //                          HireYN = n.HireYN,
-
-        //                      }).ToListAsync();
-
-
-        //        if (Result == null)
-        //        {
-        //            return new List<ReceiveResumeOutputModel>();
-        //        }
-
-        //        return Result;
-
-        //    }
 
 
 
