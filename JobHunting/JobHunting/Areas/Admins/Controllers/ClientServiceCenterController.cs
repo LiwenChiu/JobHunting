@@ -1,6 +1,5 @@
 ﻿using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Admins.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
-    
     [Area("Admins")]
     public class ClientServiceCenterController : Controller
     {

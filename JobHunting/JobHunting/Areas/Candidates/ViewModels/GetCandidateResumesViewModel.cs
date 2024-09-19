@@ -7,7 +7,5 @@ namespace JobHunting.Areas.Candidates.ViewModels
         public int ResumeId { get; set; }
 
         public string Title { get; set; }
-
-        public DateTime LastEditTime { get; set; }
     }
 }
