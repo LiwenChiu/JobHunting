@@ -4,6 +4,8 @@
     {
         public int NotificationId { get; set; }
 
+        public int? CompanyId { get; set; }
+
         public string Status { get; set; }
 
         public string SubjectLine { get; set; }
@@ -20,9 +22,9 @@
 
         public string CandidateName { get; set; }
 
-        public string OpeningTitle { get; set; }
+        public string? OpeningTitle { get; set; }
 
-        public string ResumeTitle { get; set; }
+        public string? ResumeTitle { get; set; }
 
         public bool ReplyFirstYN { get; set; }
 

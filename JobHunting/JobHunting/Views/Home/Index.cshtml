@@ -1,7 +1,16 @@
-﻿
+﻿@{
+    ViewData["Title"] = "首頁";
+}
+
 @section Styles
 {
-    
+    <style>
+        td{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
 }
 
 <div class="pt-2" id="app1">
@@ -58,7 +67,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="width:95%">
        <div class="col-sm-2 row">
             <div class="col-sm-6 ms-auto">
                 <label>第</label>
@@ -66,6 +75,25 @@
                 <label>頁</label>
             </div>
        </div>
+        <div class="col-sm-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" v-on:click="turnPagePrevious()">
+                        <button type="button" class="page-link" aria-label="Previous" v-bind:disabled="isturnPagePreviousDisabled">
+                            <span aria-hidden="true">&laquo;</span>
+                        </button>
+                    </li>
+                    <li v-for="page in totalPage" class="page-item" v-on:click="turnPage(page)">
+                        <button type="button" class="page-link">{{page}}</button>
+                    </li>
+                    <li class="page-item" v-on:click="turnPageNext()">
+                        <button type="button" class="page-link" aria-label="Next" v-bind:disabled="isturnPageNextDisabled">
+                            <span aria-hidden="true">&raquo;</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
         <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
                 <label>共</label>
@@ -175,20 +203,20 @@
         </div>
 
         <div>
-            <nav aria-label="Page navigation example">
+            <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" v-on:click="turnPagePrevious()">
-                        <a class="page-link" href="#homeList" aria-label="Previous">
+                        <button type="button" class="page-link" aria-label="Previous" v-bind:disabled="isturnPagePreviousDisabled">
                             <span aria-hidden="true">&laquo;</span>
-                        </a>
+                        </button>
                     </li>
                     <li v-for="page in totalPage" class="page-item" v-on:click="turnPage(page)">
-                        <a class="page-link" href="#homeList">{{page}}</a>
+                        <button type="button" class="page-link">{{page}}</button>
                     </li>
                     <li class="page-item" v-on:click="turnPageNext()">
-                        <a class="page-link" href="#homeList" aria-label="Next">
+                        <button type="button" class="page-link" aria-label="Next" v-bind:disabled="isturnPageNextDisabled">
                             <span aria-hidden="true">&raquo;</span>
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </nav>
@@ -206,7 +234,9 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     perpage: 5, //一頁的資料數
+                    perpageSafe: null,
                     currentPage: 1,
+                    currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
                     candidateId: 2,
@@ -221,6 +251,9 @@
                     alertStatus: null,
                     alertText: "",
 
+                    isturnPagePreviousDisabled: false,
+                    isturnPageNextDisabled: false,
+
                     openingModal: {},
                     resumes: [],
                     applyJobYN: false,
@@ -228,28 +261,7 @@
                     selectedResumeId: null,
                 };
             },
-            // computed: {
-            //     totalPage() {
-            //         return Math.ceil(this.openings.length / this.perpage)
-            //         //Math.ceil()取最小整數
-            //     },
-            //     pageStart() {
-            //         return (this.currentPage - 1) * this.perpage
-            //         //取得該頁第一個值的index
-            //     },
-            //     pageEnd() {
-            //         return this.currentPage * this.perpage
-            //         //取得該頁最後一個值的index
-            //     },
-
-            // },
             methods: {
-                // setPage(page) {
-                //     if (page <= 0 || page > this.totalPage) {
-                //         return
-                //     }
-                //     this.currentPage = page
-                // },
                 turnPage: function (page) {
                     this.currentPage = page;
                 },
@@ -265,25 +277,43 @@
                 },
                 openingsList() {
                     let self = this;
-                    axios.get(`${self.baseAddress}/Home/OpeningsList`,
-                        {
-                            params: 
-                            { 
-                                id: this.candidateId,
-                                page: this.currentPage,
-                                count: this.perpage,
-                            },
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        }).then(res => {
+                    this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
+                    this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
+                    let params = new URLSearchParams();
+                    params.append("id", this.candidateId);
+                    params.append("page", this.currentPageSafe);
+                    params.append("count", this.perpageSafe);
+                    var request = {
+                        params: params,
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    };
+                    axios.get(`${self.baseAddress}/Home/OpeningsList`,request)
+                    .then(res => {
                             self.openings = res.data.openingsIndexOutput;
                             self.totalDataCount = res.data.totalDataCount;
-                            self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpage)) ? parseInt((res.data.totalDataCount) / (self.perpage)) : parseInt((res.data.totalDataCount) / (self.perpage)) + 1;
+                            self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
                             // self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
-                    });
+                    })
+                        .finally(() => {
+                            if (this.currentPage <= 1) {
+                                this.isturnPagePreviousDisabled = true;
+                            }
+                            else {
+                                this.isturnPagePreviousDisabled = false;
+                            }
+
+                            if (this.currentPage >= this.totalPage) {
+                                this.currentPage = this.totalPage;
+                                this.isturnPageNextDisabled = true;
+                            }
+                            else {
+                                this.isturnPageNextDisabled = false;
+                            }
+                        });
                 },
                 getCity() {
                     axios.get('/cityjson/CityCountyData.json')  //根目錄資料
@@ -396,6 +426,9 @@
                     this.openingsList();
                 },
                 currentPage:function(){
+                    if (this.perpage == null || this.perpage == "") {
+                        this.perpage = 5;
+                    }
                     this.openingsList();
                 },
             },
