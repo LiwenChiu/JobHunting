@@ -1,4 +1,6 @@
-﻿using JobHunting.Areas.Companies.Models;
+﻿using JobHunting.Areas.Candidates.ViewModels;
+using JobHunting.Areas.Companies.Models;
+using JobHunting.Areas.Companies.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobHunting.Areas.Companies.Controllers
@@ -36,6 +38,24 @@ namespace JobHunting.Areas.Companies.Controllers
             return Json(opinionletter);
         }
 
+        //GET:Companies/OpinionLetters/OpinionLetterModalShow/{id}
+        [HttpGet]
+        public async Task<Com_OpinionLetterModalViewModel> OpinionLetterModalShow([FromRoute] int id) 
+        {
+            var opinionLetter = await _context.OpinionLetters.FindAsync(id);
+            Com_OpinionLetterModalViewModel comolmv = new Com_OpinionLetterModalViewModel
+            {
+                LetterId = opinionLetter.LetterId,
+                Class = opinionLetter.Class,
+                SubjectLine = opinionLetter.SubjectLine,
+                Attachment = opinionLetter.Attachment,
+                Content = opinionLetter.Content,
+                Status = opinionLetter.Status,
+                SendTime = opinionLetter.SendTime,
+            };
+            return comolmv;
+        }
+
 
         //Post:Companies/OpinionLetters/Filter
         [HttpPost]
@@ -70,6 +90,32 @@ namespace JobHunting.Areas.Companies.Controllers
                 return StatusCode(500, "隱藏失敗");
             }
             return Ok("隱藏成功");
+        }
+
+
+        //Post:Companies/OpinionLetters/AddLetter
+        [HttpPost]
+        public async Task<IActionResult> AddLetter([FromForm] CompanyInsertLetter letter)
+        {
+            OpinionLetter opinionLetter = new OpinionLetter();
+            opinionLetter.CompanyId = letter.CompanyId;
+            opinionLetter.Class = letter.Letterclass;
+            opinionLetter.SubjectLine = letter.SubjectLine;
+            opinionLetter.Content = letter.Content;
+            opinionLetter.SendTime = letter.SendTime;
+
+            if (letter.ImageFile != null)
+            {
+                using (BinaryReader br = new BinaryReader(letter.ImageFile.OpenReadStream()))
+                {
+                    opinionLetter.Attachment = br.ReadBytes((int)letter.ImageFile.Length);
+                }
+            }
+
+            _context.OpinionLetters.Add(opinionLetter);
+            await _context.SaveChangesAsync();
+
+            return Ok("新增意見信件成功");
         }
 
     }

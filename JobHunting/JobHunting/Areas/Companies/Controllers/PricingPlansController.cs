@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -60,7 +61,7 @@ namespace JobHunting.Areas.Companies.Controllers
         // POST: Companies/PricingPlans/PayAgree
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> PayAgree([FromBody][Bind("CompanyId,PlanId")] PayAgreementViewModel pavm )
+        public async Task<Array> PayAgree([FromBody][Bind("PlanId")] PayAgreementViewModel pavm )
         {
             string[] returnStatus = new string[2];
 
@@ -69,14 +70,20 @@ namespace JobHunting.Areas.Companies.Controllers
                 returnStatus = ["輸入資料失敗", "失敗"];
                 return returnStatus;
             }
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                returnStatus = ["未授權訪問", "失敗"];
+                return returnStatus;
+            }
 
-            var company = _context.Companies.Where(c => c.CompanyId == pavm.CompanyId)
+            var company =await _context.Companies.Where(c => c.CompanyId.ToString() == CompanyId)
                 .Select(c => new PayAgreementCompanyViewModel 
                 {
                     CompanyId = c.CompanyId,
                     CompanyName = c.CompanyName,
                     GUINumber = c.GUINumber,
-                }).ToList()[0];
+                }).SingleOrDefaultAsync();
 
             if (company == null)
             {
@@ -84,7 +91,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return returnStatus;
             }
 
-            var pricingPlan = _context.PricingPlans.Where(pp => pp.PlanId == pavm.PlanId)
+            var pricingPlan =await _context.PricingPlans.Where(pp => pp.PlanId == pavm.PlanId)
                 .Select(pp => new PayAgreementPricingPlanViewModel
                 {
                     PlanId = pp.PlanId,
@@ -92,7 +99,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Price = pp.Price,
                     Discount = pp.Discount,
                     Duration = pp.Duration,
-                }).ToList()[0];
+                }).SingleOrDefaultAsync();
 
             if (pricingPlan == null)
             {

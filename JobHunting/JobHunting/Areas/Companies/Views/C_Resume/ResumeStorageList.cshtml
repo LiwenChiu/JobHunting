@@ -343,16 +343,14 @@
                     titleClass: [],
                     titleCategory: [],
                     InterviewYN:false,
-                    candidateId:"",
                     resumeId:"",
-                    candidateId:"",
                     Sendinterview:{
                         Purpose:"",
                         Interviewdate:"",
                         Interviewtime:"",
                         place:"",
                         Content:"",
-                        Interviewnotice:"面試通知",
+                        Interviewnotice:"面試邀請",
                         sendDate:new Date(),
                         interviewReplyYN: false,
                         interviewReplyFirstYN:false,
@@ -407,7 +405,7 @@
                     if (!Array.isArray(titleClassId)) return '未指定';
                     return titleClassId
                         .map(id => {
-                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                            let titleClassItem = this.titleClass.find(item => item.titleClassId == id);
                             return titleClassItem ? titleClassItem.titleClassName : '未指定';
                         })
                         .join('/ ');
@@ -417,7 +415,7 @@
                     if (!Array.isArray(tagId)) return '未指定';
                     return tagId
                         .map(id => {
-                            let tagItem = this.Tags.find(item => item.tagId === id);
+                            let tagItem = this.Tags.find(item => item.tagId == id);
                             return tagItem ? tagItem.tagName : '未指定';
                         })
                         .join('/ ');
@@ -425,8 +423,7 @@
                 // 撈出暫存的履歷資料
                 resumeStorageData: function () {
                     let _this = this
-                    let CompanyId = 1;
-                    fetch(`${_this.baseAddress}/Companies/C_Resume/ResumeStorageJson?id=${CompanyId}`, {
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/ResumeStorageJson`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json"  // 指定 JSON 格式
@@ -492,11 +489,8 @@
                 SendInterviewLetter: function () {
                     let _this = this;
                     let request = {};
-                    
                     const confirmdel = confirm("確定要發送?");
-                    
                     if (confirmdel==true){
-                        request.CompanyId = _this.selectedItem.companyId;
                         request.CandidateId = _this.selectedItem.candidateId; 
                         request.OpeningId = _this.selectedItem.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
@@ -537,7 +531,6 @@
                     let request = {};
                     let confirmdel = confirm("確定要發送?");
                     if(confirmdel == true){
-                        request.CompanyId = _this.selectedItem.companyId;
                         request.CandidateId = _this.selectedItem.candidateId; 
                         request.OpeningId = _this.selectedItem.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
@@ -572,7 +565,7 @@
                     }
                     
                 },
-                removeCompanyResumeLikeRecords:function(companyId,resumeId){
+                removeCompanyResumeLikeRecords:function(resumeId){
                     let _this = this
                     let confirmdel = confirm("確定要刪除?");
                     if (confirmdel == true) {
@@ -581,7 +574,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ CompanyId: companyId, ResumeId: resumeId })
+                            body: JSON.stringify({ResumeId: resumeId })
                         }).then(res => {
                             return res.json();
                         }).then(data => {

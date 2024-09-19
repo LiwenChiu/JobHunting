@@ -5,6 +5,7 @@ using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
 using System.Net;
+using System.Security.Claims;
 namespace JobHunting.Areas.Companies.Controllers
 {
     [Area("Companies")]
@@ -23,9 +24,14 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //GET:Companies/Openings/OpeningJson
         [HttpGet]
-        public JsonResult OpeningJson(int id)
+        public JsonResult OpeningJson()
         {
-            return Json(_context.Openings.Where(w=>w.CompanyId == id).Select(o => new
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return Json(new { message = "未授權訪問" });
+            }
+            return Json(_context.Openings.Where(w=>w.CompanyId.ToString() == CompanyId).Select(o => new
             {
                 OpeningId = o.OpeningId,
                 Title = o.Title,
@@ -52,10 +58,17 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IEnumerable<OpeningsFilterOutput>> Filter([FromBody]OpeningsFilterInput ofi)
         {
-            var source = _context.Openings.Where(o=>o.CompanyId == ofi.CompanyId).Include(o => o.TitleClasses).Include(c=>c.Company).ToList();
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new List<OpeningsFilterOutput>(); // 或處理未授權訪問的情況
+            }
+
+            var source = _context.Openings.Where(o=>o.CompanyId.ToString() == CompanyId).Include(o => o.TitleClasses).Include(c=>c.Company).ToList();
             var temp = source.Select(o => new
             {
-                CompanyId = o.CompanyId,
+                CompanyId = CompanyId,
                 OpeningId = o.OpeningId,
                 Title = o.Title,
                 CompanyName = o.Company.CompanyName,
@@ -76,7 +89,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 Degree = o.Degree,
                 ReleaseYN = o.ReleaseYN
             }).Where(a =>
-                a.CompanyId == ofi.CompanyId &&
+                a.CompanyId == CompanyId &&
                 a.Address.Contains(ofi.Address) ||
                 a.Title.Contains(ofi.Title) ||
                 a.Time.Contains(ofi.Time)
@@ -237,7 +250,12 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
-                var company = await _context.Companies.FindAsync(coim.CompanyId);
+                var companyIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(companyIdStr) || !int.TryParse(companyIdStr, out int companyId))
+                {
+                    return Unauthorized(new { message = "未授權訪問" });
+                }
+                var company = await _context.Companies.FindAsync(companyId);
                 if (company == null)
                 {
                     return NotFound(new { Message = "沒有此公司" });
@@ -263,7 +281,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Time = coim.Time,
                     Benefits = coim.Benefits,
                     Description = coim.Description,
-                    CompanyId = coim.CompanyId,
+                    CompanyId = companyId,
                     ReleaseYN = true,
                     Degree = coim.Degree,
                     
