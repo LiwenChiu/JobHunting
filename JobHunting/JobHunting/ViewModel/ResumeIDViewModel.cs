@@ -4,6 +4,5 @@
     {
         public int ResumeId { get; set; }
         public int CandidateId { get; set; }
-
     }
 }
