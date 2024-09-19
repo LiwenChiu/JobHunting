@@ -102,7 +102,10 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 OpeningId = ror.OpeningId,
                 OpeningTitle = ror.Title,
-            }).Take(2);
+                ResumeNumber = ror.ResumeNumber,
+            })
+            .OrderByDescending(r => r.ResumeNumber)
+            .Take(2);
         }
 
         public async Task<FileResult> GetPicture(int CandidateId)
