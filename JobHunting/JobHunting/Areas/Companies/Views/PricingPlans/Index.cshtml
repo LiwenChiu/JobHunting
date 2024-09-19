@@ -79,20 +79,10 @@
                     <div class="modal-body">
                         <h5>方案: {{selectedPlanTitle}} </h5>
                         <template v-if="selectedPlanDiscount === 1">
-                            <h5>應付金額: NT${{selectedPlanPrice}}</h5>
+                            <h5>應付金額: NT${{selectedPlanPrice}} = NT${{selectedPlanPrice}}</h5>
                         </template>
                         <template v-else>
-                            <template v-if="(selectedPlanDiscount*100)%10 === 0">
-                                <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*10}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
-                            </template>
-                            <template v-else>
-                                <template v-if="selectedPlanDiscount*100 < 10">
-                                    <h5>應付金額: NT${{selectedPlanPrice}} × 0{{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
-                                </template>
-                                <template v-else>
-                                    <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
-                                </template>
-                            </template>
+                            <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
                         </template>
                     </div>
                     <div class="modal-footer">

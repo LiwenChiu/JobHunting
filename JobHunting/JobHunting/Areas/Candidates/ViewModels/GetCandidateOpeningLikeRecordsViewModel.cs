@@ -5,7 +5,5 @@
         public int? OpeningId { get; set; }
 
         public string OpeningTitle { get; set; }
-
-        public int? ResumeNumber { get; set; }
     }
 }
