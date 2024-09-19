@@ -190,7 +190,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return new NotificationCompanyDeleteNotificationOutputViewModel(); // 或處理未授權訪問的情況
             }
-            var notification = await _context.Notifications.Where(n => n.CompanyId.ToString() == CompanyId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
+            var notification = await _context.Notifications.Where(n => n.CompanyId.ToString() == CompanyId).Where(n => n.NotificationId == ncdnivm.NotificationId).FirstOrDefaultAsync();
             if (notification == null)
             {
                 return new NotificationCompanyDeleteNotificationOutputViewModel
