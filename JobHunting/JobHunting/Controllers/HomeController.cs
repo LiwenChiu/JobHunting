@@ -11,9 +11,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 using Microsoft.Data.SqlClient;
-using JobHunting.Areas.Admins.ViewModels;
 
 namespace JobHunting.Controllers
 {

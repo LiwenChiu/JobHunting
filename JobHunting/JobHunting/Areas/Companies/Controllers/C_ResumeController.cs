@@ -1,6 +1,7 @@
 ﻿using JobHunting.Areas.Candidates.ViewModels;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -90,6 +91,26 @@ namespace JobHunting.Areas.Companies.Controllers
             return companies;
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<GetOpenIngsOutputmodel>> GetOpenings()
+        {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new List<GetOpenIngsOutputmodel>(); // 或處理未授權訪問的情況
+            }
+
+            var query = await _context.Openings.Include(a => a.Company).Where(rs => rs.CompanyId.ToString() == CompanyId).ToListAsync();
+            
+            var opening = query.Select(p => new GetOpenIngsOutputmodel
+            {
+                OpeningId = p.OpeningId,
+                CompanyId = p.CompanyId,
+                Title = p.Title
+            });
+            return opening;
+        }
 
 
         [HttpPost]
@@ -208,7 +229,14 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "履歷收藏失敗" });
+                if(arlv.ResumeId != null)
+                {
+                    return Json(new { success = false, message = "收藏失敗。履歷已收藏過" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "履歷收藏失敗" });
+                }
             }
             
 

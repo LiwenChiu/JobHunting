@@ -11,10 +11,12 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using System.Net;
 using NuGet.Protocol;
 using Microsoft.AspNetCore.Authorization;
+using JobHunting.Areas.Companies.ViewModel;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
-    //[Authorize(Roles = "candidate")]
+    [Authorize(Roles = "candidate")]
     [Area("Candidates")]
     public class HomeController : Controller
     {
@@ -29,10 +31,16 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/GetCandidateMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<GetCandidateMemberDataViewModel> GetCandidateMemberData([FromBody] int id)
+        public async Task<GetCandidateMemberDataViewModel> GetCandidateMemberData()
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return new GetCandidateMemberDataViewModel(); // 或處理未授權訪問的情況
+            }
             return _context.Candidates.AsNoTracking()
-                .Where(cmd => cmd.CandidateId == id)
+                .Where(cmd => cmd.CandidateId.ToString() == CandidateId)
                 .Select(cmd => new GetCandidateMemberDataViewModel
                 {
                     Name = cmd.Name,
@@ -48,10 +56,16 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/GetCandidateMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<GetCandidateResumesViewModel>> GetCandidateResumes([FromBody] int id)
+        public async Task<IEnumerable<GetCandidateResumesViewModel>> GetCandidateResumes()
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return new List<GetCandidateResumesViewModel>(); // 或處理未授權訪問的情況
+            }
             return _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == id)
+                .Where(r => r.CandidateId.ToString() == CandidateId)
                 .Select(r => new GetCandidateResumesViewModel
                 {
                     ResumeId = r.ResumeId,
@@ -64,13 +78,18 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/GetCandidateOpeningLikeRecords
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<GetCandidateOpeningLikeRecordsViewModel>> GetCandidateOpeningLikeRecords([FromBody] int id)
+        public async Task<IEnumerable<GetCandidateOpeningLikeRecordsViewModel>> GetCandidateOpeningLikeRecords()
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return new List<GetCandidateOpeningLikeRecordsViewModel>(); // 或處理未授權訪問的情況
+            }
             var query = await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
                 .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
                 .Include(x => x.Openings).ThenInclude(x => x.Company)
-                .FirstOrDefaultAsync(x => x.CandidateId == id);
+                .FirstOrDefaultAsync(x => x.CandidateId.ToString() == CandidateId);
             if (query == null)
             {
                 return new List<GetCandidateOpeningLikeRecordsViewModel>();
@@ -94,7 +113,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         // POST: Candidates/Home/ChangeTitleClass
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> ChangeTitleClass([FromBody][Bind("CandidateId,TitleClass")] ChangeTitleClassViewModel ctcvm)
+        public async Task<Array> ChangeTitleClass([FromBody][Bind("TitleClass")] ChangeTitleClassViewModel ctcvm)
         {
             string[] returnStatus = new string[2];
 
@@ -103,8 +122,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                 returnStatus = ["格式不正確", "失敗"];
                 return returnStatus;
             }
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                returnStatus = ["修改會員資料失敗", "失敗"];
+                return returnStatus;
+            }
 
-            var candidate = await _context.Candidates.FindAsync(ctcvm.CandidateId);
+            var candidate = await _context.Candidates.FindAsync(candidateId);
             if (candidate == null)
             {
                 returnStatus = ["錯誤", "失敗"];

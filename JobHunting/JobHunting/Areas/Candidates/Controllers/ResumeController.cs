@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Protocol.Plugins;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -30,10 +31,15 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //GET: /Candidates/Resume/ResumeResult
         [HttpGet]
-        public async Task<JsonResult> CandidatesResumeResult(int id)
+        public async Task<JsonResult> CandidatesResumeResult()
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return Json(new { message = "未授權訪問" });
+            }
 
-            return Json(_context.Resumes.Include(r => r.Candidate).Where(w=>w.CandidateId == id).Include(t => t.TitleClasses).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Where(w=>w.CandidateId.ToString() == CandidateId).Include(t => t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -48,7 +54,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 certification = a.Certification,
                 workExperience = a.WorkExperience,
                 autobiography = a.Autobiography,
-                candidateid = a.CandidateId,
+                candidateid = int.Parse(CandidateId),
                 resumeid = a.ResumeId,
                 releaseYN = a.ReleaseYN,
                 intro = a.Intro,
@@ -154,7 +160,13 @@ namespace JobHunting.Areas.Candidates.Controllers
 
             try
             {
-                var candidate = await  _context.Candidates.FindAsync(Creatr.CandidateId);
+                var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+                {
+                    return Unauthorized("未授權訪問");
+
+                }
+                var candidate = await  _context.Candidates.FindAsync(candidateId);
 
                 if (candidate == null)
                 {
@@ -178,7 +190,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     WorkExperience = Creatr.WorkExperience,
                     Autobiography = Creatr.Autobiography,
                     ReleaseYN = Creatr.ReleaseYN,
-                    CandidateId = Creatr.CandidateId,
+                    CandidateId = candidateId,
                     Intro = Creatr.Intro,
                    
                 };
