@@ -29,6 +29,8 @@ public partial class Resume
 
     public bool ReleaseYN { get; set; }
 
+    public DateTime LastEditTime { get; set; }
+
     public virtual Candidate Candidate { get; set; }
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
