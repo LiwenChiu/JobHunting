@@ -31,7 +31,7 @@
         </template>
     </div>
     @* 新增職缺 *@
-    <div class="container-fluid py-1 mt-2">
+    <div class="container-fluid py-1 mt-5">
         <div class="letters row">
             <div class="col-md-3 mb-4">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#insertmodelID" style="text-decoration:none;" v-on:click="selectedTagId=[];selectedtitleClassId=[]">
@@ -54,12 +54,11 @@
                             </div>
                             @* 刪除履歷 *@
                             <div class="col-2">
-                                <button type="button" class="astext" aria-label="Close" v-on:click="deleteOpening(item)"><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteOpening(item)"></button>
                             </div>
                         </div>
                         <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
                         <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
-                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 履歷數量 : {{item.resumeNumber}}</p>
                         @* 履歷內容按鈕 *@
                     </div>
                     <div class="card-footer text-center" style="background-color:transparent">
@@ -71,7 +70,7 @@
                                 <button type="button" class="btn btn-danger ms-1" v-on:click="toggleStatusToFalse(item);">停用</button>
                             </template>
                             <template v-else>
-                                <button type="button" class="btn btn-warning ms-1 text-light" v-on:click="toggleStatusToTrue(item);">啟用</button>
+                                <button type="button" class="btn btn-warning ms-1" v-on:click="toggleStatusToTrue(item);">啟用</button>
                             </template>
                     </div>
                 </div>
@@ -107,8 +106,8 @@
                                         <div class="mb-3">
                                             <label class="">職缺名稱:</label>
                                             <input type="text" class="form-control" name="title" value="" placeholder="請輸入職缺名稱" v-model="Title" />
-                                            <label class="">需求人數:</label>
-                                            <input type="text" class="form-control" name="RequiredNumber" value="" placeholder="請輸入需求人數" v-model.number.trim="RequiredNumber" />
+                                            <label class="">公司名稱:</label>
+                                            <p>{{openings.companyName}}</p>
                                             <label class="">工作地點:</label>
                                             <input type="text" class="form-control" name="Address" value="" placeholder="請輸入地址" v-model="Address" />
                                             <label class="">連絡人:</label>
@@ -247,10 +246,9 @@
                         @* 職缺編輯 *@
                         <template v-if="item.edit == true">
                             <div class="modal-header" style="background-color: #f7d179;">
-                                <h3 class="modal-title text-center text-light" id="modal" style="width:80%;">
+                                <h5 class="modal-title text-center" id="modal" style="width:95% ;">
                                     {{item.title}}
-                                </h3>
-                                <span class="text-light">已有 {{item.resumeNumber}}份履歷</span>
+                                </h5>
                                 <button type="button"
                                         class="btn-close"
                                         data-bs-dismiss="modal"
@@ -265,8 +263,8 @@
                                             <div class="mb-3">
                                                 <label class="">職缺名稱:</label>
                                                 <input type="text" v-model="item.title" class="form-control" />
-                                                <label class="">需求人數:</label>
-                                                <input type="text" v-model.number.trim="item.requiredNumber" class="form-control" />
+                                                <label class="">公司名稱:</label>
+                                                <p>{{item.companyName}}</p>
                                                 <label class="">工作地點:</label>
                                                 <input type="text" v-model="item.address" class="form-control" />
                                                 <label class="">連絡人:</label>
@@ -390,11 +388,10 @@
                         </template>
                         @* 職缺顯示 *@
                         <template v-else="item.edit == false">
-                            <div class="modal-header bg-warning">
-                                <h3 class="modal-title text-center text-light" id="modal" style="width:80%">
+                            <div class="modal-header" style="background-color: #f7d179;">
+                                <h5 class="modal-title text-center" id="modal" style="width:95%">
                                     {{item.title}}
-                                </h3>
-                                <span class="text-light">已有 {{item.resumeNumber}}份履歷</span>
+                                </h5>
                                 <button type="button"
                                         class="btn-close"
                                         data-bs-dismiss="modal"
@@ -407,12 +404,10 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                @* <label class="">職缺名稱:</label>
+                                                <label class="">職缺名稱:</label>
                                                 <p>{{item.title}}</p>
                                                 <label class="">公司名稱:</label>
-                                                <p>{{item.companyName}}</p> *@
-                                                <label class="">需求人數:</label>
-                                                <p>{{item.requiredNumber}}</p>
+                                                <p>{{item.companyName}}</p>
                                                 <label class="">工作地點:</label>
                                                 <p>{{item.address}}</p>
                                                 <label class="">連絡人:</label>
@@ -503,7 +498,6 @@
                     //data
                     Title: "",
                     Address: "",
-                    RequiredNumber: null,
                     ContactName: "",
                     ContactPhone: "",
                     ContactEmail: "",
@@ -663,7 +657,6 @@
                     let request = {};
                     request.Title = _this.Title;
                     request.Address = _this.Address;
-                    request.RequiredNumber = _this.RequiredNumber;
                     request.ContactName = _this.ContactName;
                     request.ContactPhone = _this.ContactPhone;
                     request.ContactEmail = _this.ContactEmail;
@@ -723,7 +716,6 @@
                     request.OpeningId = item.openingId;
                     request.Title = item.title;
                     request.Address = item.address;
-                    request.RequiredNumber = item.requiredNumber == null || !Number.isInteger(Number(item.requiredNumber)) ? 1 : item.requiredNumber;
                     request.ContactName = item.contactName;
                     request.ContactPhone = item.contactPhone;
                     request.ContactEmail = item.contactEmail;

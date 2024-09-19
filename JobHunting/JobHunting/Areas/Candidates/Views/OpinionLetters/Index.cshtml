@@ -203,6 +203,7 @@
                     subjectLine:"",
                     content:"",
 
+                    CandidateId:10,
                 }
             },
             computed: {
@@ -227,9 +228,23 @@
                     this.currentPage = page
                 },
 
+                // OpinionData: function () {
+                //     // alert("AAA");
+                //     fetch("/Candidates/OpinionLetters/IndexJson_opinionletter", {
+                //         method:"GET"
+                //     }).then(response => {
+                //         return response.json();
+                //     }).then(data => {
+                //             return this.opinionlist=data
+                //     }).catch(err => {
+                //         alert(JSON.stringify(err))
+                //     })
+                // },
+
+
                 OpinionData: function () 
                 {
-                    axios.post(`${this.baseAddress}/Candidates/OpinionLetters/IndexJson_opinionletter`,
+                    axios.post(`${this.baseAddress}/Candidates/OpinionLetters/IndexJson_opinionletter`, this.CandidateId,
                         { headers: { 'Content-Type': 'application/json' } })
                         .then(response => this.opinionlist = response.data)
                         .catch(err => { alert(err) });
@@ -252,6 +267,8 @@
                     // alert(`Filter${_this.filter}`)
                     let _this = this;
                     let request = {};
+
+                    request.CandidateId = _this.CandidateId;
                     request.Class = request.SubjectLine =_this.filter;
 
                     axios.post(`${_this.baseAddress}/Candidates/OpinionLetters/Filter`, request)
@@ -284,6 +301,7 @@
                     let _this = this;                   
                     var form = new FormData();
                     let today = new Date().toISOString();
+                    form.append("CandidateId", _this.CandidateId);
                     form.append("LetterClass", _this.letterClass);
                     form.append("SubjectLine", _this.subjectLine);
                     form.append("Content", _this.content);

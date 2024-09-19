@@ -37,10 +37,6 @@ public partial class Opening
 
     public bool ReleaseYN { get; set; }
 
-    public int? RequiredNumber { get; set; }
-
-    public int? ResumeNumber { get; set; }
-
     public virtual Company Company { get; set; }
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
