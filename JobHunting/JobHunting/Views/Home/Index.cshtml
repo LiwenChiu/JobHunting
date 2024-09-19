@@ -145,6 +145,7 @@
                     <div class="modal-header bg-warning">
                         <h3 class="CompanyNameh3 text-center text-light">{{openingModal.openingTitle}} - </h3>
                         <button class="astext h3 text-light" style="margin: 0 0 7px;">{{openingModal.companyName}}</button>
+                        <span class="text-light px-3">已有: {{openingModal.resumeNumber}}人投遞履歷</span>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelApplyJob()"></button>
                     </div>
                     <div class="modal-body">
@@ -169,6 +170,9 @@
                         <br />
                         <label class="h4">工作地址: </label>
                         <span class="h5">{{openingModal.address}}</span>
+                        <br />
+                        <label class="h4">需求人數: </label>
+                        <span class="h5 px-1">{{openingModal.requiredNumber}}人</span>
                         <hr />
                         <label class="h4">學歷要求: </label>
                         <span class="h5">{{openingModal.degree}}</span>
@@ -337,9 +341,6 @@
                             console.error(error);
                         });
                 },
-                applyJob: function () {
-
-                },
                 addFavorite(item) {
                     let self = this;
                     request = {
@@ -409,6 +410,7 @@
                         .then(response => {
                             alert(response.data.alertText);
                             this.alertStatus = response.data.alertStatus;
+                            this.getOpening(this.selectedOpeningId);
                         })
                         .catch(err => { alert(err) })
                         .finally(() => this.applyJobYN = false);

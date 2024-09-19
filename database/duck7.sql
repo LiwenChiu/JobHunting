@@ -221,7 +221,7 @@ CREATE TABLE PricingPlans
 	Duration int not null,
 	Price money
 		CHECK(Price >= 0),
-	Discount decimal(5,4) default(1)
+	Discount decimal(7,6) default(1)
 		CHECK((Discount <= 1) AND (Discount > 0)),
 	[Status] bit not null default(1),
 )

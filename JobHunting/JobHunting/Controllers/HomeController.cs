@@ -112,6 +112,8 @@ namespace JobHunting.Controllers
                     OpeningTitle = o.Title,
                     CompanyName = o.Company.CompanyName,
                     Address = o.Address,
+                    RequiredNumber = o.RequiredNumber,
+                    ResumeNumber = o.ResumeNumber,
                     Description = o.Description,
                     Benefit = o.Benefits,
                     Degree = o.Degree,
@@ -218,6 +220,20 @@ namespace JobHunting.Controllers
                 CompanyId = o.CompanyId,
                 CompanyName = o.Company.CompanyName,
             }).FirstOrDefaultAsync();
+
+            if (companyOpening == null)
+            {
+                return new ApplyJobOutputViewModel
+                {
+                    AlertText = "¥¢±Ñ",
+                    AlertStatus = false
+                };
+            }
+
+            var opening = await _context.Openings.FindAsync(cajvm.openingId);
+            opening.ResumeNumber++;
+
+            _context.Entry(opening).State = EntityState.Modified;
 
             ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
             {
