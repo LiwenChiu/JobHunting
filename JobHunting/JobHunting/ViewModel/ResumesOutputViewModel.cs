@@ -1,8 +1,9 @@
 ﻿namespace JobHunting.ViewModel
 {
-    public class ResumeIDViewModel
+    public class ResumesOutputViewModel
     {
         public int ResumeId { get; set; }
-        public int CandidateId { get; set; }
+
+        public string ResumeTitle { get; set; }
     }
 }
