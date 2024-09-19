@@ -287,7 +287,6 @@
                 deleteCandidateOpeningRelation(item) {
                     let request = {
                         OpeningId: item.openingId,
-                        CandidateId: this.CandidateId
                     }
                     axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, request ,{
                         headers: {
@@ -305,7 +304,6 @@
                     this.applyJobYN = true;
                     axios.get(`${this.baseAddress}/Candidates/OpeningStorage/ResumesJson`, 
                     {
-                        params: { id: this.CandidateId},
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -315,7 +313,6 @@
                 },
                 applyJob:function(){
                     let request = {};
-                    request.candidateId = this.CandidateId;
                     request.resumeId = this.selectedResumeId;
                     request.openingId = this.selectedOpeningId;
                     axios.post(`${this.baseAddress}/Candidates/OpeningStorage/ApplyJob`, request, {

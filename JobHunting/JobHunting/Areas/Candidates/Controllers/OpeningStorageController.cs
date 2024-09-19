@@ -116,9 +116,15 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveCdOpRelation([FromBody]RemoveCdOpRelationInputModel rcor)
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return Unauthorized(new { message = "未授權訪問" });
+            }
+
             var candidate = await _context.Candidates
                 .Include(c => c.Openings)
-                .FirstOrDefaultAsync(c => c.CandidateId == rcor.CandidateId);
+                .FirstOrDefaultAsync(c => c.CandidateId.ToString() == CandidateId);
 
             if (candidate == null)
             {
@@ -136,10 +142,15 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Ok(new { message = "刪除收藏職缺成功!" });
         }
 
-        public async Task<IEnumerable<OpeningStorageResumesOutputViewModel>> ResumesJson(int id)
+        public async Task<IEnumerable<OpeningStorageResumesOutputViewModel>> ResumesJson()
         {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return Enumerable.Empty<OpeningStorageResumesOutputViewModel>();
+            }
             var resumes = _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == id && r.ReleaseYN == true)
+                .Where(r => r.CandidateId == candidateId && r.ReleaseYN == true)
                 .Select(r => new OpeningStorageResumesOutputViewModel
                 {
                     ResumeId = r.ResumeId,
@@ -152,7 +163,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/OpeningStorage/ApplyJob
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<CandidatesApplyJobOutputViewModel> ApplyJob([FromBody][Bind("candidateId,resumeId,openingId")] CandidatesApplyJobViewModel cajvm)
+        public async Task<CandidatesApplyJobOutputViewModel> ApplyJob([FromBody][Bind("resumeId,openingId")] CandidatesApplyJobViewModel cajvm)
         {
             if (!ModelState.IsValid)
             {
@@ -162,8 +173,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-
-            var Candidate = await _context.Candidates.FindAsync(cajvm.candidateId);
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new CandidatesApplyJobOutputViewModel();
+            }
+            var Candidate = await _context.Candidates.FindAsync(candidateId);
             if (Candidate == null)
             {
                 return new CandidatesApplyJobOutputViewModel
