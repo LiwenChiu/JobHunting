@@ -12,7 +12,6 @@ namespace JobHunting.Areas.Candidates.Controllers
     {
         private readonly DuckCandidatesContext _context;
 
-
         public OpeningStorageController(DuckCandidatesContext context)
         {
             _context = context;
@@ -43,10 +42,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                     o.Time.Contains(cosm.Time))
                 .Select(ror => new CandidateOpeningStorageOutputModel
                 {
-                    OpeningId = int.Parse(CandidateId),
+                    OpeningId = ror.OpeningId,
                     Title = ror.Title,
                     CompanyName = ror.Company.CompanyName,
                     Address = ror.Address,
+                    RequiredNumber = ror.RequiredNumber,
+                    ResumeNumber = ror.ResumeNumber,
                     ContactName = ror.ContactName,
                     ContactPhone = ror.ContactPhone,
                     ContactEmail = ror.ContactEmail,
@@ -178,6 +179,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new CandidatesApplyJobOutputViewModel();
             }
+
             var Candidate = await _context.Candidates.FindAsync(candidateId);
             if (Candidate == null)
             {
@@ -232,7 +234,21 @@ namespace JobHunting.Areas.Candidates.Controllers
                 OpeningTitle = o.Title,
                 CompanyId = o.CompanyId,
                 CompanyName = o.Company.CompanyName,
-            }).SingleAsync();
+            }).FirstOrDefaultAsync();
+
+            if (companyOpening == null)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "失敗",
+                    AlertStatus = false
+                };
+            }
+
+            var opening = await _context.Openings.FindAsync(cajvm.openingId);
+            opening.ResumeNumber++;
+
+            _context.Entry(opening).State = EntityState.Modified;
 
             ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
             {
