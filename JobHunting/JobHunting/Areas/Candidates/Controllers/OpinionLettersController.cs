@@ -1,8 +1,6 @@
 ﻿using JobHunting.Areas.Candidates.Models;
-using JobHunting.Areas.Candidates.ViewModel;
 using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -23,14 +21,9 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //Post:Candidates/OpinionLetters/IndexJson_opinionletter/{id}
         [HttpPost]
-        public JsonResult IndexJson_opinionletter()
+        public JsonResult IndexJson_opinionletter([FromBody]int id)
         {
-            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
-            {
-                return Json(new { error = "無法抓取 CompanyId 或使用者未登入" });
-            }
-            var opinionletter = _context.OpinionLetters.Where(c => c.CandidateId== candidateId)
+            var opinionletter = _context.OpinionLetters.Where(c => c.CandidateId==id)
                 .OrderByDescending(c=>c.SendTime)
                 .Select(c => new 
                 {
@@ -48,17 +41,12 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //Post:Candidates/OpinionLetters/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinionLetterOutputModel>> Filter([FromBody] OpinionLetterInputModel opinionLetter) 
+        public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter) 
         {
-            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
-            {
-                return Enumerable.Empty<OpinionLetterOutputModel>();
-            }
-            return _context.OpinionLetters.Where(c=>c.CandidateId== candidateId).Where(
+            return _context.OpinionLetters.Where(c=>c.CandidateId==opinionLetter.CandidateId).Where(
                 c => c.CandidateId != null && c.Class.Contains(opinionLetter.Class) ||
                 c.CandidateId != null && c.SubjectLine.Contains(opinionLetter.SubjectLine))
-                .OrderByDescending(c => c.SendTime).Select(c => new OpinionLetterOutputModel
+                .OrderByDescending(c => c.SendTime).Select(c => new OpinionLetter 
                 {
                     LetterId= c.LetterId,
                     Class= c.Class,
@@ -109,13 +97,8 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IActionResult> AddLetter([FromForm] CandidateInsertLetterViewModel letter) 
         {
-            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
-            {
-                return BadRequest("無法抓取 CompanyId 或使用者未登入");
-            }
             OpinionLetter opinionLetter = new OpinionLetter();
-            opinionLetter.CandidateId = candidateId;
+            opinionLetter.CandidateId = letter.CandidateId;
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
