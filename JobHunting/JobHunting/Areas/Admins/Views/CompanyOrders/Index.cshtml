@@ -73,7 +73,7 @@
     <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
             <ul class="pagination" style="margin: 0;">
                 <li class="page-item">
-                    <button type="button" id="turnPagePreviousBtn" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()">
+                <button type="button" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()" v-bind:disabled="turnPagePreviousisdisabled">
                         <span aria-hidden="true">&laquo;</span>
                     </button>
                 </li>
@@ -81,7 +81,7 @@
                     <li class="page-item"><button class="page-link" v-on:click="turnPage(page)">{{page}}</button></li>
                 </template>
                 <li class="page-item">
-                    <button type="button" id="turnPageNextBtn" class="page-link" aria-label="Next" v-on:click="turnPageNext()">
+                <button type="button" class="page-link" aria-label="Next" v-on:click="turnPageNext()" v-bind:disabled="turnPageNextisdisabled">
                         <span aria-hidden="true">&raquo;</span>
                     </button>
                 </li>
@@ -100,21 +100,25 @@
                     companyOrders: [],
                     pageDraw: null,
                     pageLength: 8,  //一頁幾筆
+                    pageLengthSafe: null,
                     pageStart: 1,   //第幾頁
+                    pageStartSafe: null,
                     totalDataCount: null,   //總共幾筆資料
                     totalPage: null,    //總共幾頁
+                    turnPagePreviousisdisabled: false,
+                    turnPageNextisdisabled: false,
                 };
             },
             methods:{
                 bootFilterPaging: function () {
-                    let pageSize = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
-                    let pageNumber= this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
+                    this.pageLengthSafe = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
+                    this.pageStartSafe = this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
                     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
                     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
                     request.PageDraw = this.pageDraw;
-                    request.PageLength = pageSize,
-                    request.PageStart = pageNumber;
+                    request.PageLength = this.pageLengthSafe,
+                    request.PageStart = this.pageStartSafe;
                     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging`, request, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -122,21 +126,24 @@
                     }).then(response => {
                         this.companyOrders = response.data.companyOrdersFilter;
                         this.totalDataCount = response.data.totalDataCount;
-                        this.totalPage = Number.isInteger((response.data.totalDataCount) / (pageSize)) ? parseInt((response.data.totalDataCount) / (pageSize)) : parseInt((response.data.totalDataCount) / (pageSize)) + 1;
+                        this.totalPage = Number.isInteger((response.data.totalDataCount) / (this.pageLengthSafe)) ? parseInt((response.data.totalDataCount) / (this.pageLengthSafe)) : parseInt((response.data.totalDataCount) / (this.pageLengthSafe)) + 1;
                     })
-                    .catch(err => { alert(err) });
+                    .catch(err => { alert(err) })
+                    .finally(() => {
+                        if (this.pageStart === 1) {
+                            this.turnPagePreviousisdisabled = true;
+                        }
+                        else {
+                            this.turnPagePreviousisdisabled = false;
+                        }
+                        if (this.pageStart == this.totalPage) {
+                            this.turnPageNextisdisabled = true;
+                        }
+                        else{
+                            this.turnPageNextisdisabled = false;
+                        }
+                    });
                 },
-                // bootFilterPage: function () {
-                //     let request = {};
-                //     request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                //     request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
-                //     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPage`, request, {
-                //         headers: {
-                //             'Content-Type':'application/json'
-                //         },
-                //     }).then(response => this.companyOrders = response.data)
-                //     .catch(err => { alert(err.response.data) });
-                // },
                 orderStatus: function (status) {
                     if (status) {
                         return "已付款";
@@ -161,23 +168,19 @@
             },
             watch:{
                 filterInput:function(){
-                    //this.bootFilterPage();
                     this.bootFilterPaging();
                 },
                 pageLength:function(){
-                    //this.bootFilterPage();
                     this.bootFilterPaging();
                     if(this.pageStart > this.totalPage){
                         this.pageStart = this.totalPage;
                     }
                 },
                 pageStart:function(){
-                    //this.bootFilterPage();
                     this.bootFilterPaging();
                 },
             },
             mounted: function(){
-                //this.bootFilterPage();
                 this.bootFilterPaging();
             },
         };

@@ -2,7 +2,6 @@
 {
     public class NotificationCandidateDeleteNotificationInputViewModel
     {
-        public int CandidateId { get; set; }
 
         public int NotificationId { get; set; }
     }

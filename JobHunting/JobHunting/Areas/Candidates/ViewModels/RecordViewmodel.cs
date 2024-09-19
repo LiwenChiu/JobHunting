@@ -17,12 +17,5 @@ namespace JobHunting.Areas.Candidates.ViewModels
         [Display(Name = "履歷")]
         public string Title { get; set; }
 
-        //public int ResumeOpeningRecordID { get; set; }
-
-        //public int ResumeId { get; set; }
-
-        //public int OpeningId { get; set; }
-
-        public int CandidateId { get; set; }
     }
 }

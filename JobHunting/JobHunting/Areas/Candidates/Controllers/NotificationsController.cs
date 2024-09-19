@@ -2,6 +2,7 @@
 using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -23,8 +24,13 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Notifications/GetNotificationLess
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCandidateFullOutputViewModel> GetNotificationLess([FromBody][Bind("CandidateId,filterInput,pageStart")] NotificationsFilterViewModel nfvm)
+        public async Task<NotificationCandidateFullOutputViewModel> GetNotificationLess([FromBody][Bind("filterInput,pageStart")] NotificationsFilterViewModel nfvm)
         {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new NotificationCandidateFullOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
+            }
             var candidateNotifications = _context.Notifications.Include(n => n.Candidate).Include(n => n.Company).AsNoTracking()
                 .Select(cn => new
                 {
@@ -40,7 +46,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AppointmentDate = cn.AppointmentDate,
                     CompanyName = cn.Company.CompanyName,
                 })
-                .Where(cn => cn.CandidateId == nfvm.CandidateId)
+                .Where(cn => cn.CandidateId == candidateId)
                 .Where(cn => cn.CompanyName.Contains(nfvm.filterInput) ||
                              cn.Status.Contains(nfvm.filterInput) ||
                              cn.SubjectLine.Contains(nfvm.filterInput) ||
@@ -71,14 +77,20 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Notifications/GetNotification
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCandidateModalOutputViewModel> GetNotification([FromBody][Bind("CandidateId,NotificationId")] NotificationCandidateModalInputViewModel ncmvm)
+        public async Task<NotificationCandidateModalOutputViewModel> GetNotification([FromBody][Bind("NotificationId")] NotificationCandidateModalInputViewModel ncmvm)
         {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new NotificationCandidateModalOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
+            }
             var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
-                .Where(n => n.CandidateId == ncmvm.CandidateId)
+                .Where(n => n.CandidateId == candidateId)
                 .Where(n => n.NotificationId == ncmvm.NotificationId)
                 .Select(n => new NotificationCandidateModalOutputViewModel
                 {
                     NotificationId = n.NotificationId,
+                    CompanyId = n.CompanyId,
                     Status = n.Status,
                     SubjectLine = n.SubjectLine,
                     Content = n.Content,
@@ -87,27 +99,30 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Address = n.Address,
                     CompanyName = n.Company.CompanyName,
                     CandidateName = n.Candidate.Name,
-                    OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).Single(),
-                    ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).Single(),
+                    OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).FirstOrDefault(),
+                    ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).FirstOrDefault(),
                     ReplyFirstYN = n.ReplyFirstYN,
                     ReplyYN = n.ReplyYN,
                     Reply = n.Reply,
                     ReplyTime = n.ReplyTime,
                     EditReplyYN = false,
-                }).Single();
+                }).FirstOrDefaultAsync();
 
             if (notification == null)
             {
                 return new NotificationCandidateModalOutputViewModel();
             }
+            else
+            {
+                return await notification;
+            }
 
-            return notification;
         }
 
         //POST: Candidates/Notifications/SendFirstReply
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("CandidateId,NotificationId,Reply")] NotificationSendReplyInputViewModel nsrivm)
+        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("NotificationId,Reply")] NotificationSendReplyInputViewModel nsrivm)
         {
             if (!ModelState.IsValid)
             {
@@ -116,10 +131,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new NotificationSendReplyOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
+            }
             var candidateNotification = await _context.Notifications.FindAsync(nsrivm.NotificationId);
 
-            if (candidateNotification == null || candidateNotification.CandidateId != nsrivm.CandidateId)
+            if (candidateNotification == null || candidateNotification.CandidateId != candidateId)
             {
                 return new NotificationSendReplyOutputViewModel
                 {
@@ -167,10 +186,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new NotificationSendReplyOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
+            }
             var candidateNotification = await _context.Notifications.FindAsync(nsrivm.NotificationId);
 
-            if (candidateNotification == null || candidateNotification.CandidateId != nsrivm.CandidateId)
+            if (candidateNotification == null || candidateNotification.CandidateId != candidateId)
             {
                 return new NotificationSendReplyOutputViewModel
                 {
@@ -207,7 +230,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Notifications/DeleteNotification
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationCandidateDeleteNotificationOutputViewModel> DeleteNotification([FromBody][Bind("CandidateId,NotificationId")] NotificationCandidateDeleteNotificationInputViewModel ncdnivm)
+        public async Task<NotificationCandidateDeleteNotificationOutputViewModel> DeleteNotification([FromBody][Bind("NotificationId")] NotificationCandidateDeleteNotificationInputViewModel ncdnivm)
         {
             if (!ModelState.IsValid)
             {
@@ -217,8 +240,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-
-            var notification = await _context.Notifications.Where(n => n.CandidateId == ncdnivm.CandidateId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new NotificationCandidateDeleteNotificationOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
+            }
+            var notification = await _context.Notifications.Where(n => n.CandidateId == candidateId).Where(n => n.NotificationId == ncdnivm.NotificationId).SingleAsync();
             if (notification == null)
             {
                 return new NotificationCandidateDeleteNotificationOutputViewModel

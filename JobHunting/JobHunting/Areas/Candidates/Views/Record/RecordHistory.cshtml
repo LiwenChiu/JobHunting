@@ -153,7 +153,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CandidateId: 1,
                     openings: [], //應徵過的職缺
 
                     //分頁
@@ -236,7 +235,6 @@
                 filterRecord: function () {
                     let _this = this;
                     var request = {
-                        CandidateId: _this.CandidateId,
                         CompanyName: _this.filter,
                         ApplyDate: _this.filter,
                         OpeningTitle: _this.filter,
@@ -283,19 +281,6 @@
                 let _this = this;
                 _this.filterRecord();
             }
-            //每次重新載入網頁時會自動初始化撈出資料
-            // mounted: function() {
-            //     fetch("/Candidates/Home/Recordresult", {
-            //        method:"POST"
-            //     }).then(response => {
-            //           return response.json();
-            //     })
-            //     .then(data => {
-            //            return this.jobclass = data
-            //     }).catch(err => {
-            //           alert(JSON.stringify(err))
-            //     });
-            // },
         };
         let app = Vue.createApp(VueApp).mount("#RecordApp");
     </script>

@@ -19,14 +19,15 @@ namespace JobHunting.Areas.Candidates.Controllers
         }
 
 
-        //GET:Candidates/OpinionLetters/IndexJson_opinionletter
-        [HttpGet]
-        public JsonResult IndexJson_opinionletter()
+        //Post:Candidates/OpinionLetters/IndexJson_opinionletter/{id}
+        [HttpPost]
+        public JsonResult IndexJson_opinionletter([FromBody]int id)
         {
-            var opinionletter = _context.OpinionLetters.Where(c => c.CandidateId != null)
+            var opinionletter = _context.OpinionLetters.Where(c => c.CandidateId==id)
                 .OrderByDescending(c=>c.SendTime)
                 .Select(c => new 
                 {
+                    CandidateId=c.CandidateId,
                     LetterId= c.LetterId,
                     Class= c.Class,
                     SubjectLine= c.SubjectLine,
@@ -42,7 +43,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter) 
         {
-            return _context.OpinionLetters.Where(
+            return _context.OpinionLetters.Where(c=>c.CandidateId==opinionLetter.CandidateId).Where(
                 c => c.CandidateId != null && c.Class.Contains(opinionLetter.Class) ||
                 c.CandidateId != null && c.SubjectLine.Contains(opinionLetter.SubjectLine))
                 .OrderByDescending(c => c.SendTime).Select(c => new OpinionLetter 
