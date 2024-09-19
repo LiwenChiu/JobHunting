@@ -44,7 +44,7 @@
                             <template v-if="notification.companyId == null">
                                 <div class="card-header text-center bg-danger row">
                                     <div class="col-sm-10">
-                                        <span class="card-title">{{notification.status}}</span>
+                                        <span class="card-title text-light">{{notification.status}} - 已取消</span>
                                     </div>
                                     <div class="col-sm-2">
                                         <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteNotification(notification.notificationId)"></button>
@@ -107,15 +107,28 @@
          aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
+                <template v-if="notificationModal.companyId == null">
+                    <div class="modal-header bg-danger">
                     <template v-if="notificationModal.status == '面試邀請'">
-                        <h3 class="CompanyNameh3 text-center text-light">面試通知</h3>
+                        <h3 class="CompanyNameh3 text-center text-light">面試邀請</h3>
                     </template>
                     <template v-else>
                         <h3 class="CompanyNameh3 text-center text-light">錄用通知</h3>
                     </template>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelNotificationModal()"></button>
                 </div>
+                </template>
+                <template v-else>
+                        <div class="modal-header bg-warning">
+                        <template v-if="notificationModal.status == '面試邀請'">
+                            <h3 class="CompanyNameh3 text-center text-light">面試邀請</h3>
+                        </template>
+                        <template v-else>
+                            <h3 class="CompanyNameh3 text-center text-light">錄用通知</h3>
+                        </template>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelNotificationModal()"></button>
+                    </div>
+                </template>
                 <div class="modal-body">
                     <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                         <div class="inputOutAreas">
@@ -136,7 +149,7 @@
                                 <p>{{notificationModal.Address}}</p>
                             </div>
                             <p>您好，{{notificationModal.candidateName}}，我們是{{notificationModal.companyName}}</p>
-                            <p>履歷:{{notificationModal.openingTitle}}，職缺:{{notificationModal.openingTitle}}</p>
+                            <p>履歷:{{notificationModal.resumeTitle}}，職缺:{{notificationModal.openingTitle}}</p>
                             <div class="inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="">訊息﹕</label>
                                 <p>{{notificationModal.content}}</p>
@@ -145,7 +158,13 @@
 
 
                         <div class="container d-grid">
-                            <template v-if="notificationModal.replyFirstYN === false">
+                            <template v-if="notificationModal.companyId == null">
+                                    <div class="container border border-1">
+                                        <p>{{notificationModal.reply}}</p>
+                                    </div>
+                            </template>
+                            <template v-else>
+                                <template v-if="notificationModal.replyFirstYN === false">
                                 <template v-if="notificationModal.editReplyYN == false">
                                     <button class="btn btn-warning text-light" v-on:click="notificationModal.editReplyYN = true">回覆</button>
                                 </template>
@@ -172,16 +191,21 @@
                                     <textarea rows="8" cols="75" class="form-control" style="width:100%;overflow:auto;word-break:break-all;" v-model.trim="notificationModal.reply">{{notificationModal.reply}}</textarea>
                                 </template>
                             </template>
+                            </template>
+                            
                         </div>
 
                     </div>
                 </div>
-
+                <template v-if="notificationModal.companyId == null">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" v-on:click="deleteNotification(notificationModal.notificationId)">刪除</button>
+                    </div>
+                </template> 
             </div>
         </div>
     </div>
 </div>
-
 
 @section Scripts
 {
@@ -206,7 +230,7 @@
                     let request = {};
                     request.CandidateId = this.candidateId;
                     request.filterInput = this.filterInput == null ? "" : this.filterInput;
-                    request.pageStart = this.pageStart
+                    request.pageStart = this.pageStart;
                     axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotificationLess`, request, { 
                         headers: { 'Content-Type': 'application/json' } 
                     })
@@ -283,6 +307,9 @@
                 cancalReply:function(){
                     this.notificationModal.editReplyYN = false;
                     this.showModal(this.notificationModal.notificationId);
+                },
+                cancelNotificationModal:function(){
+
                 },
                 deleteNotification:function(notificationId){
                     let request = {};

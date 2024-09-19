@@ -73,12 +73,13 @@ namespace JobHunting.Areas.Candidates.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<NotificationCandidateModalOutputViewModel> GetNotification([FromBody][Bind("CandidateId,NotificationId")] NotificationCandidateModalInputViewModel ncmvm)
         {
-            var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
+            var notification = await _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
                 .Where(n => n.CandidateId == ncmvm.CandidateId)
                 .Where(n => n.NotificationId == ncmvm.NotificationId)
                 .Select(n => new NotificationCandidateModalOutputViewModel
                 {
                     NotificationId = n.NotificationId,
+                    CompanyId = n.CompanyId,
                     Status = n.Status,
                     SubjectLine = n.SubjectLine,
                     Content = n.Content,
@@ -87,14 +88,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Address = n.Address,
                     CompanyName = n.Company.CompanyName,
                     CandidateName = n.Candidate.Name,
-                    OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).Single(),
-                    ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).Single(),
+                    OpeningTitle = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).Select(o => o.Title).FirstOrDefault(),
+                    ResumeTitle = n.Candidate.Resumes.Where(r => r.ResumeId == n.ResumeId).Select(r => r.Title).FirstOrDefault(),
                     ReplyFirstYN = n.ReplyFirstYN,
                     ReplyYN = n.ReplyYN,
                     Reply = n.Reply,
                     ReplyTime = n.ReplyTime,
                     EditReplyYN = false,
-                }).Single();
+                }).FirstOrDefaultAsync();
 
             if (notification == null)
             {
