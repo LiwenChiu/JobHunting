@@ -369,6 +369,127 @@ namespace JobHunting.Controllers
             return Json(new { success = false, message = "無效的角色" });
         }
 
+
+
+        /* ------------------  求職端註冊  ---------------------  */
+
+        //POST : Home/AddCandidateRedgister
+        [HttpPost]
+        public async Task<IActionResult> AddCandidateRedgister([FromBody] CandidateRegisterVM cr)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+            // 檢查電子郵件或身份證號是否已存在
+            if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId || c.Email == cr.Email))
+            {
+                return Json(new { success = false, message = "此電子郵件或身份證號已被註冊" });
+            }
+
+            //// 密碼加密
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+
+            try
+            {
+                Candidate inster = new Candidate
+                {
+                    NationalId = cr.NationalId,
+                    Email = cr.Email,
+                    Password = cr.Password,
+
+                };
+
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Candidates.Add(inster);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
+            }
+
+            return Json(new { success = true, message = "已註冊成功", });
+        }
+
+
+        /* ------------------  公司端註冊  ---------------------  */
+
+        //POST : Home/AddCompanyRedgister
+        [HttpPost]
+        public async Task<IActionResult> AddCompanyRedgister([FromBody] CompanyRegisterVM cr)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+
+            //// 密碼加密
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+
+            try
+            {
+                Company inster = new Company
+                {
+                    GUINumber = cr.GUINumber,
+                    CompanyName =cr.CompanyName,
+                    ContactName=cr.ContactName,
+                    ContactPhone=cr.ContactPhone,
+                    ContactEmail = cr.ContactEmail,
+                    Status = cr.Status,
+                    Date= cr.Date,
+                    Address =cr.Address,
+                    Password = cr.Password,
+
+                };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Companies.Add(inster);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
+            }
+
+            return Json(new { success = true, message = "已註冊完成，目前已進入「審核」，待審核完畢會再通知結果。 ", });
+        }
+
+
+
+
+
+
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
