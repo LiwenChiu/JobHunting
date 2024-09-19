@@ -69,7 +69,7 @@
             </thead>
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
-                    <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.resumeID}`>{{item.name}}</a></td>
+                    <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`>{{item.name}}</a></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>

@@ -214,7 +214,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CandidateId: 1,
                     alertStatus: "",
                     alertText: "",
                     CandiadteMemberData: {},
@@ -250,7 +249,7 @@
             },
             methods: {
                 getetWholeCandidateMember:function(){
-                    axios.post(`${this.baseAddress}/Candidates/Member/GetWholeCandidateMemberData`, this.CandidateId, {
+                    axios.post(`${this.baseAddress}/Candidates/Member/GetWholeCandidateMemberData`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -283,7 +282,6 @@
                     }
                     else{
                         let request = {};
-                        request.CandidateId = this.CandiadteMemberData.candidateId;
                         request.Name = this.CandiadteMemberData.name;
                         request.Email = this.CandiadteMemberData.email;
                         request.Sex = this.CandiadteMemberData.sex;

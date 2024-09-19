@@ -170,7 +170,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    companyId: 1,
                     companyIntro: [],
                     companyClasses:[],
                     seloption:"",
@@ -193,7 +192,7 @@
             methods: {
                 getCompanyIntro() {
                     let self = this
-                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList/${self.companyId}`, {
+                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList`, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.companyIntro = res.data;
@@ -211,7 +210,6 @@
                     let self = this;
                     item.edit = true;
                     self.seloption = item.companyClassId;
-                    self.companyIntroOld.companyId = item.companyId;
                     self.companyIntroOld.companyName = item.companyName;
                     self.companyIntroOld.address = item.address;
                     self.companyIntroOld.guiNumber = item.guiNumber;
@@ -226,7 +224,6 @@
                 cancel(item) {
                     let self = this;
                     if (item.edit == true) {
-                        item.companyId = self.companyIntroOld.companyId;
                         item.companyName = self.companyIntroOld.companyName;
                         item.guiNumber = self.companyIntroOld.guiNumber;
                         item.address = self.companyIntroOld.address;
@@ -242,7 +239,6 @@
                 update(item) {
                     let self = this;
                     var form = new FormData();
-                    form.append("CompanyId", item.companyId);
                     form.append("CompanyName", item.companyName);
                     form.append("Address", item.address);
                     form.append("GUINumber", item.guiNumber);
@@ -253,7 +249,7 @@
                     form.append("ContactEmail", item.contactEmail);
                     form.append("CompanyClassId", self.seloption);
                     form.append("ImageFile", document.querySelector("#editFile").files[0]);
-                    axios.put(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro/${self.companyId}`, form, {
+                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro`, form, {
                         headers: { "content-type": "multipart/form-data" }
                     }).then(response => {
                         self.rand = new Date().getTime();

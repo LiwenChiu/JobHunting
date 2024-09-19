@@ -2,7 +2,6 @@
 {
     public class CandidateOpeningStorageInputModel
     {
-        public int CandidateId {  get; set; }
 
         public string Title { get; set; }
 

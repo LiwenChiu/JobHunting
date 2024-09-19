@@ -6,10 +6,6 @@
 
         public int CandidateID { get; set; }
 
-        public string Title { get; set; }
-
-        public string TitleClassID { get; set; }
-
         public string Intro { get; set; }
 
         public string Autobiography { get; set; }
@@ -29,10 +25,8 @@
         public string WishAddress { get; set; }
 
         public string Degree { get; set; }
-        public string EmploymentStatus { get; set; }
-
-        public string MilitaryService { get; set; }
         public object TagObj  { get; set; }
+        public bool ReleaseYN { get; set; }
     }
 }
 

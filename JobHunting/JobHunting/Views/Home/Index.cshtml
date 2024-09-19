@@ -89,7 +89,7 @@
                 </tr>
             </thead>
             <tbody align="center">
-                <tr v-for="(item,index) in openings.slice(pageStart,pageEnd)">
+                <tr v-for="(item,index) in openings">
                     @* <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.opeingID}`>{{item.title}}</a></td> *@
                     <td>{{item.title}}</td>
                     <td>{{item.companyName}}</td>
@@ -177,15 +177,15 @@
         <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <li class="page-item" v-on:click="turnPagePrevious()">
                         <a class="page-link" href="#homeList" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                        <a class="page-link" href="#homeList">{{item}}</a>
+                    <li v-for="page in totalPage" class="page-item" v-on:click="turnPage(page)">
+                        <a class="page-link" href="#homeList">{{page}}</a>
                     </li>
-                    <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <li class="page-item" v-on:click="turnPageNext()">
                         <a class="page-link" href="#homeList" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
@@ -207,6 +207,8 @@
                     baseAddress: "https://localhost:7169",
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
+                    totalDataCount: null,
+                    totalPage: null,
                     candidateId: 2,
                     openings: [],
                     cityList: [],
@@ -226,27 +228,40 @@
                     selectedResumeId: null,
                 };
             },
-            computed: {
-                totalPage() {
-                    return Math.ceil(this.openings.length / this.perpage)
-                    //Math.ceil()取最小整數
-                },
-                pageStart() {
-                    return (this.currentPage - 1) * this.perpage
-                    //取得該頁第一個值的index
-                },
-                pageEnd() {
-                    return this.currentPage * this.perpage
-                    //取得該頁最後一個值的index
-                },
+            // computed: {
+            //     totalPage() {
+            //         return Math.ceil(this.openings.length / this.perpage)
+            //         //Math.ceil()取最小整數
+            //     },
+            //     pageStart() {
+            //         return (this.currentPage - 1) * this.perpage
+            //         //取得該頁第一個值的index
+            //     },
+            //     pageEnd() {
+            //         return this.currentPage * this.perpage
+            //         //取得該頁最後一個值的index
+            //     },
 
-            },
+            // },
             methods: {
-                setPage(page) {
-                    if (page <= 0 || page > this.totalPage) {
-                        return
+                // setPage(page) {
+                //     if (page <= 0 || page > this.totalPage) {
+                //         return
+                //     }
+                //     this.currentPage = page
+                // },
+                turnPage: function (page) {
+                    this.currentPage = page;
+                },
+                turnPagePrevious: function () {
+                    if (this.currentPage != 1) {
+                        this.currentPage--;
                     }
-                    this.currentPage = page
+                },
+                turnPageNext: function () {
+                    if (this.currentPage != this.totalPage) {
+                        this.currentPage++;
+                    }
                 },
                 openingsList() {
                     let self = this;
@@ -255,12 +270,16 @@
                             params: 
                             { 
                                 id: this.candidateId,
+                                page: this.currentPage,
+                                count: this.perpage,
                             },
                             headers: {
                                 "Content-Type": "application/json",
                             },
                         }).then(res => {
-                            self.openings = res.data;
+                            self.openings = res.data.openingsIndexOutput;
+                            self.totalDataCount = res.data.totalDataCount;
+                            self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpage)) ? parseInt((res.data.totalDataCount) / (self.perpage)) : parseInt((res.data.totalDataCount) / (self.perpage)) + 1;
                             // self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
@@ -367,6 +386,17 @@
                 cancelApplyJob: function () {
                     this.applyJobYN = false;
                     this.selectedResumeId = null;
+                },
+            },
+            watch:{
+                perpage:function(){
+                    if(this.currentPage > this.totalPage){
+                        this.currentPage = this.totalPage;
+                    }
+                    this.openingsList();
+                },
+                currentPage:function(){
+                    this.openingsList();
                 },
             },
             mounted() {

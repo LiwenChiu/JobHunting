@@ -186,7 +186,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    CandidateId: 1,
                     CandidateMemberData: {},
                     CandidateResumes: [],
                     CandidateOpeningLikeRecords: [],
@@ -197,7 +196,7 @@
             },
             methods: {
                 getCandidateMemberData: function () {
-                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateMemberData`, this.CandidateId, {
+                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateMemberData`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -205,7 +204,7 @@
                         .catch(err => alert(err));
                 },
                 getCandidateResumes: function () {
-                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateResumes`, this.CandidateId, {
+                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateResumes`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -213,7 +212,7 @@
                         .catch(err => alert(err));
                 },
                 getCandidateOpeningLikeRecords: function () {
-                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateOpeningLikeRecords`, this.CandidateId, {
+                    axios.post(`${this.baseAddress}/Candidates/Home/GetCandidateOpeningLikeRecords`, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -241,7 +240,6 @@
                 },
                 changeTitleClass: function () {
                     let request = {};
-                    request.CandidateId = this.CandidateId;
                     request.TitleClass = this.CandidateMemberData.titleClass;
                     axios.post(`${this.baseAddress}/Candidates/Home/ChangeTitleClass`, request, {
                         headers: {

@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 using Microsoft.Data.SqlClient;
 
 namespace JobHunting.Controllers
@@ -30,9 +29,9 @@ namespace JobHunting.Controllers
             return View();
         }
 
-        public async Task<IActionResult> OpeningsList(int id)
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
         {
-            return Json(_context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
+            var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
                 OpeningId = b.OpeningId,
                 CompanyId = b.CompanyId,
@@ -49,8 +48,17 @@ namespace JobHunting.Controllers
                 ContactPhone = b.ContactPhone,
                 CompanyName = b.Company.CompanyName,
                 LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
-            }));
+            });
+
+            var openingIndexOutput = new OpeningsIndexOutputViewModel
+            {
+                totalDataCount = openings.Count(),
+                OpeningsIndexOutput = openings.Skip((page - 1) * count).Take(count),
+            };
+
+            return openingIndexOutput;
         }
+
         [HttpPost]
         public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
         {
