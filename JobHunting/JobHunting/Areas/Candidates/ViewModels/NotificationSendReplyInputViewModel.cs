@@ -2,7 +2,6 @@
 {
     public class NotificationSendReplyInputViewModel
     {
-        public int CandidateId { get; set; }
 
         public int NotificationId { get; set; }
 

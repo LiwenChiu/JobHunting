@@ -958,8 +958,7 @@
                 ResumeInformation: function () {
                     //履歷全部資料
                     let _this = this;
-                    let CandateidResumeID = 1;
-                    fetch(`${_this.baseAddress}/Candidates/Resume/CandidatesResumeResult/${CandateidResumeID}`, {
+                    fetch(`${_this.baseAddress}/Candidates/Resume/CandidatesResumeResult`, {
                         method:"GET",
                     }).then(response=>{
                         return response.json();
@@ -1013,9 +1012,7 @@
                 //新增履歷
                 CreateNewResume: function () {
                     let _this = this;
-                    let candidateid = 1;
                     var form = new FormData();
-                    form.append("CandidateId",candidateid);
                     form.append("Address", _this.hopeaddress);
                     form.append("Title", _this.ResumeName);
                     form.append("Autobiography", _this.Autobiography);
@@ -1075,7 +1072,6 @@
                     
                     let form = new FormData();
                     form.append("ResumeId", ResumeD.resumeid);
-                    form.append("CandidateId", ResumeD.candidateId);
                     form.append("Address", ResumeD.address);
                     form.append("Title", ResumeD.title);
                     form.append("Autobiography", ResumeD.autobiography);

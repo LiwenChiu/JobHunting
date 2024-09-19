@@ -158,7 +158,6 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     openings: [],
-                    CandidateId: 1,
                     titleClass:[],
                     titleCategory:[],
                     Tags:[],
@@ -244,7 +243,6 @@
                 ReceiveOpeningData() {
                     let _this = this;
                     var request={
-                        CandidateId : _this.CandidateId,
                         Title : _this.filter,
                         Address: _this.filter,
                         Time : _this.filter
@@ -289,7 +287,6 @@
                 deleteCandidateOpeningRelation(item) {
                     let request = {
                         OpeningId: item.openingId,
-                        CandidateId: this.CandidateId
                     }
                     axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, request ,{
                         headers: {
@@ -307,7 +304,6 @@
                     this.applyJobYN = true;
                     axios.get(`${this.baseAddress}/Candidates/OpeningStorage/ResumesJson`, 
                     {
-                        params: { id: this.CandidateId},
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -317,7 +313,6 @@
                 },
                 applyJob:function(){
                     let request = {};
-                    request.candidateId = this.CandidateId;
                     request.resumeId = this.selectedResumeId;
                     request.openingId = this.selectedOpeningId;
                     axios.post(`${this.baseAddress}/Candidates/OpeningStorage/ApplyJob`, request, {

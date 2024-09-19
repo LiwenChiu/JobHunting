@@ -3,6 +3,7 @@ using JobHunting.Areas.Candidates.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -28,9 +29,14 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IEnumerable<RecordOutputmodel>> filter([FromBody] RecordViewmodel rv)
         {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return Enumerable.Empty<RecordOutputmodel>();
+            }
             var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x=>x.Tags)
                 .Include(x => x.Opening).ThenInclude(x => x.TitleClasses)
-                .Where(x => x.Resume.CandidateId == rv.CandidateId &&
+                .Where(x => x.Resume.CandidateId == candidateId &&
                         (x.CompanyName.Contains(rv.CompanyName) ||
                         x.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                         x.OpeningTitle.Contains(rv.OpeningTitle) ||
