@@ -190,7 +190,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    candidateId: 1,
                     alertText: "",
                     alertStatus: "",
                     filterInput: null,
@@ -204,7 +203,6 @@
             methods: {
                 bootFilterPage: function () {
                     let request = {};
-                    request.CandidateId = this.candidateId;
                     request.filterInput = this.filterInput == null ? "" : this.filterInput;
                     request.pageStart = this.pageStart
                     axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotificationLess`, request, { 
@@ -219,7 +217,6 @@
                 },
                 showModal(notificationId) {
                     let request = {};
-                    request.CandidateId = this.candidateId,
                     request.NotificationId = notificationId,
                         axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotification`, request, {
                             headers:{
@@ -230,7 +227,6 @@
                 },
                 sendFirstReply: function () {
                     let request = {};
-                    request.CandidateId = this.candidateId;
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
@@ -256,7 +252,6 @@
                 },
                 sendReply: function () {
                     let request = {};
-                    request.CandidateId = this.candidateId;
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
@@ -286,7 +281,6 @@
                 },
                 deleteNotification:function(notificationId){
                     let request = {};
-                    request.CandidateId = this.candidateId;
                     request.NotificationId = notificationId;
                     axios.post(`${this.baseAddress}/Candidates/Notifications/DeleteNotification`, request, {
                         headers: {
