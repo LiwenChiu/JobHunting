@@ -76,11 +76,11 @@ namespace JobHunting.Controllers
             }
             catch (Exception ex)
             {
-                return "��¾�ʤw����";
+                return "此職缺已收藏";
             }
 
 
-            return "¾�ʤw���\����";
+            return "職缺已成功收藏";
         }
 
         [HttpPost]
@@ -96,10 +96,10 @@ namespace JobHunting.Controllers
             }
             catch(Exception ex)
             {
-                return "��������¾�ʥ���";
+                return "取消收藏職缺失敗";
             }
 
-            return "��������¾�ʦ��\";
+            return "取消收藏職缺成功";
         }
 
         //GET: Home/GetOpening
@@ -160,7 +160,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "����",
+                    AlertText = "失敗",
                     AlertStatus = false,
                 };
             }
@@ -170,7 +170,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "����",
+                    AlertText = "失敗",
                     AlertStatus = false,
                 };
             }
@@ -180,7 +180,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "����",
+                    AlertText = "失敗",
                     AlertStatus = false,
                 };
             }
@@ -189,7 +189,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "�i�����}��",
+                    AlertText = "履歷未開放",
                     AlertStatus = false,
                 };
             }
@@ -198,7 +198,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "�|����Ƥ���",
+                    AlertText = "會員資料不全",
                     AlertStatus = false,
                 };
             }
@@ -208,7 +208,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "�w�����x����",
+                    AlertText = "已有應徵紀錄",
                     AlertStatus = false
                 };
             }
@@ -257,14 +257,14 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "����",
+                    AlertText = "失敗",
                     AlertStatus = false
                 };
             }
 
             return new ApplyJobOutputViewModel
             {
-                AlertText = $"�H {resume.Title} ���x {companyOpening.CompanyName} �� {companyOpening.OpeningTitle} ���\",
+                AlertText = $"以 {resume.Title} 應徵 {companyOpening.CompanyName} 的 {companyOpening.OpeningTitle} 成功",
                 AlertStatus = true,
             };
         }
@@ -295,7 +295,7 @@ namespace JobHunting.Controllers
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
             
-            return "�s�W�H�󦨥\";
+            return "新增信件成功";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
@@ -330,69 +330,69 @@ namespace JobHunting.Controllers
             {
                 var candidateLogin = loginRequest.CandidateLoginVM;
 
-                // �D¾�������޿�
+                // 求職者驗證邏輯
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
 
-                if (candidate != null && candidate.Password == candidateLogin.Password) // ���]�K�X�O�����x�s
+                if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
                 {
-                    // ���ҳq�L�A�إ� claims�A�]�t CandidateId
+                    // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // �s�J CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // �ϥΨ����Ҧr���@���W��
-                new Claim(ClaimTypes.Role, "candidate")                                  // �]�w���⬰ candidate
+                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
+                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
+                new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // �ϥ� Cookie �{�Ҷi��n�J
+                    // 使用 Cookie 認證進行登入
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "�D¾�̵n�J���\", role = "candidate" });
+                    return Json(new { success = true, message = "求職者登入成功", role = "candidate" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "�D¾�̵n�J���ѡG�b���αK�X���~" });
+                    return Json(new { success = false, message = "求職者登入失敗：帳號或密碼錯誤" });
                 }
             }
             else if (loginRequest.Role == "company")
             {
                 var companyLogin = loginRequest.CompanyLoginVM;
 
-                // ���q�����޿�
+                // 公司驗證邏輯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
 
-                if (company != null && company.Password == companyLogin.Password) // ���]�K�X�O�����x�s
+                if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
                 {
-                    // ���ҳq�L�A�إ� claims�A�]�t CompanyId
+                    // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // �s�J CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // �ϥβΤ@�s���@���W��
-                new Claim(ClaimTypes.Role, "company")                                 // �]�w���⬰ company
+                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
+                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
+                new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // �ϥ� Cookie �{�Ҷi��n�J
+                    // 使用 Cookie 認證進行登入
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "���q�n�J���\", role = "company" });
+                    return Json(new { success = true, message = "公司登入成功", role = "company" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "���q�n�J���ѡG�Τ@�s���αK�X���~" });
+                    return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
                 }
             }
 
-            return Json(new { success = false, message = "�L�Ī�����" });
+            return Json(new { success = false, message = "無效的角色" });
         }
 
 
 
-        /* ------------------  �D¾�ݵ��U  ---------------------  */
+        /* ------------------  求職端註冊  ---------------------  */
 
         //POST : Home/AddCandidateRedgister
         [HttpPost]
@@ -400,16 +400,16 @@ namespace JobHunting.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false, message = "���U��ƥ���g���� or ����g���T" });
+                return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
             }
 
-            // �ˬd�q�l�l��Ψ����Ҹ��O�_�w�s�b
+            // 檢查電子郵件或身份證號是否已存在
             if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId || c.Email == cr.Email))
             {
-                return Json(new { success = false, message = "���q�l�l��Ψ����Ҹ��w�Q���U" });
+                return Json(new { success = false, message = "此電子郵件或身份證號已被註冊" });
             }
 
-            //// �K�X�[�K
+            //// 密碼加密
             //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
 
             try
@@ -441,8 +441,8 @@ namespace JobHunting.Controllers
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, "���U�L�{���o�Ϳ��~");
-                return Json(new { success = false, message = "���U����", });
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
             }
 
             return Json(new { success = true, message = "已註冊成功", });
@@ -598,24 +598,11 @@ namespace JobHunting.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            // ����n�X�ާ@�A�M���ϥΪ̵n�J��T
+            // 執行登出操作，清除使用者登入資訊
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // ���ɦV��n�J�����έ���
+            // 重導向到登入頁面或首頁
             return RedirectToAction("Index", "Home"); 
         }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> AdminLogout()
-        {
-            // ����n�X�ާ@�A�M���ϥΪ̵n�J��T
-            await HttpContext.SignOutAsync("AdminScheme");
-   
-            // ���ɦV��n�J�����έ���
-            return RedirectToAction("Index", "Home", new { area = "Admins" });
-        }
-
-
     }
 }

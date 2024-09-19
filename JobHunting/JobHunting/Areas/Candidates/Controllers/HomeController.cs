@@ -70,10 +70,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 {
                     ResumeId = r.ResumeId,
                     Title = r.Title,
-                    LastEditTime = r.LastEditTime,
-                })
-                .OrderByDescending(r => r.LastEditTime)
-                .Take(2);
+                }).Take(2);
         }
 
         
@@ -89,10 +86,10 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new List<GetCandidateOpeningLikeRecordsViewModel>(); // 或處理未授權訪問的情況
             }
-
-            var query = await _context.Candidates.Include(x => x.Openings)
+            var query = await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
+                .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
+                .Include(x => x.Openings).ThenInclude(x => x.Company)
                 .FirstOrDefaultAsync(x => x.CandidateId.ToString() == CandidateId);
-
             if (query == null)
             {
                 return new List<GetCandidateOpeningLikeRecordsViewModel>();
