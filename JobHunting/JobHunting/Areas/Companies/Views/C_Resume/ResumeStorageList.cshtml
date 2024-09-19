@@ -191,98 +191,113 @@
                 </div>
                 </div>
             </div>
-            <div>
-                        @* 發送錄取通知 *@
-                    <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
-                         aria-labelledby="modalTitleId " aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header bg-warning">
-                                    <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                @* 錄取通知內容 *@
-                                <div class="modal-body">
-                                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
-                                        <div class="inputOutAreas">
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
-                                                <input type="text" class="form-control inputDate" v-model="SendAdmission.AdmissionSubjectLine">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                <input type="time" class="form-control inputTime" v-model="SendAdmission.AdmissionTime">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                <input type="text" class="form-control inputPlace" v-model="SendAdmission.AdmissionPlace">
-                                            </div>
-
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer bg-warning">
-                                    <button type="submit" class="btn btn-outline-secondary" v-on:click="SendAdmissionLetter">發送</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @* 發送面試通知 *@
-                    <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
-                         aria-labelledby="modalTitleId " aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header bg-warning">
-                                    <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                @* 面試通知內容 *@
-                                <div class="modal-body">
-                                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
-                                        <div class="inputOutAreas">
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
-                                                <input type="text" class="form-control inputDate" v-model="Sendinterview.Purpose">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
-                                                <input type="time" class="form-control inputTime" v-model="Sendinterview.Interviewtime">
-                                            </div>
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
-                                                <input type="text" class="form-control inputPlace" v-model="Sendinterview.place">
-                                            </div>
-
-                                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                                <textarea class="form-control " style="height:150px" name="面試通知訊息" v-model="Sendinterview.Content"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer bg-warning">
-                                    <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter">發送</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
             
-            </div>
                             
             
+        </div>
+        <div>
+            @* 發送錄取通知 *@
+            <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+                 aria-labelledby="modalTitleId " aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        @* 錄取通知內容 *@
+                        <div class="modal-body">
+                            <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
+                                    <select v-model="openingId">
+                                        <option value="" class="" selected disabled>請選擇職缺</option>
+                                        <option v-for="(item,index) in Openings" :key="item.openingId" :value="item.openingId">{{item.title}}</option>
+                                    </select>
+                                </div>
+                                <div class="inputOutAreas">
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
+                                        <input type="text" class="form-control inputDate" v-model="SendAdmission.AdmissionSubjectLine">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                        <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                        <input type="time" class="form-control inputTime" v-model="SendAdmission.AdmissionTime">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                        <input type="text" class="form-control inputPlace" v-model="SendAdmission.AdmissionPlace">
+                                    </div>
+
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                        <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-warning">
+                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendAdmissionLetter">發送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* 發送面試通知 *@
+            <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+                 aria-labelledby="modalTitleId " aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        @* 面試通知內容 *@
+                        <div class="modal-body">
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
+                                <select v-model="openingId">
+                                    <option value="" class="" selected disabled>請選擇職缺</option>
+                                    <option v-for="(item,index) in Openings" :key="item.openingId" :value="item.openingId">{{item.title}}</option>
+                                </select>
+                            </div>
+                            <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                                <div class="inputOutAreas">
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">主旨：</label>
+                                        <input type="text" class="form-control inputDate" v-model="Sendinterview.Purpose">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
+                                        <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
+                                        <input type="time" class="form-control inputTime" v-model="Sendinterview.Interviewtime">
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelPlace">地點：</label>
+                                        <input type="text" class="form-control inputPlace" v-model="Sendinterview.place">
+                                    </div>
+
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                        <textarea class="form-control " style="height:150px" name="面試通知訊息" v-model="Sendinterview.Content"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-warning">
+                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter">發送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     @* 上下分頁數 *@
@@ -337,6 +352,8 @@
                     MessageStatus: 1,
                     noimagepreview: "/images/No_Image_Available.jpg",
                     resumes: [], //從後端撈回來的資料存入這邊
+                    Openings:[],
+                    openingId:"",
                     filter: "",
                     TagClasses: [],
                     Tags: [],
@@ -459,13 +476,25 @@
                         alert(JSON.stringify(err))
                     });
                 },
+                getOpenings: function () {
+                    let _this = this;
+                    fetch(`${_this.baseAddress}/Companies/C_Resume/GetOpenings`, {
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                        return _this.Openings = data
+                    }).catch(err => {
+                        alert(JSON.stringify(err))
+                    });
+                },
                 //打開面試modal
                 openInterviewModal(item) {
                     // 將資料賦予 selectedItem
                     this.selectedItem = {
                         companyId: item.companyId,
                         candidateId: item.candidateId,
-                        openingId: item.openingId,
+                        // openingId: item.openingId,
                         resumeId: item.resumeId
                         };
                      // 打開modal
@@ -478,7 +507,7 @@
                     this.selectedItem = {
                         companyId: item.companyId,
                         candidateId: item.candidateId,
-                        openingId: item.openingId,
+                        // openingId: item.openingId,
                         resumeId: item.resumeId
                         };
                      // 打開modal
@@ -492,7 +521,7 @@
                     const confirmdel = confirm("確定要發送?");
                     if (confirmdel==true){
                         request.CandidateId = _this.selectedItem.candidateId; 
-                        request.OpeningId = _this.selectedItem.openingId;
+                        request.OpeningId = _this.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
                         request.Status = _this.Sendinterview.Interviewnotice;
                         request.SubjectLine = _this.Sendinterview.Purpose;
@@ -532,7 +561,7 @@
                     let confirmdel = confirm("確定要發送?");
                     if(confirmdel == true){
                         request.CandidateId = _this.selectedItem.candidateId; 
-                        request.OpeningId = _this.selectedItem.openingId;
+                        request.OpeningId = _this.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
                         request.Status = _this.SendAdmission.AdmissionStatus,
                         request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
@@ -600,6 +629,7 @@
             //每次重新載入網頁時會自動初始化撈出資料
             mounted() {
                 this.resumeStorageData();
+                this.getOpenings();
             }
         }; let app = Vue.createApp(VueApp).mount("#resumeStorage");
     </script>
