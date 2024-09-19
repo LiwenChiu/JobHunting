@@ -34,16 +34,31 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return Enumerable.Empty<RecordOutputmodel>();
             }
-            var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x=>x.Tags)
+
+            var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Tags)
                 .Include(x => x.Opening).ThenInclude(x => x.TitleClasses)
                 .Where(x => x.Resume.CandidateId == candidateId &&
                         (x.CompanyName.Contains(rv.CompanyName) ||
                         x.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                         x.OpeningTitle.Contains(rv.OpeningTitle) ||
-                        x.Resume.Title.Contains(rv.Title)))
+                        x.Resume.Title.Contains(rv.Title)));
+
+            if (rv.InterviewYN.HasValue) 
+            {
+                query = query.Where(x => x.InterviewYN == rv.InterviewYN.Value);
+            }
+
+            if (rv.HireYN.HasValue)
+            {
+                query = query.Where(x => x.HireYN == rv.HireYN.Value);
+            }
+
+            var result = await query
+
+
                 .Select(p => new RecordOutputmodel
                 {
-                    ResumeOpeningRecordID = p.ResumeOpeningRecordId, 
+                    ResumeOpeningRecordID = p.ResumeOpeningRecordId,
                     ResumeId = p.ResumeId,
                     OpeningId = p.OpeningId,
                     ApplyDate = p.ApplyDate,
@@ -58,21 +73,21 @@ namespace JobHunting.Areas.Candidates.Controllers
                     SalaryMin = p.Opening.SalaryMin,
                     Time = p.Opening.Time,
                     Description = p.Opening.Description,
-                    TitleClassId = p.Opening.TitleClasses.Select(tc=>tc.TitleClassId).ToList(),
+                    TitleClassId = p.Opening.TitleClasses.Select(tc => tc.TitleClassId).ToList(),
                     TagId = p.Opening.Tags.Select(t => t.TagId).ToList(),
                     Benefits = p.Opening.Benefits,
                     Degree = p.Opening.Degree,
                     CandidateId = p.Resume.CandidateId,
                     InterviewYN = p.InterviewYN,
                     HireYN = p.HireYN
-                });
+                }).ToListAsync();
 
-            if (query == null)
+            if (result == null)
             {
                 return new List<RecordOutputmodel>();
             }
 
-            return  await query.ToListAsync();
+            return  result;
 
         }
         //GET:Candidates/Record/TitleClassJson

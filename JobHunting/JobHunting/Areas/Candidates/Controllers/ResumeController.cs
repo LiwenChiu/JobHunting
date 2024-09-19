@@ -65,7 +65,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
                 edit = false,
                 ReleaseYNedit = false,
-            }));
+                LastEditTime = a.LastEditTime,
+            }).OrderByDescending(a => a.LastEditTime));
         }
 
 
@@ -192,7 +193,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     ReleaseYN = Creatr.ReleaseYN,
                     CandidateId = candidateId,
                     Intro = Creatr.Intro,
-                   
+                    LastEditTime = DateTime.Now,
                 };
                 if (Creatr.HeadshotImageFile != null)
                 {
@@ -340,6 +341,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 r.ReleaseYN = rm.ReleaseYN;
                 r.TitleClasses.Clear();
                 r.Tags.Clear();
+                r.LastEditTime = DateTime.Now;
 
                 if (rm.HeadshotImageFile != null)
                 {
