@@ -1,4 +1,8 @@
-﻿@section Styles
+﻿@{
+    ViewData["Title"] = "意見訊息";
+}
+
+@section Styles
 {
     <style>
 
@@ -203,8 +207,6 @@
                     letterClass: "",
                     subjectLine: "",
                     content: "",
-
-                    CompanyId:10,
                 }
             },
             computed: {
@@ -229,24 +231,10 @@
                     this.currentPage = page
                 },
 
-                // 撈出清單Card
-                // OpinionData: function () {
-                //     // alert("AAA");
-                //     fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
-                //         method:"GET"
-                //     }).then(response => {
-                //         return response.json();
-                //     }).then(data => {
-                //             return this.opinionlist=data
-                //     }).catch(err => {
-                //         alert(JSON.stringify(err))
-                //     })
-                // },
-
                 //撈出Card的data
                 OpinionData: function () 
                 {
-                    axios.post(`${this.baseAddress}/Companies/OpinionLetters/IndexJson_opinionletter`, this.CompanyId,
+                    axios.post(`${this.baseAddress}/Companies/OpinionLetters/IndexJson_opinionletter`,
                         { headers: { 'Content-Type': 'application/json' } })
                         .then(response => this.opinionlist=response.data)
                         .catch(err => { alert(err) });
@@ -272,8 +260,6 @@
                     // alert(`Filter${_this.filter}`)
                     let _this = this;
                     let request = {};                                   
-
-                    request.CompanyId = _this.CompanyId;
                     request.Class = request.SubjectLine =_this.filter;
 
                     axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Filter`, request)
@@ -306,7 +292,6 @@
                     let _this = this;
                     var form = new FormData();
                     let today = new Date().toISOString();
-                    form.append("CompanyId", _this.CompanyId);
                     form.append("LetterClass", _this.letterClass);
                     form.append("SubjectLine", _this.subjectLine);
                     form.append("Content", _this.content);
