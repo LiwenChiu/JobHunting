@@ -39,7 +39,7 @@
 </head>
 <body class="sb-nav-fixed bgcolor">
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="position: fixed; width:100%;z-index:100;">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/assets/duck.ico" />小鴨上工</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -158,7 +158,6 @@
                     letterclass: "",
                     subjectLine: "",
                     content: "",
-
                     baseAddress: "https://localhost:7169",
                     role: 'candidate',
                     NationalId: '',
@@ -227,9 +226,9 @@
                     axios.post(`${_this.baseAddress}/Home/DoLogin`, request)
                         .then(response => {
                             if (response.data.success) {
-                            if (response.data.role === 'candidate') {
+                            if (response.data.role == 'candidate') {
                                 window.location.href = '/Candidates'; // 或者其他求職者頁面
-                            } else if (response.data.role === 'company') {
+                            } else if (response.data.role == 'company') {
                                 window.location.href = '/Companies'; // 或者其他公司頁面
                             }
                             } else {

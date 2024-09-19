@@ -14,7 +14,7 @@
     <div class="container bg-light position-relative mt-3" style="border-radius:30px;" >
         <div v-for="item in companyIntro">
             <div class="mb-3">
-                <h3 class="text-center">公司介紹</h3>
+                <h3 class="text-center">公司資料</h3>
             </div>
             <hr>
             <template v-if="item.edit == false">
@@ -42,6 +42,13 @@
                             </div>
                             <div class="">
                                 <label for="contactEmail" class="col-sm-2 col-form-label labelCompanyName">
+                                    統一編號
+                                </label>
+                                <label><small>{{item.guiNumber}}</small></label>
+                                <hr>
+                            </div>
+                            <div class="">
+                                <label for="contactEmail" class="col-sm-2 col-form-label labelCompanyName">
                                     電子郵件
                                 </label>
                                 <label><small>{{item.contactEmail}}</small></label>
@@ -63,19 +70,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 border border-secondary ">
-                        <div class="inputAreas col-6">
-                            <label for="benefits" class=" col-form-label">
-                                福利制度
-                            </label>
-                            <p>{{item.benefits}}</p>
+                    <div class="row mb-3  ">
+                        <div class="card mb-3 col-6">
+                            <div class="card-body">
+                                <h5 class="card-title" style="text-align:center">福利制度</h5>
+                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                    {{item.benefits}}
+                                </p>
+                            </div>
                         </div>
-                        <div class="box inputAreas col-6 ">
-                            <label for="intro" class=" col-form-label">
-                                簡介
-                            </label>
-                            <label>{{item.intro}}</label>
-                            
+                        <div class="card mb-3 col-6">
+                            <div class="card-body">
+                                <h5 class="card-title" style="text-align:center">簡介</h5>
+                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                    {{item.intro}}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center mb-3">
@@ -87,13 +97,13 @@
             <template v-if="item.edit == true">
                  <div class="inputOutAreas text-center pt-3">
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             公司名稱<span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control inputCompanyName col" v-model="item.companyName">
+                        <input type="text" class="form-control col" v-model="item.companyName">
                     </div>
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around ">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around " >
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName" align=right>
                             公司類別<span class="text-danger">*</span>
                         </label>
                         <select v-model="seloption" v-on:change="selchange(item)">
@@ -101,34 +111,39 @@
                         </select>
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
+                            統一編號<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" disabled="false" class="form-control col" v-model="item.guiNumber">
+                    </div>
+                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             電子郵件<span class="text-danger">*</span>
                         </label>
-                        <input type="email" class="form-control inputCompanyName col" v-model="item.contactEmail">
+                        <input type="email" class="form-control col" v-model="item.contactEmail">
 
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             通訊電話<span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control inputCompanyName col" v-model="item.contactPhone">
+                        <input type="text" class="form-control col" v-model="item.contactPhone">
 
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             通訊地址<span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control inputCompanyName col" v-model="item.address">
-
+                        <input type="text" class="form-control col" v-model="item.address">
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             福利制度
                         </label>
-                        <input type="text" class="form-control inputCompanyName col" v-model="item.benefits">
+                        <textarea class="form-control" style="height:150px" v-model="item.benefits"></textarea>
                     </div>
                     <div class="d-sm-flex my-1 py-3 inputAreas">
-                        <label for=" inputCompanyName" class="col-sm-2 col-form-label labelCompanyName">
+                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName">
                             簡介
                         </label>
                         <textarea class="form-control" style="height:150px" v-model="item.intro"></textarea>
@@ -140,7 +155,7 @@
                              style="width:320px;height:240px" asp-append-version=true />
                         <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($event.target)" accept="image/*" />
                     </div>
-                        <button type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
+                        <button id="update" type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
                         <button type="submit" class="btn btn-outline-secondary" v-on:click="cancel(item)">取消</button>
                  </div>
             </template>
@@ -155,7 +170,6 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
-                    companyId: 1,
                     companyIntro: [],
                     companyClasses:[],
                     seloption:"",
@@ -163,6 +177,7 @@
                     companyIntroOld: {
                         companyId:null,
                         companyName:"",
+                        guiNumber:"",
                         address:"",
                         intro:"",
                         benefits:"",
@@ -177,7 +192,7 @@
             methods: {
                 getCompanyIntro() {
                     let self = this
-                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList/${self.companyId}`, {
+                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/CompanyIntroList`, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.companyIntro = res.data;
@@ -194,39 +209,39 @@
                 edit(item) {
                     let self = this;
                     item.edit = true;
-                    self.seloption = item.companyClassId
-                    self.companyIntroOld.companyId = item.companyId
-                    self.companyIntroOld.companyName = item.companyName
-                    self.companyIntroOld.address = item.address
-                    self.companyIntroOld.intro = item.intro
-                    self.companyIntroOld.benefits = item.benefits
-                    self.companyIntroOld.contactName = item.contactName
-                    self.companyIntroOld.contactPhone = item.contactPhone
-                    self.companyIntroOld.contactEmail = item.contactEmail
-                    self.companyIntroOld.companyClassId = item.companyClassId
-                    self.companyIntroOld.companyClassName = item.companyClassName
+                    self.seloption = item.companyClassId;
+                    self.companyIntroOld.companyName = item.companyName;
+                    self.companyIntroOld.address = item.address;
+                    self.companyIntroOld.guiNumber = item.guiNumber;
+                    self.companyIntroOld.intro = item.intro;
+                    self.companyIntroOld.benefits = item.benefits;
+                    self.companyIntroOld.contactName = item.contactName;
+                    self.companyIntroOld.contactPhone = item.contactPhone;
+                    self.companyIntroOld.contactEmail = item.contactEmail;
+                    self.companyIntroOld.companyClassId = item.companyClassId;
+                    self.companyIntroOld.companyClassName = item.companyClassName;
                 },
                 cancel(item) {
                     let self = this;
                     if (item.edit == true) {
-                        item.companyId = self.companyIntroOld.companyId 
-                        item.companyName = self.companyIntroOld.companyName  
-                        item.address = self.companyIntroOld.address  
-                        item.intro = self.companyIntroOld.intro  
-                        item.benefits = self.companyIntroOld.benefits 
-                        item.contactName = self.companyIntroOld.contactName  
-                        item.contactPhone = self.companyIntroOld.contactPhone 
-                        item.contactEmail = self.companyIntroOld.contactEmail  
-                        item.companyClassName = self.companyIntroOld.companyClassName  
+                        item.companyName = self.companyIntroOld.companyName;
+                        item.guiNumber = self.companyIntroOld.guiNumber;
+                        item.address = self.companyIntroOld.address;
+                        item.intro = self.companyIntroOld.intro;  
+                        item.benefits = self.companyIntroOld.benefits;
+                        item.contactName = self.companyIntroOld.contactName;
+                        item.contactPhone = self.companyIntroOld.contactPhone;
+                        item.contactEmail = self.companyIntroOld.contactEmail;
+                        item.companyClassName = self.companyIntroOld.companyClassName; 
                         item.edit = false;
                     }
                 },
                 update(item) {
                     let self = this;
                     var form = new FormData();
-                    form.append("CompanyId", item.companyId);
                     form.append("CompanyName", item.companyName);
                     form.append("Address", item.address);
+                    form.append("GUINumber", item.guiNumber);
                     form.append("Intro", item.intro);
                     form.append("Benefits", item.benefits);
                     form.append("ContactName", item.contactName);
@@ -234,7 +249,7 @@
                     form.append("ContactEmail", item.contactEmail);
                     form.append("CompanyClassId", self.seloption);
                     form.append("ImageFile", document.querySelector("#editFile").files[0]);
-                    axios.put(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro/${self.companyId}`, form, {
+                    axios.post(`${self.baseAddress}/Companies/CompanyIntro/PutCompanyIntro`, form, {
                         headers: { "content-type": "multipart/form-data" }
                     }).then(response => {
                         self.rand = new Date().getTime();
@@ -247,7 +262,7 @@
                 },
                 editFileChange(inputFile){
                     let self = this;
-                    self.readURL(inputFile, inputFile.previousElementSibling, $("#editFile"))
+                    self.readURL(inputFile, inputFile.previousElementSibling, $("#update"))
                 },
                 readURL(inputFile, img, btn) {
                     if (inputFile.files && inputFile.files[0]){

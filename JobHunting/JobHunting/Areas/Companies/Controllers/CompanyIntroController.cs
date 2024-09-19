@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -32,12 +33,18 @@ namespace JobHunting.Areas.Companies.Controllers
             }));
         }
         [HttpPost]
-        public async Task<JsonResult> CompanyIntroList(int id)
+        public async Task<JsonResult> CompanyIntroList()
         {
-            return Json(_context.Companies.Include(a => a.CompanyClass).Where(c => c.CompanyId == id).Select(b => new CompanyIntroViewModel
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
             {
-                CompanyId = b.CompanyId,
+                return Json(new { message = "未授權訪問" });
+            }
+            return Json(_context.Companies.Include(a => a.CompanyClass).Where(c => c.CompanyId.ToString() == CompanyId).Select(b => new CompanyIntroViewModel
+            {
+                CompanyId = int.Parse(CompanyId),
                 CompanyName = b.CompanyName,
+                GUINumber = b.GUINumber,
                 CompanyClassId = b.CompanyClassId,
                 Address = b.Address,
                 Intro = b.Intro,
@@ -57,13 +64,15 @@ namespace JobHunting.Areas.Companies.Controllers
             byte[] ImageContent = c?.Picture != null ? c.Picture : System.IO.File.ReadAllBytes(FileName);
             return File(ImageContent, "image/jpeg");
         }
-        public async Task<string> PutCompanyIntro([FromForm] PutCompanyIntroInput companyIntro,int id)
+        [HttpPost]
+        public async Task<string> PutCompanyIntro([FromForm] PutCompanyIntroInput companyIntro)
         {
-            if (id != companyIntro.CompanyId)
+            var companyIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(companyIdClaim) || !int.TryParse(companyIdClaim, out int companyId))
             {
-                return "修改資料失敗";
+                return "未授權訪問";
             }
-            Company co = await _context.Companies.FindAsync(id);
+            Company co = await _context.Companies.FindAsync(companyId);
             if (co == null)
             {
                 return "修改員工紀錄失敗!";
@@ -73,6 +82,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 co.CompanyName = companyIntro.CompanyName;
                 co.Address= companyIntro.Address;
                 co.Intro = companyIntro.Intro;
+                co.GUINumber = companyIntro.GUINumber;
                 co.Benefits = companyIntro.Benefits;
                 co.ContactName = companyIntro.ContactName;
                 co.ContactPhone = companyIntro.ContactPhone;
@@ -87,7 +97,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanyExists(id))
+                    if (!CompanyExists(companyId))
                     {
                         return "修改員工紀錄失敗!";
                     }
@@ -99,9 +109,9 @@ namespace JobHunting.Areas.Companies.Controllers
                 return "修改員工紀錄成功!";
             }
         }
-        private bool CompanyExists(int id)
+        private bool CompanyExists(int companyId)
         {
-            return _context.Companies.Any(e => e.CompanyId == id);
+            return _context.Companies.Any(e => e.CompanyId == companyId);
         }
         private static void IsPicture(PutCompanyIntroInput companyIntro, Company c)
         {

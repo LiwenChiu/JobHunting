@@ -1,7 +1,9 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
+using JobHunting.Areas.Companies.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -23,10 +25,17 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IEnumerable<CandidateOpeningStorageOutputModel>> CandidateOpenings([FromBody] CandidateOpeningStorageInputModel cosm)
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return new List<CandidateOpeningStorageOutputModel>(); // 或處理未授權訪問的情況
+            }
+
             var query = _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
                 .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
                 .Include(x => x.Openings).ThenInclude(x => x.Company)
-                .Where(x => x.CandidateId == cosm.CandidateId)
+                .Where(x => x.CandidateId.ToString() == CandidateId)
                 .SelectMany(x => x.Openings)
                 .Where (o => 
                     o.Title.Contains(cosm.Title) ||
@@ -34,7 +43,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     o.Time.Contains(cosm.Time))
                 .Select(ror => new CandidateOpeningStorageOutputModel
                 {
-                    OpeningId = ror.OpeningId,
+                    OpeningId = int.Parse(CandidateId),
                     Title = ror.Title,
                     CompanyName = ror.Company.CompanyName,
                     Address = ror.Address,
@@ -170,6 +179,15 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return new CandidatesApplyJobOutputViewModel
                 {
                     AlertText = "失敗",
+                    AlertStatus = false,
+                };
+            }
+
+            if(resume.ReleaseYN == false)
+            {
+                return new CandidatesApplyJobOutputViewModel
+                {
+                    AlertText = "履歷未開放",
                     AlertStatus = false,
                 };
             }

@@ -25,50 +25,64 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeIntro(int? id)
+        public async Task<IActionResult> ResumeDetail(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var resume = await _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(c => c.ResumeId == id).Select(c => new ResumesIntroViewModel
-            {
-                ResumeId = c.ResumeId,
-                CandidateId = c.CandidateId,
-                Title = c.Title,
-                Intro = c.Intro,
-                Autobiography = c.Autobiography,
-                WorkExperience = c.WorkExperience,
-                Time = c.Time,
-                WishAddress = c.Address,
-                Name = c.Candidate.Name,
-                Phone = c.Candidate.Phone,
-                Email = c.Candidate.Email,
-                Sex = c.Candidate.Sex,
-                Degree = c.Candidate.Degree,
-                Address = c.Candidate.Address,
-                EmploymentStatus = c.Candidate.EmploymentStatus,
-                MilitaryService = c.Candidate.MilitaryService,
-                TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            }).FirstOrDefaultAsync(m => m.CandidateId == id);
-            if (resume == null)
+            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies)
+                .Where(y => y.ResumeId == id)
+                .Select(c => new ResumesIntroViewModel
+                {
+                    ResumeId = c.ResumeId,
+                    CandidateId = c.CandidateId,
+                    Title = c.Title,
+                    Intro = c.Intro,
+                    Autobiography = c.Autobiography,
+                    WorkExperience = c.WorkExperience,
+                    WishAddress = c.Address,
+                    WishTime = c.Time,
+                    Name = c.Candidate.Name,
+                    Phone = c.Candidate.Phone,
+                    Email = c.Candidate.Email,
+                    EmploymentStatus = c.Candidate.EmploymentStatus,
+                    MilitaryService = c.Candidate.MilitaryService,
+                    Sex = c.Candidate.Sex,
+                    Degree = c.Candidate.Degree,
+                    Address = c.Candidate.Address,
+                    TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                    TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName}),
+                    Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
+                    LikeYN = c.Companies.Where(c => c.CompanyId == id).FirstOrDefault() != null,
+                }));
+        }
+        public async Task<IActionResult> ResumeIntro(int? candidateId, int? resumeId)
+        {
+            if (resumeId == null)
             {
                 return NotFound();
             }
-
-            return View(resume);
+            else
+            {
+                var resume = await _context.Resumes.Include(a => a.Candidate).Where(c => c.ResumeId == resumeId && c.ReleaseYN == true).Select(c => new ResumeIDViewModel
+                {
+                    ResumeId = c.ResumeId,
+                    CandidateId = c.CandidateId,
+                }).FirstOrDefaultAsync(m => m.CandidateId == candidateId);
+                return View(resume);
+            }
+           
         }
-
         public async Task<IActionResult> CompanyIndexList()
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
-            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Select(c => new CompanyResumeListViewModel
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
+            var temp = source.Select(c => new CompanyResumeListViewModel
             {
                 ResumeID = c.ResumeId,
                 CandidateID = c.CandidateId,
-                Title = c.Title,
                 Intro = c.Intro,
                 Autobiography = c.Autobiography,
                 WorkExperience = c.WorkExperience,
@@ -79,13 +93,14 @@ namespace JobHunting.Controllers
                 Address = c.Candidate.Address,
                 TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                 Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            }));
+            });
+            return Json(temp);
         }
         public async Task<IEnumerable<ResumesOutput>> SelectIndexList([FromBody] ResumeInputModel resume)
         {
             EditResume(resume);
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).ToList();
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true).ToList();
             if (resume.serchText.IsNullOrEmpty())
             {
                 var temp = source.Select(c => new
@@ -106,9 +121,7 @@ namespace JobHunting.Controllers
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
                     b.Address.Substring(0, 3) == resume.Area ||
-                    //b.Address.Contains(resume.Area) ||
-                    //(b.Address.Substring(0, 3) == resume.Area && b.Address.Substring(0, 3) == resume.zipCode) ||
-                    b.Degree.Contains(resume.Edu) ||
+                    b.Degree == resume.Edu ||
                     b.skill.Any(z => z.TagId == resume.Skill)
                 ).Select(x => new ResumesOutput
                 {
@@ -148,11 +161,13 @@ namespace JobHunting.Controllers
                     skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
                 }).Where(b =>
+                    resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
                     b.Sex == resume.Sex ||
                     b.Age.ToString().Contains(resume.serchText) ||
-                    b.Address.Contains(resume.serchText.Replace("臺", "台")) ||
-                    b.Address.Substring(4, 3) == resume.Area ||
-                    resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
+                    b.Address.Contains(resume.serchText) ||
+                    b.Address.Substring(0, 3) == resume.Area ||
+                    b.Degree == resume.Edu ||
+                    b.Degree.Contains(resume.serchText) ||
                     b.skill.Any(z => z.TagId == resume.Skill)
                 ).Select(x => new ResumesOutput
                 {
@@ -226,11 +241,27 @@ namespace JobHunting.Controllers
             }
             catch (Exception ex)
             {
-                return "履歷收藏失敗";
+                return "此履歷已收藏";
             }
 
 
             return "履歷已成功收藏";
+        }
+        public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteResumesViewModel df)
+        {
+            try
+            {
+                var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CompanyId = @CompanyId AND ResumesId = @ResumesId";
+                var companyIdParam = new SqlParameter("@CompanyId", df.CompanyId);
+                var resumesIdParam = new SqlParameter("@ResumesId", df.ResumesId);
+                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumesIdParam);
+            }
+            catch (Exception ex)
+            {
+                return "取消收藏職缺失敗";
+            }
+
+            return "取消收藏職缺成功";
         }
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)

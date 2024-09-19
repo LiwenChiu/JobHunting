@@ -1,9 +1,5 @@
 ﻿@section Styles {
-    @* ViewData["Title"] = "Home Page"; *@
 
-    <style>
-
-    </style>
 }
 <div id="app2" class="">
     <!-- Header-->
@@ -73,7 +69,7 @@
             </thead>
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes.slice(pageStart,pageEnd)">
-                    <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.resumeID}`>{{item.name}}</a></td>
+                    <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`>{{item.name}}</a></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
@@ -156,8 +152,8 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-warning">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">暫存</button>
-                    <button type="button" class="btn btn-primary">詳細</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="addFavorite(item.resumeID)">暫存</button>
+                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item.resumeID)">詳細</button>
                 </div>
             </div>
         </div>
@@ -174,7 +170,7 @@
                 return {
                     area: [],
                     skill: null,
-                    edu: "A",
+                    edu: "",
                     filter: "",
                     resumes: [],
                     filteredResume:[],
@@ -184,6 +180,7 @@
                     cityList:[],
                     city:"",
                     zipCode:"",
+                    companyId: 2,
                     baseAddress: "https://localhost:7169"
                 };
             },
@@ -200,9 +197,12 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
-
+                
             },
             methods: {
+                goToPage(item){
+                    window.open(`${this.baseAddress}/Company/ResumeIntro/${item}`)
+                },
                 setPage(page) {
                     if (page <= 0 || page > this.totalPage) {
                         return
@@ -220,7 +220,7 @@
                 },
                 indexList() {
                     let self = this;
-                    axios.post('https://localhost:7169/Company/CompanyIndexList', {
+                    axios.post(`${self.baseAddress}/Company/CompanyIndexList`, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.resumes = res.data;
@@ -240,45 +240,49 @@
                         edu: self.edu,
                         skill: self.skill
                     };
-                    if (self.filter == "男") {
-                        request.sex = true;
-                    }
-                    else if (self.filter == "女") {
-                        request.sex = false;
-                    }
-                    else {
-                        request.sex = null;
-                    }
-                    if (self.filter == "" && self.city == "" && self.edu == "" && self.zipCode == "" && self.skill == null) {
+                    if (self.filter === "" && self.city === "" && self.edu === "" && self.zipCode === "" && self.skill === null) {
                         self.indexList();
                     }
                     else {
-                        axios.post('https://localhost:7169/Company/SelectIndexList', request, {
-                                headers: { 'Content-Type': 'application/json' },
-                            }).then(res => {
-                                self.resumes = res.data;
-                                self.skill = null;
-                                self.city = self.zipCode = self.filter = self.edu = "";
-                            }).catch(err => JSON.stringify(err))
+                        if (self.filter === "男") {
+                        request.sex = true;
+                        }
+                        else if (self.filter === "女") {
+                            request.sex = false;
+                        }
+                        else {
+                            request.sex = null;
+                        }
+                        axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
+                                    headers: { 'Content-Type': 'application/json' },
+                                }).then(res => {
+                                    self.resumes = res.data;
+                                    self.skill = null;
+                                    self.city = self.zipCode = self.filter = self.edu = "";
+                                }).catch(err => JSON.stringify(err))
                     }
-
+                },
+                addFavorite(item) {
+                    let self = this;
+                    request = {
+                        companyId: self.companyId,
+                        resumeId: item,
+                    };
+                    axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                    }).catch(error => {
+                        console.error(error);
+                    })
                 },
                 getTag() {
-                    let request = {
-                        method: 'GET',
-                        cache: 'no-cache',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        })
-                    };
-                    fetch('https://localhost:7169/Company/TagClasses', request)
-                        .then(response => {
-                            return response.json();
-                        })
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Company/TagClasses`)  
                         .then(model => {
-                            return this.tagClasses = model
+                            self.tagClasses = model.data;
                         })
-                        .catch(error => {
+                        .catch(function (error) {
                             console.error(error);
                         });
                 },
