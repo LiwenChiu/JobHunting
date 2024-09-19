@@ -262,6 +262,7 @@ namespace JobHunting.Controllers
             });
             return Json(temp);
         }
+        
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {

@@ -25,15 +25,15 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeDetail(int? id)
+        public async Task<IActionResult> ResumeDetail(int resumeID,int companyID)
         {
-            if (id == null)
+            if (resumeID == null)
             {
                 return NotFound();
             }
             var today = DateOnly.FromDateTime(DateTime.Now);
             return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies)
-                .Where(y => y.ResumeId == id)
+                .Where(y => y.ResumeId == resumeID)
                 .Select(c => new ResumesIntroViewModel
                 {
                     ResumeId = c.ResumeId,
@@ -55,7 +55,7 @@ namespace JobHunting.Controllers
                     TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName}),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
-                    LikeYN = c.Companies.Where(c => c.CompanyId == id).FirstOrDefault() != null,
+                    LikeYN = c.Companies.Where(x => x.CompanyId == companyID).FirstOrDefault() != null,
                 }));
         }
         public async Task<IActionResult> ResumeIntro(int? candidateId, int? resumeId)
@@ -70,6 +70,7 @@ namespace JobHunting.Controllers
                 {
                     ResumeId = c.ResumeId,
                     CandidateId = c.CandidateId,
+                    Title = c.Title,
                 }).FirstOrDefaultAsync(m => m.CandidateId == candidateId);
                 return View(resume);
             }
@@ -251,17 +252,17 @@ namespace JobHunting.Controllers
         {
             try
             {
-                var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CompanyId = @CompanyId AND ResumesId = @ResumesId";
+                var query = "DELETE FROM CompanyResumeLikeRecords WHERE CompanyId = @CompanyId AND ResumeId = @ResumeId";
                 var companyIdParam = new SqlParameter("@CompanyId", df.CompanyId);
-                var resumesIdParam = new SqlParameter("@ResumesId", df.ResumesId);
-                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumesIdParam);
+                var resumeIdParam = new SqlParameter("@ResumeId", df.ResumeId);
+                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
             }
             catch (Exception ex)
             {
-                return "取消收藏職缺失敗";
+                return "取消收藏履歷失敗";
             }
 
-            return "取消收藏職缺成功";
+            return "取消收藏履歷成功";
         }
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)
