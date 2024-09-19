@@ -53,7 +53,7 @@
                     <th class="col">
                         <select class="btn btn-outline-dark" v-model="selectedOpTitleId">
                             <option :value="undefined" selected>職缺名稱</option>
-                            <option v-for="item in uniqueResumes" v-bind:value="item.openingTitle">{{item.openingTitle}}</option>
+                            <option v-for="item in uniqueResumes" v-bind:value="item.openingId">{{item.openingTitle}}</option>
                         </select>
                     </th>
                     <th class="col">求職者</th>
