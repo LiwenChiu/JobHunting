@@ -1,5 +1,4 @@
 ﻿@using JobHunting.ViewModel
-@model CompositeRegister
 
 @section Styles {
     <style>
@@ -7,12 +6,14 @@
             color: steelblue;
             font-weight: bold;
         }
+        a{
+            text-decoration: none;
+        }
     </style>
 }
-<div id="app">
+<div id="RegisterApp">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <form id="registerForm" method="post">
                 <h2 class="text-center">會員註冊</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -25,102 +26,190 @@
                         <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
                     </div>
                 </div>
+
+                @* 求職端註冊 *@
                 <template v-if="role=='candidate'">
                     <div class="form-floating mb-3">
-                        <input asp-for="CandidateRegisterVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" aria-required="true" placeholder="身分證字號" />
-                        <label asp-for="CandidateRegisterVM.NationalId" class="form-label">身分證字號</label>
-                        <span asp-validation-for="CandidateRegisterVM.NationalId" class="text-danger"></span>
+                        <input class="form-control rounded-pill bg-danger bg-opacity-25" v-model="NationalId" aria-required="true" placeholder="身分證字號" />
+                        <label class="form-label" for="NationalId">身分證字號</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CandidateRegisterVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="CandidateRegisterVM.Email" class="form-label">電子信箱</label>
-                        <span asp-validation-for="CandidateRegisterVM.Email" class="text-danger"></span>
+                        <input type="email" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="Email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label class="form-label" for="Email">電子信箱</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CandidateRegisterVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
-                        <label asp-for="CandidateRegisterVM.Password" class="form-label">密碼</label>
-                        <span asp-validation-for="CandidateRegisterVM.Password" class="text-danger"></span>
+                        <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="Password" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label class="form-label" for="Password">密碼</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CandidateRegisterVM.ConfirmPassword" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" />
-                        <label asp-for="CandidateRegisterVM.ConfirmPassword" class="form-label">確認密碼</label>
-                        <span asp-validation-for="CandidateRegisterVM.ConfirmPassword" class="text-danger"></span>
+                        <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="ConfirmPassword" v-on:input="validateConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="ConfirmPassword" />
+                        <label class="form-label" for="ConfirmPassword">密碼確認</label>
+                        <span class="text-danger" v-if="ConfirmPasswordError">{{ConfirmPasswordError}}</span>
+                    </div>
+                    <div class="text-center">
+                        <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="AddCandidate">註冊</button>
+                        <p>
+                            <a asp-controller="Home" asp-action="Login">已有會員?登入</a>
+                        </p>
                     </div>
                 </template>
+                @* 公司端註冊 *@
                 <template v-else>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.CompanyName" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="CompanyName" aria-required="true" placeholder="公司名稱" />
-                        <label asp-for="CompanyRegisterVM.CompanyName" class="form-label">公司名稱</label>
-                        <span asp-validation-for="CompanyRegisterVM.CompanyName" class="text-danger"></span>
+                        <label  class="form-label">公司名稱</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.ContactEmail" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="Email" aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="CompanyRegisterVM.ContactEmail" class="form-label">電子郵件</label>
-                        <span asp-validation-for="CompanyRegisterVM.ContactEmail" class="text-danger"></span>
+                        <label  class="form-label">電子郵件</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
-                        <label asp-for="CompanyRegisterVM.GUINumber" class="form-label">統一編號</label>
-                        <span asp-validation-for="CompanyRegisterVM.GUINumber" class="text-danger"></span>
+                        <label  class="form-label">統一編號</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.ContactPhone" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="ContactPhone" aria-required="true" placeholder="通訊電話" />
-                        <label asp-for="CompanyRegisterVM.ContactPhone" class="form-label">通訊電話</label>
-                        <span asp-validation-for="CompanyRegisterVM.ContactPhone" class="text-danger"></span>
+                        <label  class="form-label">通訊電話</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.Address" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="Address" aria-required="true" placeholder="通訊地址" />
-                        <label asp-for="CompanyRegisterVM.Address" class="form-label">通訊地址</label>
-                        <span asp-validation-for="CompanyRegisterVM.Address" class="text-danger"></span>
+                        <label  class="form-label">通訊地址</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.ContactName" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="ContactName" aria-required="true" placeholder="聯絡人" />
-                        <label asp-for="CompanyRegisterVM.ContactName" class="form-label">聯絡人</label>
-                        <span asp-validation-for="CompanyRegisterVM.ContactName" class="text-danger"></span>
+                        <label  class="form-label">聯絡人</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
                                autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
-                        <label asp-for="CompanyRegisterVM.Password" class="form-label">密碼</label>
-                        <span asp-validation-for="CompanyRegisterVM.Password" class="text-danger"></span>
+                        <label  class="form-label">密碼</label>
+                        <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input asp-for="CompanyRegisterVM.ConfirmPassword" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" type="password" />
-                        <label asp-for="CompanyRegisterVM.ConfirmPassword" class="form-label">確認密碼</label>
-                        <span asp-validation-for="CompanyRegisterVM.ConfirmPassword" class="text-danger"></span>
+                        <input  class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" type="password" />
+                        <label  class="form-label">確認密碼</label>
+                        <span  class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="">註冊</button>
+                        <p>
+                            <a  asp-controller="Home" asp-action="Login">已有會員?登入</a>
+                        </p>
                     </div>
                 </template>
                 
-                <div class="text-center">
-                    <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill">註冊</button>
-                    <p>
-                        <a  asp-controller="Home" asp-action="Login">已有會員?登入</a>
-                    </p>
-                </div>
-            </form>
+                
+
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        let vueLetter = {
+        let vuereg = {
             data() {
                 return {
                     role: 'candidate',
-                };
+                    baseAddress: "https://localhost:7169",
+                    NationalId:"",
+                    Email:"",
+                    Password:"",
+                    ConfirmPassword:"",
+                    ConfirmPasswordError: "",
+                    addCompanies:{
+                        GUINumber:"",
+                        Password:"",
+                        CompanyName:"",
+                        ContactName:"",
+                        ContactPhone:"",
+                        ContactEmail:"",
+
+                    },
+                }
             },
             methods: {
-
+                AddCandidate:function(){
+                    let _this = this;
+                    let request = {
+                            // role:_this.role,
+                            NationalId:_this.NationalId,
+                            Email:_this.Email,
+                            Password:_this.Password,
+                          };
+                            fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"  // 指定 JSON 格式
+                            },
+                            body: JSON.stringify(request),  // 將數據序列化為 JSON
+                        }).then(res => {
+                            return res.json();
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                            };
+                        }).catch(err => {
+                            alert(JSON.stringify(err));
+                        })
+                },
+                validateConfirmPassword:function() {
+                    let _this  = this;
+                    _this.ConfirmPasswordError = '';
+                  if (!_this.ConfirmPassword) {
+                  _this.ConfirmPasswordError = '請再次輸入密碼';
+                } else if (_this.ConfirmPassword !== _this.Password) {
+                  _this.ConfirmPasswordError = '密碼與確認密碼不一致';
+                }
+              },
+              AddCompany:function(){
+                    let _this = this;
+                    let request = {
+                            // role:_this.role,
+                            NationalId:_this.NationalId,
+                            Email:_this.Email,
+                            Password:_this.Password,
+                          };
+                            fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"  // 指定 JSON 格式
+                            },
+                            body: JSON.stringify(request),  // 將數據序列化為 JSON
+                        }).then(res => {
+                            return res.json();
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                            };
+                        }).catch(err => {
+                            alert(JSON.stringify(err));
+                        })
+                },
 
             }
         };
-        Vue.createApp(vueLetter).mount("#app")
+        Vue.createApp(vuereg).mount("#RegisterApp")
     </script>
 }
