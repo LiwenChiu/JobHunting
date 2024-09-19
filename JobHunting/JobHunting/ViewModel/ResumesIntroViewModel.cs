@@ -10,15 +10,13 @@
 
         public string Intro { get; set; }
 
-        public byte[] Headshot { get; set; }
-
         public string Autobiography { get; set; }
 
         public string WorkExperience { get; set; }
 
         public byte[] Certification { get; set; }
 
-        public string Time { get; set; }
+        public string WishTime { get; set; }
 
         public string Address { get; set; }
         public string Email { get; set; }
@@ -37,5 +35,7 @@
 
         public string MilitaryService { get; set; }
         public object TagObj { get; set; }
+        public object TitleObj { get; set; }
+        public bool LikeYN { get; set; }
     }
 }
