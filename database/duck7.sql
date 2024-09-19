@@ -119,6 +119,7 @@ CREATE TABLE Resumes
 	[Time] nvarchar(60),
 	[Address] nvarchar(100),
 	ReleaseYN bit not null default(1),
+	LastEditTime datetime not null,
 )
 GO
 CREATE TABLE ResumeTitleClasses
