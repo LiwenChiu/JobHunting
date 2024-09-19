@@ -2,7 +2,6 @@
 {
     public class CandidatesApplyJobViewModel
     {
-        public int candidateId { get; set; }
 
         public int resumeId { get; set; }
 
