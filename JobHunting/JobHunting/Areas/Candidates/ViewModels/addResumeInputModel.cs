@@ -8,7 +8,6 @@
         public string Title { get; set; }
         public string? WorkExperience { get; set; }
         public string? Autobiography { get; set; }
-        public int CandidateId { get; set; }
         public int ResumeId { get; set; }
         public bool ReleaseYN { get; set; }
         public string? Intro { get; set; }

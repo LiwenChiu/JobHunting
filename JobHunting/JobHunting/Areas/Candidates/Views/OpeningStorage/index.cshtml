@@ -158,7 +158,6 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     openings: [],
-                    CandidateId: 2,
                     titleClass:[],
                     titleCategory:[],
                     Tags:[],
@@ -244,7 +243,6 @@
                 ReceiveOpeningData() {
                     let _this = this;
                     var request={
-                        CandidateId : _this.CandidateId,
                         Title : _this.filter,
                         Address: _this.filter,
                         Time : _this.filter

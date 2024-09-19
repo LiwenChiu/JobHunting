@@ -27,15 +27,15 @@ namespace JobHunting.Areas.Companies.Controllers
         public async Task<CompanyMemberDataOutputModel> GetCompanyMemberData()
         {
             // 從 claims 中取得 CompanyId
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(CompanyId))
             {
                 return new CompanyMemberDataOutputModel(); // 或處理未授權訪問的情況
             }
 
             var companyData = await _context.Companies.AsNoTracking()
-        .Where(cmd => cmd.CompanyId.ToString() == userId)
+        .Where(cmd => cmd.CompanyId.ToString() == CompanyId)
         .Select(cmd => new CompanyMemberDataOutputModel
         {
             CompanyId = cmd.CompanyId,
@@ -56,16 +56,16 @@ namespace JobHunting.Areas.Companies.Controllers
         public async Task<IEnumerable<CompanyOpeningsOutputModel>> GetCompanyOpenings()
         {
             // 從 claims 中取得 CompanyId
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(CompanyId))
             {
                 return new List<CompanyOpeningsOutputModel>(); // 或處理未授權訪問的情況
             }
 
             // 使用 CompanyId 查詢開放職位
             return await _context.Openings.AsNoTracking()
-                .Where(o => o.Company.CompanyId.ToString() == userId)
+                .Where(o => o.Company.CompanyId.ToString() == CompanyId)
                 .Select(o => new CompanyOpeningsOutputModel
                 {
                     OpeningId = o.OpeningId,
@@ -78,9 +78,9 @@ namespace JobHunting.Areas.Companies.Controllers
         public async Task<IEnumerable<CompanyResumeLikeRecordsOutputModel>> GetCompanyResumeLikeRecords()
         {
             // 從 claims 中取得 CompanyId
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(CompanyId))
             {
                 return new List<CompanyResumeLikeRecordsOutputModel>(); // 或處理未授權訪問的情況
             }
@@ -88,7 +88,7 @@ namespace JobHunting.Areas.Companies.Controllers
             // 使用 CompanyId 查詢公司喜好紀錄
             var company = await _context.Companies.AsNoTracking()
                 .Include(c => c.Resumes)
-                .FirstOrDefaultAsync(c => c.CompanyId.ToString() == userId);
+                .FirstOrDefaultAsync(c => c.CompanyId.ToString() == CompanyId);
 
             if (company == null)
             {
