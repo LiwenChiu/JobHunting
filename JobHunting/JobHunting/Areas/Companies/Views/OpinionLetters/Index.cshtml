@@ -203,6 +203,8 @@
                     letterClass: "",
                     subjectLine: "",
                     content: "",
+
+                    CompanyId:10,
                 }
             },
             computed: {
@@ -228,18 +230,30 @@
                 },
 
                 // 撈出清單Card
-                OpinionData: function () {
-                    // alert("AAA");
-                    fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
-                        method:"GET"
-                    }).then(response => {
-                        return response.json();
-                    }).then(data => {
-                            return this.opinionlist=data
-                    }).catch(err => {
-                        alert(JSON.stringify(err))
-                    })
+                // OpinionData: function () {
+                //     // alert("AAA");
+                //     fetch("/Companies/OpinionLetters/IndexJson_opinionletter", {
+                //         method:"GET"
+                //     }).then(response => {
+                //         return response.json();
+                //     }).then(data => {
+                //             return this.opinionlist=data
+                //     }).catch(err => {
+                //         alert(JSON.stringify(err))
+                //     })
+                // },
+
+                //撈出Card的data
+                OpinionData: function () 
+                {
+                    axios.post(`${this.baseAddress}/Companies/OpinionLetters/IndexJson_opinionletter`, this.CompanyId,
+                        { headers: { 'Content-Type': 'application/json' } })
+                        .then(response => this.opinionlist=response.data)
+                        .catch(err => { alert(err) });
                 },
+
+
+
 
                 //Card Modal
                 OpinionLetterModalShow: function (id) {
@@ -257,13 +271,9 @@
                 filterOpinionLetter: function () {
                     // alert(`Filter${_this.filter}`)
                     let _this = this;
-                    let request = {};
-                    
-                    // if (_this.filter == "已處理")
-                    //     return request.Status = true;
-                    // else if (_this.filter == "處理中")
-                    //     return request.Status = false;
+                    let request = {};                                   
 
+                    request.CompanyId = _this.CompanyId;
                     request.Class = request.SubjectLine =_this.filter;
 
                     axios.post(`${_this.baseAddress}/Companies/OpinionLetters/Filter`, request)
@@ -296,7 +306,7 @@
                     let _this = this;
                     var form = new FormData();
                     let today = new Date().toISOString();
-                    form.append("CompanyId", 10);
+                    form.append("CompanyId", _this.CompanyId);
                     form.append("LetterClass", _this.letterClass);
                     form.append("SubjectLine", _this.subjectLine);
                     form.append("Content", _this.content);

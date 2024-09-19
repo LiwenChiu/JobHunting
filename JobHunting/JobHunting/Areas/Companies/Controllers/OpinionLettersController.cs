@@ -21,13 +21,14 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
 
-        //GET:Companies/OpinionLetters/IndexJson_opinionletter
-        [HttpGet]
-        public JsonResult IndexJson_opinionletter() 
+        //Post:Companies/OpinionLetters/IndexJson_opinionletter/{id}
+        [HttpPost]
+        public JsonResult IndexJson_opinionletter([FromBody]int id) 
         {
-            var opinionletter = _context.OpinionLetters.Where(p => p.CompanyId != null).OrderByDescending(p=>p.SendTime).Select(p => new 
+            var opinionletter = _context.OpinionLetters.Where(p => p.CompanyId ==id).OrderByDescending(p=>p.SendTime).Select(p => new 
             {
-                LetterId= p.LetterId,
+                CompanyId = p.CompanyId,
+                LetterId = p.LetterId,
                 Class = p.Class,
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
@@ -59,13 +60,14 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //Post:Companies/OpinionLetters/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter) 
+        public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter)        
         {
-            return _context.OpinionLetters.Where(
-                o => o.CompanyId != null && o.Class.Contains(opinionLetter.Class) ||
-                o.CompanyId != null && o.SubjectLine.Contains(opinionLetter.SubjectLine))
+            return _context.OpinionLetters.Where(o=>o.CompanyId==opinionLetter.CompanyId).Where(
+                o => o.Class.Contains(opinionLetter.Class) ||
+                o.SubjectLine.Contains(opinionLetter.SubjectLine))
                 .OrderByDescending(p => p.SendTime).Select(o => new OpinionLetter
-                {
+                {   
+                    CompanyId = o.CompanyId,
                     LetterId = o.LetterId,
                     Class = o.Class,
                     SubjectLine = o.SubjectLine,
