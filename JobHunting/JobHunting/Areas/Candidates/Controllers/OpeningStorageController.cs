@@ -43,7 +43,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     o.Time.Contains(cosm.Time))
                 .Select(ror => new CandidateOpeningStorageOutputModel
                 {
-                    OpeningId = int.Parse(CandidateId),
+                    OpeningId = ror.OpeningId,
                     Title = ror.Title,
                     CompanyName = ror.Company.CompanyName,
                     Address = ror.Address,
