@@ -1,9 +1,11 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
+using JobHunting.Areas.Companies.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Net;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -26,13 +28,20 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Member/GetWholeCandidateMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<GetWholeCandidateMemberDataViewModel>> GetWholeCandidateMemberData([FromBody]int id)
+        public async Task<IEnumerable<GetWholeCandidateMemberDataViewModel>> GetWholeCandidateMemberData()
         {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return new List<GetWholeCandidateMemberDataViewModel>(); // 或處理未授權訪問的情況
+            }
+
             return _context.Candidates
-                .Where(c => c.CandidateId == id)
+                .Where(c => c.CandidateId.ToString() == CandidateId)
                 .Select(c => new GetWholeCandidateMemberDataViewModel
                 {
-                    CandidateId = c.CandidateId,
+                    CandidateId = int.Parse(CandidateId),
                     Name = c.Name,
                     Email = c.Email,
                     Sex = c.Sex,
@@ -48,7 +57,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Member/SaveEditMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> SaveEditMemberData([FromBody][Bind("CandidateId,Name,Email,Sex,Birthday,Phone,Address,Degree,EmploymentStatus,MilitaryService")] GetWholeCandidateMemberDataViewModel gwcmdvm)
+        public async Task<Array> SaveEditMemberData([FromBody][Bind("Name,Email,Sex,Birthday,Phone,Address,Degree,EmploymentStatus,MilitaryService")] GetWholeCandidateMemberDataViewModel gwcmdvm)
         {
             string[] returnStatus = new string[2];
 
@@ -58,7 +67,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return returnStatus;
             }
 
-            var candidatememberData = await _context.Candidates.FindAsync(gwcmdvm.CandidateId);
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                returnStatus = ["修改會員資料失敗", "失敗"];
+                return returnStatus;
+            }
+
+            var candidatememberData = await _context.Candidates.FindAsync(candidateId);
             if (candidatememberData == null)
             {
                 returnStatus = ["會員資料不存在", "失敗"];
