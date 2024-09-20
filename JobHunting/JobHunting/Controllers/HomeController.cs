@@ -365,7 +365,7 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
                 }
             }
-
+              
             return Json(new { success = false, message = "無效的角色" });
         }
 
