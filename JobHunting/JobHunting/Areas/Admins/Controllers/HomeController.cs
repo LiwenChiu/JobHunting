@@ -19,7 +19,7 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             _context = context;
         }
-        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]    
         public IActionResult Index()
         {
             return View();
