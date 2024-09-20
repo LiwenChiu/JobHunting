@@ -28,8 +28,8 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-          
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
+
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
@@ -89,7 +89,7 @@ namespace JobHunting.Controllers
                 var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "取消收藏職缺失敗";
             }
@@ -241,7 +241,7 @@ namespace JobHunting.Controllers
                 InterviewYN = false,
                 HireYN = false,
             };
-
+             
             _context.ResumeOpeningRecords.Add(recordResumeOpening);
 
             try
@@ -270,7 +270,7 @@ namespace JobHunting.Controllers
             var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
             var temp = source.Select(b => new CompanyClassSelectViewModelcs
             {
-                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName }),
                 CompanyCategoryId = b.CompanyCategoryId,
                 CompanyCategoryName = b.CompanyCategoryName,
             });
@@ -289,7 +289,7 @@ namespace JobHunting.Controllers
             IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
-            
+
             return "新增信件成功";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
@@ -393,7 +393,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Index", "Home");
         }
     }
 }
