@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
-
+ 
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -29,7 +29,7 @@ namespace JobHunting.Controllers
             return View();
         }
 
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
@@ -241,7 +241,7 @@ namespace JobHunting.Controllers
                 InterviewYN = false,
                 HireYN = false,
             };
-
+             
             _context.ResumeOpeningRecords.Add(recordResumeOpening);
 
             try
@@ -270,7 +270,7 @@ namespace JobHunting.Controllers
             var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
             var temp = source.Select(b => new CompanyClassSelectViewModelcs
             {
-                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName }),
                 CompanyCategoryId = b.CompanyCategoryId,
                 CompanyCategoryName = b.CompanyCategoryName,
             });
@@ -289,7 +289,7 @@ namespace JobHunting.Controllers
             IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
-            
+
             return "新增信件成功";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
@@ -381,8 +381,38 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
                 }
             }
-
+              
             return Json(new { success = false, message = "無效的角色" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AdminDoLogin([FromBody] AdminLoginInputModel loginRequest)
+        {
+            // 管理者驗證邏輯
+            var admin = _context.Admins
+                .FirstOrDefault(a => a.PersonnelCode == loginRequest.PersonnelCode);
+
+            if (admin != null && admin.Password == loginRequest.Password) // 假設密碼是明文儲存
+            {
+                // 驗證通過，建立 claims，包含 AdminId
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
+            new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
+            new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
+        };
+
+                var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
+
+                // 使用 Cookie 認證進行登入
+                await HttpContext.SignInAsync("AdminScheme", new ClaimsPrincipal(claimsIdentity));
+
+                return Json(new { success = true, message = "管理者登入成功", role = "admin" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "管理者登入失敗：工號或密碼錯誤" });
+            }
         }
 
         [Authorize]
@@ -395,5 +425,18 @@ namespace JobHunting.Controllers
             // 重導向到登入頁面或首頁
             return RedirectToAction("Index", "Home"); 
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AdminLogout()
+        {
+            // 執行登出操作，清除使用者登入資訊
+            await HttpContext.SignOutAsync("AdminScheme");
+   
+            // 重導向到登入頁面或首頁
+            return RedirectToAction("Index", "Home", new { area = "Admins" });
+        }
+
+
     }
 }
