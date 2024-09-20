@@ -49,7 +49,7 @@ namespace JobHunting.Controllers
                 CompanyName = b.Company.CompanyName,
                 LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
             });
-
+             
             var openingIndexOutput = new OpeningsIndexOutputViewModel
             {
                 totalDataCount = openings.Count(),
