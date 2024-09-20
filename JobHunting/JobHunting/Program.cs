@@ -1,4 +1,4 @@
-ï»¿using JobHunting.Areas.Admins.Models;
+using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Data;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient();
+
 // Add services to the container.
 builder.Services.AddDbContext<DuckContext>(options =>
 {
@@ -29,12 +29,12 @@ builder.Services.AddDbContext<DuckCompaniesContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
 });
 
-
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(options =>
@@ -44,14 +44,11 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = "/Home/Login";  // ï¿½]ï¿½wï¿½nï¿½Jï¿½ï¿½ï¿½ï¿½
-    //options.AccessDeniedPath = "/Account/AccessDenied";  // ï¿½]ï¿½wï¿½Úµï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-}).AddCookie("AdminScheme", options =>
-    options.LoginPath = "/Admins/Home/Login"
+    options.LoginPath = "/Home/Login";  // ³]©wµn¤J­¶­±
+    //options.AccessDeniedPath = "/Account/AccessDenied";  // ³]©w©Úµ´¦s¨ú­¶­±
+});
 
-);
-
-builder.Services.AddAuthorization();  // ï¿½Kï¿½[ï¿½ï¿½ï¿½vï¿½Aï¿½ï¿½
+builder.Services.AddAuthorization();  // ²K¥[±ÂÅvªA°È
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,7 +69,7 @@ app.UseStaticFiles();
 app.UseMiddleware<IgnoreRouteMiddleware>();
 
 app.UseRouting();
-app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(

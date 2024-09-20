@@ -1,4 +1,4 @@
-ï»¿using Azure.Core;
+using Azure.Core;
 using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
@@ -29,7 +29,7 @@ namespace JobHunting.Controllers
             return View();
         }
 
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
@@ -49,7 +49,7 @@ namespace JobHunting.Controllers
                 CompanyName = b.Company.CompanyName,
                 LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
             });
-             
+
             var openingIndexOutput = new OpeningsIndexOutputViewModel
             {
                 totalDataCount = openings.Count(),
@@ -71,11 +71,11 @@ namespace JobHunting.Controllers
             }
             catch (Exception ex)
             {
-                return "æ­¤è·ç¼ºå·²æ”¶è—";
+                return "¦¹Â¾¯Ê¤w¦¬ÂÃ";
             }
 
 
-            return "è·ç¼ºå·²æˆåŠŸæ”¶è—";
+            return "Â¾¯Ê¤w¦¨¥\¦¬ÂÃ";
         }
 
         [HttpPost]
@@ -89,12 +89,12 @@ namespace JobHunting.Controllers
                 var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return "å–æ¶ˆæ”¶è—è·ç¼ºå¤±æ•—";
+                return "¨ú®ø¦¬ÂÃÂ¾¯Ê¥¢±Ñ";
             }
 
-            return "å–æ¶ˆæ”¶è—è·ç¼ºæˆåŠŸ";
+            return "¨ú®ø¦¬ÂÃÂ¾¯Ê¦¨¥\";
         }
 
         //GET: Home/GetOpening
@@ -107,6 +107,8 @@ namespace JobHunting.Controllers
                     OpeningTitle = o.Title,
                     CompanyName = o.Company.CompanyName,
                     Address = o.Address,
+                    RequiredNumber = o.RequiredNumber,
+                    ResumeNumber = o.ResumeNumber,
                     Description = o.Description,
                     Benefit = o.Benefits,
                     Degree = o.Degree,
@@ -153,7 +155,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å¤±æ•—",
+                    AlertText = "¥¢±Ñ",
                     AlertStatus = false,
                 };
             }
@@ -163,7 +165,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å¤±æ•—",
+                    AlertText = "¥¢±Ñ",
                     AlertStatus = false,
                 };
             }
@@ -173,7 +175,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å¤±æ•—",
+                    AlertText = "¥¢±Ñ",
                     AlertStatus = false,
                 };
             }
@@ -182,7 +184,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å±¥æ­·æœªé–‹æ”¾",
+                    AlertText = "¼i¾ú¥¼¶}©ñ",
                     AlertStatus = false,
                 };
             }
@@ -191,7 +193,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "æœƒå“¡è³‡æ–™ä¸å…¨",
+                    AlertText = "·|­û¸ê®Æ¤£¥ş",
                     AlertStatus = false,
                 };
             }
@@ -201,7 +203,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å·²æœ‰æ‡‰å¾µç´€éŒ„",
+                    AlertText = "¤w¦³À³¼x¬ö¿ı",
                     AlertStatus = false
                 };
             }
@@ -213,6 +215,20 @@ namespace JobHunting.Controllers
                 CompanyId = o.CompanyId,
                 CompanyName = o.Company.CompanyName,
             }).FirstOrDefaultAsync();
+
+            if (companyOpening == null)
+            {
+                return new ApplyJobOutputViewModel
+                {
+                    AlertText = "¥¢±Ñ",
+                    AlertStatus = false
+                };
+            }
+
+            var opening = await _context.Openings.FindAsync(cajvm.openingId);
+            opening.ResumeNumber++;
+
+            _context.Entry(opening).State = EntityState.Modified;
 
             ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
             {
@@ -236,14 +252,14 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "å¤±æ•—",
+                    AlertText = "¥¢±Ñ",
                     AlertStatus = false
                 };
             }
 
             return new ApplyJobOutputViewModel
             {
-                AlertText = $"ä»¥ {resume.Title} æ‡‰å¾µ {companyOpening.CompanyName} çš„ {companyOpening.OpeningTitle} æˆåŠŸ",
+                AlertText = $"¥H {resume.Title} À³¼x {companyOpening.CompanyName} ªº {companyOpening.OpeningTitle} ¦¨¥\",
                 AlertStatus = true,
             };
         }
@@ -254,7 +270,7 @@ namespace JobHunting.Controllers
             var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
             var temp = source.Select(b => new CompanyClassSelectViewModelcs
             {
-                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName }),
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
                 CompanyCategoryId = b.CompanyCategoryId,
                 CompanyCategoryName = b.CompanyCategoryName,
             });
@@ -273,8 +289,8 @@ namespace JobHunting.Controllers
             IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
-
-            return "æ–°å¢ä¿¡ä»¶æˆåŠŸ";
+            
+            return "·s¼W«H¥ó¦¨¥\";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
@@ -309,118 +325,75 @@ namespace JobHunting.Controllers
             {
                 var candidateLogin = loginRequest.CandidateLoginVM;
 
-                // æ±‚è·è€…é©—è­‰é‚è¼¯
+                // ¨DÂ¾ªÌÅçÃÒÅŞ¿è
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
 
-                if (candidate != null && candidate.Password == candidateLogin.Password) // å‡è¨­å¯†ç¢¼æ˜¯æ˜æ–‡å„²å­˜
+                if (candidate != null && candidate.Password == candidateLogin.Password) // °²³]±K½X¬O©ú¤åÀx¦s
                 {
-                    // é©—è­‰é€šéï¼Œå»ºç«‹ claimsï¼ŒåŒ…å« CandidateId
+                    // ÅçÃÒ³q¹L¡A«Ø¥ß claims¡A¥]§t CandidateId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // å­˜å…¥ CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // ä½¿ç”¨èº«åˆ†è­‰å­—è™Ÿä½œç‚ºåç¨±
-                new Claim(ClaimTypes.Role, "candidate")                                  // è¨­å®šè§’è‰²ç‚º candidate
+                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // ¦s¤J CandidateId
+                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // ¨Ï¥Î¨­¤ÀÃÒ¦r¸¹§@¬°¦WºÙ
+                new Claim(ClaimTypes.Role, "candidate")                                  // ³]©w¨¤¦â¬° candidate
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // ä½¿ç”¨ Cookie èªè­‰é€²è¡Œç™»å…¥
+                    // ¨Ï¥Î Cookie »{ÃÒ¶i¦æµn¤J
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "æ±‚è·è€…ç™»å…¥æˆåŠŸ", role = "candidate" });
+                    return Json(new { success = true, message = "¨DÂ¾ªÌµn¤J¦¨¥\", role = "candidate" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "æ±‚è·è€…ç™»å…¥å¤±æ•—ï¼šå¸³è™Ÿæˆ–å¯†ç¢¼éŒ¯èª¤" });
+                    return Json(new { success = false, message = "¨DÂ¾ªÌµn¤J¥¢±Ñ¡G±b¸¹©Î±K½X¿ù»~" });
                 }
             }
             else if (loginRequest.Role == "company")
             {
                 var companyLogin = loginRequest.CompanyLoginVM;
 
-                // å…¬å¸é©—è­‰é‚è¼¯
+                // ¤½¥qÅçÃÒÅŞ¿è
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
 
-                if (company != null && company.Password == companyLogin.Password) // å‡è¨­å¯†ç¢¼æ˜¯æ˜æ–‡å„²å­˜
+                if (company != null && company.Password == companyLogin.Password) // °²³]±K½X¬O©ú¤åÀx¦s
                 {
-                    // é©—è­‰é€šéï¼Œå»ºç«‹ claimsï¼ŒåŒ…å« CompanyId
+                    // ÅçÃÒ³q¹L¡A«Ø¥ß claims¡A¥]§t CompanyId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // å­˜å…¥ CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // ä½¿ç”¨çµ±ä¸€ç·¨è™Ÿä½œç‚ºåç¨±
-                new Claim(ClaimTypes.Role, "company")                                 // è¨­å®šè§’è‰²ç‚º company
+                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // ¦s¤J CompanyId
+                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // ¨Ï¥Î²Î¤@½s¸¹§@¬°¦WºÙ
+                new Claim(ClaimTypes.Role, "company")                                 // ³]©w¨¤¦â¬° company
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // ä½¿ç”¨ Cookie èªè­‰é€²è¡Œç™»å…¥
+                    // ¨Ï¥Î Cookie »{ÃÒ¶i¦æµn¤J
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "å…¬å¸ç™»å…¥æˆåŠŸ", role = "company" });
+                    return Json(new { success = true, message = "¤½¥qµn¤J¦¨¥\", role = "company" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "å…¬å¸ç™»å…¥å¤±æ•—ï¼šçµ±ä¸€ç·¨è™Ÿæˆ–å¯†ç¢¼éŒ¯èª¤" });
+                    return Json(new { success = false, message = "¤½¥qµn¤J¥¢±Ñ¡G²Î¤@½s¸¹©Î±K½X¿ù»~" });
                 }
             }
-              
-            return Json(new { success = false, message = "ç„¡æ•ˆçš„è§’è‰²" });
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> AdminDoLogin([FromBody] AdminLoginInputModel loginRequest)
-        {
-            // ç®¡ç†è€…é©—è­‰é‚è¼¯
-            var admin = _context.Admins
-                .FirstOrDefault(a => a.PersonnelCode == loginRequest.PersonnelCode);
-
-            if (admin != null && admin.Password == loginRequest.Password) // å‡è¨­å¯†ç¢¼æ˜¯æ˜æ–‡å„²å­˜
-            {
-                // é©—è­‰é€šéï¼Œå»ºç«‹ claimsï¼ŒåŒ…å« AdminId
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // å­˜å…¥ AdminId
-            new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // ä½¿ç”¨å·¥è™Ÿä½œç‚ºåç¨±
-            new Claim(ClaimTypes.Role, "admin")                              // è¨­å®šè§’è‰²ç‚º admin
-        };
-
-                var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
-
-                // ä½¿ç”¨ Cookie èªè­‰é€²è¡Œç™»å…¥
-                await HttpContext.SignInAsync("AdminScheme", new ClaimsPrincipal(claimsIdentity));
-
-                return Json(new { success = true, message = "ç®¡ç†è€…ç™»å…¥æˆåŠŸ", role = "admin" });
-            }
-            else
-            {
-                return Json(new { success = false, message = "ç®¡ç†è€…ç™»å…¥å¤±æ•—ï¼šå·¥è™Ÿæˆ–å¯†ç¢¼éŒ¯èª¤" });
-            }
+            return Json(new { success = false, message = "µL®Äªº¨¤¦â" });
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            // åŸ·è¡Œç™»å‡ºæ“ä½œï¼Œæ¸…é™¤ä½¿ç”¨è€…ç™»å…¥è³‡è¨Š
+            // °õ¦æµn¥X¾Ş§@¡A²M°£¨Ï¥ÎªÌµn¤J¸ê°T
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // é‡å°å‘åˆ°ç™»å…¥é é¢æˆ–é¦–é 
-            return RedirectToAction("Index", "Home");
+            // ­«¾É¦V¨ìµn¤J­¶­±©Î­º­¶
+            return RedirectToAction("Index", "Home"); 
         }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> AdminLogout()
-        {
-            // åŸ·è¡Œç™»å‡ºæ“ä½œï¼Œæ¸…é™¤ä½¿ç”¨è€…ç™»å…¥è³‡è¨Š
-            await HttpContext.SignOutAsync("AdminScheme");
-
-            // é‡å°å‘åˆ°ç™»å…¥é é¢æˆ–é¦–é 
-            return RedirectToAction("Index", "Home", new { area = "Admins" });
-        }
-
-
     }
 }

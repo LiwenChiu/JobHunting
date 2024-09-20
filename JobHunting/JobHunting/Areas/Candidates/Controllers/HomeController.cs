@@ -70,7 +70,10 @@ namespace JobHunting.Areas.Candidates.Controllers
                 {
                     ResumeId = r.ResumeId,
                     Title = r.Title,
-                }).Take(2);
+                    LastEditTime = r.LastEditTime,
+                })
+                .OrderByDescending(r => r.LastEditTime)
+                .Take(2);
         }
 
         
@@ -86,10 +89,10 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new List<GetCandidateOpeningLikeRecordsViewModel>(); // 或處理未授權訪問的情況
             }
-            var query = await _context.Candidates.Include(x => x.Openings).ThenInclude(x => x.Tags)
-                .Include(x => x.Openings).ThenInclude(x => x.TitleClasses)
-                .Include(x => x.Openings).ThenInclude(x => x.Company)
+
+            var query = await _context.Candidates.Include(x => x.Openings)
                 .FirstOrDefaultAsync(x => x.CandidateId.ToString() == CandidateId);
+
             if (query == null)
             {
                 return new List<GetCandidateOpeningLikeRecordsViewModel>();
@@ -99,7 +102,10 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 OpeningId = ror.OpeningId,
                 OpeningTitle = ror.Title,
-            }).Take(2);
+                ResumeNumber = ror.ResumeNumber,
+            })
+            .OrderByDescending(r => r.ResumeNumber)
+            .Take(2);
         }
 
         public async Task<FileResult> GetPicture(int CandidateId)

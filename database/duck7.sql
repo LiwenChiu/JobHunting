@@ -74,6 +74,10 @@ CREATE TABLE Openings
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320),
 	ReleaseYN bit not null default(0),
+	RequiredNumber int default(1)
+		CHECK(RequiredNumber >= 1),
+	ResumeNumber int default(0)
+		CHECK(ResumeNumber >= 0),
 )
 GO
 CREATE TABLE OpeningTitleClasses
@@ -119,6 +123,7 @@ CREATE TABLE Resumes
 	[Time] nvarchar(60),
 	[Address] nvarchar(100),
 	ReleaseYN bit not null default(1),
+	LastEditTime datetime not null,
 )
 GO
 CREATE TABLE ResumeTitleClasses
@@ -216,7 +221,7 @@ CREATE TABLE PricingPlans
 	Duration int not null,
 	Price money
 		CHECK(Price >= 0),
-	Discount decimal(5,4) default(1)
+	Discount decimal(7,6) default(1)
 		CHECK((Discount <= 1) AND (Discount > 0)),
 	[Status] bit not null default(1),
 )

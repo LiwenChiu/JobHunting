@@ -9,7 +9,11 @@ namespace JobHunting.ViewModel
         public string CompanyName { get; set; }
 
         public string? Address { get; set; }
-        
+
+        public int? RequiredNumber { get; set; }
+
+        public int? ResumeNumber { get; set; }
+
         public string? Description { get; set; }
 
         public string? Benefit { get; set; }
