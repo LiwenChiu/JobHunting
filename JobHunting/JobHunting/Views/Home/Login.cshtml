@@ -9,7 +9,7 @@
         }
     </style>
 } *@
-<div id="app">
+<div id="applogin">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <h2 class="text-center">會員登入</h2>
@@ -70,8 +70,8 @@
 
 @section Scripts {
    
-   @*  <script>
-        const vueLetter = {
+    <script>
+        const vuelogin = {
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
@@ -83,8 +83,10 @@
                 };
             },
             methods: {
-                DoLogin: function () {
+                DoLogin: function (event) {
                     let _this = this;
+                    event.preventDefault(); // 防止表單默認提交
+
                     let request = {
                         Role: _this.role,
                         CandidateLoginVM: _this.role == 'candidate' ? {
@@ -101,7 +103,11 @@
                     axios.post(`${_this.baseAddress}/Home/DoLogin`, request)
                         .then(response => {
                             if (response.data.success) {
-                                window.location.href = 'https://localhost:7169/home';
+                                if (response.data.role == 'candidate') {
+                                    window.location.href = '/Home/Index'; // 或者其他求職者頁面
+                                } else if (response.data.role == 'company') {
+                                    window.location.href = '/Companies'; // 或者其他公司頁面
+                                }
                             } else {
                                 alert('登入失敗：' + response.data.message);
                             }
@@ -114,7 +120,7 @@
 
             }
         };
-        Vue.createApp(vueLetter).mount("#app")
-    </script> *@
+        Vue.createApp(vuelogin).mount("#applogin")
+    </script>
 }
 
