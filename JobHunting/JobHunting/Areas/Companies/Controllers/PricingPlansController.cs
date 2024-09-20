@@ -9,9 +9,11 @@ using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class PricingPlansController : Controller
     {
