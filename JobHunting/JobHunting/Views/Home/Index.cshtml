@@ -113,7 +113,11 @@
                     <td>地區</td>
                     <td>工作內容</td>
                     <td>薪資條件</td>
-                    <td>應徵 / 儲存</td>
+                    <template v-if="memberRole=='candidate'">
+                        <td>應徵 / 儲存</td>
+                    </template>
+                    <template v-else>
+                    </template>
                 </tr>
             </thead>
             <tbody align="center">
@@ -124,17 +128,21 @@
                     <td>{{item.address}}</td>
                     <td>{{item.description}}</td>
                     <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
-                    <td>
-                        <button type="button" class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#applyJobModal" v-on:click="getOpening(item.openingId)">
-                            應徵
-                        </button>
-                        <template v-if="item.likeYN == false">
-                            <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
-                        </template>
-                        <template v-else>
-                            <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
-                        </template>
-                    </td>
+                    <template v-if="memberRole=='candidate'">
+                        <td>
+                            <button type="button" class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#applyJobModal" v-on:click="getOpening(item.openingId)">
+                                應徵
+                            </button>
+                            <template v-if="item.likeYN == false">
+                                <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
+                            </template>
+                            <template v-else>
+                                <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
+                            </template>
+                        </td>
+                    </template>
+                    <template v-else>
+                    </template>
                 </tr>
             </tbody>
         </table>
@@ -243,7 +251,6 @@
                     currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
-                    candidateId: 2,
                     openings: [],
                     cityList: [],
                     city: "",
@@ -263,6 +270,8 @@
                     applyJobYN: false,
                     selectedOpeningId: null,
                     selectedResumeId: null,
+
+                    memberRole: "",
                 };
             },
             methods: {
@@ -344,7 +353,6 @@
                 addFavorite(item) {
                     let self = this;
                     request = {
-                        candidateId: self.candidateId,
                         openingId: item,
                     };
                     axios.post(`${self.baseAddress}/Home/AddFavorite`, request, {
@@ -358,9 +366,7 @@
                 },
                 deleteFavorite: function (openingId) {
                     let self = this;
-
                     let request = {
-                        CandidateId: self.candidateId,
                         OpeningId: openingId,
                     };
 
@@ -389,7 +395,6 @@
                     this.applyJobYN = true;
                     axios.get(`${this.baseAddress}/Home/ResumesJson`,
                         {
-                            params: { id: this.candidateId },
                             headers: {
                                 "Content-Type": "application/json",
                             },
@@ -399,7 +404,6 @@
                 },
                 applyJob: function () {
                     let request = {};
-                    request.candidateId = this.candidateId;
                     request.resumeId = this.selectedResumeId;
                     request.openingId = this.selectedOpeningId;
                     axios.post(`${this.baseAddress}/Home/ApplyJob`, request, {
@@ -418,6 +422,20 @@
                 cancelApplyJob: function () {
                     this.applyJobYN = false;
                     this.selectedResumeId = null;
+                },
+                getRole: function () {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                 },
             },
             watch:{
@@ -439,6 +457,7 @@
                 self.openingsList();
                 self.getCity();
                 self.getCompanyClass();
+                self.getRole();
             }
         };
         let listData = Vue.createApp(vueList).mount("#app1");

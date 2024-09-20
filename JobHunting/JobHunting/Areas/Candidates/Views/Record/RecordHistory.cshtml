@@ -11,30 +11,56 @@
                 <tr>
                     @* <th scope="row"></th> *@
                     <th>公司名稱</th>
-                    <th>職缺</th>
+                    <th>
+                        <select class="btn" style="font-weight:bold" v-model.lazy="selectedOpening">
+                            <option :value="undefined" selected>職缺名稱</option>
+                            <option v-for="item in openings" :value="item.openingTitle">{{item.openingTitle}}</option>
+                        </select>
+                    </th>
                     <th>履歷</th>
                     <th>應徵日期</th>
-                    <th>是否面試</th>
-                    <th>是否錄取</th>
+                    <th>
+                        <select class="btn" v-model.lazy="selectedInterviewYN" v-on:change="filterRecord" style="font-weight:bold">
+                            <option :value="undefined" selected>是否面試</option>
+                            <option :value="true">已面試</option>
+                            <option :value="false">未面試</option>
+                        </select>
+                    </th>
+                    <th>
+                        <select class="btn" v-model.lazy="selectedHireYN" v-on:change="filterRecord" style="font-weight:bold">
+                            <option :value="undefined" selected>是否錄取</option>
+                            <option :value="true">已錄取</option>
+                            <option :value="false">未錄取</option>
+                        </select>
+                    </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 @* item後面帶入的參數要小寫 *@
-                <tr v-for="item,idx in openings.slice(pageStart,pageEnd)">
+                <tr v-for="item in displayOpening.slice(pageStart,pageEnd)">
                     @* <th>{{item.resumeOpeningRecordID}}</th> *@
                     <td>{{item.companyName}}</td>
                     <td>{{item.openingTitle}}</td>
                     <td>{{item.title}}</td>
                     <td>{{item.applyDate}}</td>
-                    <td>
+
+                    @* 是否面試欄位 *@
+                    <td v-html="selectInterviewYN(item.interviewYN)">
+                    </td>
+                    @* 是否錄取欄位 *@
+                    <td v-html="selectselectedHireYN(item.hireYN)">
+                    </td>
+
+
+                    @* <td>
                         <template v-if="item.interviewYN == true"><i class="fa-solid fa-square-check" style="font-size:30px"></i></template>
                         <template v-else><i class="fa-solid fa-square-xmark" style="font-size:30px"></i></template>
                     </td>
                     <td>
                         <template v-if="item.hireYN == true"><i class="fa-solid fa-square-check" style="font-size:30px"></i></template>
                         <template v-else><i class="fa-solid fa-square-xmark" style="font-size:30px"></i></template>
-                    </td>   
+                    </td>    *@
                     <td>
                         <button type="button" data-bs-toggle="modal"
                                 :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
@@ -168,6 +194,10 @@
                     Tags: [],
                     TagClasses: [],
                     TagCheckedResume: [],
+
+                    selectedInterviewYN:undefined,
+                    selectedHireYN:undefined,
+                    selectedOpening:undefined,
                 };
             },
             computed: {
@@ -183,6 +213,16 @@
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
                 },
+
+                displayOpening() {
+                    if (!this.selectedOpening) {
+                        return this.openings;
+                    } else {
+                        return this.openings.filter(item => item.openingTitle == this.selectedOpening);
+                    }
+                    return this.openings
+                },
+
             },
             methods: {
                 setPage(page) {
@@ -238,7 +278,12 @@
                         CompanyName: _this.filter,
                         ApplyDate: _this.filter,
                         OpeningTitle: _this.filter,
-                        Title: _this.filter
+                        Title: _this.filter,
+                        InterviewYN: _this.selectedInterviewYN,
+                        HireYN: _this.selectedHireYN,
+
+                        
+
                     };
                     axios.post(`${_this.baseAddress}/Candidates/Record/filter`, request, {
                         headers: {
@@ -276,6 +321,18 @@
                         err => { alert(err) }
                     );
                 },
+
+
+                //判斷是否面試，已面試 V icon 未面試 X icon
+                selectInterviewYN(item) {
+                    return item == true ? '<i class="fa-solid fa-square-check" style="font-size:30px"></i>' : '<i class="fa-solid fa-square-xmark" style="font-size:30px"></i>';
+                },
+                //判斷是否錄取，已錄取 V icon 未錄取 X icon
+                selectselectedHireYN(item) {
+                    return item == true ? '<i class="fa-solid fa-square-check" style="font-size:30px"></i>' : '<i class="fa-solid fa-square-xmark" style="font-size:30px"></i>';
+                },
+
+
             },
             mounted: function () {
                 let _this = this;

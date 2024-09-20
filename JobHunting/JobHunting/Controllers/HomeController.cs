@@ -39,6 +39,12 @@ namespace JobHunting.Controllers
          
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
+            //var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            //if (candidateIdClaim == null)
+            //{
+            //    return null;
+            //}
+            //var candidateId = int.Parse(candidateIdClaim.Value);
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
                 OpeningId = b.OpeningId,
@@ -72,8 +78,17 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (candidateIdClaim == null)
+                {
+                    return "無法獲取使用者 ID，請重新登入";
+                }
+
+                // 確保 CandidateId 是從認證資料獲取
+                var candidateId = int.Parse(candidateIdClaim.Value);
+
                 var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
-                var candidateIdParam = new SqlParameter("@CandidateId", favorite.CandidateId);
+                var candidateIdParam = new SqlParameter("@CandidateId", candidateId);
                 var openingIdParam = new SqlParameter("@OpeningId", favorite.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
@@ -92,8 +107,16 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (candidateIdClaim == null)
+                {
+                    return "無法獲取使用者 ID，請重新登入";
+                }
+
+                // 確保 CandidateId 是從認證資料獲取
+                var candidateId = int.Parse(candidateIdClaim.Value);
                 var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CandidateId = @CandidateId AND OpeningId = @OpeningId";
-                var candidateIdParam = new SqlParameter("@CandidateId", dfovm.CandidateId);
+                var candidateIdParam = new SqlParameter("@CandidateId", candidateId);
                 var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
@@ -141,10 +164,17 @@ namespace JobHunting.Controllers
         }
 
         //GET: Home/ResumesJson
-        public async Task<IEnumerable<ResumesOutputViewModel>> ResumesJson(int id)
+        public async Task<IEnumerable<ResumesOutputViewModel>> ResumesJson()
         {
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                
+                return Enumerable.Empty<ResumesOutputViewModel>();
+            }
+            var candidateId = int.Parse(candidateIdClaim.Value);
             var resumes = _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == id && r.ReleaseYN == true)
+                .Where(r => r.CandidateId == candidateId && r.ReleaseYN == true)
                 .Select(r => new ResumesOutputViewModel
                 {
                     ResumeId = r.ResumeId,
@@ -157,18 +187,22 @@ namespace JobHunting.Controllers
         //POST: Home/ApplyJob
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ApplyJobOutputViewModel> ApplyJob([FromBody][Bind("candidateId,resumeId,openingId")] ApplyJobViewModel cajvm)
+        public async Task<ApplyJobOutputViewModel> ApplyJob([FromBody][Bind("resumeId,openingId")] ApplyJobViewModel cajvm)
         {
-            if (!ModelState.IsValid)
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "失敗",
+                    AlertText = "未找到 CandidateId，請重新登入",
                     AlertStatus = false,
                 };
             }
 
-            var Candidate = await _context.Candidates.FindAsync(cajvm.candidateId);
+            // 轉換 CandidateId
+            var candidateId = int.Parse(candidateIdClaim.Value);
+
+            var Candidate = await _context.Candidates.FindAsync(candidateId);
             if (Candidate == null)
             {
                 return new ApplyJobOutputViewModel
@@ -284,6 +318,7 @@ namespace JobHunting.Controllers
             });
             return Json(temp);
         }
+        [Authorize]
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {
@@ -646,11 +681,21 @@ namespace JobHunting.Controllers
         {
             // 執行登出操作，清除使用者登入資訊
             await HttpContext.SignOutAsync("AdminScheme");
-   
+
             // 重導向到登入頁面或首頁
             return RedirectToAction("Login", "Home", new { area = "Admins" });
         }
 
+        public async Task<string> GetRole()
+        {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return "未授權訪問";
+            }
+
+            return "candidate";
+        }
 
     }
 }
