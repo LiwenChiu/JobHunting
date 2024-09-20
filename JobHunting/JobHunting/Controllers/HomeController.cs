@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using System.Text.Json;
+using JobHunting.Services;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -20,11 +21,13 @@ namespace JobHunting.Controllers
         private readonly ILogger<HomeController> _logger;
         DuckContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
-        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory)
+        private readonly EmailService _emailserver;
+        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory , EmailService emailserver)
         {
             _logger = logger;
             _context = context;
             _httpClientFactory = httpClientFactory;
+            _emailserver = emailserver;
         }
         public IActionResult Index()
         {
@@ -450,8 +453,8 @@ namespace JobHunting.Controllers
                     NationalId = cr.NationalId,
                     Email = cr.Email,
                     Password = cr.Password,
-
-                };
+                    VerifyEmailYN = cr.VerifyEmailYN,
+    };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -475,7 +478,8 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "註冊失敗", });
             }
 
-            return Json(new { success = true, message = "已註冊成功", });
+            _emailserver.SendEmail("TIM102FirstGroup@gmail.com", "您已註冊'小鴨上工'的會員成功", "請點選驗證信驗證帳號。");
+            return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱驗證帳號'", });
         }
 
 
@@ -581,6 +585,21 @@ namespace JobHunting.Controllers
             }
             return true;
         }
+
+
+        // 這是你現有的註冊方法或者可以是其他方法
+        //[HttpGet]
+        //public IActionResult SendTestEmail(string toEmail)
+        //{
+        //    // 實例化 EmailService 類別
+        //    var emailService = new EmailService();
+
+        //    // 調用 SendEmail 方法，發送郵件
+        //    emailService.SendEmail(toEmail, "測試郵件", "這是一個測試郵件內容。");
+
+        //    // 返回簡單的結果，表示郵件已發送
+        //    return Json(new { success = true, message = "測試郵件已發送至 " + toEmail });
+        //}
 
 
 
