@@ -1,6 +1,7 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
 using JobHunting.Areas.Companies.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -9,6 +10,7 @@ using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
+    [Authorize(Roles = "candidate")]
     [Area("Candidates")]
     public class MemberController : Controller
     {
