@@ -1,4 +1,4 @@
-using Azure.Core;
+ï»¿using Azure.Core;
 using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
@@ -71,11 +71,11 @@ namespace JobHunting.Controllers
             }
             catch (Exception ex)
             {
-                return "¦¹Â¾¯Ê¤w¦¬ÂÃ";
+                return "æ­¤è·ç¼ºå·²æ”¶è—";
             }
 
 
-            return "Â¾¯Ê¤w¦¨¥\¦¬ÂÃ";
+            return "è·ç¼ºå·²æˆåŠŸæ”¶è—";
         }
 
         [HttpPost]
@@ -91,12 +91,12 @@ namespace JobHunting.Controllers
             }
             catch (Exception ex)
             {
-                return "¨ú®ø¦¬ÂÃÂ¾¯Ê¥¢±Ñ";
+                return "å–æ¶ˆæ”¶è—è·ç¼ºå¤±æ•—";
             }
 
-            return "¨ú®ø¦¬ÂÃÂ¾¯Ê¦¨¥\";
+            return "å–æ¶ˆæ”¶è—è·ç¼ºæˆåŠŸ";
         }
-
+        
         //GET: Home/GetOpening
         public async Task<GetOpeningOutputViewModel> GetOpening(int id)
         {
@@ -155,7 +155,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¥¢±Ñ",
+                    AlertText = "å¤±æ•—",
                     AlertStatus = false,
                 };
             }
@@ -165,7 +165,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¥¢±Ñ",
+                    AlertText = "å¤±æ•—",
                     AlertStatus = false,
                 };
             }
@@ -175,7 +175,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¥¢±Ñ",
+                    AlertText = "å¤±æ•—",
                     AlertStatus = false,
                 };
             }
@@ -184,7 +184,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¼i¾ú¥¼¶}©ñ",
+                    AlertText = "å±¥æ­·æœªé–‹æ”¾",
                     AlertStatus = false,
                 };
             }
@@ -193,7 +193,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "·|­û¸ê®Æ¤£¥ş",
+                    AlertText = "æœƒå“¡è³‡æ–™ä¸å…¨",
                     AlertStatus = false,
                 };
             }
@@ -203,7 +203,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¤w¦³À³¼x¬ö¿ı",
+                    AlertText = "å·²æœ‰æ‡‰å¾µç´€éŒ„",
                     AlertStatus = false
                 };
             }
@@ -220,7 +220,7 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¥¢±Ñ",
+                    AlertText = "å¤±æ•—",
                     AlertStatus = false
                 };
             }
@@ -252,14 +252,14 @@ namespace JobHunting.Controllers
             {
                 return new ApplyJobOutputViewModel
                 {
-                    AlertText = "¥¢±Ñ",
+                    AlertText = "å¤±æ•—",
                     AlertStatus = false
                 };
             }
 
             return new ApplyJobOutputViewModel
             {
-                AlertText = $"¥H {resume.Title} À³¼x {companyOpening.CompanyName} ªº {companyOpening.OpeningTitle} ¦¨¥\",
+                AlertText = $"ä»¥ {resume.Title} æ‡‰å¾µ {companyOpening.CompanyName} çš„ {companyOpening.OpeningTitle} æˆåŠŸ",
                 AlertStatus = true,
             };
         }
@@ -290,7 +290,7 @@ namespace JobHunting.Controllers
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
 
-            return "·s¼W«H¥ó¦¨¥\";
+            return "æ–°å¢ä¿¡ä»¶æˆåŠŸ";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
@@ -325,74 +325,74 @@ namespace JobHunting.Controllers
             {
                 var candidateLogin = loginRequest.CandidateLoginVM;
 
-                // ¨DÂ¾ªÌÅçÃÒÅŞ¿è
+                // æ±‚è·è€…é©—è­‰é‚è¼¯
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
 
-                if (candidate != null && candidate.Password == candidateLogin.Password) // °²³]±K½X¬O©ú¤åÀx¦s
+                if (candidate != null && candidate.Password == candidateLogin.Password) // å‡è¨­å¯†ç¢¼æ˜¯æ˜æ–‡å„²å­˜
                 {
-                    // ÅçÃÒ³q¹L¡A«Ø¥ß claims¡A¥]§t CandidateId
+                    // é©—è­‰é€šéï¼Œå»ºç«‹ claimsï¼ŒåŒ…å« CandidateId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // ¦s¤J CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // ¨Ï¥Î¨­¤ÀÃÒ¦r¸¹§@¬°¦WºÙ
-                new Claim(ClaimTypes.Role, "candidate")                                  // ³]©w¨¤¦â¬° candidate
+                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // å­˜å…¥ CandidateId
+                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // ä½¿ç”¨èº«åˆ†è­‰å­—è™Ÿä½œç‚ºåç¨±
+                new Claim(ClaimTypes.Role, "candidate")                                  // è¨­å®šè§’è‰²ç‚º candidate
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // ¨Ï¥Î Cookie »{ÃÒ¶i¦æµn¤J
+                    // ä½¿ç”¨ Cookie èªè­‰é€²è¡Œç™»å…¥
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "¨DÂ¾ªÌµn¤J¦¨¥\", role = "candidate" });
+                    return Json(new { success = true, message = "æ±‚è·è€…ç™»å…¥æˆåŠŸ", role = "candidate" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "¨DÂ¾ªÌµn¤J¥¢±Ñ¡G±b¸¹©Î±K½X¿ù»~" });
+                    return Json(new { success = false, message = "æ±‚è·è€…ç™»å…¥å¤±æ•—ï¼šå¸³è™Ÿæˆ–å¯†ç¢¼éŒ¯èª¤" });
                 }
             }
             else if (loginRequest.Role == "company")
             {
                 var companyLogin = loginRequest.CompanyLoginVM;
 
-                // ¤½¥qÅçÃÒÅŞ¿è
+                // å…¬å¸é©—è­‰é‚è¼¯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
 
-                if (company != null && company.Password == companyLogin.Password) // °²³]±K½X¬O©ú¤åÀx¦s
+                if (company != null && company.Password == companyLogin.Password) // å‡è¨­å¯†ç¢¼æ˜¯æ˜æ–‡å„²å­˜
                 {
-                    // ÅçÃÒ³q¹L¡A«Ø¥ß claims¡A¥]§t CompanyId
+                    // é©—è­‰é€šéï¼Œå»ºç«‹ claimsï¼ŒåŒ…å« CompanyId
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // ¦s¤J CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // ¨Ï¥Î²Î¤@½s¸¹§@¬°¦WºÙ
-                new Claim(ClaimTypes.Role, "company")                                 // ³]©w¨¤¦â¬° company
+                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // å­˜å…¥ CompanyId
+                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // ä½¿ç”¨çµ±ä¸€ç·¨è™Ÿä½œç‚ºåç¨±
+                new Claim(ClaimTypes.Role, "company")                                 // è¨­å®šè§’è‰²ç‚º company
             };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // ¨Ï¥Î Cookie »{ÃÒ¶i¦æµn¤J
+                    // ä½¿ç”¨ Cookie èªè­‰é€²è¡Œç™»å…¥
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "¤½¥qµn¤J¦¨¥\", role = "company" });
+                    return Json(new { success = true, message = "å…¬å¸ç™»å…¥æˆåŠŸ", role = "company" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "¤½¥qµn¤J¥¢±Ñ¡G²Î¤@½s¸¹©Î±K½X¿ù»~" });
+                    return Json(new { success = false, message = "å…¬å¸ç™»å…¥å¤±æ•—ï¼šçµ±ä¸€ç·¨è™Ÿæˆ–å¯†ç¢¼éŒ¯èª¤" });
                 }
             }
 
-            return Json(new { success = false, message = "µL®Äªº¨¤¦â" });
+            return Json(new { success = false, message = "ç„¡æ•ˆçš„è§’è‰²" });
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            // °õ¦æµn¥X¾Ş§@¡A²M°£¨Ï¥ÎªÌµn¤J¸ê°T
+            // åŸ·è¡Œç™»å‡ºæ“ä½œï¼Œæ¸…é™¤ä½¿ç”¨è€…ç™»å…¥è³‡è¨Š
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // ­«¾É¦V¨ìµn¤J­¶­±©Î­º­¶
+            // é‡å°å‘åˆ°ç™»å…¥é é¢æˆ–é¦–é 
             return RedirectToAction("Index", "Home");
         }
     }
