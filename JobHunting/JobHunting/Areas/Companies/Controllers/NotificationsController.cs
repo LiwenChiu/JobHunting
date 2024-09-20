@@ -1,12 +1,14 @@
 ﻿using JobHunting.Areas.Admins.ViewModels;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class NotificationsController : Controller
     {

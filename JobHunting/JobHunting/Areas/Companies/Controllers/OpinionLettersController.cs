@@ -1,11 +1,13 @@
 ﻿using JobHunting.Areas.Candidates.ViewModels;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Areas.Companies.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class OpinionLettersController : Controller
     {
