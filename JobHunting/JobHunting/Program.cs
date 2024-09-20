@@ -33,8 +33,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(options =>
@@ -46,7 +44,10 @@ builder.Services.AddAuthentication(options =>
 {
     options.LoginPath = "/Home/Login";  // 設定登入頁面
     //options.AccessDeniedPath = "/Account/AccessDenied";  // 設定拒絕存取頁面
-});
+}).AddCookie("AdminScheme", options =>
+    options.LoginPath = "/Admins/Home/Login"
+
+);
 
 builder.Services.AddAuthorization();  // 添加授權服務
 var app = builder.Build();
@@ -69,7 +70,7 @@ app.UseStaticFiles();
 app.UseMiddleware<IgnoreRouteMiddleware>();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
@@ -94,3 +95,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+ 
