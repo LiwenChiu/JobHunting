@@ -10,12 +10,12 @@
 @* 收藏職缺 *@
 <div class="container-fluid py-2" id="OpeningApp">
     <label>篩選關鍵字：
-        <input type="text" class="form-control mb-2"  v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
+        <input type="text" class="mb-2"  v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
      </label>
     <div class="letters row">
         @* 職缺card *@
-        <div class="col-md-3 mb-4" v-for="item in openings.slice(pageStart,pageEnd)">
-            <div class="card" style="width: 16rem; height: 16rem;">
+        <div class="col-md-3 mb-2" v-for="item in openings.slice(pageStart,pageEnd)">
+            <div class="card" style="width: 18vw; height: 37vh;">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-10">
@@ -25,9 +25,10 @@
                         <div class="col-2">
                             <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteCandidateOpeningRelation(item)"></button>
                         </div>
-                    </div>
-                    <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
-                    <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
+                    </div> 
+                    <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
+                    <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
+                    <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right"></i> 需求人數 : {{item.requiredNumber}}</p>
                     @* 職缺內容按鈕 *@
                 </div>
                 <div class="card-footer text-center" style="background-color:transparent">
@@ -52,9 +53,10 @@
                 <div class="modal-content col-md-4">
                     @* 職缺顯示 *@
                     <div class="modal-header" style="background-color: #f7d179;">
-                        <h5 class="modal-title text-center" id="modal" style="width:95%">
+                        <h3 class="modal-title text-center text-light" id="modal" style="width:80%">
                             {{item.title}}
-                        </h5>
+                        </h3>
+                        <span class="text-light">已有: {{item.resumeNumber}}人投遞履歷</span>
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
@@ -71,6 +73,8 @@
                                         <p>{{item.title}}</p>
                                         <label class="">公司名稱:</label>
                                         <p>{{item.companyName}}</p>
+                                        <label class="">需求人數:</label>
+                                        <p>{{item.requiredNumber}}</p>
                                         <label class="">工作地點:</label>
                                         <p>{{item.address}}</p>
                                         <label class="">連絡人:</label>
@@ -126,26 +130,26 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div>
         @* 分頁 *@
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="setPage(currentPage-1)">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
-                        <a class="page-link" href="#">{{item}}</a>
-                    </li>
-                    <li class="page-item" v-on:click="setPage(currentPage+1)">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" style="margin-bottom: 0;">
+                <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                    <a class="page-link" href="#">{{item}}</a>
+                </li>
+                <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
@@ -323,6 +327,7 @@
                     .then(response => {
                         alert(response.data.alertText);
                         this.alertStatus = response.data.alertStatus;
+                        this.ReceiveOpeningData();
                     })
                     .catch(err => { alert(err) })
                     .finally(() => this.applyJobYN = false);

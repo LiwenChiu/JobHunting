@@ -29,7 +29,7 @@ namespace JobHunting.Controllers
             return View();
         }
 
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
@@ -107,6 +107,8 @@ namespace JobHunting.Controllers
                     OpeningTitle = o.Title,
                     CompanyName = o.Company.CompanyName,
                     Address = o.Address,
+                    RequiredNumber = o.RequiredNumber,
+                    ResumeNumber = o.ResumeNumber,
                     Description = o.Description,
                     Benefit = o.Benefits,
                     Degree = o.Degree,
@@ -214,6 +216,20 @@ namespace JobHunting.Controllers
                 CompanyName = o.Company.CompanyName,
             }).FirstOrDefaultAsync();
 
+            if (companyOpening == null)
+            {
+                return new ApplyJobOutputViewModel
+                {
+                    AlertText = "失敗",
+                    AlertStatus = false
+                };
+            }
+
+            var opening = await _context.Openings.FindAsync(cajvm.openingId);
+            opening.ResumeNumber++;
+
+            _context.Entry(opening).State = EntityState.Modified;
+
             ResumeOpeningRecord recordResumeOpening = new ResumeOpeningRecord
             {
                 ResumeId = cajvm.resumeId,
@@ -225,7 +241,7 @@ namespace JobHunting.Controllers
                 InterviewYN = false,
                 HireYN = false,
             };
-
+             
             _context.ResumeOpeningRecords.Add(recordResumeOpening);
 
             try
@@ -254,7 +270,7 @@ namespace JobHunting.Controllers
             var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
             var temp = source.Select(b => new CompanyClassSelectViewModelcs
             {
-                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName}),
+                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName }),
                 CompanyCategoryId = b.CompanyCategoryId,
                 CompanyCategoryName = b.CompanyCategoryName,
             });
@@ -273,7 +289,7 @@ namespace JobHunting.Controllers
             IsPicture(letter, opinionLetter);
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
-            
+
             return "新增信件成功";
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)

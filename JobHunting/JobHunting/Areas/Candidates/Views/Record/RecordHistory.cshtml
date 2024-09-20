@@ -11,23 +11,12 @@
                 <tr>
                     @* <th scope="row"></th> *@
                     <th>公司名稱</th>
-                    <th>職缺名稱</th>
+                    <th>職缺</th>
                     <th>履歷</th>
                     <th>應徵日期</th>
-                    <th>
-                        <select class="btn btn-outline-dark" v-model.lazy="selectedInterviewYN" v-on:change="filterRecord">
-                            <option v-bind:value="undefined" selected>是否面試</option>
-                            <option v-bind:value="true">已面試</option>
-                            <option v-bind:value ="false">未面試</option>
-                        </select>                        
-                    </th>
-                    <th>
-                        <select class="btn btn-outline-dark" v-model.lazy="selectedHireYN" v-on:change="filterRecord">
-                            <option v-bind:value="undefined" selected>是否錄取</option>
-                            <option v-bind:value="true">已錄取</option>
-                            <option v-bind:value="false">未錄取</option>
-                        </select>
-                    </th>
+                    <th>是否面試</th>
+                    <th>是否錄取</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -179,9 +168,6 @@
                     Tags: [],
                     TagClasses: [],
                     TagCheckedResume: [],
-
-                    selectedInterviewYN: undefined,
-                    selectedHireYN: undefined,
                 };
             },
             computed: {
@@ -252,9 +238,7 @@
                         CompanyName: _this.filter,
                         ApplyDate: _this.filter,
                         OpeningTitle: _this.filter,
-                        Title: _this.filter,
-                        InterviewYN: _this.selectedInterviewYN,
-                        HireYN: _this.selectedHireYN,
+                        Title: _this.filter
                     };
                     axios.post(`${_this.baseAddress}/Candidates/Record/filter`, request, {
                         headers: {
@@ -292,8 +276,6 @@
                         err => { alert(err) }
                     );
                 },
-
-
             },
             mounted: function () {
                 let _this = this;
