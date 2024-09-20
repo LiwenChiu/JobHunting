@@ -430,9 +430,14 @@ namespace JobHunting.Controllers
             }
 
             // 檢查電子郵件或身份證號是否已存在
-            if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId || c.Email == cr.Email))
+            if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId))
             {
-                return Json(new { success = false, message = "此電子郵件或身份證號已被註冊" });
+                return Json(new { success = false, message = "此身份證號已被註冊過" });
+            }
+
+            if (await _context.Candidates.AnyAsync(c => c.Email == cr.Email))
+            {
+                return Json(new { success = false, message = "此電子郵件已被註冊過" });
             }
 
             //// 密碼加密
@@ -447,7 +452,6 @@ namespace JobHunting.Controllers
                     Password = cr.Password,
 
                 };
-
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {

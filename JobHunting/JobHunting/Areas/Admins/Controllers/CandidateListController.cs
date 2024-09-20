@@ -1,9 +1,11 @@
 ﻿using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Admins.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
     [Area("Admins")]
     public class CandidateListController : Controller
     {
