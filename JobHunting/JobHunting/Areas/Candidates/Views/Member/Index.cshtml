@@ -256,6 +256,12 @@
                     }).then(response => this.CandiadteMemberData = response.data[0])
                         .catch(err => alert(err));
                 },
+                convertDateOnly: function (dateString) {
+                    if (!dateString) return null; // 檢查是否為空
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return null; // 檢查日期是否有效
+                    return date.toISOString().split('T')[0]; // 只取日期部分
+                },
                 saveEditMemberData:function(){
                     let str = "";
                     let wrongCount = 0;
@@ -285,7 +291,7 @@
                         request.Name = this.CandiadteMemberData.name;
                         request.Email = this.CandiadteMemberData.email;
                         request.Sex = this.CandiadteMemberData.sex;
-                        request.Birthday = this.CandiadteMemberData.birthday;
+                        request.Birthday = this.convertDateOnly(this.CandiadteMemberData.birthday);
                         request.TitleClassId = this.CandiadteMemberData.titleClassId;
                         request.Phone = this.CandiadteMemberData.phone;
                         request.Address = this.CandiadteMemberData.address;
