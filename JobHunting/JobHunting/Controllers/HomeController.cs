@@ -96,7 +96,7 @@ namespace JobHunting.Controllers
 
             return "取消收藏職缺成功";
         }
-
+  
         //GET: Home/GetOpening
         public async Task<GetOpeningOutputViewModel> GetOpening(int id)
         {
