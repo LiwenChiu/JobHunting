@@ -35,6 +35,8 @@ public partial class Candidate
 
     public string MilitaryService { get; set; }
 
+    public bool VerifyEmailYN { get; set; }
+
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual ICollection<OpinionLetter> OpinionLetters { get; set; } = new List<OpinionLetter>();
