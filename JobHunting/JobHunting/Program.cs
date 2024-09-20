@@ -1,4 +1,4 @@
-using JobHunting.Areas.Admins.Models;
+ï»¿using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Data;
@@ -42,14 +42,14 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = "/Home/Login";  // ³]©wµn¤J­¶­±
-    //options.AccessDeniedPath = "/Account/AccessDenied";  // ³]©w©Úµ´¦s¨ú­¶­±
+    options.LoginPath = "/Home/Login";  // è¨­å®šç™»å…¥é é¢
+    //options.AccessDeniedPath = "/Account/AccessDenied";  // è¨­å®šæ‹’çµ•å­˜å–é é¢
 }).AddCookie("AdminScheme", options =>
     options.LoginPath = "/Admins/Home/Login"
 
 );
 
-builder.Services.AddAuthorization();  // ²K¥[±ÂÅvªA°È
+builder.Services.AddAuthorization();  // æ·»åŠ æˆæ¬Šæœå‹™
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -95,3 +95,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+ 

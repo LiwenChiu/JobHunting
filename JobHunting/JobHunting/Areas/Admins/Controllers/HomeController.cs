@@ -35,7 +35,7 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        
+         
 
     }
 }
