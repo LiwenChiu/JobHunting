@@ -28,7 +28,7 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-
+          
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page,int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
