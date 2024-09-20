@@ -12,17 +12,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
- 
+using System.Text.Json;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         DuckContext _context;
-        public HomeController(ILogger<HomeController> logger, DuckContext context)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
         public IActionResult Index()
         {
@@ -414,6 +416,170 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "管理者登入失敗：工號或密碼錯誤" });
             }
         }
+
+
+        /* ------------------  求職端註冊  ---------------------  */
+
+        //POST : Home/AddCandidateRedgister
+        [HttpPost]
+        public async Task<IActionResult> AddCandidateRedgister([FromBody] CandidateRegisterVM cr)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+            // 檢查電子郵件或身份證號是否已存在
+            if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId || c.Email == cr.Email))
+            {
+                return Json(new { success = false, message = "此電子郵件或身份證號已被註冊" });
+            }
+
+            //// 密碼加密
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+
+            try
+            {
+                Candidate inster = new Candidate
+                {
+                    NationalId = cr.NationalId,
+                    Email = cr.Email,
+                    Password = cr.Password,
+
+                };
+
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Candidates.Add(inster);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
+            }
+
+            return Json(new { success = true, message = "已註冊成功", });
+        }
+
+
+        /* ------------------  公司端註冊  ---------------------  */
+
+        //POST : Home/AddCompanyRedgister
+        [HttpPost]
+        public async Task<IActionResult> AddCompanyRedgister([FromBody] CompanyRegisterVM cr)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+            // 驗證統一編號
+            if (!await ValidateGUINumber(cr.GUINumber, cr.CompanyName))
+            {
+                return Json(new { success = false, message = "統一編號 or 公司名稱輸入錯誤" });
+            }
+
+            if (await _context.Companies.AnyAsync(c => c.GUINumber == cr.GUINumber))
+            {
+                return Json(new { success = false, message = "此統一編號已被註冊過" });
+            }
+
+
+            //// 密碼加密
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+
+            try
+            {
+                Company inster = new Company
+                {
+                    GUINumber = cr.GUINumber,
+                    CompanyName = cr.CompanyName,
+                    ContactName = cr.ContactName,
+                    ContactPhone = cr.ContactPhone,
+                    ContactEmail = cr.ContactEmail,
+                    Status = cr.Status,
+                    Date = cr.Date,
+                    Address = cr.Address,
+                    Password = cr.Password,
+
+                };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Companies.Add(inster);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "註冊過程中發生錯誤");
+                return Json(new { success = false, message = "註冊失敗", });
+            }
+
+            return Json(new { success = true, message = "已註冊完成，目前已進入「審核」，待審核完畢會再通知結果。 ", });
+        }
+
+
+        // 公司行號營業項目代碼 api ， 判斷參數是否跟api裡的資料相同
+        public async Task<bool> ValidateGUINumber(string GUINumber, string CompanyName)
+        {
+            try
+            {
+                string apiUrl = $"https://data.gcis.nat.gov.tw/od/data/api/9D17AE0D-09B5-4732-A8F4-81ADED04B679?$format=json&$filter=Business_Accounting_NO eq {GUINumber}";
+
+                using (var httpClient = _httpClientFactory.CreateClient())
+                {
+                    var response = await httpClient.GetAsync(apiUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        var companies = JsonSerializer.Deserialize<List<CompanyInfoGUINumber>>(content, options);
+
+                        //確保公司名稱與傳回結果中的公司名稱相符
+                        if (companies != null && companies.Any())
+                        {
+                            return companies.Any(c => c.Company_Name.Equals(CompanyName, StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+
 
         [Authorize]
         [HttpPost]
