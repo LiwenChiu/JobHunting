@@ -593,7 +593,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
