@@ -27,17 +27,17 @@
                 </div>
                 <template v-if="role == 'candidate'">
                     <div class="form-floating mb-3">
-                        <input v-model="NationalId" asp-for="CandidateLoginVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" required />
+                        <input v-model="NationalId" asp-for="CandidateLoginVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" required v-on:keyup.enter.exact="DoLogin" />
                         <label class="form-label">身分證字號</label>
                         <span asp-validation-for="CandidateLoginVM.NationalId" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input v-model="Email" asp-for="CandidateLoginVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <input v-model="Email" asp-for="CandidateLoginVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" v-on:keyup.enter.exact="DoLogin" />
                         <label asp-for="CandidateLoginVM.Email" class="form-label">電子信箱</label>
                         <span asp-validation-for="CandidateLoginVM.Email" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input v-model="Password" asp-for="CandidateLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                        <input v-model="Password" asp-for="CandidateLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" type="password" v-on:keyup.enter.exact="DoLogin" />
                         <label asp-for="CandidateLoginVM.Password" class="form-label">密碼</label>
                         <span asp-validation-for="CandidateLoginVM.Password" class="text-danger"></span>
                     </div>
@@ -45,19 +45,19 @@
                 <template v-else-if="role == 'company'">
                     <div class="form-floating mb-3">
                         <input v-model="GUINumber" asp-for="CompanyLoginVM.GUINumber" class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
+                               autocomplete="GUINumber" aria-required="true" placeholder="統一編號" v-on:keyup.enter.exact="DoLogin" />
                         <label asp-for="CompanyLoginVM.GUINumber" class="form-label">統一編號</label>
                         <span asp-validation-for="CompanyLoginVM.GUINumber" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
                         <input v-model="Password" asp-for="CompanyLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" v-on:keyup.enter.exact="DoLogin" />
                         <label asp-for="CompanyLoginVM.Password" class="form-label">密碼</label>
                         <span asp-validation-for="CompanyLoginVM.Password" class="text-danger"></span>
                     </div>
                 </template>
                 <div class="text-center">
-                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin">登入</button><br />
+                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin" >登入</button><br />
                     <p>
                         <a asp-controller="Home" asp-action="Register">註冊會員</a>
                     </p>

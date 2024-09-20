@@ -19,7 +19,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             _context = context;
         }
-        public IActionResult Opening()
+        public IActionResult Index()
         {
             return View();
         }
