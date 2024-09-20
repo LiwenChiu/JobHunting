@@ -20,6 +20,8 @@ namespace JobHunting.ViewModel
         public string Password { get; set; }
         public bool VerifyEmailYN { get; set; }
 
+        public DateTime RegisterTime { get; set; }
+
         //[DataType(DataType.Password)]
         //[Display(Name = "Confirm password")]
         //[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]

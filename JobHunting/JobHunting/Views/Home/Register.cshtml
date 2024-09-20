@@ -136,6 +136,7 @@
                     ConfirmPassword:"",
                     ConfirmPasswordError: "",
                     VerifyEmailYN:false,
+                    RegisterTime: new Date(),
                     addCompanies:{
                         GUINumber:"",
                         CompanyName:"",
@@ -156,6 +157,7 @@
                             Email:_this.Email,
                             Password:_this.Password,
                             VerifyEmailYN:_this.VerifyEmailYN,
+                            RegisterTime:convertToFullDateTime(_this.RegisterTime),
                           };
                             fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
                             method: "POST",
