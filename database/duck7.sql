@@ -108,6 +108,7 @@ CREATE TABLE Candidates
 	EmploymentStatus nvarchar(20),
 	MilitaryService nvarchar(20),
 	VerifyEmailYN bit not null default(0),
+	RegisterTime datetime not null,
 )
 CREATE TABLE Resumes
 (

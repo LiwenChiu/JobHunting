@@ -36,13 +36,26 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return Enumerable.Empty<RecordOutputmodel>();
             }
-            var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x=>x.Tags)
+            var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Tags)
                 .Include(x => x.Opening).ThenInclude(x => x.TitleClasses)
                 .Where(x => x.Resume.CandidateId == candidateId &&
                         (x.CompanyName.Contains(rv.CompanyName) ||
                         x.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                         x.OpeningTitle.Contains(rv.OpeningTitle) ||
-                        x.Resume.Title.Contains(rv.Title)))
+                        x.Resume.Title.Contains(rv.Title)));
+
+                if (rv.InterviewYN.HasValue)
+                {
+                    query = query.Where(x => x.InterviewYN == rv.InterviewYN);
+                }               
+
+                if (rv.HireYN.HasValue)
+                {
+                    query = query.Where(x => x.HireYN == rv.HireYN);
+                }
+                
+
+                var result= await query
                 .Select(p => new RecordOutputmodel
                 {
                     ResumeOpeningRecordID = p.ResumeOpeningRecordId, 
@@ -67,14 +80,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     CandidateId = p.Resume.CandidateId,
                     InterviewYN = p.InterviewYN,
                     HireYN = p.HireYN
-                });
+                }).ToListAsync();
 
             if (query == null)
             {
                 return new List<RecordOutputmodel>();
             }
 
-            return  await query.ToListAsync();
+            return result;
 
         }
         //GET:Candidates/Record/TitleClassJson
