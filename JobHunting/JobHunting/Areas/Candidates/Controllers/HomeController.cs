@@ -166,14 +166,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         {
             return View();
         }
-        public IActionResult Login()
-        {
-            return View();
-        }
-        public IActionResult Register()
-        {
-            return View();
-        }
+        
         public IActionResult Home()
         {
             return View();

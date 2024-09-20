@@ -16,7 +16,7 @@ using System.Text.Json;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
-    {
+    { 
         private readonly ILogger<HomeController> _logger;
         DuckContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -30,7 +30,7 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-
+         
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
@@ -596,7 +596,7 @@ namespace JobHunting.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AdminLogout()
         {
@@ -604,7 +604,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync("AdminScheme");
    
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Index", "Home", new { area = "Admins" });
+            return RedirectToAction("Login", "Home", new { area = "Admins" });
         }
 
 
