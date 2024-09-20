@@ -14,4 +14,4 @@ namespace JobHunting.ViewModel
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
-}
+} 
