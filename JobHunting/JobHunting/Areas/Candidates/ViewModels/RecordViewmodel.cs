@@ -16,6 +16,8 @@ namespace JobHunting.Areas.Candidates.ViewModels
 
         [Display(Name = "履歷")]
         public string Title { get; set; }
+        public bool? InterviewYN { get; set; }
+        public bool? HireYN { get; set; }
 
     }
 }
