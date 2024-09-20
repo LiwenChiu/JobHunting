@@ -256,12 +256,6 @@
                     }).then(response => this.CandiadteMemberData = response.data[0])
                         .catch(err => alert(err));
                 },
-                convertDateOnly: function (dateString) {
-                    if (!dateString) return null; // 檢查是否為空
-                    const date = new Date(dateString);
-                    if (isNaN(date.getTime())) return null; // 檢查日期是否有效
-                    return date.toISOString().split('T')[0]; // 只取日期部分
-                },
                 saveEditMemberData:function(){
                     let str = "";
                     let wrongCount = 0;
@@ -277,21 +271,22 @@
                         str += "生日 ";
                         wrongCount++;
                     }
-                    if (this.CandiadteMemberData.phone == "" || this.CandiadteMemberData.phone == null) {
+                    if (this.CandiadteMemberData.phone == "" || this.CandiadteMemberData.phone == null || this.CandiadteMemberData.phone.replace(" ", "").length > 10 || this.CandiadteMemberData.phone.replace(" ", "").length < 10) {
                         str += "電話號碼 ";
                         wrongCount++;
                     }
                     if (wrongCount > 0) {
-                        str += "不可為空 ";
+                        str += "錯誤 ";
                         this.alertText = `${str}`;
                         this.alertStatus = "失敗";
+                        this.getetWholeCandidateMember();
                     }
                     else{
                         let request = {};
                         request.Name = this.CandiadteMemberData.name;
                         request.Email = this.CandiadteMemberData.email;
                         request.Sex = this.CandiadteMemberData.sex;
-                        request.Birthday = this.convertDateOnly(this.CandiadteMemberData.birthday);
+                        request.Birthday = this.CandiadteMemberData.birthday;
                         request.TitleClassId = this.CandiadteMemberData.titleClassId;
                         request.Phone = this.CandiadteMemberData.phone;
                         request.Address = this.CandiadteMemberData.address;
@@ -305,10 +300,9 @@
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.getetWholeCandidateMember();
-                        }).catch(err => alert(err));
+                        }).catch(err => alert(err))
+                            .finally(() => this.getetWholeCandidateMember());
                     }
-                    this.getetWholeCandidateMember();
                     this.editMemberData = false;
                     this.alertOut();
                 },
