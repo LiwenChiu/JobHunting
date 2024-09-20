@@ -596,7 +596,7 @@ namespace JobHunting.Controllers
             return RedirectToAction("Index", "Home"); 
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AdminLogout()
         {
@@ -604,7 +604,7 @@ namespace JobHunting.Controllers
             await HttpContext.SignOutAsync("AdminScheme");
    
             // 重導向到登入頁面或首頁
-            return RedirectToAction("Index", "Home", new { area = "Admins" });
+            return RedirectToAction("Login", "Home", new { area = "Admins" });
         }
 
 

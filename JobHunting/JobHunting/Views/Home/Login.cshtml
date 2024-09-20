@@ -51,13 +51,13 @@
                     </div>
                     <div class="form-floating mb-3">
                         <input v-model="Password" asp-for="CompanyLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
+                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" v-on:keyup.enter.exact="DoLogin" />
                         <label asp-for="CompanyLoginVM.Password" class="form-label">密碼</label>
                         <span asp-validation-for="CompanyLoginVM.Password" class="text-danger"></span>
                     </div>
                 </template>
                 <div class="text-center">
-                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin">登入</button><br />
+                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin" >登入</button><br />
                     <p>
                         <a asp-controller="Home" asp-action="Register">註冊會員</a>
                     </p>
