@@ -46,7 +46,6 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
-                    @* <li class="nav-item astext"><partial name="_OpinionLettersBtnPartial" /></li> *@
                     <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
@@ -60,12 +59,8 @@
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            @* <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Register">求職者註冊</a></li> *@
                             <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
                             <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            @* <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Login">求職者登入</a></li> *@
-                            @* <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Register">公司註冊</a></li> *@
-                            @* <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Login">公司登入</a></li> *@
                             <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
                         </ul>
                     </li>

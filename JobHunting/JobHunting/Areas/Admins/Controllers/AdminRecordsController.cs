@@ -1,9 +1,11 @@
 ﻿using JobHunting.Areas.Candidates.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
     [Area("Admins")]
     public class AdminRecordsController : Controller
     {
