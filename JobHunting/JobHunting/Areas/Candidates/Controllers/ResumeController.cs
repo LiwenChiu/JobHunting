@@ -1,5 +1,6 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using System.Text;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
+    [Authorize(Roles = "candidate")]
     [Area("Candidates")]
     public class ResumeController : Controller
     {
