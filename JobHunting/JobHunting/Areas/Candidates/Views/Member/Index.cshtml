@@ -60,7 +60,7 @@
                 </div>
                 <template v-if="editMemberData == false">
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0">{{CandiadteMemberData.sex ? "男" : "女"}}</p>
+                        <p class="text-muted mb-0">{{CandiadteMemberData.sex == null ? "" : (CandiadteMemberData.sex ? "男" : "女")}}</p>
                     </div>
                 </template>
                 <template v-else>
