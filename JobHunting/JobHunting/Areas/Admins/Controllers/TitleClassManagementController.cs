@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Admins.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
     [Area("Admins")]
     public class TitleClassManagementController : Controller
     {

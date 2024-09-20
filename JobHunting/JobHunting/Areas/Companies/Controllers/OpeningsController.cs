@@ -6,8 +6,10 @@ using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
 using System.Net;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class OpeningsController : Controller
     {
@@ -17,7 +19,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             _context = context;
         }
-        public IActionResult Opening()
+        public IActionResult Index()
         {
             return View();
         }

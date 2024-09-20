@@ -18,12 +18,13 @@ namespace JobHunting.ViewModel
         [MinLength(6, ErrorMessage = "密碼至少要6位字元")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public bool VerifyEmailYN { get; set; }
 
         //[DataType(DataType.Password)]
         //[Display(Name = "Confirm password")]
         //[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         //public string? ConfirmPassword { get; set; }
 
-       
+
     }
 }

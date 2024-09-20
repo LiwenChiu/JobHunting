@@ -189,18 +189,22 @@ VALUES
 (9, 4),
 (10, 5);
 GO
-INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Headshot, TitleClass, Phone, [Address], Degree, EmploymentStatus, MilitaryService)
+INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Headshot, TitleClass, Phone, [Address], Degree, EmploymentStatus, MilitaryService,VerifyEmailYN,RegisterTime)
 VALUES
-(N'A123456789', N'john@example.com', N'password123', N'王小明', 1, '1985-07-15', NULL, N'軟體工程師', N'0988111222', N'台北市大安區和平東路', N'大學', N'在職中', N'役畢'),
-(N'A987654321', N'jane@example.com', N'password456', N'陳美麗', 0, '1990-03-25', NULL, N'行銷專員', N'0922333444', N'新北市板橋區', N'碩士', N'待業中', N'無役'),
-(N'A567891234', N'alex@example.com', N'password789', N'林建華', 1, '1980-01-05', NULL, N'建築設計師', N'0911223344', N'台中市西屯區', N'大學', N'在職中', N'役畢'),
-(N'A223344556', N'mary@example.com', N'password111', N'李雅婷', 0, '1988-05-17', NULL, N'金融分析師', N'0933445566', N'台南市東區', N'碩士', N'在職中', N'無役'),
-(N'A998877665', N'bob@example.com', N'password222', N'張志強', 1, '1982-09-10', NULL, N'物流專員', N'0955443322', N'高雄市三民區', N'大學', N'待業中', N'役畢'),
-(N'A112233445', N'james@example.com', N'password333', N'周大海', 1, '1975-12-20', NULL, N'石油勘探工程師', N'0933557788', N'基隆市', N'碩士', N'在職中', N'未役'),
-(N'A554433221', N'lucy@example.com', N'password444', N'劉婉婷', 0, '1992-08-30', NULL, N'證券交易員', N'0977665544', N'桃園市', N'碩士', N'待業中', N'無役'),
-(N'A667788990', N'angela@example.com', N'password555', N'黃志忠', 1, '1984-11-12', NULL, N'食品安全檢驗員', N'0966554433', N'苗栗縣', N'大學', N'在職中', N'役畢'),
-(N'A334455667', N'tom@example.com', N'password666', N'蔡志明', 1, '1987-02-14', NULL, N'遊戲開發工程師', N'0955447766', N'新竹市', N'大學', N'在職中', N'免役'),
-(N'A556677889', N'sam@example.com', N'password777', N'何志強', 1, '1991-06-25', NULL, N'證券交易員', N'0933221122', N'宜蘭縣', N'大學', N'在職中', N'役畢');
+(N'A123456789', N'john@example.com', N'password123', N'王小明', 1, '1985-07-15', NULL, N'軟體工程師', N'0988111222', N'台北市大安區和平東路', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
+(N'A987654321', N'jane@example.com', N'password456', N'陳美麗', 0, '1990-03-25', NULL, N'行銷專員', N'0922333444', N'新北市板橋區', N'碩士', N'待業中', N'無役',1,'2024-09-20'),
+(N'A567891234', N'alex@example.com', N'password789', N'林建華', 1, '1980-01-05', NULL, N'建築設計師', N'0911223344', N'台中市西屯區', N'大學', N'在職中', N'役畢',0,'2024-08-20'),
+(N'A223344556', N'mary@example.com', N'password111', N'李雅婷', 0, '1988-05-17', NULL, N'金融分析師', N'0933445566', N'台南市東區', N'碩士', N'在職中', N'無役',1,'2024-09-20'),
+(N'A998877665', N'bob@example.com', N'password222', N'張志強', 1, '1982-09-10', NULL, N'物流專員', N'0955443322', N'高雄市三民區', N'大學', N'待業中', N'役畢',0,'2024-07-20'),
+(N'A112233445', N'james@example.com', N'password333', N'周大海', 1, '1975-12-20', NULL, N'石油勘探工程師', N'0933557788', N'基隆市', N'碩士', N'在職中', N'未役',1,'2024-09-12'),
+(N'A554433221', N'lucy@example.com', N'password444', N'劉婉婷', 0, '1992-08-30', NULL, N'證券交易員', N'0977665544', N'桃園市', N'碩士', N'待業中', N'無役',0,'2024-09-20'),
+(N'A667788990', N'angela@example.com', N'password555', N'黃志忠', 1, '1984-11-12', NULL, N'食品安全檢驗員', N'0966554433', N'苗栗縣', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
+(N'A334455667', N'tom@example.com', N'password666', N'蔡志明', 1, '1987-02-14', NULL, N'遊戲開發工程師', N'0955447766', N'新竹市', N'大學', N'在職中', N'免役',1,'2024-09-20'),
+(N'A556677889', N'sam@example.com', N'password777', N'何志強', 1, '1991-06-25', NULL, N'證券交易員', N'0933221122', N'宜蘭縣', N'大學', N'在職中', N'役畢',0,'2023-09-20');
+GO
+INSERT INTO Candidates (NationalId, Email, [Password],VerifyEmailYN,RegisterTime)
+VALUES
+(N'A987654321',N'dancraft3746@gmail.com',N'TIM102_Team1',1,'2024-09-20');
 GO
 INSERT INTO Resumes (CandidateId, Title, Intro, Headshot, Autobiography, WorkExperience, Certification, [Time], [Address], ReleaseYN,LastEditTime)
 VALUES
