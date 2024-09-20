@@ -467,7 +467,7 @@ namespace JobHunting.Controllers
                 //生成token
                 string verificationToken = _emailserver.GenerateVerificationToken(cr.Email);
                 _emailserver.SendEmail("TIM102FirstGroup@gmail.com", "您已註冊'小鴨上工'的會員成功", verificationToken);
-                return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱驗證帳號'", });
+                return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱查閱驗證信件'", });
             }
 
             catch (Exception ex)
@@ -571,7 +571,7 @@ namespace JobHunting.Controllers
             return true;
         }
 
-        // 驗證電子郵件方法
+        // 驗證電子郵件方法 在_emailserver.SendEmail時會調用此方法，在驗證連結的部分
         [HttpGet]
         public IActionResult VerifyEmail(string token)
         {

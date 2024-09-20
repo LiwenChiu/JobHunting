@@ -15,12 +15,12 @@ namespace JobHunting.Services
             _cache = cache;
         }
 
-        // 生成驗證token並存入內存快取
+        // 根據傳回的email生成驗證token並存入內存快取 
         public string GenerateVerificationToken(string email)
         {
             //token = guid唯一碼
             string token = Guid.NewGuid().ToString();
-            // 設定token的過期時間為 24 小時
+            // 設定token的過期時間為 24 小時 將token存入內存快取（MemoryCache）
             _cache.Set(token, email, TimeSpan.FromHours(24));
             return token;
         }
