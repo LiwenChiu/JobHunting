@@ -244,7 +244,7 @@
                     city: "",
                     area: [],
                     zipCode: "",
-                    classNumber: null,
+                    classNumber: "",
                     salary:null,
                     filter:"",
                     alertStatus: null,
@@ -293,7 +293,6 @@
                             self.openings = res.data.openingsIndexOutput;
                             self.totalDataCount = res.data.totalDataCount;
                             self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
-                            // self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
                     })
@@ -330,7 +329,7 @@
                         classNumber: self.classNumber,
                     };
 
-                    if (self.filter === "" && self.city === "" && self.zipCode === "" && self.classNumber === null && self.salary === null) {
+                    if (self.filter === "" && self.city === "" && self.zipCode === "" && self.classNumber === "" && self.salary === null) {
                         self.openingsList();
                     }
                     else {
@@ -470,13 +469,13 @@
                     if(this.currentPage > this.totalPage){
                         this.currentPage = this.totalPage;
                     }
-                    this.filterOpenings();
+                    // this.filterOpenings();
                 },
                 currentPage:function(){
                     if (this.perpage == null || this.perpage == "") {
                         this.perpage = 5;
                     }
-                    this.filterOpenings();
+                    // this.filterOpenings();
                 },
             },
             mounted() {

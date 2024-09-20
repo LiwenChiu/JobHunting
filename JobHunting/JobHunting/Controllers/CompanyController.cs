@@ -76,11 +76,11 @@ namespace JobHunting.Controllers
             }
            
         }
-        public async Task<IActionResult> CompanyIndexList()
+        public async Task<CompanyResumeListViewModel> CompanyIndexList([FromBody] ResumeInputModel resume)
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
             var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
-            var temp = source.Select(c => new CompanyResumeListViewModel
+            var temp = source.Select(c => new CompanyResumes
             {
                 ResumeID = c.ResumeId,
                 CandidateID = c.CandidateId,
@@ -95,13 +95,18 @@ namespace JobHunting.Controllers
                 TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                 Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
             });
-            return Json(temp);
+            var resumesSelectOutput = new CompanyResumeListViewModel
+            {
+                TotalDataCount = temp.Count(),
+                ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+            };
+            return resumesSelectOutput;
         }
-        public async Task<IEnumerable<ResumesOutput>> SelectIndexList([FromBody] ResumeInputModel resume)
+        public async Task<ResumesSelectOutput> SelectIndexList([FromBody] ResumeInputModel resume)
         {
             EditResume(resume);
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true).ToList();
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
             if (resume.serchText.IsNullOrEmpty())
             {
                 var temp = source.Select(c => new
@@ -139,7 +144,12 @@ namespace JobHunting.Controllers
                     Degree = x.Degree,
                     TagObj = x.skill
                 });
-                return temp;
+                var resumesSelectOutput = new ResumesSelectOutput
+                {
+                    TotalDataCount = temp.Count(),
+                    ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+                };
+                return resumesSelectOutput;
             }
             else
             {
@@ -188,7 +198,12 @@ namespace JobHunting.Controllers
                     Degree = x.Degree,
                     TagObj = x.skill
                 });
-                return temp;
+                var resumesSelectOutput = new ResumesSelectOutput
+                {
+                    TotalDataCount = temp.Count(),
+                    ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+                };
+                return resumesSelectOutput;
             }
 
         }

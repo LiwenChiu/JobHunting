@@ -153,7 +153,7 @@
                 </div>
                 <div class="modal-footer bg-warning">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="addFavorite(item.resumeID)">暫存</button>
-                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item.resumeID)">詳細</button>
+                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item)">詳細</button>
                 </div>
             </div>
         </div>
@@ -177,6 +177,7 @@
                     tagClasses: [],
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
+                    resumesCount:null,
                     cityList:[],
                     city:"",
                     zipCode:"",
@@ -186,7 +187,7 @@
             },
             computed: {
                 totalPage() {
-                    return Math.ceil(this.resumes.length / this.perpage)
+                    return Math.ceil(this.resumesCount / this.perpage)
                     //Math.ceil()取最小整數
                 },
                 pageStart() {
@@ -201,14 +202,9 @@
             },
             methods: {
                 goToPage(item){
-                    window.open(`${this.baseAddress}/Company/ResumeIntro/${item}`)
+                    window.open(`${this.baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`)
                 },
-                setPage(page) {
-                    if (page <= 0 || page > this.totalPage) {
-                        return
-                    }
-                    this.currentPage = page
-                },
+                
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
@@ -218,13 +214,27 @@
                     strID = str + num;
                     return strID;
                 },
+                setPage(page) {
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                    indexList();
+                    
+                },
                 indexList() {
                     let self = this;
-                    axios.post(`${self.baseAddress}/Company/CompanyIndexList`, {
+                    let request = {
+                        perpage: self.perpage,
+                        currentpage: self.currentPage,
+                        companyId: self.companyId,
+                    }
+                    axios.post(`${self.baseAddress}/Company/CompanyIndexList`, request,{
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        self.resumes = res.data;
-                        self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
+                        self.resumes = res.data.resumeOutput;
+                        self.resumesCount = res.data.totalDataCount;
+                        self.allDegree = res.data.resumeOutput.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
                     });
@@ -233,6 +243,9 @@
                     let self = this;
                     let today = new Date().getFullYear();
                     var request = {
+                        perpage: self.perpage,
+                        currentpage: self.currentPage,
+                        companyId: self.companyId,
                         sex:null,
                         serchText: self.filter,
                         area: self.city,
@@ -256,7 +269,8 @@
                         axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
                                     headers: { 'Content-Type': 'application/json' },
                                 }).then(res => {
-                                    self.resumes = res.data;
+                                    self.resumes = res.data.resumeOutput;
+                                    
                                     self.skill = null;
                                     self.city = self.zipCode = self.filter = self.edu = "";
                                 }).catch(err => JSON.stringify(err))
