@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));

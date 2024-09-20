@@ -57,62 +57,61 @@
                     </div>
                 </template>
                 @* 公司端註冊 *@
-                <template v-else>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="CompanyName" aria-required="true" placeholder="公司名稱" />
-                        <label  class="form-label">公司名稱</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="Email" aria-required="true" placeholder="name@example.com" />
-                        <label  class="form-label">電子郵件</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="GUINumber" aria-required="true" placeholder="統一編號" />
-                        <label  class="form-label">統一編號</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="ContactPhone" aria-required="true" placeholder="通訊電話" />
-                        <label  class="form-label">通訊電話</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="Address" aria-required="true" placeholder="通訊地址" />
-                        <label  class="form-label">通訊地址</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="ContactName" aria-required="true" placeholder="聯絡人" />
-                        <label  class="form-label">聯絡人</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25"
-                               autocomplete="current-password" aria-required="true" placeholder="password" type="password" />
-                        <label  class="form-label">密碼</label>
-                        <span  class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input  class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="new-password" aria-required="true" placeholder="password" type="password" />
-                        <label  class="form-label">確認密碼</label>
-                        <span  class="text-danger"></span>
-                    </div>
-
-                    <div class="text-center">
-                        <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="">註冊</button>
-                        <p>
-                            <a  asp-controller="Home" asp-action="Login">已有會員?登入</a>
-                        </p>
-                    </div>
-                </template>
+            <template v-else>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="CompanyName" aria-required="true" placeholder="公司名稱" v-model="addCompanies.CompanyName" />
+                    <label class="form-label">公司名稱</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="Email" aria-required="true" placeholder="name@example.com" v-model="addCompanies.ContactEmail" />
+                    <label class="form-label">電子郵件</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="GUINumber" aria-required="true" placeholder="統一編號" v-model="addCompanies.GUINumber" maxlength="8" />
+                    <label class="form-label">統一編號</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="ContactPhone" aria-required="true" placeholder="通訊電話" v-model="addCompanies.ContactPhone" maxlength="13" />
+                    <label class="form-label">通訊電話</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="Address" aria-required="true" placeholder="通訊地址" v-model="addCompanies.Address" />
+                    <label class="form-label">通訊地址</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="ContactName" aria-required="true" placeholder="聯絡人" v-model="addCompanies.ContactName" />
+                    <label class="form-label">聯絡人</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25"
+                           autocomplete="current-password" aria-required="true" placeholder="password" v-model="Password" v-on:input="validateConfirmPassword" maxlength="15" />
+                    <label class="form-label">密碼</label>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="ConfirmPassword" v-on:input="validateConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="password" maxlength="15" />
+                    <label class="form-label" for="ConfirmPassword">確認密碼</label>
+                    <span class="text-danger" v-if="ConfirmPasswordError">{{ConfirmPasswordError}}</span>
+                </div>
+                <div class="text-center">
+                    <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="AddCompany">註冊</button>
+                    <p>
+                        <a asp-controller="Home" asp-action="Login">已有會員?登入</a>
+                    </p>
+                </div>
+            </template>
                 
                 
 
@@ -122,6 +121,10 @@
 
 @section Scripts {
     <script>
+        function convertToFullDateTime(dateObject) {
+            if (!dateObject) return null;
+            return dateObject.toISOString(); // 生成完整的 ISO 日期时间格式 (YYYY-MM-DDTHH:mm:ss.sssZ)
+        };
         let vuereg = {
             data() {
                 return {
@@ -134,12 +137,12 @@
                     ConfirmPasswordError: "",
                     addCompanies:{
                         GUINumber:"",
-                        Password:"",
                         CompanyName:"",
                         ContactName:"",
                         ContactPhone:"",
                         ContactEmail:"",
-
+                        Date: new Date(),
+                        Address: "",
                     },
                 }
             },
@@ -174,21 +177,29 @@
                 validateConfirmPassword:function() {
                     let _this  = this;
                     _this.ConfirmPasswordError = '';
-                  if (!_this.ConfirmPassword) {
-                  _this.ConfirmPasswordError = '請再次輸入密碼';
-                } else if (_this.ConfirmPassword !== _this.Password) {
-                  _this.ConfirmPasswordError = '密碼與確認密碼不一致';
-                }
+                    if (!_this.ConfirmPassword) {
+                        _this.ConfirmPasswordError = '請再次輸入密碼';
+                    } else if (_this.ConfirmPassword !== _this.Password) {
+                        _this.ConfirmPasswordError = '密碼與確認密碼不一致';
+                    } else if (_this.ConfirmPassword == _this.Password) {
+                        _this.ConfirmPasswordError = "";
+                    }
               },
               AddCompany:function(){
                     let _this = this;
                     let request = {
                             // role:_this.role,
-                            NationalId:_this.NationalId,
-                            Email:_this.Email,
-                            Password:_this.Password,
+                        GUINumber: _this.addCompanies.GUINumber,
+                        CompanyName: _this.addCompanies.CompanyName,
+                        ContactName: _this.addCompanies.ContactName,
+                        ContactPhone: _this.addCompanies.ContactPhone,
+                        ContactEmail: _this.addCompanies.ContactEmail,
+                        Status: _this.addCompanies.Status,
+                        Date: convertToFullDateTime(_this.addCompanies.Date),
+                        Address: _this.addCompanies.Address,
+                        Password: _this.Password,
                           };
-                            fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
+                        fetch(`${_this.baseAddress}/Home/AddCompanyRedgister`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"  // 指定 JSON 格式
