@@ -2,9 +2,11 @@
 {
     public class GetCandidateMemberDataViewModel
     {
+        public int CandidateId { get; set; }
         public string Name { get; set; }
 
         public byte[] Headshot { get; set; }
+        public string ImgUrl { get; set; }
 
         public string? TitleClass { get; set; }
 
