@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
+// 註冊 MemoryCache 服務
+builder.Services.AddMemoryCache();
 //發送Email
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
