@@ -68,7 +68,8 @@
                         </button>
                         <button type="button"
                                 class="btn btn-warning"
-                                data-bs-dismiss="modal">
+                                data-bs-dismiss="modal" 
+                                v-on:click="Createcancel">
                             取消
                         </button>
                     </div>
@@ -320,6 +321,10 @@
                             btn.prop("disabled", true);
                         }
                     }
+                },
+
+                Createcancel(){
+                    window.location.reload()
                 },
 
             },
