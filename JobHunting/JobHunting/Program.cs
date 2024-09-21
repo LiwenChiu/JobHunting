@@ -3,6 +3,7 @@ using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Data;
 using JobHunting.Models;
+using JobHunting.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
+//發送Email
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));

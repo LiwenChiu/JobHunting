@@ -32,7 +32,9 @@ namespace JobHunting.Areas.Admins.Controllers
                 GUINumber = p.GUINumber,
                 ContactName = p.ContactName,
                 ContactPhone = p.ContactPhone,
-                ContactEmail = p.ContactEmail
+                ContactEmail = p.ContactEmail,
+                Status = p.Status,
+                Date = p.Date,
             });
             return Json(companyList);
         }
@@ -62,6 +64,9 @@ namespace JobHunting.Areas.Admins.Controllers
                 ContactEmail = p.ContactEmail,
             });
         }
+
+
+
 
         public IActionResult Index()
         {

@@ -1,4 +1,7 @@
 ﻿@model JobHunting.ViewModel.ResumeIDViewModel
+@{
+    ViewData["Title"] = @Html.DisplayFor(model => model.Title);
+}
 @section Styles{
     <style></style>
 }
@@ -9,9 +12,10 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/resumeInrro/css/styles.css" rel="stylesheet" />
 </head> 
-<div id ="page-top">
+
+<div id="page-top" >
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-warning fixed-top" id="sideNav" >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-warning fixed-top" id="sideNav" style="flex-direction:column">
     <a class="navbar-brand js-scroll-trigger" href="#page-top">
         <span class="d-block d-lg-none">Clarence Taylor</span>
             <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" :src=`${baseAddress}/Company/GetPicture/${resumeId}` alt="..." /></span>
@@ -30,13 +34,13 @@
                         data-bs-target="#interviewMailBtn" style="color:white">
                     面試
                 </button>
-                <template v-if="item.likeYN == true">
+                <template v-if="item.likeYN == false">
                     <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
                         暫存
                     </button>
                 </template>
                 <template v-else>
-                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite(item.resumeId)">已存</button>
+                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite()">已存</button>
                 </template>
             </li>
         </ul>
@@ -45,10 +49,10 @@
 </nav>
 <!-- Page Content-->
     <div class="card-body container-fluid" v-for="item in resumeList">
-        <div class="row mt-3">
+        <div class="row mt-3" >
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body" id="personalData">
+                    <div class="card-body" id="personalData" style="margin-top:20px">
                         <h5 class="card-title" style="text-align:center">個人資料</h5>
                         <div class="text-start" style="">
                             <p class="card-text ">
@@ -88,7 +92,7 @@
 
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body text-start" id="workExperience">
+                    <div class="card-body text-start" id="workExperience" style="margin-top:20px">
                         <h5 class="card-title" style="text-align:center">工作經驗</h5>
                         <p class="card-text form-control overflow-auto" style="height:250px">
                             {{item.workExperience}}
@@ -191,6 +195,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts{
         <!-- Bootstrap core JS-->   
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -204,7 +209,7 @@
                         resumeId : "@Html.DisplayFor(model => model.ResumeId)",
                         candidateId: "@Html.DisplayFor(model => model.CandidateId)",
                         resumeList:[],
-                        companyId:2,
+                        companyId:3,
                         openings: [],
                         openingId:"",
                         date:"",
@@ -229,7 +234,6 @@
                         let request = {
                             ResumeId:self.resumeId,
                             CandidateId:self.candidateId,
-                            CompanyId:self.companyId,
                             OpeningId:self.openingId,
                             AppointmentDate: self.date,
                             AppointmentTime: "",
@@ -249,10 +253,12 @@
                     },
                     getResumeList(){
                         let self = this;
-                        axios.get(`${self.baseAddress}/Company/ResumeDetail/${self.resumeId}`, {
+                        axios.get(`${self.baseAddress}/Company/ResumeDetail`, {
+                        params: {
+                            resumeID: self.resumeId,
+                        },
                         headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
-                            console.log(res.data)
                             self.resumeList = res.data
                         }).catch(error => {
                             console.error(error);
@@ -261,20 +267,35 @@
                     addFavorite(){
                         let self = this;
                         request = {
-                            companyId: self.companyId,
                             resumeId: self.resumeId
                         };
                         axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
-                            alert(res.data)
+                            alert(res.data);
+                            self.getResumeList();
                         }).catch(error => {
                             console.error(error);
                         })
-                    },
+                    },                
+                    deleteFavorite() {
+                        let self = this;
+                        let request = {
+                            ResumeId: self.resumeId,
+                        };
+                        axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            alert(res.data)
+                            self.getResumeList();
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                },
+
                     getOpenings() {
                         let self = this;
-                        axios.get(`${self.baseAddress}/Company/GetOpenings/${self.companyId}`,{
+                        axios.get(`${self.baseAddress}/Company/GetOpenings/`,{
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.openings = res.data;
@@ -285,21 +306,6 @@
                     selectSex(item) {
                     return item == true ? "男" : "女";
                     },
-                deleteFavorite(resumeId) {
-                    let self = this;
-                    let request = {
-                        CompanyId: self.companyId,
-                        ResumeId: resumeId,
-                    };
-                    axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
-                        headers: { 'Content-Type': 'application/json' },
-                    }).then(res => {
-                        alert(res.data)
-                        self.getResumeList();
-                    }).catch(error => {
-                        console.error(error);
-                    })
-                },
                 },
                 mounted() {
                     let self = this;

@@ -30,7 +30,7 @@
                 @* 求職端註冊 *@
                 <template v-if="role=='candidate'">
                     <div class="form-floating mb-3">
-                        <input class="form-control rounded-pill bg-danger bg-opacity-25" v-model="NationalId" aria-required="true" placeholder="身分證字號" />
+                    <input type="text" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="NationalId" aria-required="true" placeholder="身分證字號" maxlength="10" />
                         <label class="form-label" for="NationalId">身分證字號</label>
                         <span  class="text-danger"></span>
                     </div>
@@ -40,12 +40,12 @@
                         <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="Password" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="Password" autocomplete="new-password" aria-required="true" placeholder="password" maxlength="15" />
                         <label class="form-label" for="Password">密碼</label>
                         <span  class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="ConfirmPassword" v-on:input="validateConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="ConfirmPassword" />
+                    <input type="password" class="form-control rounded-pill bg-danger bg-opacity-25" v-model="ConfirmPassword" v-on:input="validateConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="ConfirmPassword" maxlength="15" />
                         <label class="form-label" for="ConfirmPassword">密碼確認</label>
                         <span class="text-danger" v-if="ConfirmPasswordError">{{ConfirmPasswordError}}</span>
                     </div>
@@ -135,6 +135,8 @@
                     Password:"",
                     ConfirmPassword:"",
                     ConfirmPasswordError: "",
+                    VerifyEmailYN:false,
+                    RegisterTime: new Date(),
                     addCompanies:{
                         GUINumber:"",
                         CompanyName:"",
@@ -154,6 +156,8 @@
                             NationalId:_this.NationalId,
                             Email:_this.Email,
                             Password:_this.Password,
+                            VerifyEmailYN:_this.VerifyEmailYN,
+                            RegisterTime:convertToFullDateTime(_this.RegisterTime),
                           };
                             fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
                             method: "POST",
