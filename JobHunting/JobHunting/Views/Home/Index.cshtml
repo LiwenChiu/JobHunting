@@ -30,6 +30,7 @@
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
+                <br>
                 <select v-model="city" v-on:change="getArea">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
@@ -39,15 +40,11 @@
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="">選擇薪資範圍</label>
-                <select class="select" name="" id="" style="width:150px;height:30px">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                </select>
+                <input type="number" value="0" v-model="salary" min="0" step="1000" required />
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="">職業類別</label>
-                <select v-model="skill">
+                <select v-model="classNumber">
                     <optgroup v-for="(item,index) in companyClassList" :label="item.companyCategoryName">
                         <option v-for="tag in companyClassList[index].companyClassObj" :value="tag.companyClassId">{{tag.companyClassName}}</option>
                     </optgroup>
@@ -59,10 +56,10 @@
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" />
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterOpenings" v-model="filter" />
             </div>
             <div class="col-2 mb-0">
-                <button class="btn btn-warning">搜尋</button>
+                <button class="btn btn-warning" v-on:click="filterOpenings">搜尋</button>
             </div>
         </div>
     </div>
@@ -248,17 +245,20 @@
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
+                    candidateId: 2,
                     currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
                     openings: [],
                     cityList: [],
+                   
+                    companyClassList: [],
                     city: "",
                     area: [],
                     zipCode: "",
-                    companyClassList: [],
-                    skill: null,
-
+                    classNumber: "",
+                    salary:null,
+                    filter:"",
                     alertStatus: null,
                     alertText: "",
 
@@ -277,15 +277,18 @@
             methods: {
                 turnPage: function (page) {
                     this.currentPage = page;
+                    this.filterOpenings();
                 },
                 turnPagePrevious: function () {
                     if (this.currentPage != 1) {
                         this.currentPage--;
+                        this.filterOpenings();
                     }
                 },
                 turnPageNext: function () {
                     if (this.currentPage != this.totalPage) {
                         this.currentPage++;
+                        this.filterOpenings();
                     }
                 },
                 openingsList() {
@@ -307,7 +310,6 @@
                             self.openings = res.data.openingsIndexOutput;
                             self.totalDataCount = res.data.totalDataCount;
                             self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
-                            // self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
                     }).catch(error => {
                         console.error(error);
                     })
@@ -327,6 +329,46 @@
                                 this.isturnPageNextDisabled = false;
                             }
                         });
+                },
+                filterOpenings(){
+                    let self = this;
+                    this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
+                    this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
+                    let params = new URLSearchParams();
+                    params.append("id", this.candidateId);
+                    params.append("page", this.currentPageSafe);
+                    params.append("count", this.perpageSafe);
+                    var request = {
+                        searchText: self.filter,
+                        area: self.city,
+                        zipCode: self.zipCode,
+                        salary: self.salary,
+                        classNumber: self.classNumber,
+                    };
+                        axios.post(`${self.baseAddress}/Home/SelectOpeningsList`, request, {
+                            params: params,
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            self.openings = res.data.openingsIndexOutput;
+                            self.totalDataCount = res.data.totalDataCount;
+                            self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
+                        }).catch(err => JSON.stringify(err))
+                          .finally(() => {
+                              if (this.currentPage <= 1) {
+                                  this.isturnPagePreviousDisabled = true;
+                              }
+                              else {
+                                  this.isturnPagePreviousDisabled = false;
+                              }
+
+                              if (this.currentPage >= this.totalPage) {
+                                  this.currentPage = this.totalPage;
+                                  this.isturnPageNextDisabled = true;
+                              }
+                              else {
+                                  this.isturnPageNextDisabled = false;
+                              }
+                          });
                 },
                 getCity() {
                     axios.get('/cityjson/CityCountyData.json')  //根目錄資料
@@ -359,7 +401,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
-                        self.openingsList();
+                        self.filterOpenings();
                     }).catch(error => {
                         console.error(error);
                     })
@@ -374,7 +416,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
-                        this.openingsList();
+                        this.filterOpenings();
                     }).catch(error => {
                         console.error(error);
                     })
@@ -443,18 +485,18 @@
                     if(this.currentPage > this.totalPage){
                         this.currentPage = this.totalPage;
                     }
-                    this.openingsList();
+                    // this.filterOpenings();
                 },
                 currentPage:function(){
                     if (this.perpage == null || this.perpage == "") {
                         this.perpage = 5;
                     }
-                    this.openingsList();
+                    // this.filterOpenings();
                 },
             },
             mounted() {
                 let self = this;
-                self.openingsList();
+                self.filterOpenings();
                 self.getCity();
                 self.getCompanyClass();
                 self.getRole();
