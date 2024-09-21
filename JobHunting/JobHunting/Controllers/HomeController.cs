@@ -412,6 +412,10 @@ namespace JobHunting.Controllers
                 // 求職者驗證邏輯
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
+                if (!candidate.VerifyEmailYN)
+                {
+                    return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
+                }
 
                 if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
                 {
@@ -442,6 +446,10 @@ namespace JobHunting.Controllers
                 // 公司驗證邏輯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
+                if (!company.Status)
+                {
+                    return Json(new { success = false, message = "公司帳號尚未審核通過" });
+                }
 
                 if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
                 {
