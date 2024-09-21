@@ -19,7 +19,7 @@ using System.Text;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
-    { 
+    {
         private readonly ILogger<HomeController> _logger;
         DuckContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -35,7 +35,7 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-         
+
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
         {
             //var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -83,7 +83,6 @@ namespace JobHunting.Controllers
                     return "無法獲取使用者 ID，請重新登入";
                 }
 
-                // 確保 CandidateId 是從認證資料獲取
                 var candidateId = int.Parse(candidateIdClaim.Value);
 
                 var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
@@ -119,14 +118,14 @@ namespace JobHunting.Controllers
                 var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "取消收藏職缺失敗";
             }
 
             return "取消收藏職缺成功";
         }
-  
+
         //GET: Home/GetOpening
         public async Task<GetOpeningOutputViewModel> GetOpening(int id)
         {
@@ -168,7 +167,7 @@ namespace JobHunting.Controllers
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (candidateIdClaim == null)
             {
-                
+
                 return Enumerable.Empty<ResumesOutputViewModel>();
             }
             var candidateId = int.Parse(candidateIdClaim.Value);
@@ -282,7 +281,7 @@ namespace JobHunting.Controllers
                 InterviewYN = false,
                 HireYN = false,
             };
-             
+
             _context.ResumeOpeningRecords.Add(recordResumeOpening);
 
             try
@@ -321,14 +320,31 @@ namespace JobHunting.Controllers
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {
+            // 提取 NameIdentifier 和 Role，動態判斷是 candidate 還是 company
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userRole))
+            {
+                return "無法確認用戶身份，請重新登入";
+            }
 
             OpinionLetter opinionLetter = new OpinionLetter();
-            opinionLetter.CompanyId = letter.CompanyId;
+
+            if (userRole == "company")
+            {
+                opinionLetter.CompanyId = Convert.ToInt32(userId); 
+            }
+            else if (userRole == "candidate")
+            {
+                opinionLetter.CandidateId = Convert.ToInt32(userId);
+            }
+
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
             opinionLetter.SendTime = letter.SendTime;
-            IsPicture(letter, opinionLetter);
+            IsPicture(letter, opinionLetter);  // 根據你的邏輯處理圖片
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
 
@@ -423,7 +439,7 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
                 }
             }
-              
+
             return Json(new { success = false, message = "無效的角色" });
         }
 
@@ -496,8 +512,8 @@ namespace JobHunting.Controllers
                 };
 
 
-                    _context.Candidates.Add(inster);
-                     await _context.SaveChangesAsync();
+                _context.Candidates.Add(inster);
+                await _context.SaveChangesAsync();
                 //生成token
                 string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
                 _emailserver.SendEmail(cr.Email, $"您已使用{cr.Email} 註冊'小鴨上工'的會員成功");
@@ -509,7 +525,7 @@ namespace JobHunting.Controllers
                 _logger.LogError(ex, "註冊過程中發生錯誤");
                 return Json(new { success = false, message = "註冊失敗", });
             }
-            
+
         }
 
 
@@ -556,8 +572,8 @@ namespace JobHunting.Controllers
                 };
 
 
-                     _context.Companies.Add(inster);
-                     await _context.SaveChangesAsync();
+                _context.Companies.Add(inster);
+                await _context.SaveChangesAsync();
             }
 
             catch (Exception ex)
@@ -682,13 +698,20 @@ namespace JobHunting.Controllers
 
         public async Task<string> GetRole()
         {
-            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(CandidateId))
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(userId) && role == "candidate")
             {
-                return "未授權訪問";
+                return "candidate";
             }
 
-            return "candidate";
+            if (!string.IsNullOrEmpty(userId) && role == "company")
+            {
+                return "company";
+            }
+
+            return "";
         }
         public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int id, int page, int count)
         {
@@ -814,7 +837,7 @@ namespace JobHunting.Controllers
                 return openingSelectOutput;
             }
         }
-        
+
         public string NormalizeAddress(string address)
         {
             return address.Replace("臺", "台");
