@@ -36,14 +36,40 @@ namespace JobHunting.Controllers
             return View();
         }
 
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int page, int count)
         {
-            //var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            //if (candidateIdClaim == null)
-            //{
-            //    return null;
-            //}
-            //var candidateId = int.Parse(candidateIdClaim.Value);
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                var openingsUnLogin = _context.Openings.AsNoTracking().Include(a => a.Company).Select(b => new OpeningsIndexViewModel
+                {
+                    OpeningId = b.OpeningId,
+                    CompanyId = b.CompanyId,
+                    Title = b.Title,
+                    Address = b.Address,
+                    Description = b.Description,
+                    Degree = b.Degree,
+                    Benefits = b.Benefits,
+                    SalaryMax = b.SalaryMax,
+                    SalaryMin = b.SalaryMin,
+                    Time = b.Time,
+                    ContactEmail = b.ContactEmail,
+                    ContactName = b.ContactName,
+                    ContactPhone = b.ContactPhone,
+                    CompanyName = b.Company.CompanyName,
+                    LikeYN = null,
+                });
+
+                var openingUnLoginDataOutput = new OpeningsIndexOutputViewModel
+                {
+                    totalDataCount = openingsUnLogin.Count(),
+                    OpeningsIndexOutput = openingsUnLogin.Skip((page - 1) * count).Take(count),
+                };
+
+                return openingUnLoginDataOutput;
+            }
+            var candidateId = int.Parse(candidateIdClaim.Value);
+
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
                 OpeningId = b.OpeningId,
@@ -60,7 +86,7 @@ namespace JobHunting.Controllers
                 ContactName = b.ContactName,
                 ContactPhone = b.ContactPhone,
                 CompanyName = b.Company.CompanyName,
-                LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                LikeYN = b.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
             });
 
             var openingIndexOutput = new OpeningsIndexOutputViewModel
@@ -713,11 +739,102 @@ namespace JobHunting.Controllers
 
             return "";
         }
-        public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int id, int page, int count)
+        public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int page, int count)
         {
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                EditResume(opening);
+                var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags);
+                if ( !string.IsNullOrEmpty(opening.SearchText) || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+                {
+                    var temp = sourceUnlogin.Select(c => new
+                    {
+                        OpeningId = c.OpeningId,
+                        CompanyId = c.CompanyId,
+                        Title = c.Title,
+                        Address = c.Address,
+                        Description = c.Description,
+                        Degree = c.Degree,
+                        Benefits = c.Benefits,
+                        SalaryMax = c.SalaryMax,
+                        SalaryMin = c.SalaryMin,
+                        Time = c.Time,
+                        ContactEmail = c.ContactEmail,
+                        ContactName = c.ContactName,
+                        ContactPhone = c.ContactPhone,
+                        CompanyName = c.Company.CompanyName,
+                        ClassNumber = c.Company.CompanyClassId,
+                        LikeYN = false,
+                    }).Where(b =>
+                        b.Title.Contains(opening.SearchText) ||
+                        b.CompanyName.Contains(opening.SearchText) ||
+                        b.ContactName.Contains(opening.SearchText) ||
+                        b.Description.Contains(opening.SearchText) ||
+                        b.Benefits.Contains(opening.SearchText) ||
+                         b.Address.Substring(0, 3) == opening.Area ||
+                         (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                         b.ClassNumber == opening.ClassNumber
+                     ).Select(c => new OpeningSelectViewModel
+                     {
+                         OpeningId = c.OpeningId,
+                         CompanyId = c.CompanyId,
+                         Title = c.Title,
+                         Address = c.Address,
+                         Description = c.Description,
+                         Degree = c.Degree,
+                         Benefits = c.Benefits,
+                         SalaryMax = c.SalaryMax,
+                         SalaryMin = c.SalaryMin,
+                         Time = c.Time,
+                         ContactEmail = c.ContactEmail,
+                         ContactName = c.ContactName,
+                         ContactPhone = c.ContactPhone,
+                         CompanyName = c.CompanyName,
+                         LikeYN = null,
+                     });
+                    var openingSelectOutput = new OpeningSelectOutputViewModel
+                    {
+                        totalDataCount = temp.Count(),
+                        OpeningsIndexOutput = temp.Skip((page - 1) * count).Take(count),
+                    };
+                    return openingSelectOutput;
+                }
+                else
+                {
+                    var temp = sourceUnlogin.Select(b => new OpeningSelectViewModel
+                    {
+                        OpeningId = b.OpeningId,
+                        CompanyId = b.CompanyId,
+                        Title = b.Title,
+                        Address = b.Address,
+                        Description = b.Description,
+                        Degree = b.Degree,
+                        Benefits = b.Benefits,
+                        SalaryMax = b.SalaryMax,
+                        SalaryMin = b.SalaryMin,
+                        Time = b.Time,
+                        ContactEmail = b.ContactEmail,
+                        ContactName = b.ContactName,
+                        ContactPhone = b.ContactPhone,
+                        CompanyName = b.Company.CompanyName,
+                        LikeYN = null,
+                    });
+                    
+                    var openingSelectOutput = new OpeningSelectOutputViewModel
+                    {
+                        totalDataCount = temp.Count(),
+                        OpeningsIndexOutput = temp.Skip((page - 1) * count).Take(count),
+                    };
+
+                    return openingSelectOutput;
+                }
+            }
+            var candidateId = int.Parse(candidateIdClaim.Value);
+
             EditResume(opening);
-            var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(x => x.Tags);
-            if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+            var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags);
+            if ( !string.IsNullOrEmpty(opening.SearchText) || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
             {
                 var temp = source.Select(c => new
                 {
@@ -736,8 +853,12 @@ namespace JobHunting.Controllers
                     ContactPhone = c.ContactPhone,
                     CompanyName = c.Company.CompanyName,
                     ClassNumber = c.Company.CompanyClassId,
-                    LikeYN = c.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                    LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                 }).Where(b =>
+                        b.Title.Contains(opening.SearchText) ||
+                        b.CompanyName.Contains(opening.SearchText) ||
+                        b.ContactName.Contains(opening.SearchText) ||
+                        b.Description.Contains(opening.SearchText) ||
                      b.Address.Substring(0, 3) == opening.Area ||
                      (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                      b.ClassNumber == opening.ClassNumber
@@ -784,7 +905,7 @@ namespace JobHunting.Controllers
                     ContactName = b.ContactName,
                     ContactPhone = b.ContactPhone,
                     CompanyName = b.Company.CompanyName,
-                    LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                    LikeYN = b.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                 });
                 //var temp = source.Select(c => new
                 //{
