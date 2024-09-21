@@ -139,8 +139,8 @@
                                  <div class="d-sm-flex inputAreas justify-content-around">
                                      <input id="addFile" type="file" class="form-control" v-on:change="addChange($event.target)" accept="image/*" />
                                  </div>
-                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                     <img id="addPicture" src="~/images/no_image_available.jpg" asp-append-version=true />
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around img-fluid" >
+                                    <img id="addPicture" src="~/images/no_image_available.jpg" style="width:320px;height:240px" asp-append-version=true />
                                  </div>
          
                                  <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
@@ -204,6 +204,8 @@
                         headers: { 'Content-Type': 'multipart/form-data' },
                         }).then(res => {
                             alert(res.data)
+                            self.letterclass = self.subjectLine = self.content = document.querySelector("#addFile").value = "";
+                            $("#addPicture").attr("src", "@Url.Content("~/images/no_image_available.jpg")");
                         }).catch(err => JSON.stringify(err))
                 },
                 addChange(inputFile){

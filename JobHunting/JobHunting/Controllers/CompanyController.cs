@@ -76,32 +76,6 @@ namespace JobHunting.Controllers
             }
            
         }
-        //public async Task<CompanyResumeListViewModel> CompanyIndexList([FromBody] ResumeInputModel resume)
-        //{
-        //    var today = DateOnly.FromDateTime(DateTime.Now);
-        //    var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
-        //    var temp = source.Select(c => new CompanyResumes
-        //    {
-        //        ResumeID = c.ResumeId,
-        //        CandidateID = c.CandidateId,
-        //        Intro = c.Intro,
-        //        Autobiography = c.Autobiography,
-        //        WorkExperience = c.WorkExperience,
-        //        WishAddress = c.Address,
-        //        Name = c.Candidate.Name,
-        //        Sex = c.Candidate.Sex,
-        //        Degree = c.Candidate.Degree,
-        //        Address = c.Candidate.Address,
-        //        TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
-        //        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-        //    });
-        //    var resumesSelectOutput = new CompanyResumeListViewModel
-        //    {
-        //        TotalDataCount = temp.Count(),
-        //        ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
-        //    };
-        //    return resumesSelectOutput;
-        //}
         public async Task<CompanyResumeListViewModel> SelectIndexList([FromBody] ResumeInputModel resume)
         {
             EditResume(resume);

@@ -47,12 +47,13 @@
             
     </div>
 </nav>
+
 <!-- Page Content-->
-    <div class="card-body container-fluid" v-for="item in resumeList">
-        <div class="row mt-3" >
+    <div class="card-body container-fluid row" v-for="item in resumeList">
+        <div class="row mt-3" style="margin-left:10px">
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body" id="personalData" style="margin-top:20px">
+                    <div class="card-body" id="personalData" style="margin-top:40px">
                         <h5 class="card-title" style="text-align:center">個人資料</h5>
                         <div class="text-start" style="">
                             <p class="card-text ">
@@ -92,7 +93,7 @@
 
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body text-start" id="workExperience" style="margin-top:20px">
+                    <div class="card-body text-start" id="workExperience" style="margin-top:40px">
                         <h5 class="card-title" style="text-align:center">工作經驗</h5>
                         <p class="card-text form-control overflow-auto" style="height:250px">
                             {{item.workExperience}}
@@ -102,8 +103,8 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-6">
+        <div class="row" style="margin-left:10px">
+            <div class="col-sm-6" >
                 <div class="card mb-3">
                     <div class="card-body text-start" id="jobRequirements">
                         <h5 class="card-title" style="text-align:center">求職條件</h5>

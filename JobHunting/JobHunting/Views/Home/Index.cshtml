@@ -119,7 +119,7 @@
             </thead>
             <tbody align="center">
                 <tr v-for="(item,index) in openings">
-                    @* <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.opeingID}`>{{item.title}}</a></td> *@
+                    <td><a target="_blank" :href=`${baseAddress}/Candidate/OpeningDetail/?companyId=${item.companyId}&openingId=${item.openingId}`>{{item.title}}</a></td>
                     <td>{{item.title}}</td>
                     <td>{{item.companyName}}</td>
                     <td>{{item.address}}</td>

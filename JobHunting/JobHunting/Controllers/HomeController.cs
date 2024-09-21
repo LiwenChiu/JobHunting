@@ -377,11 +377,11 @@ namespace JobHunting.Controllers
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
-                new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
+                        new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
+                        new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -407,11 +407,11 @@ namespace JobHunting.Controllers
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
-                new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
+                        new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
+                        new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -440,11 +440,11 @@ namespace JobHunting.Controllers
             {
                 // 驗證通過，建立 claims，包含 AdminId
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
-            new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
-            new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
-        };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
+                    new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
+                    new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
 
