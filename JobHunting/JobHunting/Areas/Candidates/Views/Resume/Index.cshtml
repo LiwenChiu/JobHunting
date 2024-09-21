@@ -106,7 +106,7 @@
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">名字
-                                                        <input type="text" required v-model="" disabled placeholder="根據求職者會員資料帶入">
+                                                        <input type="text" required disabled placeholder="根據求職者會員資料帶入">
                                                             </label>
                                                     </div>
                                                     <div>
@@ -826,7 +826,8 @@
                 },
 
                 mergeID(ResumeD) {
-                    let str = ResumeD.name.replace(/\s/g, "");
+                    // let str = ResumeD.name.replace(/\s/g,"");
+                    let str = ResumeD.name;
                     let num = ResumeD.resumeid;
                     strID = str + num;
                     return strID;

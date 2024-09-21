@@ -25,7 +25,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             _context = context;
             _environment = environment;
         }
-        public IActionResult ResumeManage()
+        public IActionResult Index()
         {
             return View();
         }
@@ -157,23 +157,30 @@ namespace JobHunting.Areas.Candidates.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReasumes ([FromForm] addResumeInputModel Creatr)
         {
-            //if (ModelState.IsValid)
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return Unauthorized("未授權訪問");
+            }
+
+            //if (!ModelState.IsValid)
             //{
+            //    return NotFound(new { Message = "wrong" });
+            //}
            
 
             try
             {
-                var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
-                {
-                    return Unauthorized("未授權訪問");
-
-                }
                 var candidate = await  _context.Candidates.FindAsync(candidateId);
 
                 if (candidate == null)
                 {
                     return NotFound(new { Message = "Resume not found" });
+                }
+
+                if(candidate.Name == null || candidate.Sex == null || candidate.Birthday == null || candidate.Phone == null)
+                {
+                    return RedirectToAction("Index", "Member", new { area = "Candidates" });
                 }
 
                 var titleClasses = await _context.TitleClasses
