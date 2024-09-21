@@ -331,6 +331,7 @@
                             alert(err);
                         });
                 },
+                //拿求職者履歷
                 getResumes: function () {
                     axios.get(`${this.baseAddress}/Candidates/OpeningStorage/GetCandidateData`,
                         {
@@ -363,11 +364,6 @@
                         })
                         .then(response => this.resumes = response.data)
                         .catch(err => { alert(err) });
-                },
-                turnPageToMember: function () {
-                    this.
-                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/TurnPageToMember`)
-                        .catch(err => alert(err));
                 },
                 applyJob: function () {
                     let request = {};

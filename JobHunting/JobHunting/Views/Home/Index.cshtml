@@ -93,7 +93,7 @@
         </div>
         <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
-                <label>共</label>
+                <label>每頁</label>
                 <input style="width:3vh;" v-model.number.trim="perpage" />
                 <label>筆職缺</label>
             </div>
@@ -287,6 +287,29 @@
             </nav>
         </div>
     </div>
+
+
+    @* 沒有驗證信件or完整填寫會員資料Modal *@
+    <div class="modal fade" id="turnPageToMemberModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="turnPageToMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="turnPageToMemberModalLabel">尚未{{alertTextGetData}}</h3>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否移動至 會員資料 頁面 {{alertTextGetData}}?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form asp-area="Candidates" asp-controller="Member" asp-action="TurnPageToMember" method="get">
+                        <button type="submit" class="btn btn-warning text-light" data-bs-dismiss="modal">移動頁面</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 @section Scripts
@@ -327,6 +350,8 @@
                     selectedResumeId: null,
 
                     memberRole: "",
+
+                    alertTextGetData: "",
                 };
             },
             methods: {
@@ -505,6 +530,28 @@
                         .catch(err => { alert(err) });
                 },
                 getResumes: function () {
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/GetCandidateData`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                this.chooseResume();
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
+                },
+                chooseResume: function () {
                     this.applyJobYN = true;
                     axios.get(`${this.baseAddress}/Home/ResumesJson`,
                         {
