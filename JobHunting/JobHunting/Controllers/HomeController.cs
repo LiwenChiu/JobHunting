@@ -16,6 +16,7 @@ using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
+using Microsoft.CodeAnalysis.Scripting;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -417,7 +418,7 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
                 }
 
-                if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
+                if (BCrypt.Net.BCrypt.Verify(candidateLogin.Password, candidate.Password)) // 假設密碼是明文儲存
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
@@ -451,7 +452,7 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "公司帳號尚未審核通過" });
                 }
 
-                if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
+                if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password)) // 假設密碼是明文儲存
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
@@ -531,7 +532,7 @@ namespace JobHunting.Controllers
             }
 
             //// 密碼加密
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
 
             try
             {
@@ -539,7 +540,7 @@ namespace JobHunting.Controllers
                 {
                     NationalId = cr.NationalId,
                     Email = cr.Email,
-                    Password = cr.Password,
+                    Password = hashedPassword,
                     VerifyEmailYN = cr.VerifyEmailYN,
                     RegisterTime = cr.RegisterTime,
 
@@ -587,7 +588,7 @@ namespace JobHunting.Controllers
 
 
             //// 密碼加密
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
 
             try
             {
@@ -601,7 +602,7 @@ namespace JobHunting.Controllers
                     Status = cr.Status,
                     Date = cr.Date,
                     Address = cr.Address,
-                    Password = cr.Password,
+                    Password = hashedPassword,
 
                 };
 
