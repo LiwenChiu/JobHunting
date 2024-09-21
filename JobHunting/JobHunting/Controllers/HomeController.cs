@@ -15,6 +15,7 @@ using Microsoft.Data.SqlClient;
 using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -23,14 +24,12 @@ namespace JobHunting.Controllers
         DuckContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly EmailService _emailserver;
-        private readonly IMemoryCache _cache;
-        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory , EmailService emailserver, IMemoryCache cache)
+        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory , EmailService emailserver)
         {
             _logger = logger;
             _context = context;
             _httpClientFactory = httpClientFactory;
             _emailserver = emailserver;
-            _cache = cache;
         }
         public IActionResult Index()
         {
@@ -500,8 +499,8 @@ namespace JobHunting.Controllers
                     _context.Candidates.Add(inster);
                      await _context.SaveChangesAsync();
                 //生成token
-                string verificationToken = _emailserver.GenerateVerificationToken(cr.Email);
-                _emailserver.SendEmail("TIM102FirstGroup@gmail.com", "您已註冊'小鴨上工'的會員成功", verificationToken);
+                string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
+                _emailserver.SendEmail(cr.Email, $"您已使用{cr.Email} 註冊'小鴨上工'的會員成功");
                 return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱查閱驗證信件'", });
             }
 
@@ -606,23 +605,19 @@ namespace JobHunting.Controllers
             return true;
         }
 
-        // 驗證電子郵件方法 在_emailserver.SendEmail時會調用此方法，在驗證連結的部分
+        // 求職者驗證電子郵件方法 在_emailserver.SendEmail時會調用此方法，在驗證連結的部分
         [HttpGet]
-        public IActionResult VerifyEmail(string token)
+        public IActionResult VerifyEmail(string token,string email,long expiry)
         {
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest("無效的驗證連結。");
-            }
-
-            // 檢查 token 是否存在於內存快取中
-            if (!_cache.TryGetValue(token, out string email))
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email) || expiry < DateTime.UtcNow.Ticks)
             {
                 return BadRequest("驗證連結無效或已過期。");
             }
 
+            string Email = Encoding.UTF8.GetString(Convert.FromBase64String(email));
+
             // 找到對應的求職者mail
-            var candidate = _context.Candidates.FirstOrDefault(c => c.Email == email);
+            var candidate = _context.Candidates.FirstOrDefault(c => c.Email == Email);
             if (candidate == null)
             {
                 return BadRequest("無效的驗證連結。");
@@ -637,8 +632,6 @@ namespace JobHunting.Controllers
             candidate.VerifyEmailYN = true;
             _context.SaveChanges();
 
-            // 移除token，移除過後再點同一個連結會跳'驗證連結無效或已過期'
-            _cache.Remove(token);
 
             // 跳轉到登入頁面
             return RedirectToAction("Login", "Home");

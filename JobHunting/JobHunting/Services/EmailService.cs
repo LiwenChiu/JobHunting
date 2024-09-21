@@ -8,30 +8,36 @@ namespace JobHunting.Services
 
     public class EmailService
     {
-        private readonly IMemoryCache _cache;
+        //private readonly IMemoryCache _cache;
 
-        public  EmailService(IMemoryCache cache)
-        {
-            _cache = cache;
-        }
+        //public  EmailService(IMemoryCache cache)
+        //{
+        //    _cache = cache;
+        //}
 
-        // 根據傳回的email生成驗證token並存入內存快取 
+        // 根據傳回的email生成驗證token並編碼成base64將驗證連結直接傳到mail裡
         public string GenerateVerificationToken(string email)
         {
             //token = guid唯一碼
             string token = Guid.NewGuid().ToString();
-            // 設定token的過期時間為 24 小時 將token存入內存快取（MemoryCache）
-            _cache.Set(token, email, TimeSpan.FromHours(24));
-            return token;
+            DateTime expiry = DateTime.UtcNow.AddHours(1);
+
+            //base64編碼
+            string encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
+            string encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+
+            string verificationLink = $"https://localhost:7169/Home/VerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
+
+            return verificationLink;
         }
 
 
 
 
-        public void SendEmail(string receiveMail, string subject,string verificationToken)
+        public void SendEmail(string receiveMail, string subject)
         {
             //驗證連結，會調用HomeController的VerifyEmail方法來判斷並修改驗證狀態
-            string verifyUrl = $"https://localhost:7169/Home/VerifyEmail?token={verificationToken}";
+            string verifyUrl = GenerateVerificationToken(receiveMail);
 
             // 建立郵件內容
             string emailBody = $@"
