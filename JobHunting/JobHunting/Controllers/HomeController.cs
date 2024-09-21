@@ -609,6 +609,7 @@ namespace JobHunting.Controllers
         [HttpGet]
         public IActionResult VerifyEmail(string token,string email,long expiry)
         {
+            string Token = Encoding.UTF8.GetString(Convert.FromBase64String(token));
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email) || expiry < DateTime.UtcNow.Ticks)
             {
                 return BadRequest("驗證連結無效或已過期。");
