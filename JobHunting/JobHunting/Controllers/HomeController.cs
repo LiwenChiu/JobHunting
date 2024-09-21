@@ -15,6 +15,7 @@ using Microsoft.Data.SqlClient;
 using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -700,7 +701,7 @@ namespace JobHunting.Controllers
         {
             EditResume(opening);
             var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(x => x.Tags);
-            if (opening.SearchText.IsNullOrEmpty())
+            if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
             {
                 var temp = source.Select(c => new
                 {
@@ -718,7 +719,8 @@ namespace JobHunting.Controllers
                     ContactName = c.ContactName,
                     ContactPhone = c.ContactPhone,
                     CompanyName = c.Company.CompanyName,
-                    ClassNumber = c.Company.CompanyClassId
+                    ClassNumber = c.Company.CompanyClassId,
+                    LikeYN = c.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
                 }).Where(b =>
                      b.Address.Substring(0, 3) == opening.Area ||
                      (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
@@ -739,58 +741,77 @@ namespace JobHunting.Controllers
                      ContactName = c.ContactName,
                      ContactPhone = c.ContactPhone,
                      CompanyName = c.CompanyName,
+                     LikeYN = c.LikeYN
                  });
                 var openingSelectOutput = new OpeningSelectOutputViewModel
                 {
                     totalDataCount = temp.Count(),
                     OpeningsIndexOutput = temp.Skip((page - 1) * count).Take(count),
                 };
-
                 return openingSelectOutput;
             }
             else
             {
-                var temp = source.Select(c => new
+                var temp = source.Select(b => new OpeningSelectViewModel
                 {
-                    OpeningId = c.OpeningId,
-                    CompanyId = c.CompanyId,
-                    Title = c.Title,
-                    Address = c.Address,
-                    Description = c.Description,
-                    Degree = c.Degree,
-                    Benefits = c.Benefits,
-                    SalaryMax = c.SalaryMax,
-                    SalaryMin = c.SalaryMin,
-                    Time = c.Time,
-                    ContactEmail = c.ContactEmail,
-                    ContactName = c.ContactName,
-                    ContactPhone = c.ContactPhone,
-                    CompanyName = c.Company.CompanyName,
-                    ClassNumber = c.Company.CompanyClassId
-                }).Where(b =>
-                    opening.SearchText.Contains(b.CompanyName) ||
-                    b.Address.Contains(opening.SearchText) ||
-                    b.Address.Substring(0, 3) == opening.Area ||
-                    (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
-                    b.ClassNumber == opening.ClassNumber ||
-                    b.Title.Contains(opening.SearchText)
-                ).Select(c => new OpeningSelectViewModel
-                {
-                    OpeningId = c.OpeningId,
-                    CompanyId = c.CompanyId,
-                    Title = c.Title,
-                    Address = c.Address,
-                    Description = c.Description,
-                    Degree = c.Degree,
-                    Benefits = c.Benefits,
-                    SalaryMax = c.SalaryMax,
-                    SalaryMin = c.SalaryMin,
-                    Time = c.Time,
-                    ContactEmail = c.ContactEmail,
-                    ContactName = c.ContactName,
-                    ContactPhone = c.ContactPhone,
-                    CompanyName = c.CompanyName,
+                    OpeningId = b.OpeningId,
+                    CompanyId = b.CompanyId,
+                    Title = b.Title,
+                    Address = b.Address,
+                    Description = b.Description,
+                    Degree = b.Degree,
+                    Benefits = b.Benefits,
+                    SalaryMax = b.SalaryMax,
+                    SalaryMin = b.SalaryMin,
+                    Time = b.Time,
+                    ContactEmail = b.ContactEmail,
+                    ContactName = b.ContactName,
+                    ContactPhone = b.ContactPhone,
+                    CompanyName = b.Company.CompanyName,
+                    LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
                 });
+                //var temp = source.Select(c => new
+                //{
+                //    OpeningId = c.OpeningId,
+                //    CompanyId = c.CompanyId,
+                //    Title = c.Title,
+                //    Address = c.Address,
+                //    Description = c.Description,
+                //    Degree = c.Degree,
+                //    Benefits = c.Benefits,
+                //    SalaryMax = c.SalaryMax,
+                //    SalaryMin = c.SalaryMin,
+                //    Time = c.Time,
+                //    ContactEmail = c.ContactEmail,
+                //    ContactName = c.ContactName,
+                //    ContactPhone = c.ContactPhone,
+                //    CompanyName = c.Company.CompanyName,
+                //    ClassNumber = c.Company.CompanyClassId
+                //}).Where(b =>
+                //    opening.SearchText.Contains(b.CompanyName) ||
+                //    b.Address.Contains(opening.SearchText) ||
+                //    b.Address.Substring(0, 3) == opening.Area ||
+                //    (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                //    b.ClassNumber == opening.ClassNumber ||
+                //    b.Title.Contains(opening.SearchText)
+                //).Select(c => new OpeningSelectViewModel
+                //{
+                //    OpeningId = c.OpeningId,
+                //    CompanyId = c.CompanyId,
+                //    Title = c.Title,
+                //    Address = c.Address,
+                //    Description = c.Description,
+                //    Degree = c.Degree,
+                //    Benefits = c.Benefits,
+                //    SalaryMax = c.SalaryMax,
+                //    SalaryMin = c.SalaryMin,
+                //    Time = c.Time,
+                //    ContactEmail = c.ContactEmail,
+                //    ContactName = c.ContactName,
+                //    ContactPhone = c.ContactPhone,
+                //    CompanyName = c.CompanyName,
+                //});
+
                 var openingSelectOutput = new OpeningSelectOutputViewModel
                 {
                     totalDataCount = temp.Count(),
@@ -800,6 +821,7 @@ namespace JobHunting.Controllers
                 return openingSelectOutput;
             }
         }
+        
         public string NormalizeAddress(string address)
         {
             return address.Replace("臺", "台");

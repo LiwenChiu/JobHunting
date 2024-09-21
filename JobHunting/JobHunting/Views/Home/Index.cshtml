@@ -245,6 +245,7 @@
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
+                    candidateId: 2,
                     currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
@@ -276,15 +277,18 @@
             methods: {
                 turnPage: function (page) {
                     this.currentPage = page;
+                    this.filterOpenings();
                 },
                 turnPagePrevious: function () {
                     if (this.currentPage != 1) {
                         this.currentPage--;
+                        this.filterOpenings();
                     }
                 },
                 turnPageNext: function () {
                     if (this.currentPage != this.totalPage) {
                         this.currentPage++;
+                        this.filterOpenings();
                     }
                 },
                 openingsList() {
@@ -335,17 +339,12 @@
                     params.append("page", this.currentPageSafe);
                     params.append("count", this.perpageSafe);
                     var request = {
-                        serchText: self.filter,
+                        searchText: self.filter,
                         area: self.city,
                         zipCode: self.zipCode,
                         salary: self.salary,
                         classNumber: self.classNumber,
                     };
-
-                    if (self.filter === "" && self.city === "" && self.zipCode === "" && self.classNumber === "" && self.salary === null) {
-                        self.openingsList();
-                    }
-                    else {
                         axios.post(`${self.baseAddress}/Home/SelectOpeningsList`, request, {
                             params: params,
                             headers: { 'Content-Type': 'application/json' },
@@ -353,8 +352,6 @@
                             self.openings = res.data.openingsIndexOutput;
                             self.totalDataCount = res.data.totalDataCount;
                             self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
-                            self.city = self.classNumber = "";
-                            self.salary = null;
                         }).catch(err => JSON.stringify(err))
                           .finally(() => {
                               if (this.currentPage <= 1) {
@@ -372,7 +369,6 @@
                                   this.isturnPageNextDisabled = false;
                               }
                           });
-                    }
                 },
                 getCity() {
                     axios.get('/cityjson/CityCountyData.json')  //根目錄資料
@@ -405,7 +401,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
-                        self.openingsList();
+                        self.filterOpenings();
                     }).catch(error => {
                         console.error(error);
                     })
@@ -420,7 +416,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
-                        this.openingsList();
+                        this.filterOpenings();
                     }).catch(error => {
                         console.error(error);
                     })
