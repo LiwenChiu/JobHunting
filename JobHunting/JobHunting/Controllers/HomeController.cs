@@ -15,37 +15,61 @@ using Microsoft.Data.SqlClient;
 using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
-using System.Net;
+using System.Text;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
-    { 
+    {
         private readonly ILogger<HomeController> _logger;
         DuckContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly EmailService _emailserver;
-        private readonly IMemoryCache _cache;
-        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory , EmailService emailserver, IMemoryCache cache)
+        public HomeController(ILogger<HomeController> logger, DuckContext context, IHttpClientFactory httpClientFactory, EmailService emailserver)
         {
             _logger = logger;
             _context = context;
             _httpClientFactory = httpClientFactory;
             _emailserver = emailserver;
-            _cache = cache;
         }
         public IActionResult Index()
         {
             return View();
         }
-         
-        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int id, int page, int count)
+
+        public async Task<OpeningsIndexOutputViewModel> OpeningsList(int page, int count)
         {
-            //var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            //if (candidateIdClaim == null)
-            //{
-            //    return null;
-            //}
-            //var candidateId = int.Parse(candidateIdClaim.Value);
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                var openingsUnLogin = _context.Openings.AsNoTracking().Include(a => a.Company).Select(b => new OpeningsIndexViewModel
+                {
+                    OpeningId = b.OpeningId,
+                    CompanyId = b.CompanyId,
+                    Title = b.Title,
+                    Address = b.Address,
+                    Description = b.Description,
+                    Degree = b.Degree,
+                    Benefits = b.Benefits,
+                    SalaryMax = b.SalaryMax,
+                    SalaryMin = b.SalaryMin,
+                    Time = b.Time,
+                    ContactEmail = b.ContactEmail,
+                    ContactName = b.ContactName,
+                    ContactPhone = b.ContactPhone,
+                    CompanyName = b.Company.CompanyName,
+                    LikeYN = null,
+                });
+
+                var openingUnLoginDataOutput = new OpeningsIndexOutputViewModel
+                {
+                    totalDataCount = openingsUnLogin.Count(),
+                    OpeningsIndexOutput = openingsUnLogin.Skip((page - 1) * count).Take(count),
+                };
+
+                return openingUnLoginDataOutput;
+            }
+            var candidateId = int.Parse(candidateIdClaim.Value);
+
             var openings = _context.Openings.AsNoTracking().Include(a => a.Company).Include(o => o.Candidates).Select(b => new OpeningsIndexViewModel
             {
                 OpeningId = b.OpeningId,
@@ -62,7 +86,7 @@ namespace JobHunting.Controllers
                 ContactName = b.ContactName,
                 ContactPhone = b.ContactPhone,
                 CompanyName = b.Company.CompanyName,
-                LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                LikeYN = b.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
             });
 
             var openingIndexOutput = new OpeningsIndexOutputViewModel
@@ -85,7 +109,6 @@ namespace JobHunting.Controllers
                     return "無法獲取使用者 ID，請重新登入";
                 }
 
-                // 確保 CandidateId 是從認證資料獲取
                 var candidateId = int.Parse(candidateIdClaim.Value);
 
                 var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
@@ -121,14 +144,14 @@ namespace JobHunting.Controllers
                 var openingIdParam = new SqlParameter("@OpeningId", dfovm.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, candidateIdParam, openingIdParam);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "取消收藏職缺失敗";
             }
 
             return "取消收藏職缺成功";
         }
-  
+
         //GET: Home/GetOpening
         public async Task<GetOpeningOutputViewModel> GetOpening(int id)
         {
@@ -170,7 +193,7 @@ namespace JobHunting.Controllers
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (candidateIdClaim == null)
             {
-                
+
                 return Enumerable.Empty<ResumesOutputViewModel>();
             }
             var candidateId = int.Parse(candidateIdClaim.Value);
@@ -284,7 +307,7 @@ namespace JobHunting.Controllers
                 InterviewYN = false,
                 HireYN = false,
             };
-             
+
             _context.ResumeOpeningRecords.Add(recordResumeOpening);
 
             try
@@ -323,14 +346,31 @@ namespace JobHunting.Controllers
         [HttpPost]
         public async Task<string> AddLetter([FromForm] InsterLetter letter)
         {
+            // 提取 NameIdentifier 和 Role，動態判斷是 candidate 還是 company
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userRole))
+            {
+                return "無法確認用戶身份，請重新登入";
+            }
 
             OpinionLetter opinionLetter = new OpinionLetter();
-            opinionLetter.CompanyId = letter.CompanyId;
+
+            if (userRole == "company")
+            {
+                opinionLetter.CompanyId = Convert.ToInt32(userId);
+            }
+            else if (userRole == "candidate")
+            {
+                opinionLetter.CandidateId = Convert.ToInt32(userId);
+            }
+
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
             opinionLetter.SendTime = letter.SendTime;
-            IsPicture(letter, opinionLetter);
+            IsPicture(letter, opinionLetter);  // 根據你的邏輯處理圖片
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
 
@@ -372,6 +412,10 @@ namespace JobHunting.Controllers
                 // 求職者驗證邏輯
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
+                if (!candidate.VerifyEmailYN)
+                {
+                    return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
+                }
 
                 if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
                 {
@@ -402,6 +446,10 @@ namespace JobHunting.Controllers
                 // 公司驗證邏輯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
+                if (!company.Status)
+                {
+                    return Json(new { success = false, message = "公司帳號尚未審核通過" });
+                }
 
                 if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
                 {
@@ -425,7 +473,7 @@ namespace JobHunting.Controllers
                     return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
                 }
             }
-              
+
             return Json(new { success = false, message = "無效的角色" });
         }
 
@@ -498,11 +546,11 @@ namespace JobHunting.Controllers
                 };
 
 
-                    _context.Candidates.Add(inster);
-                     await _context.SaveChangesAsync();
+                _context.Candidates.Add(inster);
+                await _context.SaveChangesAsync();
                 //生成token
-                string verificationToken = _emailserver.GenerateVerificationToken(cr.Email);
-                _emailserver.SendEmail("TIM102FirstGroup@gmail.com", "您已註冊'小鴨上工'的會員成功", verificationToken);
+                string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
+                _emailserver.SendEmail(cr.Email, $"您已使用{cr.Email} 註冊'小鴨上工'的會員成功");
                 return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱查閱驗證信件'", });
             }
 
@@ -511,7 +559,7 @@ namespace JobHunting.Controllers
                 _logger.LogError(ex, "註冊過程中發生錯誤");
                 return Json(new { success = false, message = "註冊失敗", });
             }
-            
+
         }
 
 
@@ -558,8 +606,8 @@ namespace JobHunting.Controllers
                 };
 
 
-                     _context.Companies.Add(inster);
-                     await _context.SaveChangesAsync();
+                _context.Companies.Add(inster);
+                await _context.SaveChangesAsync();
             }
 
             catch (Exception ex)
@@ -607,23 +655,20 @@ namespace JobHunting.Controllers
             return true;
         }
 
-        // 驗證電子郵件方法 在_emailserver.SendEmail時會調用此方法，在驗證連結的部分
+        // 求職者驗證電子郵件方法 在_emailserver.SendEmail時會調用此方法，在驗證連結的部分
         [HttpGet]
-        public IActionResult VerifyEmail(string token)
+        public IActionResult VerifyEmail(string token, string email, long expiry)
         {
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest("無效的驗證連結。");
-            }
-
-            // 檢查 token 是否存在於內存快取中
-            if (!_cache.TryGetValue(token, out string email))
+            string Token = Encoding.UTF8.GetString(Convert.FromBase64String(token));
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email) || expiry < DateTime.UtcNow.Ticks)
             {
                 return BadRequest("驗證連結無效或已過期。");
             }
 
+            string Email = Encoding.UTF8.GetString(Convert.FromBase64String(email));
+
             // 找到對應的求職者mail
-            var candidate = _context.Candidates.FirstOrDefault(c => c.Email == email);
+            var candidate = _context.Candidates.FirstOrDefault(c => c.Email == Email);
             if (candidate == null)
             {
                 return BadRequest("無效的驗證連結。");
@@ -638,8 +683,6 @@ namespace JobHunting.Controllers
             candidate.VerifyEmailYN = true;
             _context.SaveChanges();
 
-            // 移除token，移除過後再點同一個連結會跳'驗證連結無效或已過期'
-            _cache.Remove(token);
 
             // 跳轉到登入頁面
             return RedirectToAction("Login", "Home");
@@ -689,18 +732,117 @@ namespace JobHunting.Controllers
 
         public async Task<string> GetRole()
         {
-            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(CandidateId))
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(userId) && role == "candidate")
             {
-                return "未授權訪問";
+                return "candidate";
             }
 
-            return "candidate";
+            if (!string.IsNullOrEmpty(userId) && role == "company")
+            {
+                return "company";
+            }
+
+            return "";
         }
-        public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int id, int page, int count)
+        public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int page, int count)
         {
+            var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                EditResume(opening);
+                var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags);
+                if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+                {
+                    var temp = sourceUnlogin.Select(c => new
+                    {
+                        OpeningId = c.OpeningId,
+                        CompanyId = c.CompanyId,
+                        Title = c.Title,
+                        Address = c.Address,
+                        Description = c.Description,
+                        Degree = c.Degree,
+                        Benefits = c.Benefits,
+                        SalaryMax = c.SalaryMax,
+                        SalaryMin = c.SalaryMin,
+                        Time = c.Time,
+                        ContactEmail = c.ContactEmail,
+                        ContactName = c.ContactName,
+                        ContactPhone = c.ContactPhone,
+                        CompanyName = c.Company.CompanyName,
+                        ClassNumber = c.Company.CompanyClassId,
+                        LikeYN = false,
+                    }).Where(b =>
+                         //   b.Title.Contains(opening.SearchText) ||
+                         //   b.CompanyName.Contains(opening.SearchText) ||
+                         //   b.ContactName.Contains(opening.SearchText) ||
+                         //   b.Description.Contains(opening.SearchText) ||
+                         //   b.Benefits.Contains(opening.SearchText) ||
+                         b.Address.Substring(0, 3) == opening.Area ||
+                         (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                         b.ClassNumber == opening.ClassNumber
+                     )
+                    .Select(c => new OpeningSelectViewModel
+                    {
+                        OpeningId = c.OpeningId,
+                        CompanyId = c.CompanyId,
+                        Title = c.Title,
+                        Address = c.Address,
+                        Description = c.Description,
+                        Degree = c.Degree,
+                        Benefits = c.Benefits,
+                        SalaryMax = c.SalaryMax,
+                        SalaryMin = c.SalaryMin,
+                        Time = c.Time,
+                        ContactEmail = c.ContactEmail,
+                        ContactName = c.ContactName,
+                        ContactPhone = c.ContactPhone,
+                        CompanyName = c.CompanyName,
+                        LikeYN = null,
+                    });
+                    var openingSelectOutput = new OpeningSelectOutputViewModel
+                    {
+                        totalDataCount = temp.Count(),
+                        OpeningsIndexOutput = temp.Skip((page - 1) * count).Take(count),
+                    };
+                    return openingSelectOutput;
+                }
+                else
+                {
+                    var temp = sourceUnlogin.Select(b => new OpeningSelectViewModel
+                    {
+                        OpeningId = b.OpeningId,
+                        CompanyId = b.CompanyId,
+                        Title = b.Title,
+                        Address = b.Address,
+                        Description = b.Description,
+                        Degree = b.Degree,
+                        Benefits = b.Benefits,
+                        SalaryMax = b.SalaryMax,
+                        SalaryMin = b.SalaryMin,
+                        Time = b.Time,
+                        ContactEmail = b.ContactEmail,
+                        ContactName = b.ContactName,
+                        ContactPhone = b.ContactPhone,
+                        CompanyName = b.Company.CompanyName,
+                        LikeYN = null,
+                    });
+
+                    var openingSelectOutput = new OpeningSelectOutputViewModel
+                    {
+                        totalDataCount = temp.Count(),
+                        OpeningsIndexOutput = temp.Skip((page - 1) * count).Take(count),
+                    };
+
+                    return openingSelectOutput;
+                }
+            }
+            var candidateId = int.Parse(candidateIdClaim.Value);
+
             EditResume(opening);
-            var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(x => x.Tags);
+            var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags);
             if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
             {
                 var temp = source.Select(c => new
@@ -720,29 +862,35 @@ namespace JobHunting.Controllers
                     ContactPhone = c.ContactPhone,
                     CompanyName = c.Company.CompanyName,
                     ClassNumber = c.Company.CompanyClassId,
-                    LikeYN = c.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                    LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                 }).Where(b =>
+                     //   b.Title.Contains(opening.SearchText) ||
+                     //   b.CompanyName.Contains(opening.SearchText) ||
+                     //   b.ContactName.Contains(opening.SearchText) ||
+                     //   b.Description.Contains(opening.SearchText) ||
+                     //   b.Benefits.Contains(opening.SearchText) ||
                      b.Address.Substring(0, 3) == opening.Area ||
                      (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                      b.ClassNumber == opening.ClassNumber
-                 ).Select(c => new OpeningSelectViewModel
-                 {
-                     OpeningId = c.OpeningId,
-                     CompanyId = c.CompanyId,
-                     Title = c.Title,
-                     Address = c.Address,
-                     Description = c.Description,
-                     Degree = c.Degree,
-                     Benefits = c.Benefits,
-                     SalaryMax = c.SalaryMax,
-                     SalaryMin = c.SalaryMin,
-                     Time = c.Time,
-                     ContactEmail = c.ContactEmail,
-                     ContactName = c.ContactName,
-                     ContactPhone = c.ContactPhone,
-                     CompanyName = c.CompanyName,
-                     LikeYN = c.LikeYN
-                 });
+                 )
+                .Select(c => new OpeningSelectViewModel
+                {
+                    OpeningId = c.OpeningId,
+                    CompanyId = c.CompanyId,
+                    Title = c.Title,
+                    Address = c.Address,
+                    Description = c.Description,
+                    Degree = c.Degree,
+                    Benefits = c.Benefits,
+                    SalaryMax = c.SalaryMax,
+                    SalaryMin = c.SalaryMin,
+                    Time = c.Time,
+                    ContactEmail = c.ContactEmail,
+                    ContactName = c.ContactName,
+                    ContactPhone = c.ContactPhone,
+                    CompanyName = c.CompanyName,
+                    LikeYN = c.LikeYN
+                });
                 var openingSelectOutput = new OpeningSelectOutputViewModel
                 {
                     totalDataCount = temp.Count(),
@@ -768,7 +916,7 @@ namespace JobHunting.Controllers
                     ContactName = b.ContactName,
                     ContactPhone = b.ContactPhone,
                     CompanyName = b.Company.CompanyName,
-                    LikeYN = b.Candidates.Where(c => c.CandidateId == id).FirstOrDefault() != null,
+                    LikeYN = b.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                 });
                 //var temp = source.Select(c => new
                 //{
@@ -821,7 +969,7 @@ namespace JobHunting.Controllers
                 return openingSelectOutput;
             }
         }
-        
+
         public string NormalizeAddress(string address)
         {
             return address.Replace("臺", "台");

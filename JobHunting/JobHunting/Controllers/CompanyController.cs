@@ -1,11 +1,13 @@
 ﻿using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace JobHunting.Controllers
 {
@@ -21,16 +23,25 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "company")]
         public async Task<IActionResult> CompanyIndex()
         {
             return View();
         }
-        public async Task<IActionResult> ResumeDetail(int resumeID,int companyID)
+        public async Task<IActionResult> ResumeDetail(int resumeID)
         {
             if (resumeID == null)
             {
                 return NotFound();
             }
+            var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (companyIdClaim == null)
+            {
+                return BadRequest("未找到公司 ID");
+            }
+
+            int companyId = int.Parse(companyIdClaim.Value);
+
             var today = DateOnly.FromDateTime(DateTime.Now);
             return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies)
                 .Where(y => y.ResumeId == resumeID)
@@ -55,7 +66,7 @@ namespace JobHunting.Controllers
                     TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName}),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
-                    LikeYN = c.Companies.Where(x => x.CompanyId == companyID).FirstOrDefault() != null,
+                    LikeYN = c.Companies.Where(x => x.CompanyId == companyId).FirstOrDefault() != null,
                 }));
         }
         public async Task<IActionResult> ResumeIntro(int? candidateId, int? resumeId)
@@ -214,9 +225,17 @@ namespace JobHunting.Controllers
                 TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
         }
-        public async Task<IActionResult> GetOpenings(int id)
+        public async Task<IActionResult> GetOpenings()
         {
-            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == id).Select(p => new OpeningsListViewModel
+            var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (companyIdClaim == null)
+            {
+                return BadRequest("未找到公司 ID");
+            }
+
+            int companyId = int.Parse(companyIdClaim.Value);
+
+            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == companyId).Select(p => new OpeningsListViewModel
             {
                 OpeningId = p.OpeningId,
                 CompanyId = p.CompanyId,
@@ -226,9 +245,15 @@ namespace JobHunting.Controllers
         [HttpPost]
         public async Task<string> AddInterview([FromBody]AddInterviewViewModel letter)
         {
+            var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (companyIdClaim == null)
+            {
+                return "未找到公司 ID"; // 或返回其他適當的錯誤
+            }
+            var CompanyId = int.Parse(companyIdClaim.Value);
             var today = DateOnly.FromDateTime(DateTime.Now);
             Notification notificationLetter = new Notification();
-            notificationLetter.CompanyId = letter.CompanyId;
+            notificationLetter.CompanyId = CompanyId;
             notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
             notificationLetter.OpeningId = letter.OpeningId;
             notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
@@ -248,8 +273,15 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (companyIdClaim == null)
+                {
+                    return "無法獲取使用者 ID，請重新登入";
+                }
+
+                var companyId = int.Parse(companyIdClaim.Value);
                 var query = "INSERT INTO CompanyResumeLikeRecords(CompanyId,ResumeId) VALUES (@CompanyId ,@ResumeId)";
-                var companyIdParam = new SqlParameter("@CompanyId", Convert.ToInt32(favorite.CompanyId));
+                var companyIdParam = new SqlParameter("@CompanyId", Convert.ToInt32(companyId));
                 var resumeIdParam = new SqlParameter("@ResumeId", Convert.ToInt32(favorite.ResumeId));
                 await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
             }
@@ -265,8 +297,14 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (companyIdClaim == null)
+                {
+                    return "無法獲取使用者 ID，請重新登入";
+                }
+                var companyId = int.Parse(companyIdClaim.Value);
                 var query = "DELETE FROM CompanyResumeLikeRecords WHERE CompanyId = @CompanyId AND ResumeId = @ResumeId";
-                var companyIdParam = new SqlParameter("@CompanyId", df.CompanyId);
+                var companyIdParam = new SqlParameter("@CompanyId", companyId);
                 var resumeIdParam = new SqlParameter("@ResumeId", df.ResumeId);
                 await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
             }
@@ -318,5 +356,6 @@ namespace JobHunting.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

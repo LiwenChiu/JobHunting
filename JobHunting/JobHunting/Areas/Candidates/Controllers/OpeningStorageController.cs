@@ -1,9 +1,9 @@
 ﻿using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Candidates.ViewModels;
-using JobHunting.Areas.Companies.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Security.Claims;
 
 namespace JobHunting.Areas.Candidates.Controllers
@@ -38,7 +38,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 .Include(x => x.Openings).ThenInclude(x => x.Company)
                 .Where(x => x.CandidateId.ToString() == CandidateId)
                 .SelectMany(x => x.Openings)
-                .Where (o => 
+                .Where(o =>
                     o.Title.Contains(cosm.Title) ||
                     o.Address.Contains(cosm.Address) ||
                     o.Time.Contains(cosm.Time))
@@ -94,7 +94,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TitleCategoryName = tc.TitleCategoryName
             }));
         }
-        //GET:Compaines/Openings/TagsJson
+        //GET: Candidates/OpeningStorage/TagsJson
         [HttpGet]
         public JsonResult TagJson()
         {
@@ -117,7 +117,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveCdOpRelation([FromBody]RemoveCdOpRelationInputModel rcor)
+        public async Task<IActionResult> RemoveCdOpRelation([FromBody] RemoveCdOpRelationInputModel rcor)
         {
             var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CandidateId))
@@ -143,6 +143,46 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
 
             return Ok(new { message = "刪除收藏職缺成功!" });
+        }
+
+        //GET: Candidates/OpeningStorage/GetCandidateData
+        public async Task<GetCandidateDataOutputViewModel> GetCandidateData()
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            var candidateData = await _context.Candidates.AsNoTracking()
+                .Where(c => c.CandidateId == candidateId)
+                .Select(c => new GetCandidateDataInputViewModel
+                {
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Phone = c.Phone,
+                    Address = c.Address,
+                    Degree = c.Degree,
+                    VerifyEmailYN = c.VerifyEmailYN,
+                }).FirstOrDefaultAsync();
+
+            if (candidateData == null)
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            if (!candidateData.VerifyEmailYN)
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "驗證信箱" };
+            }
+
+            if (string.IsNullOrEmpty(candidateData.Name) || !candidateData.Sex.HasValue || !candidateData.Birthday.HasValue || string.IsNullOrEmpty(candidateData.Phone) || string.IsNullOrEmpty(candidateData.Address) || string.IsNullOrEmpty(candidateData.Degree))
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "完整填寫會員資料" };
+            }
+
+            return new GetCandidateDataOutputViewModel { DataStatus = true, AlertText = "請選擇履歷" };
         }
 
         public async Task<IEnumerable<OpeningStorageResumesOutputViewModel>> ResumesJson()
@@ -171,7 +211,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             if (!ModelState.IsValid)
             {
                 return new CandidatesApplyJobOutputViewModel
-                { 
+                {
                     AlertText = "失敗",
                     AlertStatus = false,
                 };
@@ -202,7 +242,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
-            if(resume.ReleaseYN == false)
+            if (resume.ReleaseYN == false)
             {
                 return new CandidatesApplyJobOutputViewModel
                 {
@@ -221,12 +261,12 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
 
             List<ResumeOpeningRecord> record = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == cajvm.resumeId && ror.OpeningId == cajvm.openingId).ToList();
-            if(record.Count > 0)
+            if (record.Count > 0)
             {
                 return new CandidatesApplyJobOutputViewModel
-                { 
+                {
                     AlertText = "已有應徵紀錄",
-                    AlertStatus = false 
+                    AlertStatus = false
                 };
             }
 
@@ -270,7 +310,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
                 return new CandidatesApplyJobOutputViewModel
                 {

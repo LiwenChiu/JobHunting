@@ -235,7 +235,6 @@
                         let request = {
                             ResumeId:self.resumeId,
                             CandidateId:self.candidateId,
-                            CompanyId:self.companyId,
                             OpeningId:self.openingId,
                             AppointmentDate: self.date,
                             AppointmentTime: "",
@@ -258,7 +257,6 @@
                         axios.get(`${self.baseAddress}/Company/ResumeDetail`, {
                         params: {
                             resumeID: self.resumeId,
-                            companyID: self.companyId,
                         },
                         headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
@@ -270,7 +268,6 @@
                     addFavorite(){
                         let self = this;
                         request = {
-                            companyId: self.companyId,
                             resumeId: self.resumeId
                         };
                         axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
@@ -285,7 +282,6 @@
                     deleteFavorite() {
                         let self = this;
                         let request = {
-                            CompanyId: self.companyId,
                             ResumeId: self.resumeId,
                         };
                         axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
@@ -300,7 +296,7 @@
 
                     getOpenings() {
                         let self = this;
-                        axios.get(`${self.baseAddress}/Company/GetOpenings/${self.companyId}`,{
+                        axios.get(`${self.baseAddress}/Company/GetOpenings/`,{
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.openings = res.data;
