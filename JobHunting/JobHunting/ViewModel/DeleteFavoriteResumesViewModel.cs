@@ -3,6 +3,6 @@
     public class DeleteFavoriteResumesViewModel
     {
         public int CompanyId {  get; set; }
-        public int ResumesId { get; set; }
+        public int ResumeId { get; set; }
     }
 }

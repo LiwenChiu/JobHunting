@@ -43,6 +43,10 @@
                     <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
+            <div class="col-sm-3">
+                <input type="checkbox" v-on:change="cancelSelect()" v-model="cancel"/>
+                <labe for="cancel">取消篩選條件</labe>
+            </div>
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
@@ -157,7 +161,7 @@
                 </div>
                 <div class="modal-footer bg-warning">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="addFavorite(item.resumeID)">暫存</button>
-                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item.resumeID)">詳細</button>
+                    <button type="button" class="btn btn-primary" v-on:click="goToPage(item)">詳細</button>
                 </div>
             </div>
         </div>
@@ -181,62 +185,55 @@
                     tagClasses: [],
                     perpage: 5, //一頁的資料數
                     currentPage: 1,
+                    resumesCount:null,
                     cityList:[],
                     city:"",
                     zipCode:"",
                     companyId: 2,
+                    cancel: false,
                     baseAddress: "https://localhost:7169"
                 };
             },
             computed: {
                 totalPage() {
-                    return Math.ceil(this.resumes.length / this.perpage)
+                    return Math.ceil(this.resumesCount / this.perpage)
                     //Math.ceil()取最小整數
                 },
-                pageStart() {
-                    return (this.currentPage - 1) * this.perpage
-                    //取得該頁第一個值的index
-                },
-                pageEnd() {
-                    return this.currentPage * this.perpage
-                    //取得該頁最後一個值的index
-                },
-                
+                cancelSelect(){      //取消篩選條件
+                    let self = this;
+                    if (self.cancel == true) {
+                        return self.filter = self.city = self.zipCode = self.edu = "", self.skill = null, self.cancel = false;
+                    } 
+                }
             },
             methods: {
-                goToPage(item){
-                    window.open(`${this.baseAddress}/Company/ResumeIntro/${item}`)
+                goToPage(item){                  //開啟履歷新視窗
+                    window.open(`${this.baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`)
                 },
-                setPage(page) {
-                    if (page <= 0 || page > this.totalPage) {
-                        return
-                    }
-                    this.currentPage = page
-                },
+                
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
-                mergeID(item) {
+                mergeID(item) {    //產生個別履歷唯一modal的ID
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeID;
                     strID = str + num;
                     return strID;
                 },
-                indexList() {
-                    let self = this;
-                    axios.post(`${self.baseAddress}/Company/CompanyIndexList`, {
-                        headers: { 'Content-Type': 'application/json' },
-                    }).then(res => {
-                        self.resumes = res.data;
-                        self.allDegree = res.data.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
-                    }).catch(error => {
-                        console.error(error);
-                    });
+                setPage(page) {     //當按到第幾頁顯示的資料
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                    this.filterResumes();
                 },
                 filterResumes() {
                     let self = this;
                     let today = new Date().getFullYear();
                     var request = {
+                        perpage: self.perpage,
+                        currentpage: self.currentPage,
+                        companyId: self.companyId,
                         sex:null,
                         serchText: self.filter,
                         area: self.city,
@@ -244,27 +241,23 @@
                         edu: self.edu,
                         skill: self.skill
                     };
-                    if (self.filter === "" && self.city === "" && self.edu === "" && self.zipCode === "" && self.skill === null) {
-                        self.indexList();
+                    if (self.filter === "男") {
+                    request.sex = true;
+                    }
+                    else if (self.filter === "女") {
+                        request.sex = false;
                     }
                     else {
-                        if (self.filter === "男") {
-                        request.sex = true;
-                        }
-                        else if (self.filter === "女") {
-                            request.sex = false;
-                        }
-                        else {
-                            request.sex = null;
-                        }
-                        axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
-                                    headers: { 'Content-Type': 'application/json' },
-                                }).then(res => {
-                                    self.resumes = res.data;
-                                    self.skill = null;
-                                    self.city = self.zipCode = self.filter = self.edu = "";
-                                }).catch(err => JSON.stringify(err))
+                        request.sex = null;
                     }
+                    axios.post(`${self.baseAddress}/Company/SelectIndexList`, request, {
+                                headers: { 'Content-Type': 'application/json' },
+                            }).then(res => {
+                                self.resumes = res.data.resumeOutput;
+                                self.resumesCount = res.data.totalDataCount;
+                                self.allDegree = res.data.resumeOutput.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
+                                self.currentPage = 1;
+                            }).catch(err => JSON.stringify(err))
                 },
                 addFavorite(item) {
                     let self = this;
@@ -280,7 +273,7 @@
                         console.error(error);
                     })
                 },
-                getTag() {
+                getTag() {    //抓到技能標籤下拉選單值
                     let self = this;
                     axios.get(`${self.baseAddress}/Company/TagClasses`)  
                         .then(model => {
@@ -290,7 +283,7 @@
                             console.error(error);
                         });
                 },
-                getCity(){
+                getCity(){    
                     axios.get('/cityjson/CityCountyData.json')  //根目錄資料
                         .then(model => {
                             this.cityList = model.data;
@@ -299,14 +292,14 @@
                             console.error(error);
                         });
                 },
-                getArea(){
+                getArea(){        //選到哪個縣市顯示該縣市個別的區
                     this.area = this.cityList.find(x => x.CityName === this.city).AreaList;
                 }
             },
             mounted() {
                 this.getTag();
                 this.getCity();
-                this.indexList();
+                this.filterResumes();
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#app2");

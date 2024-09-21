@@ -2,6 +2,9 @@
 {
     public class ResumeInputModel
     {
+        public int Perpage { get; set; } 
+        public int CurrentPage { get; set; }
+        public int CompanyId { get; set; }
         public int? Skill { get; set; }
         public string? Edu { get; set; }
         public string Area { get; set; }

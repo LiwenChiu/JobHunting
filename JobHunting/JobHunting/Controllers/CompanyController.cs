@@ -25,15 +25,15 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ResumeDetail(int? id)
+        public async Task<IActionResult> ResumeDetail(int resumeID,int companyID)
         {
-            if (id == null)
+            if (resumeID == null)
             {
                 return NotFound();
             }
             var today = DateOnly.FromDateTime(DateTime.Now);
             return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies)
-                .Where(y => y.ResumeId == id)
+                .Where(y => y.ResumeId == resumeID)
                 .Select(c => new ResumesIntroViewModel
                 {
                     ResumeId = c.ResumeId,
@@ -55,7 +55,7 @@ namespace JobHunting.Controllers
                     TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName}),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
-                    LikeYN = c.Companies.Where(c => c.CompanyId == id).FirstOrDefault() != null,
+                    LikeYN = c.Companies.Where(x => x.CompanyId == companyID).FirstOrDefault() != null,
                 }));
         }
         public async Task<IActionResult> ResumeIntro(int? candidateId, int? resumeId)
@@ -70,125 +70,165 @@ namespace JobHunting.Controllers
                 {
                     ResumeId = c.ResumeId,
                     CandidateId = c.CandidateId,
+                    Title = c.Title,
                 }).FirstOrDefaultAsync(m => m.CandidateId == candidateId);
                 return View(resume);
             }
            
         }
-        public async Task<IActionResult> CompanyIndexList()
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
-            var temp = source.Select(c => new CompanyResumeListViewModel
-            {
-                ResumeID = c.ResumeId,
-                CandidateID = c.CandidateId,
-                Intro = c.Intro,
-                Autobiography = c.Autobiography,
-                WorkExperience = c.WorkExperience,
-                WishAddress = c.Address,
-                Name = c.Candidate.Name,
-                Sex = c.Candidate.Sex,
-                Degree = c.Candidate.Degree,
-                Address = c.Candidate.Address,
-                TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-            });
-            return Json(temp);
-        }
-        public async Task<IEnumerable<ResumesOutput>> SelectIndexList([FromBody] ResumeInputModel resume)
+        //public async Task<CompanyResumeListViewModel> CompanyIndexList([FromBody] ResumeInputModel resume)
+        //{
+        //    var today = DateOnly.FromDateTime(DateTime.Now);
+        //    var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true);
+        //    var temp = source.Select(c => new CompanyResumes
+        //    {
+        //        ResumeID = c.ResumeId,
+        //        CandidateID = c.CandidateId,
+        //        Intro = c.Intro,
+        //        Autobiography = c.Autobiography,
+        //        WorkExperience = c.WorkExperience,
+        //        WishAddress = c.Address,
+        //        Name = c.Candidate.Name,
+        //        Sex = c.Candidate.Sex,
+        //        Degree = c.Candidate.Degree,
+        //        Address = c.Candidate.Address,
+        //        TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
+        //        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+        //    });
+        //    var resumesSelectOutput = new CompanyResumeListViewModel
+        //    {
+        //        TotalDataCount = temp.Count(),
+        //        ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+        //    };
+        //    return resumesSelectOutput;
+        //}
+        public async Task<CompanyResumeListViewModel> SelectIndexList([FromBody] ResumeInputModel resume)
         {
             EditResume(resume);
             var today = DateOnly.FromDateTime(DateTime.Now);
             var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true).ToList();
-            if (resume.serchText.IsNullOrEmpty())
+            if(resume.serchText != "" || resume.Area != "" || resume.Skill != null || resume.Edu != "" || resume.zipCode != "")
             {
-                var temp = source.Select(c => new
+                if (resume.serchText.IsNullOrEmpty())
                 {
-                    ResumeID = c.ResumeId,
-                    CandidateID = c.CandidateId,
-                    Title = c.Title,
-                    Intro = c.Intro,
-                    Autobiography = c.Autobiography,
-                    WorkExperience = c.WorkExperience,
-                    WishAddress = c.Address,
-                    Name = c.Candidate.Name,
-                    Sex = c.Candidate.Sex,
-                    Birthday = c.Candidate.Birthday,
-                    Degree = c.Candidate.Degree,
-                    Address = c.Candidate.Address,
-                    skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                    Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-                }).Where(b =>
-                    b.Address.Substring(0, 3) == resume.Area ||
-                    b.Degree == resume.Edu ||
-                    b.skill.Any(z => z.TagId == resume.Skill)
-                ).Select(x => new ResumesOutput
+                    var temp = source.Select(c => new
+                    {
+                        ResumeID = c.ResumeId,
+                        CandidateID = c.CandidateId,
+                        Intro = c.Intro,
+                        Autobiography = c.Autobiography,
+                        WorkExperience = c.WorkExperience,
+                        WishAddress = c.Address,
+                        Name = c.Candidate.Name,
+                        Sex = c.Candidate.Sex,
+                        Birthday = c.Candidate.Birthday,
+                        Degree = c.Candidate.Degree,
+                        Address = c.Candidate.Address,
+                        skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+                    }).Where(b =>
+                        b.Address.Substring(0, 3) == resume.Area ||
+                        b.Degree == resume.Edu ||
+                        b.skill.Any(z => z.TagId == resume.Skill)
+                    ).Select(x => new CompanyResumes
+                    {
+                        ResumeID = x.ResumeID,
+                        CandidateID = x.CandidateID,
+                        Intro = x.Intro,
+                        Autobiography = x.Autobiography,
+                        Address = x.Address,
+                        Name = x.Name,
+                        Sex = x.Sex,
+                        Age = x.Age,
+                        WishAddress = x.WishAddress,
+                        Degree = x.Degree,
+                        TagObj = x.skill
+                    });
+                    var resumesSelectOutput = new CompanyResumeListViewModel
+                    {
+                        TotalDataCount = temp.Count(),
+                        ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+                    };
+                    return resumesSelectOutput;
+                 }
+                else
                 {
-                    ResumeID = x.ResumeID,
-                    CandidateID = x.CandidateID,
-                    Title = x.Title,
-                    Intro = x.Intro,
-                    Autobiography = x.Autobiography,
-                    Address = x.Address,
-                    Name = x.Name,
-                    Sex = x.Sex,
-                    Age = x.Age,
-                    WishAddress = x.WishAddress,
-                    Degree = x.Degree,
-                    TagObj = x.skill
-                });
-                return temp;
+                    var temp = source.Select(c => new
+                    {
+                        ResumeID = c.ResumeId,
+                        CandidateID = c.CandidateId,
+                        Intro = c.Intro,
+                        Autobiography = c.Autobiography,
+                        WorkExperience = c.WorkExperience,
+                        Certification = c.Certification,
+                        WishAddress = c.Address,
+                        Time = c.Time,
+                        Name = c.Candidate.Name,
+                        Sex = c.Candidate.Sex,
+                        Birthday = c.Candidate.Birthday,
+                        Degree = c.Candidate.Degree,
+                        Address = c.Candidate.Address,
+                        skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+                    }).Where(b =>
+                        resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
+                        b.Sex == resume.Sex ||
+                        b.Age.ToString().Contains(resume.serchText) ||
+                        b.Address.Contains(resume.serchText) ||
+                        b.Address.Substring(0, 3) == resume.Area ||
+                        b.Degree == resume.Edu ||
+                        b.Degree.Contains(resume.serchText) ||
+                        b.skill.Any(z => z.TagId == resume.Skill)
+                    ).Select(x => new CompanyResumes
+                    {
+                        ResumeID = x.ResumeID,
+                        CandidateID = x.CandidateID,
+                        Intro = x.Intro,
+                        Autobiography = x.Autobiography,
+                        WorkExperience = x.WorkExperience,
+                        Certification = x.Certification,
+                        Time = x.Time,
+                        Address = x.Address,
+                        Name = x.Name,
+                        Sex = x.Sex,
+                        Age = x.Age,
+                        WishAddress = x.WishAddress,
+                        Degree = x.Degree,
+                        TagObj = x.skill
+                    });
+                    var resumesSelectOutput = new CompanyResumeListViewModel
+                    {
+                        TotalDataCount = temp.Count(),
+                        ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+                    };
+                    return resumesSelectOutput;
+                }
             }
             else
             {
-                var temp = source.Select(c => new
+                var temp = source.Select(c => new CompanyResumes
                 {
                     ResumeID = c.ResumeId,
                     CandidateID = c.CandidateId,
-                    Title = c.Title,
                     Intro = c.Intro,
                     Autobiography = c.Autobiography,
                     WorkExperience = c.WorkExperience,
-                    Certification = c.Certification,
                     WishAddress = c.Address,
-                    Time = c.Time,
                     Name = c.Candidate.Name,
                     Sex = c.Candidate.Sex,
-                    Birthday = c.Candidate.Birthday,
                     Degree = c.Candidate.Degree,
                     Address = c.Candidate.Address,
-                    skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
+                    TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
-                }).Where(b =>
-                    resume.serchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
-                    b.Sex == resume.Sex ||
-                    b.Age.ToString().Contains(resume.serchText) ||
-                    b.Address.Contains(resume.serchText) ||
-                    b.Address.Substring(0, 3) == resume.Area ||
-                    b.Degree == resume.Edu ||
-                    b.Degree.Contains(resume.serchText) ||
-                    b.skill.Any(z => z.TagId == resume.Skill)
-                ).Select(x => new ResumesOutput
-                {
-                    ResumeID = x.ResumeID,
-                    CandidateID = x.CandidateID,
-                    Title = x.Title,
-                    Intro = x.Intro,
-                    Autobiography = x.Autobiography,
-                    WorkExperience = x.WorkExperience,
-                    Certification = x.Certification,
-                    Time = x.Time,
-                    Address = x.Address,
-                    Name = x.Name,
-                    Sex = x.Sex,
-                    Age = x.Age,
-                    WishAddress = x.WishAddress,
-                    Degree = x.Degree,
-                    TagObj = x.skill
                 });
-                return temp;
+                var resumesSelectOutput = new CompanyResumeListViewModel
+                {
+                    TotalDataCount = temp.Count(),
+                    ResumeOutput = temp.Skip((resume.CurrentPage - 1) * resume.Perpage).Take(resume.Perpage),
+                };
+                return resumesSelectOutput;
             }
+            
 
         }
         public async Task<IActionResult> TagClasses()
@@ -251,17 +291,17 @@ namespace JobHunting.Controllers
         {
             try
             {
-                var query = "DELETE FROM CandidateOpeningLikeRecords WHERE CompanyId = @CompanyId AND ResumesId = @ResumesId";
+                var query = "DELETE FROM CompanyResumeLikeRecords WHERE CompanyId = @CompanyId AND ResumeId = @ResumeId";
                 var companyIdParam = new SqlParameter("@CompanyId", df.CompanyId);
-                var resumesIdParam = new SqlParameter("@ResumesId", df.ResumesId);
-                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumesIdParam);
+                var resumeIdParam = new SqlParameter("@ResumeId", df.ResumeId);
+                await _context.Database.ExecuteSqlRawAsync(query, companyIdParam, resumeIdParam);
             }
             catch (Exception ex)
             {
-                return "取消收藏職缺失敗";
+                return "取消收藏履歷失敗";
             }
 
-            return "取消收藏職缺成功";
+            return "取消收藏履歷成功";
         }
         [NonAction]
         static int CalculateAge(DateOnly birthday, DateOnly today)
