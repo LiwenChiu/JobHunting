@@ -1,56 +1,34 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using System.Text;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace JobHunting.Services
 {
-
-    public class EmailService
+    public class ReviewMaillService
     {
-        //private readonly IMemoryCache _cache;
-
-        //public  EmailService(IMemoryCache cache)
-        //{
-        //    _cache = cache;
-        //}
-
-        // 根據傳回的email生成驗證token並編碼成base64將驗證連結直接傳到mail裡
-        public string GenerateVerificationToken(string email)
-        {
-            //token = guid唯一碼
-            string token = Guid.NewGuid().ToString();
-            //設定驗證信為1小時到期
-            DateTime expiry = DateTime.UtcNow.AddHours(1);
-
-            //base64編碼
-            string encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
-            string encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
-
-            string verificationLink = $"https://localhost:7169/Home/VerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
-
-            return verificationLink;
-        }
-
-
-
-
-        public void SendEmail(string receiveMail, string subject)
+        public void SendEmail(string receiveMail, string subject,string ContactName,string CompanyName)
         {
             //驗證連結，會調用HomeController的VerifyEmail方法來判斷並修改驗證狀態
-            string verifyUrl = GenerateVerificationToken(receiveMail);
+            string verifyUrl = $"https://localhost:7169/Admins/CompanyList/VerifyEmail";
 
             // 建立郵件內容
             string emailBody = $@"
                 <html>
                 <body>
-                    <h1>感謝您註冊！</h1>
-                    <p>請點擊下方連結以完成您的電子郵件驗證：</p>
-                    <p><a href='{verifyUrl}'>點擊這裡驗證</a></p>
+                    <h3>親愛的 [{ContactName}先生/小姐]</h3>
+                    <p>
+                    感謝您提交的申請。我們很高興通知您，經過仔細審核，貴公司 ({CompanyName}) 的申請已順利通過！
+                    接下來，您可以登入我們的平台，並根據後續指引進行操作。如有任何問題或需要協助，請隨時與我們聯繫。
+                    再次感謝您對我們的信任，期待您在平台上的更多參與。</p>
+                    <p><a href='{verifyUrl}'>點擊這裡登入</a></p>
+                    <br/>
                     <p>如果您無法點擊連結，請將以下網址複製到瀏覽器中打開：</p>
                     <p>{verifyUrl}</p>
                     <br/>
+                    
                     <p>此為系統自動發送的郵件，請勿回覆。</p>
+                    <br/>
+                    <footer>[小鴨上工人力有限公司]祝您愉快</footer>
                 </body>
                 </html>";
 

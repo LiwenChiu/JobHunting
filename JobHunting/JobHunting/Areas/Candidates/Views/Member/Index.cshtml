@@ -41,29 +41,35 @@
     <div class="card" style="overflow-y:auto;height:83vh">
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-2">
-                    <label for="candidateName" class="mb-0">姓名</label>
-                </div>
-                <template v-if="editMemberData == false">
+                <template v-if="!editMemberData">
+                    <div class="col-sm-2">
+                        <label for="candidateName" class="mb-0">姓名</label>
+                    </div>
                     <div class="col-sm-9">
                         <p class="text-muted mb-0">{{CandiadteMemberData.name}}</p>
                     </div>
                 </template>
                 <template v-else>
+                    <div class="col-sm-2">
+                        <label for="candidateName" class="mb-0">姓名<span class="text-danger">*</span></label>
+                    </div>
                     <input type="text" id="candidateName" class="col-sm-9" placeholder="請輸入姓名" v-model.trim="CandiadteMemberData.name" />
                 </template>
             </div>
             <hr>
             <div class="row">
-                <div class="col-sm-2">
-                    <label for="candidateSex" class="mb-0">性別</label>
-                </div>
-                <template v-if="editMemberData == false">
+                <template v-if="!editMemberData">
+                    <div class="col-sm-2">
+                        <label for="candidateSex" class="mb-0">性別</label>
+                    </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0">{{CandiadteMemberData.sex ? "男" : "女"}}</p>
+                        <p class="text-muted mb-0">{{CandiadteMemberData.sex == null ? "" : (CandiadteMemberData.sex ? "男" : "女")}}</p>
                     </div>
                 </template>
                 <template v-else>
+                    <div class="col-sm-2">
+                        <label for="candidateSex" class="mb-0">性別<span class="text-danger">*</span></label>
+                    </div>
                     <select id="candidateSex" class="col-sm-9" v-model="CandiadteMemberData.sex">
                         <option v-for="item in Sex" v-bind:value="item.status">{{item.sexType}}</option>
                     </select>
@@ -71,43 +77,52 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-sm-2">
-                    <label for="candidateBirthday" class="mb-0">生日</label>
-                </div>
-                <template v-if="editMemberData == false">
+                <template v-if="!editMemberData">
+                    <div class="col-sm-2">
+                        <label for="candidateBirthday" class="mb-0">生日</label>
+                    </div>
                     <div class="col-sm-9">
                         <p class="text-muted mb-0">{{CandiadteMemberData.birthday}}</p>
                     </div>
                 </template>
                 <template v-else>
-                    <input type="Date" id="candidateBirthday" class="col-sm-9" v-model="CandiadteMemberData.birthday" />
+                    <div class="col-sm-2">
+                        <label for="candidateBirthday" class="mb-0">生日<span class="text-danger">*</span></label>
+                    </div>
+                    <input type="Date" id="candidateBirthday" name="生日" min="1900-01-01" v-bind:max="getToday()" class="col-sm-9" v-model="CandiadteMemberData.birthday" />
                 </template>
             </div>
             <hr>
             <div class="row">
-                <div class="col-sm-2">
-                    <label for="candidateEmail" class="mb-0">電子信箱</label>
-                </div>
-                <template v-if="editMemberData == false">
+                <template v-if="!editMemberData">
+                    <div class="col-sm-2">
+                        <label for="candidateEmail" class="mb-0">電子信箱</label>
+                    </div>
                     <div class="col-sm-9">
                         <p class="text-muted mb-0">{{CandiadteMemberData.email}}</p>
                     </div>
                 </template>
                 <template v-else>
+                    <div class="col-sm-2">
+                        <label for="candidateEmail" class="mb-0">電子信箱<span class="text-danger">*</span></label>
+                    </div>
                     <input type="email" id="candidateEmail" class="col-sm-9" v-model.trim="CandiadteMemberData.email" />
                 </template>
             </div>
             <hr>
             <div class="row">
-                <div class="col-sm-2">
-                    <label for="candidatePhone" class="mb-0">手機號碼</label>
-                </div>
-                <template v-if="editMemberData == false">
+                <template v-if="!editMemberData">
+                    <div class="col-sm-2">
+                        <label for="candidatePhone" class="mb-0">手機號碼</label>
+                    </div>
                     <div class="col-sm-9">
                         <p class="text-muted mb-0">{{CandiadteMemberData.phone}}</p>
                     </div>
                 </template>
                 <template v-else>
+                    <div class="col-sm-2">
+                        <label for="candidatePhone" class="mb-0">手機號碼<span class="text-danger">*</span></label>
+                    </div>
                     <input type="tel" id="candidatePhone" class="col-sm-9" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" v-model.trim="CandiadteMemberData.phone" />
                 </template>
             </div>
@@ -245,6 +260,7 @@
                         { id: 2, status: "未役" },
                         { id: 3, status: "免役" },
                     ],
+                    todayDate: null,
                 };
             },
             methods: {
@@ -271,14 +287,15 @@
                         str += "生日 ";
                         wrongCount++;
                     }
-                    if (this.CandiadteMemberData.phone == "" || this.CandiadteMemberData.phone == null) {
+                    if (this.CandiadteMemberData.phone == "" || this.CandiadteMemberData.phone == null || this.CandiadteMemberData.phone.replace(" ", "").length > 10 || this.CandiadteMemberData.phone.replace(" ", "").length < 10) {
                         str += "電話號碼 ";
                         wrongCount++;
                     }
                     if (wrongCount > 0) {
-                        str += "不可為空 ";
+                        str += "錯誤 ";
                         this.alertText = `${str}`;
                         this.alertStatus = "失敗";
+                        this.getetWholeCandidateMember();
                     }
                     else{
                         let request = {};
@@ -299,12 +316,23 @@
                         }).then(response => {
                             this.alertText = response.data[0];
                             this.alertStatus = response.data[1];
-                            this.getetWholeCandidateMember();
-                        }).catch(err => alert(err));
+                        }).catch(err => alert(err))
+                            .finally(() => this.getetWholeCandidateMember());
                     }
-                    this.getetWholeCandidateMember();
                     this.editMemberData = false;
                     this.alertOut();
+                },
+                convertDateOnly: function (dateString) {
+                    if (!dateString) return null; // 檢查是否為空
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return null; // 檢查日期是否有效
+                    return date.toISOString().split('T')[0]; // 只取日期部分
+                },
+                getToday:function(){
+                    let todayDate = Date.now();
+                    todayDate = this.convertDateOnly(todayDate);
+                    this.todayDate = todayDate;
+                    return todayDate;
                 },
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
@@ -312,6 +340,7 @@
             },
             mounted: function () {
                 this.getetWholeCandidateMember();
+                this.getToday();
             },
         };
         let app = Vue.createApp(VueApp).mount("#MemberApp");

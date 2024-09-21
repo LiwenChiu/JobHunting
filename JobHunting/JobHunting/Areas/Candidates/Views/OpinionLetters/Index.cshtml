@@ -17,8 +17,7 @@
 
         @* 新增意見信件modal Button *@
         <div class="row m-2" style="width:20%; height:50%; margin-right:10px; margin-left:auto">
-            <button class="btn btn-warning" data-bs-toggle="modal"
-        data-bs-target="#modalAddLetter"><i class="fa-solid fa-envelope"></i> 新增意見信件</button>
+            <button class="btn btn-warning" v-on:click="showAddOpinionLetterModal()"><i class="fa-solid fa-envelope"></i> 新增意見信件</button>
         </div>
 
         @* 新增意見信件modal *@
@@ -68,7 +67,8 @@
                         </button>
                         <button type="button"
                                 class="btn btn-warning"
-                                data-bs-dismiss="modal">
+                                data-bs-dismiss="modal" 
+                                v-on:click="Createcancel">
                             取消
                         </button>
                     </div>
@@ -181,6 +181,27 @@
             </ul>
         </nav>
     </div>
+
+    @* 沒有驗證信件or完整填寫會員資料Modal *@
+    <div class="modal fade" id="turnPageToMemberModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="turnPageToMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="turnPageToMemberModalLabel">尚未{{alertTextGetData}}</h3>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否移動至 會員資料 頁面 {{alertTextGetData}}?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form asp-area="Candidates" asp-controller="Member" asp-action="TurnPageToMember" method="get">
+                        <button type="submit" class="btn btn-warning text-light" data-bs-dismiss="modal">移動頁面</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts
@@ -203,6 +224,8 @@
                     subjectLine:"",
                     content:"",
 
+                    alertTextGetData: "",
+
                 }
             },
             computed: {
@@ -220,6 +243,30 @@
 
             },
             methods: {
+
+                showAddOpinionLetterModal: function () {
+                    axios.get(`${this.baseAddress}/Candidates/OpinionLetters/GetCandidateData`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                $("#modalAddLetter").modal("show");
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
+                },
+
                 setPage(page) {
                     if (page <= 0 || page > this.totalPage) {
                         return
@@ -320,6 +367,10 @@
                             btn.prop("disabled", true);
                         }
                     }
+                },
+
+                Createcancel(){
+                    window.location.reload()
                 },
 
             },

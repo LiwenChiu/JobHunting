@@ -37,7 +37,7 @@
                 <td class="co1-2">{{item.date}}</td>
                 @* 審核狀態 *@
                 @* <td v-html="statusYN(item.status)"></td> *@
-                <template v-if="item.status == false"><td class="col-1"><button class="btn btn-danger">待審核</button></td></template>
+                <template v-if="item.status == false"><td class="col-1"><button class="btn btn-danger" v-on:click="editStatus(item)">待審核</button></td></template>
                 <template v-else=""><td class="col-2"><button class="btn btn-secondary" disabled>已審核</button></td></template>
                 
             </tr>
@@ -75,7 +75,10 @@
     <script>
          function convertToFullDateTime(dateObject) {
             if (!dateObject) return null;
-            return dateObject.toISOString(); // 生成完整的 ISO 日期时间格式 (YYYY-MM-DDTHH:mm:ss.sssZ)
+            const offset = dateObject.getTimezoneOffset() * 60000; // 将时区偏移量转换为毫秒
+            const localTime = new Date(dateObject.getTime() - offset);
+
+             return localTime.toISOString().slice(0, -1)
         }; 
         Vue.createApp({
             data() {
@@ -88,7 +91,7 @@
                     perpage: 8, //一頁的資料數
                     currentPage: 1,
                     MessageStatus: 1,
-                    statusYNbtn:true,
+                    statusDate: new Date(),
                 }
             },
             computed: {
@@ -121,6 +124,42 @@
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     })
+                },
+                editStatus:function(item){
+                    let _this = this;
+                    const confirmdel = confirm("確定要更改?");
+                    if (confirm == true) {
+                        let request = {
+                            CompanyId: item.companyId,
+                            Status: true,
+                            Date: convertToFullDateTime(_this.statusDate),
+                            ContactEmail: item.contactEmail,
+                            ContactName: item.contactName,
+                            CompanyName: item.companyName,
+                        };
+                        fetch(`${_this.baseAddress}/Admins/CompanyList/EditstatusYN`, {
+                            method: "PUT",
+                            headers: {
+                                "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
+                            },
+                            body: JSON.stringify(request)
+                        }).then(res => {
+                            return res.json();
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                                location.reload();
+                            };
+                        }).catch(err => {
+                            alert(JSON.stringify(err));
+                        })
+                    }else{
+                        alert("已取消操作");
+                    }
+                    
                 },
                 filterCompanyList: function () {
                     // alert(`filter:${_this.filter}`);

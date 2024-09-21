@@ -204,7 +204,7 @@ VALUES
 GO
 INSERT INTO Candidates (NationalId, Email, [Password],VerifyEmailYN,RegisterTime)
 VALUES
-(N'A987654321',N'dancraft3746@gmail.com',N'TIM102_Team1',1,'2024-09-20');
+(N'A987654321',N'HsuClassmate77@example.com',N'TIM102_Team1',1,'2024-09-20');
 GO
 INSERT INTO Resumes (CandidateId, Title, Intro, Headshot, Autobiography, WorkExperience, Certification, [Time], [Address], ReleaseYN,LastEditTime)
 VALUES

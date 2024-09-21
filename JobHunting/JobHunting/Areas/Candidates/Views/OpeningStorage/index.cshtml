@@ -9,9 +9,10 @@
 
 @* 收藏職缺 *@
 <div class="container-fluid py-2" id="OpeningApp">
-    <label>篩選關鍵字：
-        <input type="text" class="mb-2"  v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
-     </label>
+    <label>
+        篩選關鍵字：
+        <input type="text" class="mb-2" v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
+    </label>
     <div class="letters row">
         @* 職缺card *@
         <div class="col-md-3 mb-2" v-for="item in openings.slice(pageStart,pageEnd)">
@@ -25,7 +26,7 @@
                         <div class="col-2">
                             <button type="button" class="btn-close" aria-label="Close" v-on:click="deleteCandidateOpeningRelation(item)"></button>
                         </div>
-                    </div> 
+                    </div>
                     <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
                     <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
                     <p class="card-text" style="margin-bottom: 7px;"><i class="fa-solid fa-caret-right"></i> 需求人數 : {{item.requiredNumber}}</p>
@@ -39,11 +40,11 @@
                 </div>
             </div>
         </div>
+
         @* 職缺內容Modal *@
         <div class="modal fade" v-for="item in openings"
              :id="mergeID(item)"
              tabindex="-1"
-             data-bs-backdrop="static"
              data-bs-keyboard="false"
              role="dialog"
              aria-labelledby="modalTitleId"
@@ -117,20 +118,43 @@
                     </div>
                     <div class="modal-footer">
                         <template v-if="applyJobYN == false">
-                            <button class="btn btn-primary" v-on:click="getResumes()">應徵</button>
+                            <button type="button" class="btn btn-primary" v-on:click="getResumes()">應徵</button>
                         </template>
-                       <template v-else>
+                        <template v-else>
+                            <label>{{alertTextGetData}}</label>
                             <select v-model="selectedResumeId">
                                 <option v-for="resume in resumes" v-bind:value="resume.resumeId">{{resume.resumeTitle}}</option>
                             </select>
                             <button class="btn btn-primary" v-on:click="applyJob()">確認送出</button>
                             <button class="btn btn-secondary" v-on:click="cancelApplyJob()">取消</button>
-                       </template>
+                        </template>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @* 沒有驗證信件or完整填寫會員資料Modal *@
+    <div class="modal fade" id="turnPageToMemberModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="turnPageToMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="turnPageToMemberModalLabel">尚未{{alertTextGetData}}</h3>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否移動至 會員資料 頁面 {{alertTextGetData}}?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form asp-area="Candidates" asp-controller="Member" asp-action="TurnPageToMember" method="get">
+                        <button type="submit" class="btn btn-warning text-light" data-bs-dismiss="modal">移動頁面</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div>
         @* 分頁 *@
         <nav aria-label="Page navigation example">
@@ -162,11 +186,11 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     openings: [],
-                    titleClass:[],
-                    titleCategory:[],
-                    Tags:[],
-                    TagClasses:[],
-                    filter:'',
+                    titleClass: [],
+                    titleCategory: [],
+                    Tags: [],
+                    TagClasses: [],
+                    filter: '',
 
                     //分頁
                     pageStatus: 0,
@@ -180,6 +204,9 @@
                     selectedResumeId: null,
 
                     alertStatus: null,
+                    alertTextGetData: "",
+
+                    emptyCandidateDataModalId: null,
                 };
             },
             computed: {
@@ -194,7 +221,7 @@
                 pageEnd() {
                     return this.currentPage * this.perpage
                     //取得該頁最後一個值的index
-                }
+                },
             },
             methods: {
                 setPage(page) {
@@ -203,13 +230,13 @@
                     }
                     this.currentPage = page
                 },
-                filterTagClass:function(ClassID) {
+                filterTagClass: function (ClassID) {
                     let _this = this;
                     return _this.Tags.filter(function (item) {
                         return item.TagClassID == ClassID;
                     });
                 },
-                ReturnhashtagID:function(item){
+                ReturnhashtagID: function (item) {
                     return `#${item.TagClass}`;
                 },
                 changeTagNameTo: function (TagName) {
@@ -246,17 +273,17 @@
                 //資料初始
                 ReceiveOpeningData() {
                     let _this = this;
-                    var request={
-                        Title : _this.filter,
+                    var request = {
+                        Title: _this.filter,
                         Address: _this.filter,
-                        Time : _this.filter
+                        Time: _this.filter
                     }
                     axios.post(`${_this.baseAddress}/Candidates/OpeningStorage/CandidateOpenings`, request, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     }).then(response => _this.openings = response.data)
-                    .catch(err => alert(err));
+                        .catch(err => alert(err));
 
 
                     axios.get(`${_this.baseAddress}/Candidates/OpeningStorage/TitleClassJson`).then(
@@ -292,30 +319,57 @@
                     let request = {
                         OpeningId: item.openingId,
                     }
-                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, request ,{
+                    axios.post(`${this.baseAddress}/Candidates/OpeningStorage/RemoveCdOpRelation`, request, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
-                            alert(response.data.message);
-                            this.ReceiveOpeningData(); // 刷新資料
-                        })
+                        alert(response.data.message);
+                        this.ReceiveOpeningData(); // 刷新資料
+                    })
                         .catch(err => {
                             alert(err);
                         });
                 },
-                getResumes:function(){
-                    this.applyJobYN = true;
-                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/ResumesJson`, 
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
-                    .then(response => this.resumes = response.data)
-                    .catch(err => { alert(err) });
+                getResumes: function () {
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/GetCandidateData`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                this.chooseResume();
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
                 },
-                applyJob:function(){
+                chooseResume: function () {
+                    this.applyJobYN = true;
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/ResumesJson`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => this.resumes = response.data)
+                        .catch(err => { alert(err) });
+                },
+                turnPageToMember: function () {
+                    this.
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/TurnPageToMember`)
+                        .catch(err => alert(err));
+                },
+                applyJob: function () {
                     let request = {};
                     request.resumeId = this.selectedResumeId;
                     request.openingId = this.selectedOpeningId;
@@ -324,13 +378,13 @@
                             "Content-Type": "application/json",
                         }
                     })
-                    .then(response => {
-                        alert(response.data.alertText);
-                        this.alertStatus = response.data.alertStatus;
-                        this.ReceiveOpeningData();
-                    })
-                    .catch(err => { alert(err) })
-                    .finally(() => this.applyJobYN = false);
+                        .then(response => {
+                            alert(response.data.alertText);
+                            this.alertStatus = response.data.alertStatus;
+                            this.ReceiveOpeningData();
+                        })
+                        .catch(err => { alert(err) })
+                        .finally(() => this.applyJobYN = false);
                 },
                 cancelApplyJob: function () {
                     this.applyJobYN = false;
@@ -339,6 +393,7 @@
             },
             mounted() {
                 this.ReceiveOpeningData();
+                console.log(this.$router);
             },
         };
         let app = Vue.createApp(VueApp).mount("#OpeningApp");

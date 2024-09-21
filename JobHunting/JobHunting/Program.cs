@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 //發送Email
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<ReviewMaillService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
@@ -78,17 +79,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
-    name: "myAreaCompanies",
+    name: "Companies",
     areaName: "Companies",
     pattern: "Companies/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "myAreaAdmins",
+    name: "Admins",
     areaName: "Admins",
     pattern: "Admins/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "myAreaCandidates",
+    name: "Candidates",
     areaName: "Candidates",
     pattern: "Candidates/{controller=Home}/{action=Index}/{id?}");
 
