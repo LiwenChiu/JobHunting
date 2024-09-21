@@ -45,7 +45,7 @@
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="mx-2"><a class="nav-link" role="button" asp-area="" asp-controller="Home" asp-action="Index">返回首頁</a></li>
                 <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
-                    <button type="submit" class="btn">登出</button>
+                    <button type="submit" class="btn nav-link">登出</button>
                 </form>
             </ul>
         </nav>
@@ -63,7 +63,7 @@
                                 <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Home" asp-action="Intro">公司資料</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Openings" asp-action="Opening">職缺刊登</a>
+                                <a type="button" class="nav-link astext" asp-area="Companies" asp-controller="Openings" asp-action="Index">職缺刊登</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a type="button" class="nav-link collapsed astext" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" asp-area="Companies" asp-controller="CompanyDealingResumeController" asp-action="Index">

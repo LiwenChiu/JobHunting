@@ -13,9 +13,11 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Globalization;
 using System.Drawing.Configuration;
 using Castle.Components.DictionaryAdapter.Xml;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
     [Area("Admins")]
     public class CompanyOrdersController : Controller
     {

@@ -10,6 +10,8 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public string Address { get; set; }
 
+        public int? RequiredNumber { get; set; }
+
         public string Description { get; set; }
 
         public string Degree { get; set; }

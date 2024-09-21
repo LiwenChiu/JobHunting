@@ -1,8 +1,9 @@
-using JobHunting.Areas.Admins.Models;
+Ôªøusing JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Candidates.Models;
 using JobHunting.Areas.Companies.Models;
 using JobHunting.Data;
 using JobHunting.Models;
+using JobHunting.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient();
+// Ë®ªÂÜä MemoryCache ÊúçÂãô
+builder.Services.AddMemoryCache();
+//ÁôºÈÄÅEmail
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
@@ -28,13 +34,11 @@ builder.Services.AddDbContext<DuckCompaniesContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
 });
-
+  
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(options =>
@@ -44,11 +48,14 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = "/Home/Login";  // ≥]©wµn§J≠∂≠±
-    //options.AccessDeniedPath = "/Account/AccessDenied";  // ≥]©w©⁄µ¥¶s®˙≠∂≠±
-});
+    options.LoginPath = "/Home/Login";  // Ë®≠ÂÆöÁôªÂÖ•È†ÅÈù¢
+    //options.AccessDeniedPath = "/Account/AccessDenied";  // Ë®≠ÂÆöÊãíÁµïÂ≠òÂèñÈ†ÅÈù¢
+}).AddCookie("AdminScheme", options =>
+    options.LoginPath = "/Admins/Home/Login"
 
-builder.Services.AddAuthorization();  // ≤K•[±¬≈v™A∞»
+);
+
+builder.Services.AddAuthorization();  // Ê∑ªÂä†ÊéàÊ¨äÊúçÂãô
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -69,7 +76,7 @@ app.UseStaticFiles();
 app.UseMiddleware<IgnoreRouteMiddleware>();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
@@ -94,3 +101,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+ 

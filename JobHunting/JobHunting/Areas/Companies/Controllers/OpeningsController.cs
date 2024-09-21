@@ -6,8 +6,10 @@ using JobHunting.Areas.Companies.ViewModel;
 using System.Numerics;
 using System.Net;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 namespace JobHunting.Areas.Companies.Controllers
 {
+    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class OpeningsController : Controller
     {
@@ -17,7 +19,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             _context = context;
         }
-        public IActionResult Opening()
+        public IActionResult Index()
         {
             return View();
         }
@@ -37,6 +39,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 Title = o.Title,
                 CompanyName = o.Company.CompanyName,
                 Address = o.Address,
+                RequiredNumber = o.RequiredNumber,
+                ResumeNumber = o.ResumeNumber,
                 ContactName = o.ContactName,
                 ContactPhone = o.ContactPhone,
                 ContactEmail = o.ContactEmail,
@@ -73,6 +77,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 Title = o.Title,
                 CompanyName = o.Company.CompanyName,
                 Address = o.Address,
+                RequiredNumber = o.RequiredNumber,
+                ResumeNumber = o.ResumeNumber,
                 ContactName = o.ContactName,
                 ContactPhone = o.ContactPhone,
                 ContactEmail = o.ContactEmail,
@@ -99,6 +105,8 @@ namespace JobHunting.Areas.Companies.Controllers
                  Title = o.Title,
                  CompanyName = o.CompanyName,
                  Address = o.Address,
+                 RequiredNumber = o.RequiredNumber,
+                 ResumeNumber = o.ResumeNumber,
                  ContactName = o.ContactName,
                  ContactPhone = o.ContactPhone,
                  ContactEmail = o.ContactEmail,
@@ -161,7 +169,7 @@ namespace JobHunting.Areas.Companies.Controllers
             }));
         }
         [HttpPost]
-        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
+        public async Task<IActionResult> EditOpening([FromBody][Bind("Title", "Address", "RequiredNumber", "ContactName", "ContactPhone", "ContactEmail", "SalaryMax", "SalaryMin", "Time", "Benefits", "Description", "Degree", "TitleClassName", "TitleClassId")] OpeningsInputModel oim)
         {
             var opening = await _context.Openings
                 .Include(o => o.TitleClasses).Include(t=>t.Tags)
@@ -183,6 +191,7 @@ namespace JobHunting.Areas.Companies.Controllers
             // 更新 Opening 的屬性
             opening.Title = oim.Title;
             opening.Address = oim.Address;
+            opening.RequiredNumber = oim.RequiredNumber;
             opening.ContactName = oim.ContactName;
             opening.ContactPhone = oim.ContactPhone;
             opening.ContactEmail = oim.ContactEmail;
@@ -273,6 +282,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 { 
                     Title = coim.Title,
                     Address = coim.Address,
+                    RequiredNumber = coim.RequiredNumber,
                     ContactName = coim.ContactName,
                     ContactPhone = coim.ContactName,
                     ContactEmail = coim.ContactEmail,
