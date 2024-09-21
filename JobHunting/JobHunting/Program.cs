@@ -79,17 +79,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
-    name: "myAreaCompanies",
+    name: "Companies",
     areaName: "Companies",
     pattern: "Companies/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "myAreaAdmins",
+    name: "Admins",
     areaName: "Admins",
     pattern: "Admins/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "myAreaCandidates",
+    name: "Candidates",
     areaName: "Candidates",
     pattern: "Candidates/{controller=Home}/{action=Index}/{id?}");
 

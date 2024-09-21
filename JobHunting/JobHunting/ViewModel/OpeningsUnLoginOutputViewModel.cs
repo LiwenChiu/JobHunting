@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.ViewModel
 {
-    public class OpeningSelectViewModel
+    public class OpeningsUnLoginOutputViewModel
     {
         public int OpeningId { get; set; }
 
@@ -15,6 +15,7 @@
         public string Degree { get; set; }
 
         public string Benefits { get; set; }
+
         public decimal? SalaryMax { get; set; }
 
         public decimal? SalaryMin { get; set; }
@@ -28,7 +29,5 @@
         public string ContactEmail { get; set; }
 
         public string CompanyName { get; set; }
-
-        public bool? LikeYN { get; set; }
     }
 }
