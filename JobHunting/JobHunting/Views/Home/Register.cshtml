@@ -51,10 +51,12 @@
                     </div>
                     <div class="text-center">
                         <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="AddCandidate">註冊</button>
-                        <p>
-                            <a asp-controller="Home" asp-action="Login">已有會員?登入</a>
-                        </p>
                     </div>
+                <p class="">
+                    <a class="text-start" asp-controller="Home" asp-action="Login">已有會員?登入</a>
+                    <a class="text-end" asp-controller="Home" asp-action="Login">重新發送驗證信件</a>
+                </p>
+
                 </template>
                 @* 公司端註冊 *@
             <template v-else>

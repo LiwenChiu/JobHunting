@@ -75,7 +75,7 @@
     <script>
          function convertToFullDateTime(dateObject) {
             if (!dateObject) return null;
-            const offset = dateObject.getTimezoneOffset() * 60000; // 将时区偏移量转换为毫秒
+            const offset = dateObject.getTimezoneOffset() * 60000; // 將時區偏移轉換為毫秒
             const localTime = new Date(dateObject.getTime() - offset);
 
              return localTime.toISOString().slice(0, -1)
@@ -128,7 +128,7 @@
                 editStatus:function(item){
                     let _this = this;
                     const confirmdel = confirm("確定要更改?");
-                    if (confirm == true) {
+                    if (confirmdel == true) {
                         let request = {
                             CompanyId: item.companyId,
                             Status: true,
