@@ -189,7 +189,6 @@
                     cityList:[],
                     city:"",
                     zipCode:"",
-                    companyId: 2,
                     cancel: false,
                     baseAddress: "https://localhost:7169"
                 };
@@ -233,7 +232,6 @@
                     var request = {
                         perpage: self.perpage,
                         currentpage: self.currentPage,
-                        companyId: self.companyId,
                         sex:null,
                         serchText: self.filter,
                         area: self.city,
@@ -262,7 +260,6 @@
                 addFavorite(item) {
                     let self = this;
                     request = {
-                        companyId: self.companyId,
                         resumeId: item,
                     };
                     axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
