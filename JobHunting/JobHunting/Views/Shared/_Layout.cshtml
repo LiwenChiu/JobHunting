@@ -13,7 +13,7 @@
     <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
     <link href="css/styles.css" rel="stylesheet" />
 
-  
+
     @await RenderSectionAsync("Styles", required: false)
     <style>
         .bgcolor {
@@ -38,37 +38,101 @@
     </style>
 </head>
 <body class="sb-nav-fixed bgcolor">
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="position: fixed; width:100%;z-index:100;">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/assets/duck.ico" />小鴨上工</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
-                    <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
-                        </ul>
-                    </li>
+    <div id="navlogin">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="position: fixed; width:100%;z-index:100;">
+            <div class="container px-4 px-lg-5">
+                <template v-if="memberRole=='candidate'">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/assets/duck.ico" />小鴨上工</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Candidates" asp-controller="Home" asp-action="Index">會員中心</a></li>
+                            <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
+                                    <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
+                                    <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
+                                </ul>
+                            </li>
+                            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                                <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn">登出</button>
+                                </form>
+                            </ul>
+                </template>
+                <template v-if="memberRole=='company'">
+                    <a class="navbar-brand" asp-area="" asp-controller="Company" asp-action="CompanyIndex"><img src="~/assets/duck.ico" />小鴨上工</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Companies" asp-controller="Home" asp-action="Index">會員中心</a></li>
+                            <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
+                                    <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
+                                    <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
+                                </ul>
+                            </li>
+                            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                                <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn">登出</button>
+                                </form>
+                            </ul>
+                </template>
+                <template v-else-if="memberRole==''">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/assets/duck.ico" />小鴨上工</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
+                                    <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
+                                    <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Login">登入</a></li>
+                </template>
+
                 </ul>
 
             </div>
-        </div>
+    </div>
     </nav>
+    </div>
     <div id="layoutSidenav_content">
         <main>
             <div>
@@ -79,60 +143,60 @@
 
     @* 意見處理Modal *@
     <div id="app">
-    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
-         aria-labelledby="modalTitleId" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h3 class="CompanyNameh3 text-center " style="width:95%">意見信件</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container bg-light" style="border-radius: 30px;">
-                        <div class="inputOutAreas" style="width:95%">
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label">客服類別</label>
-                                <select class="form-control" v-model="letterclass">
-                                    <option >網站使用問題</option>
-                                    <option >申訴/檢舉公司</option>
-                                    <option >建議</option>
-                                </select>
-                            </div>
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
-                                <input type="text" class="form-control " v-model="subjectLine">
-                            </div>
-                            <div class="d-sm-flex inputAreas justify-content-around">
-                                <input id="addFile" type="file" class="form-control" v-on:change="addChange($event.target)" accept="image/*" />
-                            </div>
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <img id="addPicture" src="~/images/no_image_available.jpg" asp-append-version=true />
-                            </div>
+        <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+             aria-labelledby="modalTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center " style="width:95%">意見信件</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container bg-light" style="border-radius: 30px;">
+                            <div class="inputOutAreas" style="width:95%">
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label">客服類別</label>
+                                    <select class="form-control" v-model="letterclass">
+                                        <option>網站使用問題</option>
+                                        <option>申訴/檢舉公司</option>
+                                        <option>建議</option>
+                                    </select>
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label ">主旨</label>
+                                    <input type="text" class="form-control " v-model="subjectLine">
+                                </div>
+                                <div class="d-sm-flex inputAreas justify-content-around">
+                                    <input id="addFile" type="file" class="form-control" v-on:change="addChange($event.target)" accept="image/*" />
+                                </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <img id="addPicture" src="~/images/no_image_available.jpg" asp-append-version=true />
+                                </div>
 
-                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                <textarea class="form-control" style="height:150px" name="意見信件訊息" v-model="content"></textarea>
-                            </div>
+                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                    <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
+                                    <textarea class="form-control" style="height:150px" name="意見信件訊息" v-model="content"></textarea>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="insert" type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal"
-                            v-on:click="addletter">
-                        送出
-                    </button>
-                    <button type="button"
-                            class="btn btn-warning"
-                            data-bs-dismiss="modal" v-on:click="TagCheckedResume=[]">
-                        取消
-                    </button>
+                    <div class="modal-footer">
+                        <button id="insert" type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                v-on:click="addletter">
+                            送出
+                        </button>
+                        <button type="button"
+                                class="btn btn-warning"
+                                data-bs-dismiss="modal" v-on:click="TagCheckedResume=[]">
+                            取消
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -153,12 +217,6 @@
                     letterclass: "",
                     subjectLine: "",
                     content: "",
-                    baseAddress: "https://localhost:7169",
-                    role: 'candidate',
-                    NationalId: '',
-                    Email: '',
-                    Password: '',
-                    GUINumber: '',
                 };
             },
             methods: {
@@ -166,19 +224,18 @@
                     let self = this;
                     let today = new Date().toISOString();
                     var form = new FormData();
-                    form.append("CompanyId", 3);
                     form.append("Letterclass", self.letterclass);
                     form.append("SubjectLine", self.subjectLine);
                     form.append("Content", self.content);
-                    form.append("SendTime",today);
+                    form.append("SendTime", today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
-                        axios.post('https://localhost:7169/Home/AddLetter', form, {
+                    axios.post('https://localhost:7169/Home/AddLetter', form, {
                         headers: { 'Content-Type': 'multipart/form-data' },
-                        }).then(res => {
-                            alert(res.data)
-                        }).catch(err => JSON.stringify(err))
+                    }).then(res => {
+                        alert(res.data)
+                    }).catch(err => JSON.stringify(err))
                 },
-                addChange(inputFile){
+                addChange(inputFile) {
                     let self = this;
                     self.readURL(inputFile, inputFile.parentElement.nextElementSibling.firstChild, $("#addFile"))
                 },
@@ -201,44 +258,37 @@
                         }
                     }
                 },
-                DoLogin: function (event) {
-                    let _this = this;
-                    event.preventDefault(); // 防止表單默認提交
-
-                    let request = {
-                        Role: _this.role,
-                        CandidateLoginVM: _this.role == 'candidate' ? {
-                            NationalId: _this.NationalId,
-                            Email: _this.Email,
-                            Password: _this.Password
-                        } : null,
-                        CompanyLoginVM: _this.role == 'company' ? {
-                            GUINumber: _this.GUINumber,
-                            Password: _this.Password
-                        } : null
-                    };
-
-                    axios.post(`${_this.baseAddress}/Home/DoLogin`, request)
-                        .then(response => {
-                            if (response.data.success) {
-                            if (response.data.role == 'candidate') {
-                                window.location.href = '/Candidates'; // 或者其他求職者頁面
-                            } else if (response.data.role == 'company') {
-                                window.location.href = '/Companies'; // 或者其他公司頁面
-                            }
-                            } else {
-                                alert('登入失敗：' + response.data.message);
-                            }
+            }
+        };
+        let navlogin = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    memberRole: "",
+                };
+            },
+            methods: {
+                getRole: function () {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                            console.log(response.data);
                         })
-                        .catch(error => {
-                            console.error(error);
-                            alert('登入過程中發生錯誤');
+                        .catch(function (error) {
+                            console.log(error);
                         });
-                }
-
+                },
+            },
+            mounted() {
+                this.getRole();
             }
         };
         Vue.createApp(vueLetter).mount("#app")
+        Vue.createApp(navlogin).mount("#navlogin")
     </script>
 </body>
 </html>
