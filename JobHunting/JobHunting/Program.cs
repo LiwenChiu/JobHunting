@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 //發送Email
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<ReviewMaillService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));

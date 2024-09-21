@@ -1,5 +1,6 @@
 ﻿using JobHunting.Areas.Admins.Models;
 using JobHunting.Areas.Admins.ViewModels;
+using JobHunting.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace JobHunting.Areas.Admins.Controllers
     public class CompanyListController : Controller
     {
         private readonly DuckAdminsContext _context;
+        private readonly ReviewMaillService _reviewMaillService;
 
-        public CompanyListController(DuckAdminsContext context)
+        public CompanyListController(DuckAdminsContext context , ReviewMaillService reviewMaillService)
         {
             _context = context;
+            _reviewMaillService = reviewMaillService;
         }
 
 
@@ -63,6 +66,49 @@ namespace JobHunting.Areas.Admins.Controllers
                 ContactPhone = p.ContactPhone,
                 ContactEmail = p.ContactEmail,
             });
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult>EditstatusYN([FromBody] EditStatusViewmodel ESV)
+        {
+            var ey = await _context.Companies.FindAsync(ESV.CompanyId);
+
+            if(ey == null)
+            {
+                return NotFound(new { success = false,Message = "選擇公司異常" });
+            }
+            ey.Status = ESV.Status;
+            ey.Date = ESV.Date;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "更改狀態失敗" });
+            }
+
+            if(ey.Status == true)
+            {
+                _reviewMaillService.SendEmail(ESV.ContactEmail, "恭喜！您的申請已通過審核",ESV.ContactName, ESV.CompanyName);
+                return Json(new { success = true, message = "更改審核狀態成功" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "更改狀態失敗" });
+            }
+            
+        }
+
+
+        [HttpGet]
+        public IActionResult VerifyEmail()
+        {
+
+            // 跳轉到登入頁面
+            return RedirectToAction("Login", "Home");
         }
 
 
