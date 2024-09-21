@@ -39,7 +39,8 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new GetCandidateMemberDataViewModel(); // 或處理未授權訪問的情況
             }
-            return _context.Candidates.AsNoTracking()
+
+            var candidate =  await _context.Candidates.AsNoTracking()
                 .Where(cmd => cmd.CandidateId.ToString() == CandidateId)
                 .Select(cmd => new GetCandidateMemberDataViewModel
                 {
@@ -50,7 +51,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Phone = cmd.Phone,
                     Address = cmd.Address,
                     EmploymentStatus = cmd.EmploymentStatus,
-                }).Single();
+                }).FirstOrDefaultAsync();
+
+            if(candidate == null)
+            {
+                return new GetCandidateMemberDataViewModel();
+            }
+
+            return candidate;
         }
 
         // POST: Candidates/Home/GetCandidateMemberData

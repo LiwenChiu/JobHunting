@@ -106,5 +106,11 @@ namespace JobHunting.Areas.Candidates.Controllers
             returnStatus = [$"修改會員資料成功", "成功"];
             return returnStatus;
         }
+
+        //GET: Candidates/Member/TurnPageToMember
+        public async Task<IActionResult> TurnPageToMember()
+        {
+            return RedirectToAction("Index", "Member", new { area = "Candidates" });
+        }
     }
 }

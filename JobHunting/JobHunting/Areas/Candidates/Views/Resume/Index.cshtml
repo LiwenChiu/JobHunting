@@ -1,15 +1,15 @@
 ﻿@section Styles
 {
-    <style>
-        
-    </style>
+        <style>
+
+        </style>
 }
 
 <div class="container-fluid py-2" id="ResumeApp">
     <div class="letters row">
         @* 履歷新增 *@
         <div class="col-md-3 mb-4 " >
-            <a href="#" data-bs-toggle="modal" style="text-decoration:none;" data-bs-target="#insertmodelID">
+            <button class="astext" style="text-decoration:none;" v-on:click="showCreateResumeModal()">
                 <div class="card " style="width: 16rem; height: 16rem;">
                     <div class="card-body ">
                         <h2 class="text-center mt-5 " >
@@ -17,9 +17,9 @@
                         </h2>
                     </div>
                 </div>
-            </a>
+            </button>
 
-            
+
         </div>
 
         @* 履歷職缺card *@
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        
+
 
 
         @*履歷新增內容*@
@@ -88,7 +88,7 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                            
+
                                             <h5 class="card-title" style="text-align:center">個人資料</h5>
                                             <div>
                                                 <a href="#" class="mb-3" v-on:click.prevent="">
@@ -96,12 +96,12 @@
                                                         @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
                                                         <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="待上傳" />
                                                     </div>
-                                                    
+
                                                  </a>
 
                                                 <input id="HeadshotinsertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
-                                                
-                                                
+
+
                                             </div>
                                                 <p class="card-text">
                                                     <div class="col">
@@ -162,7 +162,7 @@
                                                 <h5 class="card-title" style="text-align:center">求職條件</h5>
                                                 <p class="card-text">
                                                     <div class="col">
-                                                    <label class="mb-2">希望上班時段: <input type="text" v-model=""></label>
+                                                    <label class="mb-2">希望上班時段: <input type="text" v-model="timeR"></label>
                                                     </div>
 
                                                     <div class="mb-3">
@@ -206,7 +206,7 @@
                                                     </div>
 
                                                     <div>
-                                            
+
 
                                                         <div class="col">
                                                         <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
@@ -289,12 +289,12 @@
                                 </div>
 
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
 
         @* 履歷內容Modal *@
         <div class="modal fade" v-for="ResumeD in Resume"
@@ -340,7 +340,7 @@
                                                     </a>
                                                     <input id="HeadshotEditFile" class="" style="" type="file"   accept="image/*" v-on:change="previewImage($event, ResumeD)" />
                                                 </div>
-                                                
+
                                             <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">
@@ -370,11 +370,11 @@
                                                             <textarea name="" id="" class="form-control" rows="6" >{{ResumeD.intro}}</textarea>
                                                         </p>
                                                     </div>
-                                                    
-                                            </p>
-                                                
 
-                                            
+                                            </p>
+
+
+
 
                                         </div>
                                     </div>
@@ -505,14 +505,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="" style="text-align:right">
                                 <button id="update" type="submit" class="btn btn-success mx-3" v-on:click="editConfirm(ResumeD)">編輯完成</button>
                                     <button type="button" class="btn btn-secondary " v-on:click="cancel(ResumeD)">取消</button>
 
                             </div>
-                            
+
                         </div>
                         </template>
                         @* 履歷純顯示 *@
@@ -539,7 +539,7 @@
                                             <p class="card-text">
                                                 <div class="col">
                                                         <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
-                                                       
+
                                                 </div>
                                                 <div>
                                                     <label for="" class="mb-2" >性別 : {{Sexif(ResumeD.sex)}}</label>
@@ -601,10 +601,10 @@
                                                     <div class="col">
                                                         <label for="" class="mb-2 ">證照: 
                                                             <br>
-                                                            
+
                                                             <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
                                                         </label>
-                                                        
+
                                                     </div>
 
                                                 <div>
@@ -649,13 +649,13 @@
                                             </span>
                                         </div>
                                     </template>
-                                    
+
                             </div>
                             <div class="" style="text-align:right">
                                     <button type="button" class="btn btn-secondary " v-on:click="edit(ResumeD);selectedtitleClassId = ResumeD.titleClassId ; selectedTagId=ResumeD.tagId">編輯</button>
-                                
+
                             </div>
-                            
+
                         </div>
                         </template>
                     </div>
@@ -663,10 +663,10 @@
             </div>
         </div>
 
-        
 
 
-        
+
+
 
 
 
@@ -696,490 +696,565 @@
             </nav>
         </div>
     </div>
+
+    @* 沒有驗證信件or完整填寫會員資料Modal *@
+    <div class="modal fade" id="turnPageToMemberModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="turnPageToMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="turnPageToMemberModalLabel">尚未{{alertTextGetData}}</h3>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否移動至 會員資料 頁面 {{alertTextGetData}}?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form asp-area="Candidates" asp-controller="Member" asp-action="TurnPageToMember" method="get">
+                        <button type="submit" class="btn btn-warning text-light" data-bs-dismiss="modal">移動頁面</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
 @section Scripts
 {
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        let VueApp = {
-            data() {
-                return {
-                    baseAddress: "https://localhost:7169",
-                    pageStatus: 0,
-                    perpage: 7, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
-                    resumevalue: "resumevalue",
-                    Resume:[],
-                    backupResume: {},
-                    backupReleaseYNedit: {},
-                    ResumeName:"",
-                    releaseYN:true,
-                    WorkExperience:"",
-                    Autobiography:"",
-                    hopeaddress:"",
-                    timeR: "",
-                    sexYN:false,
-                    ResumeIntro:"",
-                    noimagepreview: "/images/No_Image_Available.jpg",
-                    originalHeadshot: null,
-                    TagClasses: [],
-                    Tags: [],
-                    TagChecked: [],
-                    selectedTagId: [],
-                    TagCheckedOpening: [],
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script>
+            let VueApp = {
+                data() {
+                    return {
+                        baseAddress: "https://localhost:7169",
+                        pageStatus: 0,
+                        perpage: 7, //一頁的資料數
+                        currentPage: 1,
+                        MessageStatus: 1,
+                        resumevalue: "resumevalue",
+                        Resume:[],
+                        backupResume: {},
+                        backupReleaseYNedit: {},
+                        ResumeName:"",
+                        releaseYN:true,
+                        WorkExperience:"",
+                        Autobiography:"",
+                        hopeaddress:"",
+                        timeR: "",
+                        sexYN:false,
+                        ResumeIntro:"",
+                        noimagepreview: "/images/No_Image_Available.jpg",
+                        originalHeadshot: null,
+                        TagClasses: [],
+                        Tags: [],
+                        TagChecked: [],
+                        selectedTagId: [],
+                        TagCheckedOpening: [],
 
-                    titleClass: [],
-                    titleCategory: [],
-                    TitleClassChecked: [],
-                    selectedtitleClassId: [],
-                    CandateidResume: null,
-                };
-            },
-        
-            computed: {
-                totalPage() {
-                    return Math.ceil(this.Resume.length / this.perpage)
-                    //Math.ceil()取最小整數
-                },
-                pageStart() {
-                    return (this.currentPage - 1) * this.perpage
-                    //取得該頁第一個值的index
-                },
-                pageEnd() {
-                    return this.currentPage * this.perpage
-                    //取得該頁最後一個值的index
-                },
-                
-            },
-            methods: {
-                setPage(page) {
-                    if (page <= 0 || page > this.totalPage) {
-                        return
-                    }
-                    this.currentPage = page
-                },
-                //判斷男女
-                Sexif(ResumeD) {
-                    return ResumeD == true ? "男":"女";   
-                },
-                //判斷履歷開放狀態
-                Resumeif(ResumeD){
-                    return ResumeD == true ? "開放":"關閉";   
-                },
-                edit:function(ResumeD) {
-                    let _this = this;
-                    ResumeD.edit = true;
-                    _this.backupResume = {
-                        WorkExperience: ResumeD.workExperience,
-                        hopeaddress: ResumeD.address,
-                        ResumeName: ResumeD.title,
-                        Autobiography: ResumeD.autobiography,
-                        timeR: ResumeD.time,
-                        releaseYN:ResumeD.releaseYN,
-                        ResumeIntro: ResumeD.intro,
-                        Headshot: ResumeD.headshot,
-                        
-                    };
-                    _this.selectedtitleClassId = ResumeD.titleClassId;
-                    _this.selectedTagId = ResumeD.tagId;
-                },
-                editReleaseYNedit: function (ResumeD) {
-                    let _this = this;
-                    ResumeD.ReleaseYNedit = false;
+                        titleClass: [],
+                        titleCategory: [],
+                        TitleClassChecked: [],
+                        selectedtitleClassId: [],
+                        CandateidResume: null,
 
-                    _this.backupReleaseYNedit = {
-                        releaseYN: ResumeD.releaseYN,
+                        alertTextGetData: "",
                     };
                 },
-                Createcancel(){
-                    window.location.reload()
-                },
-                //取消新增or編輯履歷
-                cancel(ResumeD) {
-                    let _this = this
-                    for (let n = 0; n < _this.Resume.length; n++) {
-                        let ResumeD = _this.Resume[n];
 
-                            ResumeD.workExperience = _this.backupResume.WorkExperience;
-                            ResumeD.address = _this.backupResume.hopeaddress;
-                            ResumeD.title = _this.backupResume.ResumeName;
-                            ResumeD.autobiography = _this.backupResume.Autobiography;
-                            ResumeD.time = _this.backupResume.timeR;
-
-                            ResumeD.intro = _this.backupResume.ResumeIntro;
-                            ResumeD.headshot = _this.backupResume.Headshot;
-                    }
-                    ResumeD.edit = false
-
-                    
-                },
-                cancelReleaseYNedit(ResumeD) {
-                    let _this = this
-                    for (let n = 0; n < _this.Resume.length; n++) {
-                        let ResumeD = _this.Resume[n];
-                        ResumeD.releaseYN = _this.backupReleaseYNedit.releaseYN;
-                    }
-                    ResumeD.ReleaseYNedit = true;
-                },
-
-                mergeID(ResumeD) {
-                    // let str = ResumeD.name.replace(/\s/g,"");
-                    let str = ResumeD.name;
-                    let num = ResumeD.resumeid;
-                    strID = str + num;
-                    return strID;
-                },
-
-                changeTagNameTo: function (TagName) {
-                    let _this = this;
-                    return `${TagName}BindID`;
-                },
-                changeTitleClassNameTo: function (TitleClassName) {
-                    let _this = this;
-                    return `${TitleClassName}BindID`;
-                },
-                filterTagClass: function (ClassID) {
-                    let _this = this;
-                    return _this.Tags.filter(function (item) {
-                        return item.tagClassId == ClassID;
-                    });
-                },
-                filterTitleCategory: function (CategoryID) {
-                    let _this = this;
-                    return _this.titleClass.filter(function (item) {
-                        return item.titleCategoryId == CategoryID;
-                    });
-                },
-                selectedFilterTagClass: function (ClassId, TagChecked) {
-                    let _this = this;
-                    let counter = 0;
-                    for (let i = 0; i < TagChecked.length; i++) {
-                        if (this.filterTagClass(ClassId).filter(function (item) {
-                            return item.tagId == TagChecked[i];
-                        }).length > 0) { counter++; }
-                    }
-                    return counter;
-                },
-                selectedFilterTitleCategory: function (titleCategoryId, TitleClassChecked) {
-                    let _this = this;
-                    let counter = 0;
-                    for (let i = 0; i < TitleClassChecked.length; i++) {
-                        if (this.filterTitleCategory(titleCategoryId).filter(function (item) {
-                            return item.titleClassId == TitleClassChecked[i];
-                        }).length > 0) { counter++; }
-                    }
-                    return counter;
-                },
-                ReturnNameId: function (item) {
-                    let NameId = `NameId${item.tagName}${item.tagId}`;
-                    return NameId.replace(" ", "");
-                },
-                ReturnTitleClassNameId: function (item) {
-                    let NameId = `NameId${item.titleClassName}${item.titleClassId}`;
-                    return NameId.replace(" ", "");
-                },
-                ReturnClassNameId: function (item) {
-                    let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
-                    return ClassNameId.replace(" ", "");
-                },
-                Returnhashtag: function (item) {
-                    return `#${item}`;
-                },
-                ReturnCategoryNameId: function (item) {
-                    let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
-                    return CategoryNameId.replace(" ", "");
-                },
-                //列出所有被選到的職業類別
-                getTitleClassName(titleClassId) {
-                    if (!Array.isArray(titleClassId)) return '未指定';
-                    return titleClassId
-                        .map(id => {
-                            let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
-                            return titleClassItem ? titleClassItem.titleClassName : '未指定';
-                        })
-                        .join('/ ');
-                },
-                //列出所有被選到的能力標籤
-                getTagName(tagId) {
-                    if (!Array.isArray(tagId)) return '未指定';
-                    return tagId
-                        .map(id => {
-                            let tagItem = this.Tags.find(item => item.tagId === id);
-                            return tagItem ? tagItem.tagName : '未指定';
-                        })
-                        .join('/ ');
-                },
-                
-
-                //履歷編輯與顯示大頭貼圖片預覽
-                previewImage: function (event, ResumeD,btn) {
-                    let _this = this;
-                    let input = event.target.files[0];
-                    var imageType = "image.*";
-                    if (input.type.match(imageType)) {
-
-                        let reader = new FileReader();
-                        reader.onload = (e) => {
-                            ResumeD.headshot = e.target.result;
-                        }
-
-                        reader.readAsDataURL(input);
-                        // $("#update").prop("disabled", false);
-                    } else {
-                        alert("檔案格式不支援上傳");
-                        // $("#update").prop("disabled", true);
-                        $("#HeadshotEditFile").prop("value","");
-                        
-                    }
-                },
-                //新增履歷的圖片顯示
-                CreatepreviewImage: function (event) {
-                    let input = event.target.files[0];
-                     let imageType = "image.*";
-                    if (input.type.match(imageType)) {
-                        let reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.noimagepreview = e.target.result;
-                        }
-
-                        // this.image = input.files[0];
-                        reader.readAsDataURL(input);
-                         // $("#insert").prop("disabled", false);
-                    } else {
-                        alert("檔案格式不支援上傳");
-                        // $("#insert").prop("disabled", true);
-                        $("#HeadshotinsertFile").prop("value","");
-                    }
-                },
-                        
-                
-                ResumeInformation: function () {
-                    //履歷全部資料
-                    let _this = this;
-                    fetch(`${_this.baseAddress}/Candidates/Resume/CandidatesResumeResult`, {
-                        method:"GET",
-                    }).then(response=>{
-                        return response.json();
-                    }).then(data=> {
-                        return _this.Resume = data
-                    }).catch(err=>{
-                        alert(JSON.stringify(err))
-                    });
-
-                    //職業類別名稱和ID
-                    fetch(`${_this.baseAddress}/Candidates/Resume/TitleCategoryJson`, {
-                        method:"GET",
-                    }).then(response=>{
-                        return response.json();
-                    }).then(data=> {
-                        return _this.titleCategory = data
-                    }).catch(err=>{
-                        alert(JSON.stringify(err))
-                    });
-                    //職業類型
-                    fetch(`${_this.baseAddress}/Candidates/Resume/TitleClassJson`, {
-                        method:"GET",
-                    }).then(response=>{
-                        return response.json();
-                    }).then(data=> {
-                        return _this.titleClass = data
-                    }).catch(err=>{
-                        alert(JSON.stringify(err))
-                    });
-
-                    fetch(`${_this.baseAddress}/Candidates/Resume/TagJson`, {
-                        method:"GET",
-                    }).then(response=>{
-                        return response.json();
-                    }).then(data=> {
-                        return _this.Tags = data
-                    }).catch(err=>{
-                        alert(JSON.stringify(err))
-                    });
-
-                    fetch(`${_this.baseAddress}/Candidates/Resume/TagClassJson`, {
-                        method:"GET",
-                    }).then(response=>{
-                        return response.json();
-                    }).then(data=> {
-                        return _this.TagClasses = data
-                    }).catch(err=>{
-                        alert(JSON.stringify(err))
-                    });
-                },
-                //新增履歷
-                CreateNewResume: function () {
-                    let _this = this;
-                    var form = new FormData();
-                    form.append("Address", _this.hopeaddress);
-                    form.append("Title", _this.ResumeName);
-                    form.append("Autobiography", _this.Autobiography);
-                    form.append("WorkExperience", _this.WorkExperience);
-                    form.append("Time", _this.timeR);
-                    form.append("ReleaseYN", _this.releaseYN);
-                    form.append("Intro", _this.ResumeIntro);
-                    // form.append("TitleClassId", JSON.stringify(_this.selectedtitleClassId));
-                    // form.append("TagId", JSON.stringify(_this.selectedTagId));
-                    _this.selectedtitleClassId.forEach((id, index) => {
-                        form.append(`TitleClassId[${index}]`, id);
-                    });
-
-                    _this.selectedTagId.forEach((id, index) => {
-                        form.append(`TagId[${index}]`, id);
-                    });
-                    form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
-                    // const files = document.querySelector('#CertificationInsertFile').files;
-                    // for (let i = 0; i < files.length; i++) {
-                    //     form.append("CertificationImageFile", files[i]);
-                    // };
-                    fetch(`${_this.baseAddress}/Candidates/Resume/CreateReasumes`, {
-                        method: "POST",
-                        body: form
-                    }).then(response => {
-                        return response.json()
-                    }).then(data => {
-
-                        if (data.success == true) {
-                            alert(data.message);
-                            location.reload(); // 刷新页面
-                        } else if (data.success == false) {
-                            alert(data.message);
-                            location.reload();
-                        };
-                        
-                        
-                    }).catch(err => {
-                        console.log(err)
-                    })
+                computed: {
+                    totalPage() {
+                        return Math.ceil(this.Resume.length / this.perpage)
+                        //Math.ceil()取最小整數
+                    },
+                    pageStart() {
+                        return (this.currentPage - 1) * this.perpage
+                        //取得該頁第一個值的index
+                    },
+                    pageEnd() {
+                        return this.currentPage * this.perpage
+                        //取得該頁最後一個值的index
+                    },
 
                 },
-                
-                //編輯完成再確認，並執行editResumD()
-                editConfirm: function(ResumeD){
-                    const Confirmed = confirm("確定要編輯嗎?");
-                    if(Confirmed){
-                        this.editResumD(ResumeD);
-                    }else{
-                        alert("已取消編輯");
-                    };
-                },
-                //編輯履歷並修改資料庫資料
-                editResumD: function (ResumeD) {
-                    let _this = this
-                    
-                    let form = new FormData();
-                    form.append("ResumeId", ResumeD.resumeid);
-                    form.append("Address", ResumeD.address);
-                    form.append("Title", ResumeD.title);
-                    form.append("Autobiography", ResumeD.autobiography);
-                    form.append("WorkExperience", ResumeD.workExperience);
-                    form.append("Time", ResumeD.time);
-                    form.append("ReleaseYN", ResumeD.releaseYN);
-                    form.append("Intro", ResumeD.intro);
-                    //手動新增每個元素到 FormData
-                    _this.selectedtitleClassId.forEach((id, index) => {
-                        form.append(`TitleClassId[${index}]`, id);
-                    });
-
-                    _this.selectedTagId.forEach((id, index) => {
-                        form.append(`TagId[${index}]`, id);
-                    });
-                    form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationEditFile').files[0]);
-                    // const files = document.querySelector('#CertificationEditFile').files;
-                    // for (let i = 0; i < files.length; i++) {
-                    //     form.append("CertificationImageFile", files[i]);
-                    // };
-
-                    // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
-                    fetch(`${_this.baseAddress}/Candidates/Resume/EditResume`, {
-                        method: "POST",
-                        body:form,
-                    }).then(response => {
-                        return response.json()
-                    }).then(data => {
-                        if (data.success == true) {
-                            alert(data.message);
-                            location.reload(); // 刷新页面
-                        } else if (data.success == false) {
-                            alert(data.message);
-                            location.reload();
-                        };
-                    }).catch(err => {
-                        alert(err)
-                    });
-                    // this.originalHeadshot = ResumeD.headshot;
-                    // ResumeD.edit = false;
-                },
-                editReleaseYN: function (ResumeD) {
-                    let _this = this
-                    let request = {}
-                    request.ReleaseYN = ResumeD.releaseYN,
-                    request.ResumeId = ResumeD.resumeid,
-                     fetch(`${_this.baseAddress}/Candidates/Resume/EditReleaseYN`, {
-                        method: "POST",
-                        headers: {
-                        "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
-                        },
-                        body:JSON.stringify(request)
-                    }).then(response => {
-                        return response.json()
-                    }).then(data => {
-                        if (data.success == true) {
-                            alert(data.message);
-                            location.reload(); // 刷新页面
-                        } else if (data.success == false) {
-                            alert(data.message);
-                            location.reload();
-                        };
-                    }).catch(err => {
-                        alert(err)
-                    });
-                },
-                //刪除履歷
-                deleteResume: function (item) {
-                    let _this = this
-                    var confirmdel = confirm("確定要刪除?");
-                    var request = {};
-                    request.resumeid = item.resumeid;
-                    if (confirmdel == true) {
-                        fetch(`${_this.baseAddress}/Candidates/Resume/DelResume`, {
-                            method: "DELETE",
+                methods: {
+                    mountCheckCandidateData:function(){
+                        axios.get(`${this.baseAddress}/Candidates/Resume/GetCandidateData`,
+                        {
                             headers: {
-                                "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                                "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(request)
-                        }).then(response => {
-                            return response.json();
-                        }).then(data=>{
-                            if (data.success == true) {
-                            alert(data.message);
-                            location.reload(); // 刷新页面
-                        } else if (data.success == false) {
-                            alert(data.message);
-                            location.reload();
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
+                    },
+                    showCreateResumeModal:function(){
+                        axios.get(`${this.baseAddress}/Candidates/Resume/GetCandidateData`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                $("#insertmodelID").modal("show");
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
+                    },
+                    setPage(page) {
+                        if (page <= 0 || page > this.totalPage) {
+                            return
+                        }
+                        this.currentPage = page
+                    },
+                    //判斷男女
+                    Sexif(ResumeD) {
+                        return ResumeD == true ? "男":"女";   
+                    },
+                    //判斷履歷開放狀態
+                    Resumeif(ResumeD){
+                        return ResumeD == true ? "開放":"關閉";   
+                    },
+                    edit:function(ResumeD) {
+                        let _this = this;
+                        ResumeD.edit = true;
+                        _this.backupResume = {
+                            WorkExperience: ResumeD.workExperience,
+                            hopeaddress: ResumeD.address,
+                            ResumeName: ResumeD.title,
+                            Autobiography: ResumeD.autobiography,
+                            timeR: ResumeD.time,
+                            releaseYN:ResumeD.releaseYN,
+                            ResumeIntro: ResumeD.intro,
+                            Headshot: ResumeD.headshot,
+
                         };
-                            // alert(data.message);
+                        _this.selectedtitleClassId = ResumeD.titleClassId;
+                        _this.selectedTagId = ResumeD.tagId;
+                    },
+                    editReleaseYNedit: function (ResumeD) {
+                        let _this = this;
+                        ResumeD.ReleaseYNedit = false;
+
+                        _this.backupReleaseYNedit = {
+                            releaseYN: ResumeD.releaseYN,
+                        };
+                    },
+                    Createcancel(){
+                        this.ResumeInformation();
+                        // window.location.reload();
+                        this.ResumeName = "";
+                        this.ResumeIntro = "",
+                        this.WorkExperience = "",
+                        this.Autobiography = "";
+                        this.hopeaddress = "";
+                        this.selectedTagId = [];
+                        this.selectedtitleClassId = [];
+                    },
+                    //取消新增or編輯履歷
+                    cancel(ResumeD) {
+                        let _this = this
+                        for (let n = 0; n < _this.Resume.length; n++) {
+                            let ResumeD = _this.Resume[n];
+
+                                ResumeD.workExperience = _this.backupResume.WorkExperience;
+                                ResumeD.address = _this.backupResume.hopeaddress;
+                                ResumeD.title = _this.backupResume.ResumeName;
+                                ResumeD.autobiography = _this.backupResume.Autobiography;
+                                ResumeD.time = _this.backupResume.timeR;
+
+                                ResumeD.intro = _this.backupResume.ResumeIntro;
+                                ResumeD.headshot = _this.backupResume.Headshot;
+                        }
+                        ResumeD.edit = false
+
+
+                    },
+                    cancelReleaseYNedit(ResumeD) {
+                        let _this = this
+                        for (let n = 0; n < _this.Resume.length; n++) {
+                            let ResumeD = _this.Resume[n];
+                            ResumeD.releaseYN = _this.backupReleaseYNedit.releaseYN;
+                        }
+                        ResumeD.ReleaseYNedit = true;
+                    },
+
+                    mergeID(ResumeD) {
+                        // let str = ResumeD.name.replace(/\s/g,"");
+                        let str = ResumeD.name;
+                        let num = ResumeD.resumeid;
+                        strID = str + num;
+                        return strID;
+                    },
+
+                    changeTagNameTo: function (TagName) {
+                        let _this = this;
+                        return `${TagName}BindID`;
+                    },
+                    changeTitleClassNameTo: function (TitleClassName) {
+                        let _this = this;
+                        return `${TitleClassName}BindID`;
+                    },
+                    filterTagClass: function (ClassID) {
+                        let _this = this;
+                        return _this.Tags.filter(function (item) {
+                            return item.tagClassId == ClassID;
+                        });
+                    },
+                    filterTitleCategory: function (CategoryID) {
+                        let _this = this;
+                        return _this.titleClass.filter(function (item) {
+                            return item.titleCategoryId == CategoryID;
+                        });
+                    },
+                    selectedFilterTagClass: function (ClassId, TagChecked) {
+                        let _this = this;
+                        let counter = 0;
+                        for (let i = 0; i < TagChecked.length; i++) {
+                            if (this.filterTagClass(ClassId).filter(function (item) {
+                                return item.tagId == TagChecked[i];
+                            }).length > 0) { counter++; }
+                        }
+                        return counter;
+                    },
+                    selectedFilterTitleCategory: function (titleCategoryId, TitleClassChecked) {
+                        let _this = this;
+                        let counter = 0;
+                        for (let i = 0; i < TitleClassChecked.length; i++) {
+                            if (this.filterTitleCategory(titleCategoryId).filter(function (item) {
+                                return item.titleClassId == TitleClassChecked[i];
+                            }).length > 0) { counter++; }
+                        }
+                        return counter;
+                    },
+                    ReturnNameId: function (item) {
+                        let NameId = `NameId${item.tagName}${item.tagId}`;
+                        return NameId.replace(" ", "");
+                    },
+                    ReturnTitleClassNameId: function (item) {
+                        let NameId = `NameId${item.titleClassName}${item.titleClassId}`;
+                        return NameId.replace(" ", "");
+                    },
+                    ReturnClassNameId: function (item) {
+                        let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
+                        return ClassNameId.replace(" ", "");
+                    },
+                    Returnhashtag: function (item) {
+                        return `#${item}`;
+                    },
+                    ReturnCategoryNameId: function (item) {
+                        let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
+                        return CategoryNameId.replace(" ", "");
+                    },
+                    //列出所有被選到的職業類別
+                    getTitleClassName(titleClassId) {
+                        if (!Array.isArray(titleClassId)) return '未指定';
+                        return titleClassId
+                            .map(id => {
+                                let titleClassItem = this.titleClass.find(item => item.titleClassId === id);
+                                return titleClassItem ? titleClassItem.titleClassName : '未指定';
+                            })
+                            .join('/ ');
+                    },
+                    //列出所有被選到的能力標籤
+                    getTagName(tagId) {
+                        if (!Array.isArray(tagId)) return '未指定';
+                        return tagId
+                            .map(id => {
+                                let tagItem = this.Tags.find(item => item.tagId === id);
+                                return tagItem ? tagItem.tagName : '未指定';
+                            })
+                            .join('/ ');
+                    },
+
+
+                    //履歷編輯與顯示大頭貼圖片預覽
+                    previewImage: function (event, ResumeD,btn) {
+                        let _this = this;
+                        let input = event.target.files[0];
+                        var imageType = "image.*";
+                        if (input.type.match(imageType)) {
+
+                            let reader = new FileReader();
+                            reader.onload = (e) => {
+                                ResumeD.headshot = e.target.result;
+                            }
+
+                            reader.readAsDataURL(input);
+                            // $("#update").prop("disabled", false);
+                        } else {
+                            alert("檔案格式不支援上傳");
+                            // $("#update").prop("disabled", true);
+                            $("#HeadshotEditFile").prop("value","");
+
+                        }
+                    },
+                    //新增履歷的圖片顯示
+                    CreatepreviewImage: function (event) {
+                        let input = event.target.files[0];
+                         let imageType = "image.*";
+                        if (input.type.match(imageType)) {
+                            let reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.noimagepreview = e.target.result;
+                            }
+
+                            // this.image = input.files[0];
+                            reader.readAsDataURL(input);
+                             // $("#insert").prop("disabled", false);
+                        } else {
+                            alert("檔案格式不支援上傳");
+                            // $("#insert").prop("disabled", true);
+                            $("#HeadshotinsertFile").prop("value","");
+                        }
+                    },
+
+
+                    ResumeInformation: function () {
+                        //履歷全部資料
+                        let _this = this;
+                        fetch(`${_this.baseAddress}/Candidates/Resume/CandidatesResumeResult`, {
+                            method:"GET",
+                        }).then(response=>{
+                            return response.json();
+                        }).then(data=> {
+                            return _this.Resume = data
+                        }).catch(err=>{
+                            alert(JSON.stringify(err))
+                        });
+
+                        //職業類別名稱和ID
+                        fetch(`${_this.baseAddress}/Candidates/Resume/TitleCategoryJson`, {
+                            method:"GET",
+                        }).then(response=>{
+                            return response.json();
+                        }).then(data=> {
+                            return _this.titleCategory = data
+                        }).catch(err=>{
+                            alert(JSON.stringify(err))
+                        });
+                        //職業類型
+                        fetch(`${_this.baseAddress}/Candidates/Resume/TitleClassJson`, {
+                            method:"GET",
+                        }).then(response=>{
+                            return response.json();
+                        }).then(data=> {
+                            return _this.titleClass = data
+                        }).catch(err=>{
+                            alert(JSON.stringify(err))
+                        });
+
+                        fetch(`${_this.baseAddress}/Candidates/Resume/TagJson`, {
+                            method:"GET",
+                        }).then(response=>{
+                            return response.json();
+                        }).then(data=> {
+                            return _this.Tags = data
+                        }).catch(err=>{
+                            alert(JSON.stringify(err))
+                        });
+
+                        fetch(`${_this.baseAddress}/Candidates/Resume/TagClassJson`, {
+                            method:"GET",
+                        }).then(response=>{
+                            return response.json();
+                        }).then(data=> {
+                            return _this.TagClasses = data
+                        }).catch(err=>{
+                            alert(JSON.stringify(err))
+                        });
+                    },
+                    //新增履歷
+                    CreateNewResume: function () {
+                        let _this = this;
+                        var form = new FormData();
+                        form.append("Address", _this.hopeaddress);
+                        form.append("Title", _this.ResumeName);
+                        form.append("Autobiography", _this.Autobiography);
+                        form.append("WorkExperience", _this.WorkExperience);
+                        form.append("Time", _this.timeR);
+                        form.append("ReleaseYN", _this.releaseYN);
+                        form.append("Intro", _this.ResumeIntro);
+                        // form.append("TitleClassId", JSON.stringify(_this.selectedtitleClassId));
+                        // form.append("TagId", JSON.stringify(_this.selectedTagId));
+                        _this.selectedtitleClassId.forEach((id, index) => {
+                            form.append(`TitleClassId[${index}]`, id);
+                        });
+
+                        _this.selectedTagId.forEach((id, index) => {
+                            form.append(`TagId[${index}]`, id);
+                        });
+                        form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
+                        form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
+                        // const files = document.querySelector('#CertificationInsertFile').files;
+                        // for (let i = 0; i < files.length; i++) {
+                        //     form.append("CertificationImageFile", files[i]);
+                        // };
+                        fetch(`${_this.baseAddress}/Candidates/Resume/CreateReasumes`, {
+                            method: "POST",
+                            body: form
+                        }).then(response => {
+                            return response.json()
+                        }).then(data => {
+
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                                location.reload();
+                            };
+
+
+                        }).catch(err => {
+                            console.log(err)
+                        })
+
+                    },
+
+                    //編輯完成再確認，並執行editResumD()
+                    editConfirm: function(ResumeD){
+                        const Confirmed = confirm("確定要編輯嗎?");
+                        if(Confirmed){
+                            this.editResumD(ResumeD);
+                        }else{
+                            alert("已取消編輯");
+                        };
+                    },
+                    //編輯履歷並修改資料庫資料
+                    editResumD: function (ResumeD) {
+                        let _this = this
+
+                        let form = new FormData();
+                        form.append("ResumeId", ResumeD.resumeid);
+                        form.append("Address", ResumeD.address);
+                        form.append("Title", ResumeD.title);
+                        form.append("Autobiography", ResumeD.autobiography);
+                        form.append("WorkExperience", ResumeD.workExperience);
+                        form.append("Time", ResumeD.time);
+                        form.append("ReleaseYN", ResumeD.releaseYN);
+                        form.append("Intro", ResumeD.intro);
+                        //手動新增每個元素到 FormData
+                        _this.selectedtitleClassId.forEach((id, index) => {
+                            form.append(`TitleClassId[${index}]`, id);
+                        });
+
+                        _this.selectedTagId.forEach((id, index) => {
+                            form.append(`TagId[${index}]`, id);
+                        });
+                        form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
+                        form.append("CertificationImageFile", document.querySelector('#CertificationEditFile').files[0]);
+                        // const files = document.querySelector('#CertificationEditFile').files;
+                        // for (let i = 0; i < files.length; i++) {
+                        //     form.append("CertificationImageFile", files[i]);
+                        // };
+
+                        // form.append("__RequestVerificationToken", $(AntiForgeryToken).val());
+                        fetch(`${_this.baseAddress}/Candidates/Resume/EditResume`, {
+                            method: "POST",
+                            body:form,
+                        }).then(response => {
+                            return response.json()
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                                location.reload();
+                            };
                         }).catch(err => {
                             alert(err)
-                        })
-                        
-                    }else{
-                        alert("已取消操作")
+                        });
+                        // this.originalHeadshot = ResumeD.headshot;
+                        // ResumeD.edit = false;
+                    },
+                    editReleaseYN: function (ResumeD) {
+                        let _this = this
+                        let request = {}
+                        request.ReleaseYN = ResumeD.releaseYN,
+                        request.ResumeId = ResumeD.resumeid,
+                         fetch(`${_this.baseAddress}/Candidates/Resume/EditReleaseYN`, {
+                            method: "POST",
+                            headers: {
+                            "content-type": "application/json" // 告訴伺服器我們發送的是 JSON 格式的數據
+                            },
+                            body:JSON.stringify(request)
+                        }).then(response => {
+                            return response.json()
+                        }).then(data => {
+                            if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                                location.reload();
+                            };
+                        }).catch(err => {
+                            alert(err)
+                        });
+                    },
+                    //刪除履歷
+                    deleteResume: function (item) {
+                        let _this = this
+                        var confirmdel = confirm("確定要刪除?");
+                        var request = {};
+                        request.resumeid = item.resumeid;
+                        if (confirmdel == true) {
+                            fetch(`${_this.baseAddress}/Candidates/Resume/DelResume`, {
+                                method: "DELETE",
+                                headers: {
+                                    "content-type": "application/json",  //告訴伺服器我們發送的是 JSON 格式的數據。
+                                },
+                                body: JSON.stringify(request)
+                            }).then(response => {
+                                return response.json();
+                            }).then(data=>{
+                                if (data.success == true) {
+                                alert(data.message);
+                                location.reload(); // 刷新页面
+                            } else if (data.success == false) {
+                                alert(data.message);
+                                location.reload();
+                            };
+                                // alert(data.message);
+                            }).catch(err => {
+                                alert(err)
+                            })
+
+                        }else{
+                            alert("已取消操作")
+                        }
                     }
-                }
-            },
-           
-            mounted:function(){
-                this.ResumeInformation();
-            },
-            
-        };
-        let app = Vue.createApp(VueApp).mount("#ResumeApp");
-    </script>
+                },
+
+                mounted:function(){
+                    this.mountCheckCandidateData();
+                    this.ResumeInformation();
+                },
+
+            };
+            let app = Vue.createApp(VueApp).mount("#ResumeApp");
+        </script>
 
 }
