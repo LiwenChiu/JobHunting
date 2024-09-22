@@ -44,8 +44,7 @@
                 </select>
             </div>
             <div class="col-sm-3">
-                <input type="checkbox" v-on:change="cancelSelect()" v-model="cancel"/>
-                <labe for="cancel">取消篩選條件</labe>
+                <button class="btn btn-warning text-light" v-on:click="cancelSelect()">清空</button>
             </div>
         </div>
         <div class="row py-md-2">
@@ -53,12 +52,52 @@
                 <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterResumes" v-model="filter" />
             </div>
             <div class="col-2 mb-0">
-                <button class="btn btn-warning" v-on:click="filterResumes">搜尋</button>
+                <button class="btn btn-warning text-light" v-on:click="filterResumes">搜尋</button>
             </div>
         </div>
     </div>
 
     <br />
+    @* ----------上方換頁------------------- *@
+    <div class="container text-center">
+        <div class="row ">
+            <div class="col-sm-2 row">
+                <div class="col-sm-6 ms-auto">
+                    <label>第</label>
+                    <select v-model="currentPageNow" v-on:change="setPage(currentPageNow)">
+                        <option v-for="page in totalPage" :value="page">{{page}}</option>
+                    </select>
+                    <label>頁</label>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" v-on:click="setPage(currentPage-1)">
+                            <a class="page-link" href="#homeList" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
+                            <a class="page-link" href="#homeList">{{item}}</a>
+                        </li>
+                        <li class="page-item" v-on:click="setPage(currentPage+1)">
+                            <a class="page-link" href="#homeList" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-sm-2 ms-auto row">
+                <div class="col-sm-10">
+                    <label>一頁</label>
+                    <input style="width:3vh;" v-on:change="filterResumes" v-model.number.trim="perpage" />
+                    <label>筆</label>
+                </div>
+            </div>
+        </div>
+    </div>
     
     @* 履歷清單 *@
     <div id="homeList" class="container">
@@ -90,7 +129,7 @@
         <div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="setPage(currentPage-1)">
+                    <li class="page-item" v-on:click="setPage(currentPageNow-1)">
                         <a class="page-link" href="#homeList" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -98,7 +137,7 @@
                     <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
                         <a class="page-link" href="#homeList">{{item}}</a>
                     </li>
-                    <li class="page-item" v-on:click="setPage(currentPage+1)">
+                    <li class="page-item" v-on:click="setPage(currentPageNow+1)">
                         <a class="page-link" href="#homeList" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
@@ -184,7 +223,9 @@
                     filteredResume:[],
                     tagClasses: [],
                     perpage: 5, //一頁的資料數
+                    totalPage: null,
                     currentPage: 1,
+                    currentPageNow: null,
                     resumesCount:null,
                     cityList:[],
                     city:"",
@@ -193,23 +234,15 @@
                     baseAddress: "https://localhost:7169"
                 };
             },
-            computed: {
-                totalPage() {
-                    return Math.ceil(this.resumesCount / this.perpage)
-                    //Math.ceil()取最小整數
-                },
-                cancelSelect(){      //取消篩選條件
-                    let self = this;
-                    if (self.cancel == true) {
-                        return self.filter = self.city = self.zipCode = self.edu = "", self.skill = null, self.cancel = false;
-                    } 
-                }
-            },
             methods: {
                 goToPage(item){                  //開啟履歷新視窗
                     window.open(`${this.baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`)
                 },
-                
+                cancelSelect(){      //取消篩選條件
+                    let self = this;
+                    self.filter = self.city = self.zipCode = self.edu = "", self.skill = null;
+                    self.filterResumes();
+                },
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
@@ -228,10 +261,11 @@
                 },
                 filterResumes() {
                     let self = this;
+                    self.currentPageNow = self.currentPage == null || self.currentPage == "" ? 1 : self.currentPage;
                     let today = new Date().getFullYear();
                     var request = {
                         perpage: self.perpage,
-                        currentpage: self.currentPage,
+                        currentpage: self.currentPageNow,
                         sex:null,
                         serchText: self.filter,
                         area: self.city,
@@ -253,7 +287,7 @@
                             }).then(res => {
                                 self.resumes = res.data.resumeOutput;
                                 self.resumesCount = res.data.totalDataCount;
-                                self.allDegree = res.data.resumeOutput.map(x => x.degree).filter((value, index, self) => self.indexOf(value) === index);
+                                self.totalPage = Math.ceil(res.data.totalDataCount / self.perpage);
                                 self.currentPage = 1;
                             }).catch(err => JSON.stringify(err))
                 },
@@ -291,12 +325,23 @@
                 },
                 getArea(){        //選到哪個縣市顯示該縣市個別的區
                     this.area = this.cityList.find(x => x.CityName === this.city).AreaList;
-                }
+                },
+                getDegree(){
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Company/EduSelectInput`)
+                        .then(model => {
+                            self.allDegree = model.data.map(x => x.degree).filter((value, index, self) => value && self.indexOf(value) === index);;
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                },
             },
             mounted() {
                 this.getTag();
                 this.getCity();
                 this.filterResumes();
+                this.getDegree()
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#app2");

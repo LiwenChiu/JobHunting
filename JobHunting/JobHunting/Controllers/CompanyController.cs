@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -91,7 +92,7 @@ namespace JobHunting.Controllers
         {
             EditResume(resume);
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Where(b => b.ReleaseYN == true).ToList();
+            var source = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(z => z.Companies).Where(b => b.ReleaseYN == true).ToList();
             if(resume.serchText != "" || resume.Area != "" || resume.Skill != null || resume.Edu != "" || resume.zipCode != "")
             {
                 if (resume.serchText.IsNullOrEmpty())
@@ -110,7 +111,7 @@ namespace JobHunting.Controllers
                         Degree = c.Candidate.Degree,
                         Address = c.Candidate.Address,
                         skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
-                        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0
+                        Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
                     }).Where(b =>
                         b.Address.Substring(0, 3) == resume.Area ||
                         b.Degree == resume.Edu ||
@@ -225,6 +226,13 @@ namespace JobHunting.Controllers
                 TagObj = p.Tags.Select(z => new { z.TagId, z.TagName })
             }));
         }
+        public async Task<IActionResult> EduSelectInput()
+        {
+            return Json(_context.Candidates.Select(p => new EduSelectViewModel
+            {
+                Degree = p.Degree
+            }));
+        }
         public async Task<IActionResult> GetOpenings()
         {
             var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -325,6 +333,7 @@ namespace JobHunting.Controllers
             }
             return age;
         }
+
         public async Task<FileResult> GetPicture(int id)
         {
             string webRootPath = _hostingEnvironment.WebRootPath;
