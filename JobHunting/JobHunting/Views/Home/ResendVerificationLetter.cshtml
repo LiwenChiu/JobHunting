@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                <button id="VerificationSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill " v-on:click="startimer()">
+                <button id="VerificationSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill " v-on:click="VerificationLetter">
                     發送
                     </button>
                 </div>
@@ -60,7 +60,7 @@
                         if (countdown <= 0) {
                             //clearInterval = 清除重複
                             clearInterval(Interval);
-                            countdownDisplay.textContent = "";
+                            countdownDisplay.textContent = "發送";
                             button.disabled = false;
                         }
                     }, 1000); //每秒執行一次
@@ -74,7 +74,7 @@
                         // role:_this.role,
                         Email: _this.Email,
                     };
-                    fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
+                    fetch(`${_this.baseAddress}/Home/SendVerificationLetter`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"  // 指定 JSON 格式
@@ -86,7 +86,7 @@
                         if (data.success == true) {
                             alert(data.message);
                             //禁用發送按鈕60秒
-                            _this.startimer()
+                            _this.startimer
                         } else if (data.success == false) {
                             alert(data.message);
                         };
