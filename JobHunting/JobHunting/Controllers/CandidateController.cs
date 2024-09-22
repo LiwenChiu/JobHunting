@@ -3,6 +3,7 @@ using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobHunting.Controllers
 {
@@ -32,7 +33,7 @@ namespace JobHunting.Controllers
             }
 
         }
-        public async Task<IActionResult> OpeningList(int openingID, int candidateID)
+        public async Task<IActionResult> OpeningList(int openingID)
         {
             if (openingID == null)
             {
@@ -40,6 +41,14 @@ namespace JobHunting.Controllers
             }
             else
             {
+                var candidateIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                if (candidateIdClaim == null)
+                {
+                    return Unauthorized("無法獲取求職者資訊，請重新登入");
+                }
+
+                int candidateID = int.Parse(candidateIdClaim.Value);
+
                 return Json(_context.Openings.Include(a => a.Company).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Candidates)
                 .Where(y => y.OpeningId == openingID && y.ReleaseYN == true)
                 .Select(b => new OpeningListDetailViewModel
@@ -65,9 +74,17 @@ namespace JobHunting.Controllers
             }
             
         }
-        public async Task<IActionResult> GetResumes(int id)
+        public async Task<IActionResult> GetResumes()
         {
-            return Json(_context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == id).Select(p => new ResumesListViewModel
+            var candidateIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (candidateIdClaim == null)
+            {
+                return Unauthorized("無法獲取求職者資訊，請重新登入");
+            }
+
+            int candidateID = int.Parse(candidateIdClaim.Value);
+
+            return Json(_context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID).Select(p => new ResumesListViewModel
             {
                 CandidateId = p.CandidateId,
                 ResumesId = p.ResumeId,
@@ -102,8 +119,16 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var candidateIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                if (candidateIdClaim == null)
+                {
+                    return "請重新登入";
+                }
+
+                int candidateID = int.Parse(candidateIdClaim.Value);
+
                 var query = "INSERT INTO CandidateOpeningLikeRecords(CandidateId,OpeningId) VALUES (@CandidateId ,@OpeningId)";
-                var CandidateIdParam = new SqlParameter("@CandidateId", favorite.CandidateId);
+                var CandidateIdParam = new SqlParameter("@CandidateId", candidateID);
                 var OpeningIdParam = new SqlParameter("@OpeningId", favorite.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, CandidateIdParam, OpeningIdParam);
             }
@@ -119,8 +144,16 @@ namespace JobHunting.Controllers
         {
             try
             {
+                var candidateIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                if (candidateIdClaim == null)
+                {
+                    return "請重新登入";
+                }
+
+                int candidateID = int.Parse(candidateIdClaim.Value);
+
                 var query = "DELETE FROM  CandidateOpeningLikeRecords WHERE CandidateId = @CandidateId AND OpeningId = @OpeningId";
-                var CandidateIdParam = new SqlParameter("@CandidateId", df.CandidateId);
+                var CandidateIdParam = new SqlParameter("@CandidateId", candidateID);
                 var OpeningIdParam = new SqlParameter("@OpeningId", df.OpeningId);
                 await _context.Database.ExecuteSqlRawAsync(query, CandidateIdParam, OpeningIdParam);
             }

@@ -150,7 +150,6 @@
                     return {
                         openingId: "@Html.DisplayFor(model => model.OpeningId)",
                         companyId: "@Html.DisplayFor(model => model.CompanyId)",
-                        candidateId:3,
                         openingList: [],
                         resumes: [],
                         resumeId: null,
@@ -163,7 +162,6 @@
                         axios.get(`${self.baseAddress}/Candidate/OpeningList`, {
                             params: {
                                 openingID: self.openingId,
-                                candidateID: self.candidateId,
                             },
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
@@ -174,7 +172,7 @@
                     },
                     getResumes() {
                         let self = this;
-                        axios.get(`${self.baseAddress}/Candidate/GetResumes/${self.candidateId}`,{
+                        axios.get(`${self.baseAddress}/Candidate/GetResumes`,{
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.resumes = res.data;
@@ -203,7 +201,6 @@
                         let self = this;
                         request = {
                             openingId: self.openingId,
-                            candidateId: self.candidateId
                         };
                         axios.post(`${self.baseAddress}/Candidate/AddFavorite`, request, {
                             headers: { 'Content-Type': 'application/json' },
@@ -218,7 +215,6 @@
                         let self = this;
                         let request = {
                             openingId: self.openingId,
-                            candidateId: self.candidateId
                         };
                         axios.post(`${self.baseAddress}/Candidate/DeleteFavorite`, request, {
                             headers: { 'Content-Type': 'application/json' },

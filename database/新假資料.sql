@@ -94,21 +94,21 @@ INSERT INTO CompanyClasses (CompanyClassId, CompanyCategoryId, CompanyClassName)
 ('ZZ', 'Z', N'其他未分類業');
 GO
 INSERT INTO Companies (GUINumber, [Password], CompanyName, CompanyClassId, [Address], Intro, Benefits, Picture, ContactName, ContactPhone, ContactEmail, [Status], [Date], Deadline) VALUES
-(N'12345678', N'password1', N'農業公司', 'A1', N'台北市大安區', N'專注於有機農產品', N'提供員工健康保險', NULL, N'張三', N'0987654321', N'zhangsan@agri.com', 1, '2024-01-01', '2024-12-31'),
-(N'23456789', N'password2', N'漁業科技公司', 'A3', N'高雄市苓雅區', N'致力於水產養殖技術', N'享有彈性工作時間', NULL, N'李四', N'0976543210', N'lisifish@tech.com', 1, '2023-11-01', '2024-10-31'),
-(N'34567890', N'password3', N'化學製品公司', 'C4', N'新竹市東區', N'生產高效能化學品', N'提供員工宿舍', NULL, N'王五', N'0965432109', N'wango@chem.com', 1, '2023-09-15', '2024-09-14'),
-(N'45678901', N'password4', N'電力供應公司', 'D1', N'台中市南屯區', N'主要提供綠能電力', N'享有年度獎金', NULL, N'趙六', N'0954321098', N'zhaoli@power.com', 1, '2023-07-30', '2024-07-29'),
-(N'56789012', N'password5', N'金融控股公司', 'H1', N'台北市信義區', N'全方位金融服務', N'提供進修補助', NULL, N'孫七', N'0943210987', N'sunsun@fin.com', 1, '2023-06-20', '2024-06-19'),
-(N'12345678', N'password123', N'台灣電子科技股份有限公司', 'C1', N'台北市信義區信義路五段7號', N'專注於科技創新，領先業界的解決方案提供者', N'提供完整的福利、員工旅遊、績效獎金',NULL, N'王大明', N'0912345678', N'daming@example.com', 1, '2024-09-13', '2024-12-31'),
-(N'87654321', N'abc456789', N'永信藥品工業股份有限公司', 'C8', N'台中市西屯區工業路123號', N'全球領先的藥品研發與製造企業', N'健全的升遷制度、完整的健康保險',NULL, N'李雅婷', N'0922333444', N'yating@example.com', 0, '2024-08-05', '2024-11-01'),
-(N'11223344', N'qwerty12345', N'盛世建設有限公司', 'E1', N'新北市板橋區文化路一段100號', N'建築與工程的領導者', N'員工宿舍、健身房與醫療保險',NULL, N'林建華', N'0988776655', N'jianhua@example.com', 1, '2024-07-25', '2024-10-31'),
-(N'33445566', N'789xyz321', N'華南金融控股股份有限公司', 'H1', N'高雄市苓雅區三多一路500號', N'提供全方位的金融服務', N'高額年終獎金、股票分紅',NULL, N'鄭文斌', N'0933445566', N'wenbin@example.com', 1, '2024-06-30', '2024-12-01'),
-(N'55667788', N'pass987654', N'大亞物流股份有限公司', 'G1', N'台中市北區中清路二段200號', N'全國最大物流配送公司', N'年終雙薪、優質的醫療保險',NULL, N'蔡志明', N'0955443322', N'zhiming@example.com', 0, '2024-05-10', '2024-09-30'),
-(N'66778899', N'pwd123987', N'欣欣百貨股份有限公司', 'F3', N'台北市中正區重慶南路二段50號', N'提供優質的購物體驗', N'多元津貼、分紅與股票配股',NULL, N'劉婉婷', N'0911223344', N'wanting@example.com', 1, '2024-04-20', '2024-08-15'),
-(N'22334455', N'xyzpass4321', N'群益證券股份有限公司', 'H3', N'台北市大安區敦化南路一段100號', N'專業的證券交易與投資服務', N'高額年終獎金與全額補助保險',NULL, N'黃志忠', N'0977665544', N'zhizhong@example.com', 1, '2024-03-05', '2024-07-30'),
-(N'44556677', N'abc987123', N'台灣食品製造股份有限公司', 'C1', N'新北市新莊區中山路三段300號', N'領先的食品製造與分銷商', N'提供免費午餐與交通補助',NULL, N'陳美麗', N'0966554433', N'meili@example.com', 0, '2024-02-28', '2024-06-15'),
-(N'99887766', N'asd123456', N'巨人娛樂股份有限公司', 'J7', N'台南市東區大同路一段1號', N'全台最大的娛樂服務平台', N'員工優惠、股票選擇權',NULL, N'何志強', N'0955447766', N'zhichang@example.com', 1, '2024-01-15', '2024-05-20'),
-(N'55663322', N'pwd123654', N'遠東石油股份有限公司', 'B1', N'高雄市前鎮區成功路120號', N'專注於能源開發與供應', N'高額薪資、免費體檢',NULL, N'周大海', N'0933557788', N'dahai@example.com', 0, '2023-12-10', '2024-03-31');
+(N'12345678', N'$2a$11$si8GIRoWifgZh9VSjawNrOpXrbIvMK2ESfRi3DAhcDHgEuyKT0OcK', N'農業公司', 'A1', N'台北市大安區', N'專注於有機農產品', N'提供員工健康保險', NULL, N'張三', N'0987654321', N'zhangsan@agri.com', 1, '2024-01-01', '2024-12-31'),
+(N'23456789', N'$2a$11$tYz9zpPF69vc149GQoXC0u5TEphdI1zlaFY7E1Ui8qpUSPETz.ej2', N'漁業科技公司', 'A3', N'高雄市苓雅區', N'致力於水產養殖技術', N'享有彈性工作時間', NULL, N'李四', N'0976543210', N'lisifish@tech.com', 1, '2023-11-01', '2024-10-31'),
+(N'34567890', N'$2a$11$Q90qTaj6sKWOgOjQkGY2EeO.8AUiOhcn57y.plFDkRvRhesITl50W', N'化學製品公司', 'C4', N'新竹市東區', N'生產高效能化學品', N'提供員工宿舍', NULL, N'王五', N'0965432109', N'wango@chem.com', 1, '2023-09-15', '2024-09-14'),
+(N'45678901', N'$2a$11$1DEgx0dg2.EKiHG2uSWz..Y7ZxPlaAQREcpvBep5vY14CS82QyBey', N'電力供應公司', 'D1', N'台中市南屯區', N'主要提供綠能電力', N'享有年度獎金', NULL, N'趙六', N'0954321098', N'zhaoli@power.com', 1, '2023-07-30', '2024-07-29'),
+(N'56789012', N'$2a$11$7rZAszIbMn.0/WZeYz1ubOacVlutwX.TRaRCEQgnvriHMyuoxv.8G', N'金融控股公司', 'H1', N'台北市信義區', N'全方位金融服務', N'提供進修補助', NULL, N'孫七', N'0943210987', N'sunsun@fin.com', 1, '2023-06-20', '2024-06-19'),
+(N'12345678', N'$2a$11$tSxO8aDGEU1G5x7Yfb/1ku0rMMKDAtlq8Rn.m500hOUzU7FndvxCW', N'台灣電子科技股份有限公司', 'C1', N'台北市信義區信義路五段7號', N'專注於科技創新，領先業界的解決方案提供者', N'提供完整的福利、員工旅遊、績效獎金',NULL, N'王大明', N'0912345678', N'daming@example.com', 1, '2024-09-13', '2024-12-31'),
+(N'87654321', N'$2a$11$To4FW5HgIWRNkqy3.yrzOuL2OZdQAZtFexw/scxhf/ydJrVPg9mMW', N'永信藥品工業股份有限公司', 'C8', N'台中市西屯區工業路123號', N'全球領先的藥品研發與製造企業', N'健全的升遷制度、完整的健康保險',NULL, N'李雅婷', N'0922333444', N'yating@example.com', 0, '2024-08-05', '2024-11-01'),
+(N'11223344', N'$2a$11$MW62oJL43Paneocu0tVpPecWVhmmtsabVKgBva0Ku/YaJT4sloNym', N'盛世建設有限公司', 'E1', N'新北市板橋區文化路一段100號', N'建築與工程的領導者', N'員工宿舍、健身房與醫療保險',NULL, N'林建華', N'0988776655', N'jianhua@example.com', 1, '2024-07-25', '2024-10-31'),
+(N'33445566', N'$2a$11$AB71qZJgZZyRDZgWd5Vb3eN6O.KifNNXaqIDEqoGv.5cJeHvgHMpK', N'華南金融控股股份有限公司', 'H1', N'高雄市苓雅區三多一路500號', N'提供全方位的金融服務', N'高額年終獎金、股票分紅',NULL, N'鄭文斌', N'0933445566', N'wenbin@example.com', 1, '2024-06-30', '2024-12-01'),
+(N'55667788', N'$2a$11$b6Vw9CmKZ2xYUiM8j76tU.Xra7sH1oMSjmU8TeP7me5q5MYEr7C.G', N'大亞物流股份有限公司', 'G1', N'台中市北區中清路二段200號', N'全國最大物流配送公司', N'年終雙薪、優質的醫療保險',NULL, N'蔡志明', N'0955443322', N'zhiming@example.com', 0, '2024-05-10', '2024-09-30'),
+(N'66778899', N'$2a$11$asSX8nJY7rrL1AXdcR23pua30YF9KMUWG6L2LLP/ow8GTj6hMn1Iq', N'欣欣百貨股份有限公司', 'F3', N'台北市中正區重慶南路二段50號', N'提供優質的購物體驗', N'多元津貼、分紅與股票配股',NULL, N'劉婉婷', N'0911223344', N'wanting@example.com', 1, '2024-04-20', '2024-08-15'),
+(N'22334455', N'$2a$11$fWKoefoclw0GrbrPmbJNYebF.qVTFrZq3JFbngDcJGu5S8V.Mdxce', N'群益證券股份有限公司', 'H3', N'台北市大安區敦化南路一段100號', N'專業的證券交易與投資服務', N'高額年終獎金與全額補助保險',NULL, N'黃志忠', N'0977665544', N'zhizhong@example.com', 1, '2024-03-05', '2024-07-30'),
+(N'44556677', N'$2a$11$dfFMOKW91fsUIs9hK2ZQI.bGh7rBD3h0U2M.vIn1.OFrqx1Rmnpbq', N'台灣食品製造股份有限公司', 'C1', N'新北市新莊區中山路三段300號', N'領先的食品製造與分銷商', N'提供免費午餐與交通補助',NULL, N'陳美麗', N'0966554433', N'meili@example.com', 0, '2024-02-28', '2024-06-15'),
+(N'99887766', N'$2a$11$g/MRdZIV1uQGyb6nPD2w.OpNn9Cy2d5dh9phBYcV7ps2EZnsGkZom', N'巨人娛樂股份有限公司', 'J7', N'台南市東區大同路一段1號', N'全台最大的娛樂服務平台', N'員工優惠、股票選擇權',NULL, N'何志強', N'0955447766', N'zhichang@example.com', 1, '2024-01-15', '2024-05-20'),
+(N'55663322', N'$2a$11$.l.aBuv6z1FY2KT0g/VFhOCAbnDBNleQm98zbVpg3K4fetLj9nZdG', N'遠東石油股份有限公司', 'B1', N'高雄市前鎮區成功路120號', N'專注於能源開發與供應', N'高額薪資、免費體檢',NULL, N'周大海', N'0933557788', N'dahai@example.com', 0, '2023-12-10', '2024-03-31');
 GO
 INSERT INTO TitleCategories (TitleCategoryName) VALUES
 (N'其他'),
@@ -191,16 +191,16 @@ VALUES
 GO
 INSERT INTO Candidates (NationalId, Email, [Password], [Name], Sex, Birthday, Headshot, TitleClass, Phone, [Address], Degree, EmploymentStatus, MilitaryService,VerifyEmailYN,RegisterTime)
 VALUES
-(N'A123456789', N'john@example.com', N'password123', N'王小明', 1, '1985-07-15', NULL, N'軟體工程師', N'0988111222', N'台北市大安區和平東路', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
-(N'A987654321', N'jane@example.com', N'password456', N'陳美麗', 0, '1990-03-25', NULL, N'行銷專員', N'0922333444', N'新北市板橋區', N'碩士', N'待業中', N'無役',1,'2024-09-20'),
-(N'A567891234', N'alex@example.com', N'password789', N'林建華', 1, '1980-01-05', NULL, N'建築設計師', N'0911223344', N'台中市西屯區', N'大學', N'在職中', N'役畢',0,'2024-08-20'),
-(N'A223344556', N'mary@example.com', N'password111', N'李雅婷', 0, '1988-05-17', NULL, N'金融分析師', N'0933445566', N'台南市東區', N'碩士', N'在職中', N'無役',1,'2024-09-20'),
-(N'A998877665', N'bob@example.com', N'password222', N'張志強', 1, '1982-09-10', NULL, N'物流專員', N'0955443322', N'高雄市三民區', N'大學', N'待業中', N'役畢',0,'2024-07-20'),
-(N'A112233445', N'james@example.com', N'password333', N'周大海', 1, '1975-12-20', NULL, N'石油勘探工程師', N'0933557788', N'基隆市', N'碩士', N'在職中', N'未役',1,'2024-09-12'),
-(N'A554433221', N'lucy@example.com', N'password444', N'劉婉婷', 0, '1992-08-30', NULL, N'證券交易員', N'0977665544', N'桃園市', N'碩士', N'待業中', N'無役',0,'2024-09-20'),
-(N'A667788990', N'angela@example.com', N'password555', N'黃志忠', 1, '1984-11-12', NULL, N'食品安全檢驗員', N'0966554433', N'苗栗縣', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
-(N'A334455667', N'tom@example.com', N'password666', N'蔡志明', 1, '1987-02-14', NULL, N'遊戲開發工程師', N'0955447766', N'新竹市', N'大學', N'在職中', N'免役',1,'2024-09-20'),
-(N'A556677889', N'sam@example.com', N'password777', N'何志強', 1, '1991-06-25', NULL, N'證券交易員', N'0933221122', N'宜蘭縣', N'大學', N'在職中', N'役畢',0,'2023-09-20');
+(N'A123456789', N'john@example.com', N'$2a$11$rdPh/..QJNVZY2ALPmSN8.oi/70BosEzrVrw3t/Utzbw1sfc6jm.W', N'王小明', 1, '1985-07-15', NULL, N'軟體工程師', N'0988111222', N'台北市大安區和平東路', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
+(N'A987654321', N'jane@example.com', N'$2a$11$q5OEjfUGcM.02dnCQrnsW.bZJCVg04Jcd2hkq4FN9Yp7tr/GA7WcG', N'陳美麗', 0, '1990-03-25', NULL, N'行銷專員', N'0922333444', N'新北市板橋區', N'碩士', N'待業中', N'無役',1,'2024-09-20'),
+(N'A567891234', N'alex@example.com', N'$2a$11$hgzVzn/n5oL51MSMiB3Km.AdtPAbXodiq26EECMADf2ipCMz0Oj4W', N'林建華', 1, '1980-01-05', NULL, N'建築設計師', N'0911223344', N'台中市西屯區', N'大學', N'在職中', N'役畢',1,'2024-08-20'),
+(N'A223344556', N'mary@example.com', N'$2a$11$SlXso/qyqwvD/fP3pbeerOs.Dw7doXMaFzPCR01Gotx/Zss9KeZmC', N'李雅婷', 0, '1988-05-17', NULL, N'金融分析師', N'0933445566', N'台南市東區', N'碩士', N'在職中', N'無役',1,'2024-09-20'),
+(N'A998877665', N'bob@example.com', N'$2a$11$Ok/aE7D8SzeFWdJsWeNfYepze1k8smOvSgBmRrE6os/j5XzRJrAIW', N'張志強', 1, '1982-09-10', NULL, N'物流專員', N'0955443322', N'高雄市三民區', N'大學', N'待業中', N'役畢',1,'2024-07-20'),
+(N'A112233445', N'james@example.com', N'$2a$11$kDdJWUYbAy1AOnyzTUZ1WufHS3Unl85QXGhvMC4oe4XZdjUMXW/Wu', N'周大海', 1, '1975-12-20', NULL, N'石油勘探工程師', N'0933557788', N'基隆市', N'碩士', N'在職中', N'未役',1,'2024-09-12'),
+(N'A554433221', N'lucy@example.com', N'$2a$11$4vuKo5MZVpxASPIQbyCy/eeo4M/BO1VVil/5qUUWD9NetOlojbKda', N'劉婉婷', 0, '1992-08-30', NULL, N'證券交易員', N'0977665544', N'桃園市', N'碩士', N'待業中', N'無役',0,'2024-09-20'),
+(N'A667788990', N'angela@example.com', N'$2a$11$zO.QtVJ5jvOZ6PyT2E3t3.ZWR1V1/6MWrPP0WMqDzrVJPkkhW5e/y', N'黃志忠', 1, '1984-11-12', NULL, N'食品安全檢驗員', N'0966554433', N'苗栗縣', N'大學', N'在職中', N'役畢',1,'2024-09-20'),
+(N'A334455667', N'tom@example.com', N'$2a$11$hFiVpON.Y0HtSb0xOJbev.lUZYx4PkkUWnUVzV57yKWfjdcwwbEZS', N'蔡志明', 1, '1987-02-14', NULL, N'遊戲開發工程師', N'0955447766', N'新竹市', N'大學', N'在職中', N'免役',1,'2024-09-20'),
+(N'A556677889', N'sam@example.com', N'$2a$11$LU/4lEf0sVDwU.hBN1XiS.Wsb3Z1RaN9iXjeUxQHh2M.bpt7wrAbu', N'何志強', 1, '1991-06-25', NULL, N'證券交易員', N'0933221122', N'宜蘭縣', N'大學', N'在職中', N'役畢',1,'2023-09-20');
 GO
 INSERT INTO Candidates (NationalId, Email, [Password],VerifyEmailYN,RegisterTime)
 VALUES
