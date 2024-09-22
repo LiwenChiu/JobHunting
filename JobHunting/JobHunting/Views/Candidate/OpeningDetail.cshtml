@@ -27,17 +27,19 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobDescription">工作內容</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
             <li v-for="item in openingList">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#applyMailBtn" style="color:white">
-                    應徵
-                </button>
-                <template v-if="item.likeYN == false">
-                    <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
-                        暫存
-                    </button>
-                </template>
-                <template v-else>
-                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite">已存</button>
+                <template v-if="item.likeYN != null">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#applyMailBtn" style="color:white">
+                            應徵
+                        </button>
+                        <template v-if="item.likeYN == false">
+                            <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
+                                暫存
+                            </button>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite">已存</button>
+                        </template>
                 </template>
             </li>
         </ul>
