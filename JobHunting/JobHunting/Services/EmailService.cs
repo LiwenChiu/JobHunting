@@ -8,14 +8,6 @@ namespace JobHunting.Services
 
     public class EmailService
     {
-        //private readonly IMemoryCache _cache;
-
-        //public  EmailService(IMemoryCache cache)
-        //{
-        //    _cache = cache;
-        //}
-
-        // 根據傳回的email生成驗證token並編碼成base64將驗證連結直接傳到mail裡
         public string GenerateVerificationToken(string email)
         {
             //token = guid唯一碼

@@ -42,6 +42,9 @@ namespace JobHunting.Controllers
             return View();
         }
 
+
+
+
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int page, int count)
         {
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -695,6 +698,16 @@ namespace JobHunting.Controllers
             return RedirectToAction("Login", "Home");
 
         }
+        //管理端審核通知信的跳轉登入畫面
+        [HttpGet]
+        public IActionResult VerifyStatusEmail()
+        {
+
+            // 跳轉到登入頁面
+            return RedirectToAction("Login", "Home");
+        }
+
+
 
         //驗證信件重新發送
         [HttpPost]

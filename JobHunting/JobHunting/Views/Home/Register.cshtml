@@ -127,8 +127,11 @@
     <script>
         function convertToFullDateTime(dateObject) {
             if (!dateObject) return null;
-            return dateObject.toISOString(); // 生成完整的 ISO 日期时间格式 (YYYY-MM-DDTHH:mm:ss.sssZ)
-        }; 
+            const offset = dateObject.getTimezoneOffset() * 60000; // 將時區偏移轉換為毫秒
+            const localTime = new Date(dateObject.getTime() - offset);
+
+            return localTime.toISOString().slice(0, 19); //取到秒數2位 如2024-09-22T12:03:11
+        };
         let vuereg = {
             data() {
                 return {
