@@ -108,7 +108,7 @@ INSERT INTO Companies (GUINumber, [Password], CompanyName, CompanyClassId, [Addr
 (N'22334455', N'$2a$11$fWKoefoclw0GrbrPmbJNYebF.qVTFrZq3JFbngDcJGu5S8V.Mdxce', N'群益證券股份有限公司', 'H3', N'台北市大安區敦化南路一段100號', N'專業的證券交易與投資服務', N'高額年終獎金與全額補助保險',NULL, N'黃志忠', N'0977665544', N'zhizhong@example.com', 1, '2024-03-05', '2024-07-30'),
 (N'44556677', N'$2a$11$dfFMOKW91fsUIs9hK2ZQI.bGh7rBD3h0U2M.vIn1.OFrqx1Rmnpbq', N'台灣食品製造股份有限公司', 'C1', N'新北市新莊區中山路三段300號', N'領先的食品製造與分銷商', N'提供免費午餐與交通補助',NULL, N'陳美麗', N'0966554433', N'meili@example.com', 0, '2024-02-28', '2024-06-15'),
 (N'99887766', N'$2a$11$g/MRdZIV1uQGyb6nPD2w.OpNn9Cy2d5dh9phBYcV7ps2EZnsGkZom', N'巨人娛樂股份有限公司', 'J7', N'台南市東區大同路一段1號', N'全台最大的娛樂服務平台', N'員工優惠、股票選擇權',NULL, N'何志強', N'0955447766', N'zhichang@example.com', 1, '2024-01-15', '2024-05-20'),
-(N'55663322', N'$2a$11$.l.aBuv6z1FY2KT0g/VFhOCAbnDBNleQm98zbVpg3K4fetLj9nZdG', N'遠東石油股份有限公司', 'B1', N'高雄市前鎮區成功路120號', N'專注於能源開發與供應', N'高額薪資、免費體檢',NULL, N'周大海', N'0933557788', N'dahai@example.com', 0, '2023-12-10', '2024-03-31');
+(N'55663322', N'$2a$11$.l.aBuv6z1FY2KT0g/VFhOCAbnDBNleQm98zbVpg3K4fetLj9nZdG', N'遠東石油股份有限公司', NULL, NULL, NULL, NULL, NULL, N'周大海', N'0933557788', N'dahai@example.com', 1, '2023-12-10', NULL);
 GO
 INSERT INTO TitleCategories (TitleCategoryName) VALUES
 (N'其他'),
