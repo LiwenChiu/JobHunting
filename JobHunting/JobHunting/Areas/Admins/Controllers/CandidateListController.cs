@@ -30,6 +30,9 @@ namespace JobHunting.Areas.Admins.Controllers
                 Sex = p.Sex,
                 Degree = p.Degree,
                 Address = p.Address,
+                VerifyEmailYN = p.VerifyEmailYN,
+                RegisterTime = p.RegisterTime,
+                Email= p.Email,
             });
             return Json(candidateList);
         }

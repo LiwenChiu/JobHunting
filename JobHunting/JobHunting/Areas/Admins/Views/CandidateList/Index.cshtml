@@ -14,18 +14,25 @@
             <tr>
                 <td>求職者ID</td>
                 <td>姓名</td>
+                <td class="col">信箱</td>
                 <td>性別</td>
                 <td>學歷</td>
                 <td>地區</td>
+                <td>註冊時間</td>
+                <td>驗證狀態</td>
             </tr>
         </thead>
         <tbody id="CandidateList">
             <tr v-for="item in candidatelist.slice(pageStart,pageEnd)" class="overcard">
                 <td>{{item.candidateId}}</td>
                 <td>{{item.name}}</td>
+                <td class="col">{{item.email}}</td>
                 <td>{{gender(item.sex)}}</td>
                 <td>{{item.degree}}</td>
                 <td>{{item.address}}</td>
+                <td>{{item.registerTime}}</td>
+                <template v-if="item.verifyEmailYN == false"><td class="col-1"><button class="btn btn-danger disabled">待審核</button></td></template>
+                <template v-else=""><td class="col-2"><button class="btn btn-secondary" disabled>已審核</button></td></template>
             </tr>
         </tbody>
     </table>
