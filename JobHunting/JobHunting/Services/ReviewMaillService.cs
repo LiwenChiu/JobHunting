@@ -17,7 +17,7 @@ namespace JobHunting.Services
                 <body>
                     <h3>親愛的 [{ContactName}先生/小姐]</h3>
                     <p>
-                    感謝您提交的申請。我們很高興通知您，經過仔細審核，貴公司 ({CompanyName}) 的申請已順利通過！
+                    感謝您提交的申請。我們很高興通知您，經過仔細審核，貴公司 <span style='color:red'>({CompanyName})</span> 的申請已順利通過！
                     接下來，您可以登入我們的平台，並根據後續指引進行操作。如有任何問題或需要協助，請隨時與我們聯繫。
                     再次感謝您對我們的信任，期待您在平台上的更多參與。</p>
                     <p><a href='{verifyUrl}'>點擊這裡登入</a></p>
@@ -31,7 +31,6 @@ namespace JobHunting.Services
                     <footer>[小鴨上工人力有限公司]祝您愉快</footer>
                 </body>
                 </html>";
-
 
 
 
