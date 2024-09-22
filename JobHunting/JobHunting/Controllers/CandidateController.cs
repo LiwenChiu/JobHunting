@@ -44,7 +44,28 @@ namespace JobHunting.Controllers
                 var candidateIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
                 if (candidateIdClaim == null)
                 {
-                    return Unauthorized("無法獲取求職者資訊，請重新登入");
+                    return Json(_context.Openings.Include(a => a.Company).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Candidates)
+                        .Where(y => y.OpeningId == openingID && y.ReleaseYN == true)
+                        .Select(b => new OpeningListDetailViewModel
+                        {
+                            OpeningId = b.OpeningId,
+                            CompanyId = b.CompanyId,
+                            Title = b.Title,
+                            Address = b.Address,
+                            Description = b.Description,
+                            Degree = b.Degree,
+                            Benefits = b.Benefits,
+                            SalaryMax = b.SalaryMax,
+                            SalaryMin = b.SalaryMin,
+                            Time = b.Time,
+                            ContactEmail = b.ContactEmail,
+                            ContactName = b.ContactName,
+                            ContactPhone = b.ContactPhone,
+                            CompanyName = b.Company.CompanyName,
+                            TitleClassName = b.TitleClasses.Select(tc => tc.TitleClassName),
+                            TagName = b.Tags.Select(t => t.TagName),
+                            LikeYN = null,
+                        }));
                 }
 
                 int candidateID = int.Parse(candidateIdClaim.Value);
