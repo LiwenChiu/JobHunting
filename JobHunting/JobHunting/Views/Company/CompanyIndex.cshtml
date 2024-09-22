@@ -199,7 +199,14 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-warning">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="addFavorite(item.resumeID)">暫存</button>
+                    <template v-if="item.likeYN != null">
+                        <template v-if="item.likeYN == false">
+                        <button class="btn btn-danger" v-on:click="addFavorite(item.resumeID)">儲存</button>
+                        </template>
+                        <template v-else>
+                        <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.resumeID)">已存</button>
+                        </template>
+                    </template>
                     <button type="button" class="btn btn-primary" v-on:click="goToPage(item)">詳細</button>
                 </div>
             </div>
@@ -299,7 +306,22 @@
                     axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        alert(res.data)
+                        alert(res.data);
+                        self.filterResumes();
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                deleteFavorite(item) {
+                    let self = this;
+                    let request = {
+                        resumeId: item,
+                    };
+                    axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data);
+                        self.filterResumes();
                     }).catch(error => {
                         console.error(error);
                     })
