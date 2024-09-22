@@ -24,7 +24,7 @@
                 <div class="card-title text-center">意見類別：{{item.class}}</div>
                 <p class="card-text mb-3 text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 主旨：{{item.subjectLine}}</p>
                 <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 處理狀態：{{letterstatus(item.status)}}</p>
-                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 發送日期：{{item.sendTime}}</p>
+                <p class="card-text mb-3"><i class="fa-solid fa-caret-right"></i> 發送時間：{{item.sendTime}}</p>
             </div>
             <div class="card-footer text-center" style="background-color:transparent">
                 @* 意見信件modalBtn *@
@@ -67,7 +67,7 @@
                                         <label for=" inputCompanyName" class="col-form-label ">主旨：{{opinionLetterModal.subjectLine}}</label>
                                     </div>
                                     <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
-                                        <label for=" inputCompanyName" class="col-form-label ">發送日期：{{opinionLetterModal.sendTime}}</label>
+                                        <label for=" inputCompanyName" class="col-form-label ">發送時間：{{opinionLetterModal.sendTime}}</label>
                                     </div>
                                     <div class="d-sm-flex my-1 py-1 inputAreas justify-content-around">
                                         <img class="img-fluid" id="showPicture"

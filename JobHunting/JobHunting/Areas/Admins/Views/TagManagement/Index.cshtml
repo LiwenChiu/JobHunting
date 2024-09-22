@@ -316,7 +316,7 @@
                 },
                 ReturnNameId: function (item) {
                     let NameId = `NameId${item.tagName}${item.tagId}`;
-                    return NameId.replace(" ", "");
+                    return NameId.replaceAll(" ", "");
                 },
                 filterTagClass: function (ClassId) {
                     let _this = this;
@@ -336,7 +336,7 @@
                 },
                 ReturnClassNameId: function (item) {
                     let ClassNameId = `ClassNameId${item.tagClassName}${item.tagClassId}`;
-                    return ClassNameId.replace(" ", "");
+                    return ClassNameId.replaceAll(" ", "");
                 },
                 Returnhashtag: function (item) {
                     return `#${item}`;

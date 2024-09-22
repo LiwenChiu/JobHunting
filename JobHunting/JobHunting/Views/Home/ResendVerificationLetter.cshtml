@@ -1,0 +1,104 @@
+﻿@using JobHunting.ViewModel
+
+@section Styles {
+    <style>
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+}
+<div id="VerificationApp">
+    <div class="row justify-content-center ">
+        <div class="col-md-4 mt-5 pt-5">
+            <h2 class="text-center">重新發送驗證信</h2>
+                <div class="form-floating mb-3">
+                    <div class="text-center pb-3 mt-5">
+                        <label class="form-label" for="Email">電子信箱</label>
+                        <input type="email" class="form-control rounded-pill bg-danger bg-opacity-25 mt-3" v-model="Email" autocomplete="username" aria-required="true" placeholder="請輸入註冊時的電子信箱" />
+                        
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="text-center">
+                <button id="VerificationSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill " v-on:click="VerificationLetter">
+                    發送
+                    </button>
+                </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let vuereg = {
+            data() {
+                return {
+                    role: 'candidate',
+                    baseAddress: "https://localhost:7169",
+                    Email:"",
+                }
+            },
+            computed: {
+                //發送按鈕禁用倒數計時
+                startimer:function() {
+                    const button = document.getElementById("VerificationSubmit");
+                    const countdownDisplay = document.getElementById("VerificationSubmit");
+
+                    let countdown = 60;
+                    button.disabled = true;
+
+                    //重複setInterval執行
+                    const Interval = setInterval(() => {
+                        countdown--;
+                        countdownDisplay.textContent = `剩餘${countdown}秒`;
+
+                        if (countdown <= 0) {
+                            //clearInterval = 清除重複
+                            clearInterval(Interval);
+                            countdownDisplay.textContent = "發送";
+                            button.disabled = false;
+                        }
+                    }, 1000); //每秒執行一次
+                    
+                },
+            },
+            methods: {
+                VerificationLetter: function () {
+                    let _this = this;
+                    let request = {
+                        // role:_this.role,
+                        Email: _this.Email,
+                    };
+                    fetch(`${_this.baseAddress}/Home/SendVerificationLetter`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"  // 指定 JSON 格式
+                        },
+                        body: JSON.stringify(request),  // 將數據序列化為 JSON
+                    }).then(res => {
+                        return res.json();
+                    }).then(data => {
+                        if (data.success == true) {
+                            alert(data.message);
+                            //禁用發送按鈕60秒
+                            _this.startimer
+                        } else if (data.success == false) {
+                            alert(data.message);
+                        };
+                    }).catch(err => {
+                        alert(JSON.stringify(err));
+                    })
+                },
+
+              
+
+            }
+        };
+        Vue.createApp(vuereg).mount("#VerificationApp")
+    </script>
+}

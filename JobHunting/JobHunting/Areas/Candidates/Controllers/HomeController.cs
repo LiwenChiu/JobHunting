@@ -39,7 +39,8 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new GetCandidateMemberDataViewModel(); // 或處理未授權訪問的情況
             }
-            return _context.Candidates.AsNoTracking()
+
+            var candidate =  await _context.Candidates.AsNoTracking()
                 .Where(cmd => cmd.CandidateId.ToString() == CandidateId)
                 .Select(cmd => new GetCandidateMemberDataViewModel
                 {
@@ -52,7 +53,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Phone = cmd.Phone,
                     Address = cmd.Address,
                     EmploymentStatus = cmd.EmploymentStatus,
-                }).Single();
+                }).FirstOrDefaultAsync();
+
+            if(candidate == null)
+            {
+                return new GetCandidateMemberDataViewModel();
+            }
+
+            return candidate;
         }
 
         // POST: Candidates/Home/GetCandidateMemberData
@@ -166,11 +174,19 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         //Post:Candidates/Home/InsertHeadshot
         [HttpPost]
-        public async Task<IActionResult> InsertHeadshot(int CandidateId, [FromForm] CandidateInsertHeadshotViewModel hsvm) 
+        public async Task<IActionResult> InsertHeadshot([FromForm] CandidateInsertHeadshotViewModel hsvm) 
         {
-            if (CandidateId != hsvm.CandidateId) { return NotFound("變更失敗"); }
-            Candidate candidate = await _context.Candidates.FindAsync(CandidateId);
-            
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (candidateIdClaim == null)
+            {
+                return Unauthorized("使用者未登入");
+            }
+
+            int candidateId = int.Parse(candidateIdClaim);
+
+            // 確認資料庫中的使用者
+            Candidate candidate = await _context.Candidates.FindAsync(candidateId);
+
             if (hsvm.ImageFile != null) 
             {
                 using (BinaryReader br = new BinaryReader(hsvm.ImageFile.OpenReadStream())) 

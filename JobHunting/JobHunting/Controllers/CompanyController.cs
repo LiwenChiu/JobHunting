@@ -23,12 +23,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+
+        //[Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
         [Authorize(Roles = "company")]
         public async Task<IActionResult> CompanyIndex()
         {
             return View();
         }
-        public async Task<IActionResult> ResumeDetail(int resumeID)
+        public async Task<IActionResult> ResumeDetail(int? resumeID)
         {
             if (resumeID == null)
             {

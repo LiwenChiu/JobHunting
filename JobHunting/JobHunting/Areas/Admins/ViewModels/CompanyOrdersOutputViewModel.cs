@@ -4,6 +4,6 @@
     {
         public int totalDataCount { get; set; }
 
-        public IEnumerable<CompanyOrdersFilterViewModel> companyOrdersFilter { get; set; } = new List<CompanyOrdersFilterViewModel>();
+        public IEnumerable<CompanyOrdersFilterOutputViewModel> companyOrdersFilter { get; set; } = new List<CompanyOrdersFilterOutputViewModel>();
     }
 }
