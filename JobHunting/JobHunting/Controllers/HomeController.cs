@@ -416,16 +416,20 @@ namespace JobHunting.Controllers
                 // 求職者驗證邏輯
                 var candidate = _context.Candidates
                     .FirstOrDefault(c => c.NationalId == candidateLogin.NationalId && c.Email == candidateLogin.Email);
+                if (!candidate.VerifyEmailYN)
+                {
+                    return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
+                }
 
                 if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
-                new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
+                        new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
+                        new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -446,16 +450,20 @@ namespace JobHunting.Controllers
                 // 公司驗證邏輯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
+                if (!company.Status)
+                {
+                    return Json(new { success = false, message = "公司帳號尚未審核通過" });
+                }
 
                 if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
-                new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
+                        new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
+                        new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -484,11 +492,11 @@ namespace JobHunting.Controllers
             {
                 // 驗證通過，建立 claims，包含 AdminId
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
-            new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
-            new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
-        };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
+                    new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
+                    new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
 
