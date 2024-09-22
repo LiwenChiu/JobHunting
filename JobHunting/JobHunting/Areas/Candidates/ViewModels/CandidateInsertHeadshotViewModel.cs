@@ -3,7 +3,6 @@
     public class CandidateInsertHeadshotViewModel
     {
 
-        public int CandidateId { get; set; }
         public IFormFile? ImageFile { get; set; }
     }
 }
