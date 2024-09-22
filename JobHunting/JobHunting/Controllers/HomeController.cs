@@ -17,6 +17,7 @@ using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using Microsoft.CodeAnalysis.Scripting;
+using JobHunting.Areas.Candidates.ViewModels;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -99,6 +100,7 @@ namespace JobHunting.Controllers
             return openingIndexOutput;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
         {
@@ -126,6 +128,7 @@ namespace JobHunting.Controllers
             return "職缺已成功收藏";
         }
 
+        [Authorize]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteOpeningsViewModel dfovm)
@@ -188,6 +191,7 @@ namespace JobHunting.Controllers
             return opening;
         }
 
+        [Authorize]
         //GET: Home/ResumesJson
         public async Task<IEnumerable<ResumesOutputViewModel>> ResumesJson()
         {
@@ -422,11 +426,11 @@ namespace JobHunting.Controllers
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
-                new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
-                new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, candidate.CandidateId.ToString()),  // 存入 CandidateId
+                        new Claim(ClaimTypes.Name, candidateLogin.NationalId),                   // 使用身分證字號作為名稱
+                        new Claim(ClaimTypes.Role, "candidate")                                  // 設定角色為 candidate
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -456,11 +460,11 @@ namespace JobHunting.Controllers
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
-                new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
-                new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
-            };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
+                        new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
+                        new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -489,11 +493,11 @@ namespace JobHunting.Controllers
             {
                 // 驗證通過，建立 claims，包含 AdminId
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
-            new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
-            new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
-        };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, admin.AdminId.ToString()),  // 存入 AdminId
+                    new Claim(ClaimTypes.Name, admin.PersonnelCode.ToString()),       // 使用工號作為名稱
+                    new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
 
@@ -731,6 +735,47 @@ namespace JobHunting.Controllers
             return RedirectToAction("Login", "Home", new { area = "Admins" });
         }
 
+        [Authorize]
+        //GET: Home/GetCandidateData
+        public async Task<GetCandidateDataOutputViewModel> GetCandidateData()
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            var candidateData = await _context.Candidates.AsNoTracking()
+                .Where(c => c.CandidateId == candidateId)
+                .Select(c => new GetCandidateDataInputViewModel
+                {
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Phone = c.Phone,
+                    Address = c.Address,
+                    Degree = c.Degree,
+                    VerifyEmailYN = c.VerifyEmailYN,
+                }).FirstOrDefaultAsync();
+
+            if (candidateData == null)
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            if (!candidateData.VerifyEmailYN)
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "驗證信箱" };
+            }
+
+            if (string.IsNullOrEmpty(candidateData.Name) || !candidateData.Sex.HasValue || !candidateData.Birthday.HasValue || string.IsNullOrEmpty(candidateData.Phone) || string.IsNullOrEmpty(candidateData.Address) || string.IsNullOrEmpty(candidateData.Degree))
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "完整填寫會員資料" };
+            }
+
+            return new GetCandidateDataOutputViewModel { DataStatus = true, AlertText = "請選擇履歷" };
+        }
+
         public async Task<string> GetRole()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -748,6 +793,7 @@ namespace JobHunting.Controllers
 
             return "";
         }
+
         public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int page, int count)
         {
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

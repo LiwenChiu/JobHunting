@@ -1,0 +1,242 @@
+﻿@model JobHunting.ViewModel.OpeningIDViewModel
+@{
+    ViewData["Title"] = @Html.DisplayFor(model => model.Title);
+}
+@section Styles{
+    <style></style>
+}
+<head>
+    <link rel="icon" type="image/x-icon" href="~/resumeInrro/assets/img/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="~/resumeInrro/css/styles.css" rel="stylesheet" />
+</head> 
+
+<div id="page-top" >
+<!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-warning fixed-top" id="sideNav" style="flex-direction:column">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">
+        <span class="d-block d-lg-none">Clarence Taylor</span>
+            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" :src=`${baseAddress}/Candidate/GetPicture/${companyId}` alt="..." /></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarResponsive" >
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#openingContent">職缺資訊</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobDescription">工作內容</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
+            <li v-for="item in openingList">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#applyMailBtn" style="color:white">
+                    應徵
+                </button>
+                <template v-if="item.likeYN == false">
+                    <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
+                        暫存
+                    </button>
+                </template>
+                <template v-else>
+                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite">已存</button>
+                </template>
+            </li>
+        </ul>
+            
+    </div>
+</nav>
+
+<!-- Page Content-->
+    <div class="card-body container-fluid row" v-for="item in openingList">
+        <div class="row mt-3" style="margin-left:10px">
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body" id="openingContent" style="margin-top:40px">
+                        <h5 class="card-title" style="text-align:center">職缺資訊</h5>
+                        <div class="text-start" style="">
+                            <p class="card-text ">
+                                <div class="col ">
+                                    <label class="" size="10">職缺名稱 : {{item.title}}</label>
+                                </div>
+                                <div>
+                                    <label for="" class="mb-2">公司名稱 : {{item.companyName}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">面試地址 : {{item.address}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">聯絡人姓名 : {{item.contactName}}</label>
+                                    <label for="" class="mb-2 mx-3">聯絡人電話 : {{item.contactPhone}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">聯絡人郵件 : {{item.contactEmail}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">上班時段 : {{item.time}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2" >職務名稱 : </label>
+                                    <label for="" class="mb-2" v-for="className in item.titleClassName">{{className}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2">薪資條件 : {{item.salaryMin}} ~ {{item.salaryMax}}</label>
+                                </div>
+                                <div class="col">
+                                    <label for="" class="mb-2 ">學歷要求 : {{item.degree}}</label>
+                                    <label for="" class="mb-2 mx-3">技能要求 : </label>
+                                    <label for="" class="mb-2 " v-for="tag in item.tagName">{{tag}} </label>
+                                </div>
+                                <div class="card-body " id="benefits">
+                                    <h5 class="card-title text-center" style="">福利制度</h5>
+                                    <p class="card-text form-control overflow-auto" style="height:200px">
+                                        {{item.benefits}}
+                                    </p>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="card-body text-start" id="jobDescription" style="margin-top:40px">
+                        <h5 class="card-title" style="text-align:center">工作內容</h5>
+                        <p class="card-text form-control overflow-auto" style="height:250px">
+                            {{item.description}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 發送面試通知 *@
+    <div class="modal fade" id="applyMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+         aria-labelledby="modalTitleId " aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="CompanyNameh3 text-center" style="width:95%">投遞履歷</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container bg-light" style="border-radius: 30px;width: 100%;">
+                        <div class="inputOutAreas">
+                            <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                <label for=" inputResumeName" class="col-sm-2 col-form-label labelDate">選擇履歷：</label>
+                                <select v-model="resumeId">
+                                    <option v-for="item in resumes" :key="item.resumeId" :value="item.resumesId">{{item.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-warning">
+                    <button type="submit" class="btn btn-outline-secondary" v-on:click="applyLetter" data-bs-dismiss="modal">應徵</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+        <!-- Bootstrap core JS-->   
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <script>
+            let openigdetail = {
+                data() {
+                    return {
+                        openingId: "@Html.DisplayFor(model => model.OpeningId)",
+                        companyId: "@Html.DisplayFor(model => model.CompanyId)",
+                        candidateId:3,
+                        openingList: [],
+                        resumes: [],
+                        resumeId: null,
+                        baseAddress: "https://localhost:7169",
+                    };
+                },
+                methods: {
+                    getOpeningDetail(){
+                        let self = this;
+                        axios.get(`${self.baseAddress}/Candidate/OpeningList`, {
+                            params: {
+                                openingID: self.openingId,
+                                candidateID: self.candidateId,
+                            },
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            self.openingList = res.data;
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+                    getResumes() {
+                        let self = this;
+                        axios.get(`${self.baseAddress}/Candidate/GetResumes/${self.candidateId}`,{
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            self.resumes = res.data;
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+                    applyLetter(){
+                        let self = this;
+                        let request = {
+                            ResumeId:self.resumeId,
+                            CompanyId:self.companyId,
+                            CompanyName:self.openingList[0].companyName,
+                            OpeningId:self.openingId,
+                            OpeningTitle:self.openingList[0].title,
+                        };
+                        axios.post(`${self.baseAddress}/Candidate/AddApply`,request, {
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            alert(res.data)
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+                    addFavorite() {
+                        let self = this;
+                        request = {
+                            openingId: self.openingId,
+                            candidateId: self.candidateId
+                        };
+                        axios.post(`${self.baseAddress}/Candidate/AddFavorite`, request, {
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            alert(res.data);
+                            self.getOpeningDetail();
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+                    deleteFavorite() {
+                        let self = this;
+                        let request = {
+                            openingId: self.openingId,
+                            candidateId: self.candidateId
+                        };
+                        axios.post(`${self.baseAddress}/Candidate/DeleteFavorite`, request, {
+                            headers: { 'Content-Type': 'application/json' },
+                        }).then(res => {
+                            alert(res.data)
+                            self.getOpeningDetail();
+                        }).catch(error => {
+                            console.error(error);
+                        })
+                    },
+
+                },
+                mounted() {
+                    let self = this;
+                    self.getOpeningDetail();
+                    self.getResumes();
+                },
+            };
+        let app = Vue.createApp(openigdetail).mount("#page-top")
+        </script>
+}
