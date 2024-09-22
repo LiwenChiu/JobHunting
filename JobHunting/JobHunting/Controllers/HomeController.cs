@@ -37,6 +37,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+        public IActionResult ResendVerificationLetter()
+        {
+            return View();
+        }
 
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int page, int count)
         {
@@ -616,10 +620,10 @@ namespace JobHunting.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "註冊過程中發生錯誤");
-                return Json(new { success = false, message = "註冊失敗", });
+                return Json(new { success = false, message = "註冊失敗。資料未填寫完成 or 未填寫正確", });
             }
 
-            return Json(new { success = true, message = "已註冊完成，目前已進入「審核」，待審核完畢會再通知結果。 ", });
+            return Json(new { success = true, message = "已註冊完成。目前已進入「審核」，待審核完畢會再通知結果。 ", });
         }
 
 
@@ -692,21 +696,46 @@ namespace JobHunting.Controllers
 
         }
 
+        //驗證信件重新發送
+        [HttpPost]
+        public async Task<IActionResult> SendVerificationLetter([FromBody]VerificationLetterViewmodel svl)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "資料未填寫完整" });
+                }
+
+
+                var candidateYemail = _context.Candidates.FirstOrDefault(c => c.Email == svl.Email);
+                if (candidateYemail != null)
+                {
+                    if (candidateYemail.VerifyEmailYN)
+                    {
+                        return Json(new { success = false, message = "此帳號已驗證過", });
+                    }
+                }else if(candidateYemail == null)
+                {
+                    return Json(new { success = false, message = "此電子信箱未註冊過。", });
+                }
+                
+            
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "資料未填寫正確", });
+            }
+
+            string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
+            _emailserver.SendEmail(svl.Email, $"您已使用{svl.Email} 註冊'小鴨上工'的會員成功");
+            return Json(new { success = true, message = "以重新發送驗證信'請務必前往您的信箱查閱信件'", });
+        }
 
 
 
-        //[HttpGet]
-        //public IActionResult SendTestEmail(string toEmail)
-        //{
-        //    // 實例化 EmailService 類別
-        //    var emailService = new EmailService();
 
-        //    // 調用 SendEmail 方法，發送郵件
-        //    emailService.SendEmail(toEmail, "測試郵件", "這是一個測試郵件內容。");
-
-        //    // 返回簡單的結果，表示郵件已發送
-        //    return Json(new { success = true, message = "測試郵件已發送至 " + toEmail });
-        //}
 
 
 

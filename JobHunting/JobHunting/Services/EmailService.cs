@@ -20,8 +20,8 @@ namespace JobHunting.Services
         {
             //token = guid唯一碼
             string token = Guid.NewGuid().ToString();
-            //設定驗證信為1小時到期
-            DateTime expiry = DateTime.UtcNow.AddHours(1);
+            //設定驗證信為10分鐘到期
+            DateTime expiry = DateTime.UtcNow.AddMinutes(10);
 
             //base64編碼
             string encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));

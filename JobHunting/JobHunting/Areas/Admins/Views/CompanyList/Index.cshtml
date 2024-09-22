@@ -22,7 +22,7 @@
                 <td>聯絡人</td>
                 <td>電話</td>
                 <td>電子信箱</td>
-                <td>審核時間</td>
+                <td class="col-3">審核時間</td>
                 <td class="col-1">審核狀態</td>
             </tr>
         </thead>
@@ -34,7 +34,7 @@
                 <td class="col-2">{{item.contactName}}</td>
                 <td>{{item.contactPhone}}</td>
                 <td>{{item.contactEmail}}</td>
-                <td class="co1-2">{{item.date}}</td>
+                <td class="co1-3">{{item.date}}</td>
                 @* 審核狀態 *@
                 @* <td v-html="statusYN(item.status)"></td> *@
                 <template v-if="item.status == false"><td class="col-1"><button class="btn btn-danger" v-on:click="editStatus(item)">待審核</button></td></template>
@@ -75,10 +75,10 @@
     <script>
          function convertToFullDateTime(dateObject) {
             if (!dateObject) return null;
-            const offset = dateObject.getTimezoneOffset() * 60000; // 将时区偏移量转换为毫秒
+            const offset = dateObject.getTimezoneOffset() * 60000; // 將時區偏移轉換為毫秒
             const localTime = new Date(dateObject.getTime() - offset);
 
-             return localTime.toISOString().slice(0, -1)
+            return localTime.toISOString().slice(0, 19); //取到秒數2位 如2024-09-22T12:03:11
         }; 
         Vue.createApp({
             data() {
@@ -86,7 +86,6 @@
                     baseAddress: "https://localhost:7169",
                     filter: "",
                     companylist:[],
-
                     pageStatus: 0,
                     perpage: 8, //一頁的資料數
                     currentPage: 1,
@@ -128,7 +127,7 @@
                 editStatus:function(item){
                     let _this = this;
                     const confirmdel = confirm("確定要更改?");
-                    if (confirm == true) {
+                    if (confirmdel == true) {
                         let request = {
                             CompanyId: item.companyId,
                             Status: true,
@@ -148,10 +147,8 @@
                         }).then(data => {
                             if (data.success == true) {
                                 alert(data.message);
-                                location.reload(); // 刷新页面
                             } else if (data.success == false) {
                                 alert(data.message);
-                                location.reload();
                             };
                         }).catch(err => {
                             alert(JSON.stringify(err));
