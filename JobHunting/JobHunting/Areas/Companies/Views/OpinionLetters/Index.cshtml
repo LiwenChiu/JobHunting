@@ -51,7 +51,7 @@
                                     <input id="insertFile" type="file" class="form-control" v-on:change="insertFileChange($event.target)" accept="image/*" />
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                    <img class="img-fluid" id="insertPreview" src="~/images/no_image_available.jpg" title="待上傳" asp-append-version="true">
+                                    <img class="img-fluid" id="insertPreview" src="~/images/no_image_available.jpg" title="待上傳" style="width:320px;height:240px" asp-append-version=true>
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
@@ -69,7 +69,8 @@
                         </button>
                         <button type="button"
                                 class="btn btn-warning"
-                                data-bs-dismiss="modal">
+                                data-bs-dismiss="modal"
+                                v-on:click="Createcancel">
                             取消
                         </button>
                     </div>
@@ -122,7 +123,7 @@
                     <div class="modal-content">
                         <div class="modal-header bg-warning ">
                             <h3 class="CompanyNameh3 text-center " style="width:95%">意見信件</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
                         </div>
                         <div class="modal-body">
                             <div class="container bg-light" style="border-radius: 30px;">
@@ -297,6 +298,8 @@
                         { headers: { 'Content-Type': 'multipart/form-data' } })
                         .then(response => {
                             alert(response.data);
+                            _this.letterClass = _this.subjectLine = _this.content = document.querySelector("#insertFile").value = "";
+                            $("#insertPreview").attr("src", "@Url.Content("~/images/no_image_available.jpg")");
                             _this.OpinionData();
                         }).catch(err => { alert("新增失敗"); });
                 },
@@ -326,6 +329,9 @@
                     }
                 },
 
+                Createcancel() {
+                    window.location.reload()
+                },
 
             },
             mounted() {

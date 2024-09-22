@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.ViewModel
 {
-    public class OpeningSelectViewModel
+    public class OpeningListDetailViewModel
     {
         public int OpeningId { get; set; }
 
@@ -28,7 +28,9 @@
         public string ContactEmail { get; set; }
 
         public string CompanyName { get; set; }
+        public IEnumerable<string>? TitleClassName { get; set; }
+        public IEnumerable<string>? TagName { get; set; }
 
-        public bool? LikeYN { get; set; }
+        public bool LikeYN { get; set; }
     }
 }

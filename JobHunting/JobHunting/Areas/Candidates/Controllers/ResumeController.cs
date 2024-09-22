@@ -25,7 +25,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             _context = context;
             _environment = environment;
         }
-        public IActionResult ResumeManage()
+        public IActionResult Index()
         {
             return View();
         }
@@ -146,10 +146,45 @@ namespace JobHunting.Areas.Candidates.Controllers
             }));
         }
 
+        //GET: Candidates/Resume/GetCandidateData
+        public async Task<GetCandidateDataOutputViewModel> GetCandidateData()
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
 
+            var candidateData = await _context.Candidates.AsNoTracking()
+                .Where(c => c.CandidateId == candidateId)
+                .Select(c => new GetCandidateDataInputViewModel
+                {
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Phone = c.Phone,
+                    Address = c.Address,
+                    Degree = c.Degree,
+                    VerifyEmailYN = c.VerifyEmailYN,
+                }).FirstOrDefaultAsync();
 
+            if (candidateData == null)
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
 
+            if (!candidateData.VerifyEmailYN)
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "驗證信箱" };
+            }
 
+            if (string.IsNullOrEmpty(candidateData.Name) || !candidateData.Sex.HasValue || !candidateData.Birthday.HasValue || string.IsNullOrEmpty(candidateData.Phone) || string.IsNullOrEmpty(candidateData.Address) || string.IsNullOrEmpty(candidateData.Degree))
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "完整填寫會員資料" };
+            }
+
+            return new GetCandidateDataOutputViewModel { DataStatus = true, AlertText = "新增履歷" };
+        }
 
 
 
@@ -157,23 +192,30 @@ namespace JobHunting.Areas.Candidates.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReasumes ([FromForm] addResumeInputModel Creatr)
         {
-            //if (ModelState.IsValid)
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return Unauthorized("未授權訪問");
+            }
+
+            //if (!ModelState.IsValid)
             //{
+            //    return NotFound(new { Message = "wrong" });
+            //}
            
 
             try
             {
-                var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
-                {
-                    return Unauthorized("未授權訪問");
-
-                }
                 var candidate = await  _context.Candidates.FindAsync(candidateId);
 
                 if (candidate == null)
                 {
                     return NotFound(new { Message = "Resume not found" });
+                }
+
+                if(candidate.Name == null || candidate.Sex == null || candidate.Birthday == null || candidate.Phone == null)
+                {
+                    return RedirectToAction("Index", "Member", new { area = "Candidates" });
                 }
 
                 var titleClasses = await _context.TitleClasses

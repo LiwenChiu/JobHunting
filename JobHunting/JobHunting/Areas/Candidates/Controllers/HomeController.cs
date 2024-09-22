@@ -39,18 +39,28 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new GetCandidateMemberDataViewModel(); // 或處理未授權訪問的情況
             }
-            return _context.Candidates.AsNoTracking()
+
+            var candidate =  await _context.Candidates.AsNoTracking()
                 .Where(cmd => cmd.CandidateId.ToString() == CandidateId)
                 .Select(cmd => new GetCandidateMemberDataViewModel
                 {
+                    CandidateId = cmd.CandidateId,
                     Name = cmd.Name,
-                    Headshot = cmd.Headshot,
+                    //Headshot = cmd.Headshot,
+                    ImgUrl = $"/Candidates/Home/GetPicture?candidateId={cmd.CandidateId}",
                     TitleClass = cmd.TitleClass,
                     Email = cmd.Email,
                     Phone = cmd.Phone,
                     Address = cmd.Address,
                     EmploymentStatus = cmd.EmploymentStatus,
-                }).Single();
+                }).FirstOrDefaultAsync();
+
+            if(candidate == null)
+            {
+                return new GetCandidateMemberDataViewModel();
+            }
+
+            return candidate;
         }
 
         // POST: Candidates/Home/GetCandidateMemberData
@@ -76,7 +86,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 .Take(2);
         }
 
-        
+
 
         // POST: Candidates/Home/GetCandidateOpeningLikeRecords
         [HttpPost]
@@ -98,7 +108,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return new List<GetCandidateOpeningLikeRecordsViewModel>();
             }
 
-            return query.Openings.Select(ror=>new GetCandidateOpeningLikeRecordsViewModel
+            return query.Openings.Select(ror => new GetCandidateOpeningLikeRecordsViewModel
             {
                 OpeningId = ror.OpeningId,
                 OpeningTitle = ror.Title,
@@ -108,11 +118,13 @@ namespace JobHunting.Areas.Candidates.Controllers
             .Take(2);
         }
 
-        public async Task<FileResult> GetPicture(int CandidateId)
+        //Get:Candidates/Home/GetPicture/{CandidateId}
+        [HttpGet]
+        public async Task<FileResult> GetPicture([FromQuery]int CandidateId)
         {
-            string noImageFilename = Path.Combine("StaticFiles", "images", "No_Image_Available.jpg");
+            string noImageFilename = Path.Combine("wwwroot", "images", "No_Image_Available.jpg");
             Candidate? candidate = await _context.Candidates.FindAsync(CandidateId);
-            byte[] imageContent = candidate.Headshot != null ? candidate.Headshot : System.IO.File.ReadAllBytes(noImageFilename);
+            byte[] imageContent = candidate?.Headshot != null ? candidate.Headshot : System.IO.File.ReadAllBytes(noImageFilename);
             return File(imageContent, "image/jpeg");
         }
 
@@ -158,6 +170,40 @@ namespace JobHunting.Areas.Candidates.Controllers
             returnStatus = ["修改職業成功", "成功"];
             return returnStatus;
         }
+
+
+        //Post:Candidates/Home/InsertHeadshot
+        [HttpPost]
+        public async Task<IActionResult> InsertHeadshot([FromForm] CandidateInsertHeadshotViewModel hsvm) 
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (candidateIdClaim == null)
+            {
+                return Unauthorized("使用者未登入");
+            }
+
+            int candidateId = int.Parse(candidateIdClaim);
+
+            // 確認資料庫中的使用者
+            Candidate candidate = await _context.Candidates.FindAsync(candidateId);
+
+            if (hsvm.ImageFile != null) 
+            {
+                using (BinaryReader br = new BinaryReader(hsvm.ImageFile.OpenReadStream())) 
+                {
+                    candidate.Headshot = br.ReadBytes((int)hsvm.ImageFile.Length);
+                }
+            }
+            //_context.Candidates.Add(candidate);
+            _context.Entry(candidate).State = EntityState.Modified;
+            try { await _context.SaveChangesAsync(); }
+            catch (DbUpdateConcurrencyException) {
+                return NotFound("變更失敗");
+            }
+            return Ok("變更照片成功");
+        }
+
+
 
         /*-------------------------------畫面顯示-------------------------------*/
 

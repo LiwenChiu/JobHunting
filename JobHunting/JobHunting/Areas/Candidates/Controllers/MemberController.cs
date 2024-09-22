@@ -59,7 +59,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Member/SaveEditMemberData
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> SaveEditMemberData([FromBody][Bind("Name,Email,Sex,Birthday,Phone,Address,Degree,EmploymentStatus,MilitaryService")] GetWholeCandidateMemberDataViewModel gwcmdvm)
+        public async Task<Array> SaveEditMemberData([FromBody][Bind("Name,Email,Sex,Birthday,Phone,Address,Degree,EmploymentStatus,MilitaryService")] EditCandidateMemberDataInputViewModel gwcmdvm)
         {
             string[] returnStatus = new string[2];
 
@@ -105,6 +105,12 @@ namespace JobHunting.Areas.Candidates.Controllers
 
             returnStatus = [$"修改會員資料成功", "成功"];
             return returnStatus;
+        }
+
+        //GET: Candidates/Member/TurnPageToMember
+        public async Task<IActionResult> TurnPageToMember()
+        {
+            return RedirectToAction("Index", "Member", new { area = "Candidates" });
         }
     }
 }

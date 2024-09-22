@@ -28,7 +28,7 @@
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
                 <br>
                 <select v-model="city" v-on:change="getArea">
@@ -42,7 +42,7 @@
                 <label class="calculator-dropdown-label" for="">選擇薪資範圍</label>
                 <input type="number" value="0" v-model="salary" min="0" step="1000" required />
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 <label class="calculator-dropdown-label" for="">職業類別</label>
                 <select v-model="classNumber">
                     <optgroup v-for="(item,index) in companyClassList" :label="item.companyCategoryName">
@@ -50,16 +50,16 @@
                     </optgroup>
                 </select>
             </div>
-@*             <div class="col-sm-3">
-                <partial name="_TagsBtnModal" />
-            </div> *@
+            <div class="col-sm-1 pt-3">
+                <button class="btn btn-warning text-light" v-on:click="clearSearch()">清空</button>
+            </div>
         </div>
         <div class="row py-md-2">
             <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterOpenings" v-model="filter" />
+                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterOpenings" v-model.trim="filter" />
             </div>
             <div class="col-2 mb-0">
-                <button class="btn btn-warning" v-on:click="filterOpenings">搜尋</button>
+                <button class="btn btn-warning text-light" v-on:click="filterOpenings">搜尋</button>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
         </div>
         <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
-                <label>共</label>
+                <label>每頁</label>
                 <input style="width:3vh;" v-model.number.trim="perpage" />
                 <label>筆職缺</label>
             </div>
@@ -114,36 +114,91 @@
                         <td>應徵 / 儲存</td>
                     </template>
                     <template v-else>
+                        <td></td>
                     </template>
                 </tr>
             </thead>
             <tbody align="center">
                 <tr v-for="(item,index) in openings">
-                    @* <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/${item.opeingID}`>{{item.title}}</a></td> *@
-                    <td>{{item.title}}</td>
+                    <td><a target="_blank" :href=`${baseAddress}/Candidate/OpeningDetail/?companyId=${item.companyId}&openingId=${item.openingId}`>{{item.title}}</a></td>
                     <td>{{item.companyName}}</td>
                     <td>{{item.address}}</td>
                     <td>{{item.description}}</td>
                     <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
-                    <template v-if="memberRole=='candidate'">
-                        <td>
-                            <button type="button" class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#applyJobModal" v-on:click="getOpening(item.openingId)">
-                                應徵
-                            </button>
-                            <template v-if="item.likeYN == false">
-                                <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
+                    <td>
+                        <button type="button" class="btn btn-info text-light" v-on:click="showOpeningDataModal(item.openingId)">
+                            預覽
+                        </button>
+                            <template v-if="memberRole=='candidate'">
+                                <template v-if="item.likeYN == false">
+                                    <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
+                                </template>
+                                <template v-else>
+                                    <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
+                                </template>
                             </template>
-                            <template v-else>
-                                <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
-                            </template>
-                        </td>
-                    </template>
-                    <template v-else>
-                    </template>
+                    </td>
                 </tr>
             </tbody>
         </table>
 
+        @* 未登入職缺詳細 *@
+        <div class="modal fade" id="applyJobUnLoginModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobUnLoginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h3 class="CompanyNameh3 text-center text-light" id="applyJobUnLoginModalLabel">{{openingModal.openingTitle}} - </h3>
+                        <button class="astext h3 text-light" style="margin: 0 0 7px;">{{openingModal.companyName}}</button>
+                        <span class="text-light px-3">已有: {{openingModal.resumeNumber}}人投遞履歷</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelApplyJob()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="h3">介紹: </label>
+                        <h5>{{openingModal.description}}</h5>
+                        <hr />
+                        <label class="h4">職業類別: </label>
+                        <template v-for="(titleClass,index) in openingModal.titleClassName">
+                            <template v-if="index + 1 == openingModal.titleClassName.length">
+                                <button class="astext h5">{{titleClass}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{titleClass}}</button>、
+                            </template>
+                        </template>
+                        <br />
+                        <label class="h4">薪資:  </label>
+                        <span class="h5 text-warning">月薪{{openingModal.salaryMin}}~{{openingModal.salaryMax}}元</span>
+                        <br />
+                        <label class="h4">工作時段: </label>
+                        <button class="astext h5">{{openingModal.time}}</button>
+                        <br />
+                        <label class="h4">工作地址: </label>
+                        <span class="h5">{{openingModal.address}}</span>
+                        <br />
+                        <label class="h4">需求人數: </label>
+                        <span class="h5 px-1">{{openingModal.requiredNumber}}人</span>
+                        <hr />
+                        <label class="h4">學歷要求: </label>
+                        <span class="h5">{{openingModal.degree}}</span>
+                        <br />
+                        <label class="h4">擅長能力: </label>
+                        <template v-for="(tag,index) in openingModal.tagName">
+                            <template v-if="index + 1 == openingModal.tagName.length">
+                                <button class="astext h5">{{tag}}</button>
+                            </template>
+                            <template v-else>
+                                <button class="astext h5">{{tag}}</button>、
+                            </template>
+                        </template>
+                        <hr />
+                        <label class="h4">福利制度: </label>
+                        <h5>{{openingModal.benefit}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* 登入後職缺詳細 *@
         <div class="modal fade" id="applyJobModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
@@ -231,6 +286,29 @@
             </nav>
         </div>
     </div>
+
+
+    @* 沒有驗證信件or完整填寫會員資料Modal *@
+    <div class="modal fade" id="turnPageToMemberModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="turnPageToMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="turnPageToMemberModalLabel">尚未{{alertTextGetData}}</h3>
+                </div>
+                <div class="modal-body">
+                    <h5>請問是否移動至 會員資料 頁面 {{alertTextGetData}}?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form asp-area="Candidates" asp-controller="Member" asp-action="TurnPageToMember" method="get">
+                        <button type="submit" class="btn btn-warning text-light" data-bs-dismiss="modal">移動頁面</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 @section Scripts
@@ -245,7 +323,6 @@
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
-                    candidateId: 2,
                     currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
@@ -272,9 +349,19 @@
                     selectedResumeId: null,
 
                     memberRole: "",
+
+                    alertTextGetData: "",
                 };
             },
             methods: {
+                clearSearch: function () {
+                    this.filter = "";
+                        this.city = "";
+                        this.zipCode = "";
+                        this.salary = null;
+                        this.classNumber = "";
+                    this.filterOpenings();
+                },
                 turnPage: function (page) {
                     this.currentPage = page;
                     this.filterOpenings();
@@ -296,7 +383,6 @@
                     this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
                     this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
                     let params = new URLSearchParams();
-                    params.append("id", this.candidateId);
                     params.append("page", this.currentPageSafe);
                     params.append("count", this.perpageSafe);
                     var request = {
@@ -335,7 +421,6 @@
                     this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
                     this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
                     let params = new URLSearchParams();
-                    params.append("id", this.candidateId);
                     params.append("page", this.currentPageSafe);
                     params.append("count", this.perpageSafe);
                     var request = {
@@ -370,6 +455,16 @@
                               }
                           });
                 },
+                showOpeningDataModal:function(openingId){
+                    if(this.memberRole=='candidate'){
+                        this.getOpening(openingId);
+                        $("#applyJobModal").modal("show");
+                    }
+                    else{
+                        this.getOpening(openingId);
+                        $("#applyJobUnLoginModal").modal("show");
+                    }
+                },
                 getCity() {
                     axios.get('/cityjson/CityCountyData.json')  //根目錄資料
                         .then(model => {
@@ -400,7 +495,7 @@
                     axios.post(`${self.baseAddress}/Home/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        alert(res.data)
+                        // alert(res.data)
                         self.filterOpenings();
                     }).catch(error => {
                         console.error(error);
@@ -415,7 +510,7 @@
                     axios.post(`${self.baseAddress}/Home/DeleteFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        alert(res.data)
+                        // alert(res.data)
                         this.filterOpenings();
                     }).catch(error => {
                         console.error(error);
@@ -434,6 +529,28 @@
                         .catch(err => { alert(err) });
                 },
                 getResumes: function () {
+                    axios.get(`${this.baseAddress}/Candidates/OpeningStorage/GetCandidateData`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(response => {
+                            if (response.data.dataStatus) {
+                                this.chooseResume();
+                                this.alertTextGetData = response.data.alertText;
+                            }
+                            else if (!response.data.dataStatus) {
+                                this.alertTextGetData = response.data.alertText;
+                                $("#turnPageToMemberModal").modal("show");
+                            }
+                            else {
+                                alert(response.data.alertText);
+                            }
+                        })
+                        .catch(err => { alert(err) });
+                },
+                chooseResume: function () {
                     this.applyJobYN = true;
                     axios.get(`${this.baseAddress}/Home/ResumesJson`,
                         {
@@ -496,10 +613,10 @@
             },
             mounted() {
                 let self = this;
+                self.getRole();
                 self.filterOpenings();
                 self.getCity();
                 self.getCompanyClass();
-                self.getRole();
             }
         };
         let listData = Vue.createApp(vueList).mount("#app1");

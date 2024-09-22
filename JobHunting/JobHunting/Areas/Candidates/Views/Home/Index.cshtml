@@ -38,23 +38,76 @@
         <div class="col-lg-4">
             <div class="card mb-1">
                 <div class="card-body text-center">
-                    <div style="position: relative">
-                        <div style="position: absolute; z-index:70;">
-                            <button type="button" id="headshotBtn" class="astext">更改圖片</button>
+                    <div >
+                        @* 變更照片modalBtn *@
+                        <div>
+                            <button type="button" id="headshotBtn" class="astext" 
+                                data-bs-toggle="modal" data-bs-target="#modalId">
+                                <img alt="avatar" class="img-thumbnail img-fluid" style="width: 60%"
+                                     v-bind:src="CandidateMemberData.imgUrl"
+                                     v-bind:title="CandidateMemberData.Name"
+                                     />
+                            </button>
                         </div>
-                        <img src="~/images/pepethefrog.jpg" alt="avatar" class="img-thumbnail img-fluid" style="width: 60%;" />
-                    </div>
-                    <h5 class="my-1">{{CandidateMemberData.name}}</h5>
-                    <template v-if="titleClassEdit == false">
-                        <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
-                    </template>
-                    <template v-else>
-                        <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" />
-                        <button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
-                        <button type="button" class="px-1 astext" v-on:click="cancelChangeTitleClass()"><i class="fa-regular fa-rectangle-xmark"></i></button>
 
-                    </template>
-                    <p class="text-muted mb-4">台灣</p>
+                        @* 意見信件modal *@
+                        <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+                             aria-labelledby="modalTitleId" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning ">
+                                        <h3 class="text-center" style="width:95%">變更照片</h3>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container bg-light" style="border-radius: 30px;">
+                                            <div class="inputOutAreas" style="width:80%">                              
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <img src="~/images/no_image_available.jpg" class="img-fluid" style="width:50%" />
+                                                </div>
+                                                <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                                    <input id="insertFile" type="file" accept="image/*" class="form-control" v-on:change="insertFileChange($event.target)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button id="insert" type="button"
+                                                class="btn btn-primary"
+                                                data-bs-dismiss="modal"
+                                                v-on:click="insertHeadshot">
+                                            送出
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-warning"
+                                                data-bs-dismiss="modal"
+                                                v-on:click="Createcancel">
+                                            取消
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    <div>
+                        <h5 class="my-1 form-label">{{CandidateMemberData.name}}</h5>
+                        <template v-if="titleClassEdit == false">
+                            <p class="text-muted mb-1">{{CandidateMemberData.titleClass}}<button type="button" class="px-1 astext" v-on:click="titleClassEdit = true"><i class="fa-solid fa-pen"></i></button></p>
+                        </template>
+                        <template v-else>
+                            <input type="text" placeholder="請輸入您的職業" v-model="CandidateMemberData.titleClass" />
+                            <button type="button" class="px-1 astext" v-on:click="changeTitleClass()"><i class="fa-solid fa-floppy-disk"></i></button>
+                            <button type="button" class="px-1 astext" v-on:click="cancelChangeTitleClass()"><i class="fa-regular fa-rectangle-xmark"></i></button>
+                        </template>
+                        <p class="text-muted mb-4">台灣</p>
+                    </div>
+                    
                 </div>
             </div>
             <div class="card mb-1 mb-lg-0">
@@ -190,8 +243,10 @@
                     CandidateResumes: [],
                     CandidateOpeningLikeRecords: [],
                     titleClassEdit: false,
-                    alertText: "",
+                    alertText: "",                                                                                                                                                                                                                                          
                     alertStatus: "",
+                    imgUrl: "",
+                    imgKey:0,
                 };
             },
             methods: {
@@ -200,7 +255,10 @@
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    }).then(response => this.CandidateMemberData = response.data)
+                    }).then(response => {
+                        this.CandidateMemberData = response.data;
+                        this.imgUrl = response.data.imgUrl;
+                    })
                         .catch(err => alert(err));
                 },
                 getCandidateResumes: function () {
@@ -260,6 +318,54 @@
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
+
+
+                insertHeadshot: function()
+                {
+                    let _this=this;
+                    var form = new FormData();
+                    form.append("ImageFile",document.querySelector("#insertFile").files[0]);
+                    axios.post(`${_this.baseAddress}/Candidates/Home/InsertHeadshot`, form,
+                    { headers: { 'Content-Type': 'multipart/form-data' } } )
+                    .then(response => {
+                        this.imgKey++;
+                        this.CandidateMemberData.imgUrl = `${this.imgUrl}&t${this.imgKey}`;
+                        alert(response.data);
+                    }).catch(err => { alert(err); });
+
+                },
+
+
+                insertFileChange: function (file) 
+                {
+                    let _this = this;
+                    _this.readURL(file, file.parentElement.previousElementSibling.firstChild, $("#insert"))
+                },
+
+                readURL: function (input,img,btn) {
+                    if (input.files && input.files[0]) 
+                    {
+                        var imageType = "image.*";
+                        if (input.files[0].type.match(imageType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                            };
+                            reader.readAsDataURL(input.files[0])
+                            btn.prop("disabled", false);
+                        } 
+                        else {
+                            alert("不支援的上傳格式");
+                            btn.prop("disabled", true);
+                        }
+                    }
+
+                },
+
+                Createcancel(){
+                    window.location.reload()
+                },
+
             },
             mounted: function () {
                 this.getCandidateMemberData();
