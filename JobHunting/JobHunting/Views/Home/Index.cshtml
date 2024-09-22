@@ -127,7 +127,7 @@
                     <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
                     <td>
                         <button type="button" class="btn btn-info text-light" v-on:click="showOpeningDataModal(item.openingId)">
-                            詳細
+                            預覽
                         </button>
                             <template v-if="memberRole=='candidate'">
                                 <template v-if="item.likeYN == false">
