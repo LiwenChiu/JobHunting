@@ -6,7 +6,7 @@
         public string Class { get; set; }
 
         public string SubjectLine { get; set; }
-        public DateTime SendTime { get; set; }
+        public string SendTime { get; set; }
 
         public string Content { get; set; }
         public byte[] Attachment { get; set; }

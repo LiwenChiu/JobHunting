@@ -113,32 +113,6 @@ namespace JobHunting.Areas.Admins.Controllers
             CultureInfo cultureTW = new CultureInfo("zh-TW");
 
             var companyorders = _context.CompanyOrders.Include(co => co.Plan).AsNoTracking()
-                .Select(co => new
-                {
-                    OrderId = co.OrderId,
-                    CompanyId = co.CompanyId,
-                    PlanId = co.PlanId,
-                    CompanyName = co.CompanyName,
-                    GUINumber = co.GUINumber,
-                    Title = co.Title,
-                    Price = co.Price,
-                    PayDate = co.PayDate.ToString(),
-                    Duration = co.Duration,
-                    Expiration = co.Status ? co.PayDate.AddDays(co.Duration).ToString() : null,
-                    Intro = co.Plan.Intro,
-                    Status = co.Status
-                }).Where(covmfilter => covmfilter.OrderId.ToString().Contains(covm.OrderId.ToString()) ||
-                                        covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
-                                        covmfilter.PlanId.ToString().Contains(covm.PlanId.ToString()) ||
-                                        covmfilter.CompanyName.Contains(covm.CompanyName) ||
-                                        covmfilter.GUINumber.Contains(covm.GUINumber) ||
-                                        covmfilter.Title.Contains(covm.Title) ||
-                                        covmfilter.Price.ToString().Contains(covm.Price.ToString()) ||
-                                        covmfilter.PayDate.Contains(covm.PayDate) ||
-                                        covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
-                                        covmfilter.Expiration.Contains(covm.Expiration) ||
-                                        covmfilter.Intro.Contains(covm.Intro) ||
-                                        (covmfilter.Status ? "已付款" : "尚未付款").Contains(covm.Status))
                 .Select(co => new CompanyOrdersFilterViewModel
                 {
                     OrderId = co.OrderId,
@@ -149,10 +123,34 @@ namespace JobHunting.Areas.Admins.Controllers
                     Title = co.Title,
                     Price = co.Price,
                     PayDate = co.PayDate,
-                    //PayDate = DateTime.Parse(co.PayDate).ToString(cultureTW),
                     Duration = co.Duration,
-                    Expiration = co.Expiration == null ? "無" : co.Expiration,
-                    //Expiration = DateTime.Parse(co.Expiration).ToString(cultureTW),
+                    Expiration = co.Status ? co.PayDate.AddDays(co.Duration) : null,
+                    Intro = co.Plan.Intro,
+                    Status = co.Status
+                }).Where(covmfilter => covmfilter.OrderId.ToString().Contains(covm.OrderId.ToString()) ||
+                                        covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
+                                        covmfilter.PlanId.ToString().Contains(covm.PlanId.ToString()) ||
+                                        covmfilter.CompanyName.Contains(covm.CompanyName) ||
+                                        covmfilter.GUINumber.Contains(covm.GUINumber) ||
+                                        covmfilter.Title.Contains(covm.Title) ||
+                                        covmfilter.Price.ToString().Contains(covm.Price.ToString()) ||
+                                        covmfilter.PayDate.ToString().Contains(covm.PayDate) ||
+                                        covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
+                                        covmfilter.Expiration.ToString().Contains(covm.Expiration) ||
+                                        covmfilter.Intro.Contains(covm.Intro) ||
+                                        (covmfilter.Status ? "已付款" : "尚未付款").Contains(covm.Status))
+                .Select(co => new CompanyOrdersFilterOutputViewModel
+                {
+                    OrderId = co.OrderId,
+                    CompanyId = co.CompanyId,
+                    PlanId = co.PlanId,
+                    CompanyName = co.CompanyName,
+                    GUINumber = co.GUINumber,
+                    Title = co.Title,
+                    Price = co.Price,
+                    PayDate = co.PayDate.ToString("yyyy/MM/dd HH:mm:ss"),
+                    Duration = co.Duration,
+                    Expiration = co.Expiration.HasValue ? co.Expiration.Value.ToString("yyyy/MM/dd HH:mm:ss") : "無",
                     Intro = co.Intro,
                     Status = co.Status,
                 }).OrderBy(co => co.Status).ThenByDescending(co => co.OrderId);

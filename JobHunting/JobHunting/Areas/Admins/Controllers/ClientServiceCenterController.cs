@@ -38,7 +38,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 SubjectLine = p.SubjectLine,
                 Status = p.Status,
                 Content = p.Content,
-                SendTime = p.SendTime,
+                SendTime = p.SendTime.ToString("yyyy/MM/dd HH:mm:ss"),
             });
             return Json(opinionletter);
         }
@@ -58,7 +58,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 Attachment = opinionLetter.Attachment,
                 Content = opinionLetter.Content,
                 Status = opinionLetter.Status,
-                SendTime = opinionLetter.SendTime,
+                SendTime = opinionLetter.SendTime.ToString("yyyy/MM/dd HH:mm:ss"),
             };
 
             return olovm;
@@ -67,17 +67,17 @@ namespace JobHunting.Areas.Admins.Controllers
 
         //Post: Admins/ClientServiceCenter/Filter
         [HttpPost]
-        public async Task<IEnumerable<OpinionLetter>> Filter([FromBody] OpinionLetter opinionLetter)
+        public async Task<IEnumerable<OpinionLetterFilterOutputViewModel>> Filter([FromBody] OpinionLetter opinionLetter)
         {
             return _context.OpinionLetters.Where(
                 o =>o.Class.Contains(opinionLetter.Class) ||
                 o.SubjectLine.Contains(opinionLetter.SubjectLine))
-                .OrderByDescending(p => p.SendTime).Select(o => new OpinionLetter
+                .OrderByDescending(p => p.SendTime).Select(o => new OpinionLetterFilterOutputViewModel
                 {
                     LetterId = o.LetterId,
                     Class = o.Class,
                     SubjectLine = o.SubjectLine,
-                    SendTime = o.SendTime,
+                    SendTime = o.SendTime.ToString("yyyy/MM/dd HH:mm:ss"),
                     Status = o.Status,
                 });
 
