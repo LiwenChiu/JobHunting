@@ -16,6 +16,7 @@ using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
+using JobHunting.Areas.Candidates.ViewModels;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -98,6 +99,7 @@ namespace JobHunting.Controllers
             return openingIndexOutput;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
         {
@@ -125,6 +127,7 @@ namespace JobHunting.Controllers
             return "職缺已成功收藏";
         }
 
+        [Authorize]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteOpeningsViewModel dfovm)
@@ -187,6 +190,7 @@ namespace JobHunting.Controllers
             return opening;
         }
 
+        [Authorize]
         //GET: Home/ResumesJson
         public async Task<IEnumerable<ResumesOutputViewModel>> ResumesJson()
         {
@@ -730,6 +734,47 @@ namespace JobHunting.Controllers
             return RedirectToAction("Login", "Home", new { area = "Admins" });
         }
 
+        [Authorize]
+        //GET: Home/GetCandidateData
+        public async Task<GetCandidateDataOutputViewModel> GetCandidateData()
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            var candidateData = await _context.Candidates.AsNoTracking()
+                .Where(c => c.CandidateId == candidateId)
+                .Select(c => new GetCandidateDataInputViewModel
+                {
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Phone = c.Phone,
+                    Address = c.Address,
+                    Degree = c.Degree,
+                    VerifyEmailYN = c.VerifyEmailYN,
+                }).FirstOrDefaultAsync();
+
+            if (candidateData == null)
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            if (!candidateData.VerifyEmailYN)
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "驗證信箱" };
+            }
+
+            if (string.IsNullOrEmpty(candidateData.Name) || !candidateData.Sex.HasValue || !candidateData.Birthday.HasValue || string.IsNullOrEmpty(candidateData.Phone) || string.IsNullOrEmpty(candidateData.Address) || string.IsNullOrEmpty(candidateData.Degree))
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "完整填寫會員資料" };
+            }
+
+            return new GetCandidateDataOutputViewModel { DataStatus = true, AlertText = "請選擇履歷" };
+        }
+
         public async Task<string> GetRole()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -747,6 +792,7 @@ namespace JobHunting.Controllers
 
             return "";
         }
+
         public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening, int page, int count)
         {
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
