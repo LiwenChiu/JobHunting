@@ -421,8 +421,7 @@ namespace JobHunting.Controllers
                 {
                     return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
                 }
-
-                if (BCrypt.Net.BCrypt.Verify(candidateLogin.Password, candidate.Password)) // 假設密碼是明文儲存
+                    if (BCrypt.Net.BCrypt.Verify(candidateLogin.Password, candidate.Password)) 
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
@@ -455,8 +454,7 @@ namespace JobHunting.Controllers
                 {
                     return Json(new { success = false, message = "公司帳號尚未審核通過" });
                 }
-
-                if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password)) // 假設密碼是明文儲存
+                if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>

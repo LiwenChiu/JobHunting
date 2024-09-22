@@ -23,7 +23,7 @@ CREATE TABLE Companies
 (
     CompanyId int primary key identity,
 	GUINumber nchar(8) not null,
-	[Password] nvarchar(16) not null,
+	[Password] nvarchar(60) not null,
     CompanyName nvarchar(60) not null,
 	CompanyClassId nchar(2)
 		references CompanyClasses(CompanyClassId)
@@ -96,7 +96,7 @@ CREATE TABLE Candidates
 	CandidateId int primary key identity,
 	NationalId nchar(10) not null,
 	Email nvarchar(320) not null,
-	[Password] nvarchar(16) not null,
+	[Password] nvarchar(60) not null,
 	[Name] nvarchar(30),
 	Sex bit,
 	Birthday date,
