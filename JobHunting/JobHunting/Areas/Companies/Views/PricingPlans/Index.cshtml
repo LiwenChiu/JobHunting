@@ -45,7 +45,7 @@
         </div>
         <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
             <div class="col-md-10">
-                <label for="filterPlan">關鍵字搜尋: </label>
+                <label for="filterPlan" class="px-3">方案搜尋: </label>
                 <input type="search" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
                 <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
             </div>
@@ -69,7 +69,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="paymentAgreement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
+        @* 購買方案Modal *@
+        <div class="modal fade" id="paymentAgreement" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
@@ -96,14 +97,90 @@
                         </template>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" v-on:click="payAgree(selectedPlanId);">確認付款</button>
+                        <button type="button" class="btn btn-warning text-light" data-bs-target="#NewebPayment" data-bs-toggle="modal" >確認付款</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        @* 購買資訊藍新金流Modal *@
+        <div class="modal fade" id="NewebPayment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="NewebPaymentLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h3 class="modal-title text-light" id="NewebPaymentLabel">藍新金流串接範例</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header">
+                                API 欄位
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">商店代號</label>
+                                        <input type="text" class="form-control" id="MerchantID" v-model="addForm.MerchantID">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">訂單編號</label>
+                                        <input type="text" class="form-control" id="MerchantOrderNo" v-model="addForm.MerchantOrderNo">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">商品說明</label>
+                                        <input type="text" class="form-control" id="ItemDesc" v-model="addForm.ItemDesc">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">商品金額</label>
+                                        <input type="text" class="form-control" id="Amt" v-model="addForm.Amt">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">繳費有效期限</label>
+                                        <input type="text" class="form-control" id="ExpireDate" v-model="addForm.ExpireDate">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">付款人電子信箱</label>
+                                        <input type="text" class="form-control" id="Email" v-model="addForm.Email">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">支付完成返回網址</label>
+                                        <input type="text" class="form-control" id="ReturnURL" v-model="addForm.ReturnURL">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">商店取號網址</label>
+                                        <input type="text" class="form-control" id="CustomerURL" v-model="addForm.CustomerURL">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">支付通知網址</label>
+                                        <input type="text" class="form-control" id="NotifyURL" v-model="addForm.NotifyURL">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">返回商店網址</label>
+                                        <input type="text" class="form-control" id="ClientBackURL" v-model="addForm.ClientBackURL">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary" v-on:click="SendToNewebPay('VACC')">ATM 付款</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary text-light" data-bs-dismiss="modal" v-on:click="payAgree(selectedPlanId);">確認付款</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 
@@ -125,6 +202,19 @@
                     selectedPlanDiscount: null,
                     alertText: "",
                     alertStatus: "",
+
+                    addForm: {
+                        MerchantID: '@ViewData["MerchantID"]' //商品代號
+                        , MerchantOrderNo: '@ViewData["MerchantOrderNo"]'
+                        , ItemDesc: '測試商品'
+                        , Amt: '100'
+                        , ExpireDate: '@ViewData["ExpireDate"]'
+                        , ReturnURL: '@ViewData["ReturnURL"]'
+                        , CustomerURL: '@ViewData["CustomerURL"]'
+                        , NotifyURL: '@ViewData["NotifyURL"]'
+                        , ClientBackURL: '@ViewData["ClientBackURL"]'
+                        , Email: 'xxxx@gmail.com'
+                    },
                 };
             },
             methods:{
@@ -160,6 +250,54 @@
                 alertOut: function () {
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
+
+                // 傳送至藍新金流
+                SendToNewebPay(ChannelID) {
+                    var self = this;
+
+                    // 組合表單資料
+                    var postData = {};
+                    postData['ChannelID'] = ChannelID;
+                    postData['MerchantID'] = self.addForm.MerchantID;
+                    postData['MerchantOrderNo'] = self.addForm.MerchantOrderNo;
+                    postData['ItemDesc'] = self.addForm.ItemDesc;
+                    postData['Amt'] = self.addForm.Amt;
+                    postData['ExpireDate'] = self.addForm.ExpireDate;
+                    postData['ReturnURL'] = self.addForm.ReturnURL;
+                    postData['CustomerURL'] = self.addForm.CustomerURL;
+                    postData['NotifyURL'] = self.addForm.NotifyURL;
+                    postData['ClientBackURL'] = self.addForm.ClientBackURL;
+                    postData['Email'] = self.addForm.Email;
+
+                    // 使用 jQuery Ajax 傳送至後端
+                    $.ajax({
+                        url: '@Url.Content("~/Home/SendToNewebPay")',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: { inModel: postData, __RequestVerificationToken: $('@Html.AntiForgeryToken()').val() },
+                        success: function (returnObj) {
+                            // 呼叫藍新金流 API
+                            const form = document.createElement('form');
+                            form.method = 'post';
+                            form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway';//藍新金流驗證網址(測試環境)
+
+                            for (const key in returnObj) {
+                                if (returnObj.hasOwnProperty(key)) {
+                                    const hiddenField = document.createElement('input');
+                                    hiddenField.type = 'hidden';
+                                    hiddenField.name = key;
+                                    hiddenField.value = returnObj[key];
+                                    form.appendChild(hiddenField);
+                                }
+                            }
+                            document.body.appendChild(form);
+                            form.submit();
+                        },
+                        error: function (err) {
+                            alert(err.status + " " + err.statusText + '\n' + err.responseText);
+                        }
+                    });
+                }
             },
             watch:{
                 filterPlantext:function(){

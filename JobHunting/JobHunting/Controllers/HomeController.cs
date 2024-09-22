@@ -16,6 +16,8 @@ using System.Text.Json;
 using JobHunting.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
+using Microsoft.CodeAnalysis.Scripting;
+using JobHunting.Areas.Candidates.ViewModels;
 namespace JobHunting.Controllers
 {
     public class HomeController : Controller
@@ -32,6 +34,10 @@ namespace JobHunting.Controllers
             _emailserver = emailserver;
         }
         public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult ResendVerificationLetter()
         {
             return View();
         }
@@ -98,6 +104,7 @@ namespace JobHunting.Controllers
             return openingIndexOutput;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<string> AddFavorite([FromBody] AddFavoriteOpeningsViewModel favorite)
         {
@@ -125,6 +132,7 @@ namespace JobHunting.Controllers
             return "職缺已成功收藏";
         }
 
+        [Authorize]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<string> DeleteFavorite([FromBody] DeleteFavoriteOpeningsViewModel dfovm)
@@ -187,6 +195,7 @@ namespace JobHunting.Controllers
             return opening;
         }
 
+        [Authorize]
         //GET: Home/ResumesJson
         public async Task<IEnumerable<ResumesOutputViewModel>> ResumesJson()
         {
@@ -416,8 +425,7 @@ namespace JobHunting.Controllers
                 {
                     return Json(new { success = false, message = "求職者尚未驗證電子郵件" });
                 }
-
-                if (candidate != null && candidate.Password == candidateLogin.Password) // 假設密碼是明文儲存
+                    if (BCrypt.Net.BCrypt.Verify(candidateLogin.Password, candidate.Password)) 
                 {
                     // 驗證通過，建立 claims，包含 CandidateId
                     var claims = new List<Claim>
@@ -450,8 +458,7 @@ namespace JobHunting.Controllers
                 {
                     return Json(new { success = false, message = "公司帳號尚未審核通過" });
                 }
-
-                if (company != null && company.Password == companyLogin.Password) // 假設密碼是明文儲存
+                if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
                 {
                     // 驗證通過，建立 claims，包含 CompanyId
                     var claims = new List<Claim>
@@ -531,7 +538,7 @@ namespace JobHunting.Controllers
             }
 
             //// 密碼加密
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
 
             try
             {
@@ -539,7 +546,7 @@ namespace JobHunting.Controllers
                 {
                     NationalId = cr.NationalId,
                     Email = cr.Email,
-                    Password = cr.Password,
+                    Password = hashedPassword,
                     VerifyEmailYN = cr.VerifyEmailYN,
                     RegisterTime = cr.RegisterTime,
 
@@ -587,7 +594,7 @@ namespace JobHunting.Controllers
 
 
             //// 密碼加密
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cr.Password);
 
             try
             {
@@ -601,7 +608,7 @@ namespace JobHunting.Controllers
                     Status = cr.Status,
                     Date = cr.Date,
                     Address = cr.Address,
-                    Password = cr.Password,
+                    Password = hashedPassword,
 
                 };
 
@@ -613,10 +620,10 @@ namespace JobHunting.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "註冊過程中發生錯誤");
-                return Json(new { success = false, message = "註冊失敗", });
+                return Json(new { success = false, message = "註冊失敗。資料未填寫完成 or 未填寫正確", });
             }
 
-            return Json(new { success = true, message = "已註冊完成，目前已進入「審核」，待審核完畢會再通知結果。 ", });
+            return Json(new { success = true, message = "已註冊完成。目前已進入「審核」，待審核完畢會再通知結果。 ", });
         }
 
 
@@ -689,21 +696,46 @@ namespace JobHunting.Controllers
 
         }
 
+        //驗證信件重新發送
+        [HttpPost]
+        public async Task<IActionResult> SendVerificationLetter([FromBody]VerificationLetterViewmodel svl)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "資料未填寫完整" });
+                }
+
+
+                var candidateYemail = _context.Candidates.FirstOrDefault(c => c.Email == svl.Email);
+                if (candidateYemail != null)
+                {
+                    if (candidateYemail.VerifyEmailYN)
+                    {
+                        return Json(new { success = false, message = "此帳號已驗證過", });
+                    }
+                }else if(candidateYemail == null)
+                {
+                    return Json(new { success = false, message = "此電子信箱未註冊過。", });
+                }
+                
+            
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "資料未填寫正確", });
+            }
+
+            string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
+            _emailserver.SendEmail(svl.Email, $"您已使用{svl.Email} 註冊'小鴨上工'的會員成功");
+            return Json(new { success = true, message = "以重新發送驗證信'請務必前往您的信箱查閱信件'", });
+        }
 
 
 
-        //[HttpGet]
-        //public IActionResult SendTestEmail(string toEmail)
-        //{
-        //    // 實例化 EmailService 類別
-        //    var emailService = new EmailService();
 
-        //    // 調用 SendEmail 方法，發送郵件
-        //    emailService.SendEmail(toEmail, "測試郵件", "這是一個測試郵件內容。");
-
-        //    // 返回簡單的結果，表示郵件已發送
-        //    return Json(new { success = true, message = "測試郵件已發送至 " + toEmail });
-        //}
 
 
 
@@ -728,6 +760,47 @@ namespace JobHunting.Controllers
 
             // 重導向到登入頁面或首頁
             return RedirectToAction("Login", "Home", new { area = "Admins" });
+        }
+
+        [Authorize]
+        //GET: Home/GetCandidateData
+        public async Task<GetCandidateDataOutputViewModel> GetCandidateData()
+        {
+            var candidateIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(candidateIdClaim) || !int.TryParse(candidateIdClaim, out int candidateId))
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            var candidateData = await _context.Candidates.AsNoTracking()
+                .Where(c => c.CandidateId == candidateId)
+                .Select(c => new GetCandidateDataInputViewModel
+                {
+                    Name = c.Name,
+                    Sex = c.Sex,
+                    Birthday = c.Birthday,
+                    Phone = c.Phone,
+                    Address = c.Address,
+                    Degree = c.Degree,
+                    VerifyEmailYN = c.VerifyEmailYN,
+                }).FirstOrDefaultAsync();
+
+            if (candidateData == null)
+            {
+                return new GetCandidateDataOutputViewModel { AlertText = "失敗" };
+            }
+
+            if (!candidateData.VerifyEmailYN)
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "驗證信箱" };
+            }
+
+            if (string.IsNullOrEmpty(candidateData.Name) || !candidateData.Sex.HasValue || !candidateData.Birthday.HasValue || string.IsNullOrEmpty(candidateData.Phone) || string.IsNullOrEmpty(candidateData.Address) || string.IsNullOrEmpty(candidateData.Degree))
+            {
+                return new GetCandidateDataOutputViewModel { DataStatus = false, AlertText = "完整填寫會員資料" };
+            }
+
+            return new GetCandidateDataOutputViewModel { DataStatus = true, AlertText = "請選擇履歷" };
         }
 
         public async Task<string> GetRole()

@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = @Html.DisplayFor(model => model.Title);
 }
-@section Styles{
+@section Styles {
     <style></style>
 }
 <head>
@@ -11,44 +11,44 @@
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/resumeInrro/css/styles.css" rel="stylesheet" />
-</head> 
+</head>
 
-<div id="page-top" >
-<!-- Navigation-->
+<div id="page-top">
+    <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-warning fixed-top" id="sideNav" style="flex-direction:column">
-    <a class="navbar-brand js-scroll-trigger" href="#page-top">
-        <span class="d-block d-lg-none">Clarence Taylor</span>
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <span class="d-block d-lg-none">Clarence Taylor</span>
             <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" :src=`${baseAddress}/Company/GetPicture/${resumeId}` alt="..." /></span>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="navbarResponsive" >
-        <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#personalData">個人資料</a></li>
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#introduceYourself">自我介紹</a></li>
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#workExperience">工作經驗</a></li>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#personalData">個人資料</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#introduceYourself">自我介紹</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#workExperience">工作經驗</a></li>
 
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobRequirements">求職條件</a></li>
-            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#autobiography">自傳</a></li>
-            <li v-for="item in resumeList">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#interviewMailBtn" style="color:white">
-                    面試
-                </button>
-                <template v-if="item.likeYN == false">
-                    <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
-                        暫存
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobRequirements">求職條件</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#autobiography">自傳</a></li>
+                <li v-for="item in resumeList">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#interviewMailBtn" style="color:white">
+                        面試
                     </button>
-                </template>
-                <template v-else>
-                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite()">已存</button>
-                </template>
-            </li>
-        </ul>
-            
-    </div>
-</nav>
+                    <template v-if="item.likeYN == false">
+                        <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
+                            暫存
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite()">已存</button>
+                    </template>
+                </li>
+            </ul>
 
-<!-- Page Content-->
+        </div>
+    </nav>
+
+    <!-- Page Content-->
     <div class="card-body container-fluid row" v-for="item in resumeList">
         <div class="row mt-3" style="margin-left:10px">
             <div class="col-sm-6">
@@ -104,7 +104,7 @@
         </div>
 
         <div class="row" style="margin-left:10px">
-            <div class="col-sm-6" >
+            <div class="col-sm-6">
                 <div class="card mb-3">
                     <div class="card-body text-start" id="jobRequirements">
                         <h5 class="card-title" style="text-align:center">求職條件</h5>
@@ -168,7 +168,7 @@
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                <input type="date" class="form-control inputDate" v-model="date">
+                                <input type="date" class="form-control inputDate" v-model="date" :min="minDate">
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
@@ -197,123 +197,126 @@
     </div>
 </div>
 
-@section Scripts{
-        <!-- Bootstrap core JS-->   
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-        <script>
-            let vueList = {
-                data() {
-                    return {
-                        resumeId : "@Html.DisplayFor(model => model.ResumeId)",
-                        candidateId: "@Html.DisplayFor(model => model.CandidateId)",
-                        resumeList:[],
-                        companyId:3,
-                        openings: [],
-                        openingId:"",
-                        date:"",
-                        time:"",
-                        address:"",
-                        subjectLine:"",
-                        content: "",
-                        baseAddress: "https://localhost:7169",
-                    };
+@section Scripts {
+    <!-- Bootstrap core JS-->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+    <script>
+        let vueList = {
+            data() {
+                return {
+                    resumeId: "@Html.DisplayFor(model => model.ResumeId)",
+                    candidateId: "@Html.DisplayFor(model => model.CandidateId)",
+                    resumeList: [],
+                    companyId: 3,
+                    openings: [],
+                    openingId: "",
+                    date: "",
+                    time: "",
+                    address: "",
+                    subjectLine: "",
+                    content: "",
+                    baseAddress: "https://localhost:7169",
+                    minDate: ''
+                };
+            },
+            methods: {
+                convertTimeOnly(timeString) {
+                    if (!timeString) return null;
+                    const [hours, minutes] = timeString.split(':');
+                    if (!hours || !minutes) return null;
+                    const date = new Date();
+                    date.setHours(hours, minutes);
+                    return date.toTimeString().split(' ')[0];
                 },
-                methods: {
-                    convertTimeOnly(timeString) {
-                        if (!timeString) return null; 
-                        const [hours, minutes] = timeString.split(':');
-                        if (!hours || !minutes) return null; 
-                        const date = new Date();
-                        date.setHours(hours, minutes);
-                        return date.toTimeString().split(' ')[0]; 
-                    },
-                    sendLetter(){
-                        let self = this;
-                        let request = {
-                            ResumeId:self.resumeId,
-                            CandidateId:self.candidateId,
-                            OpeningId:self.openingId,
-                            AppointmentDate: self.date,
-                            AppointmentTime: "",
-                            Status:"面試邀請",
-                            Address:self.address,
-                            SubjectLine:self.subjectLine,
-                            Content: self.content,
-                        };
-                        request.AppointmentTime = self.convertTimeOnly(self.time);
-                        axios.post(`${self.baseAddress}/Company/AddInterview`,request, {
-                            headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            alert(res.data)
-                        }).catch(error => {
-                            console.error(error);
-                        })
-                    },
-                    getResumeList(){
-                        let self = this;
-                        axios.get(`${self.baseAddress}/Company/ResumeDetail`, {
+                sendLetter() {
+                    let self = this;
+                    let request = {
+                        ResumeId: self.resumeId,
+                        CandidateId: self.candidateId,
+                        OpeningId: self.openingId,
+                        AppointmentDate: self.date,
+                        AppointmentTime: "",
+                        Status: "面試邀請",
+                        Address: self.address,
+                        SubjectLine: self.subjectLine,
+                        Content: self.content,
+                    };
+                    request.AppointmentTime = self.convertTimeOnly(self.time);
+                    axios.post(`${self.baseAddress}/Company/AddInterview`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                getResumeList() {
+                    let self = this;
+                    axios.get(`${self.baseAddress}/Company/ResumeDetail`, {
                         params: {
                             resumeID: self.resumeId,
                         },
                         headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            self.resumeList = res.data
-                        }).catch(error => {
-                            console.error(error);
-                        })
-                    },
-                    addFavorite(){
-                        let self = this;
-                        request = {
-                            resumeId: self.resumeId
-                        };
-                        axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
+                    }).then(res => {
+                        self.resumeList = res.data
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                addFavorite() {
+                    let self = this;
+                    request = {
+                        resumeId: self.resumeId
+                    };
+                    axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            alert(res.data);
-                            self.getResumeList();
-                        }).catch(error => {
-                            console.error(error);
-                        })
-                    },                
-                    deleteFavorite() {
-                        let self = this;
-                        let request = {
-                            ResumeId: self.resumeId,
-                        };
-                        axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
-                            headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            alert(res.data)
-                            self.getResumeList();
-                        }).catch(error => {
-                            console.error(error);
-                        })
+                    }).then(res => {
+                        alert(res.data);
+                        self.getResumeList();
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                },
+                deleteFavorite() {
+                    let self = this;
+                    let request = {
+                        ResumeId: self.resumeId,
+                    };
+                    axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        alert(res.data)
+                        self.getResumeList();
+                    }).catch(error => {
+                        console.error(error);
+                    })
                 },
 
-                    getOpenings() {
-                        let self = this;
-                        axios.get(`${self.baseAddress}/Company/GetOpenings/`,{
-                            headers: { 'Content-Type': 'application/json' },
-                        }).then(res => {
-                            self.openings = res.data;
-                        }).catch(error => {
-                            console.error(error);
-                        })
-                    },
-                    selectSex(item) {
-                    return item == true ? "男" : "女";
-                    },
-                },
-                mounted() {
+                getOpenings() {
                     let self = this;
-                    self.getOpenings();
-                    self.getResumeList();
+                    axios.get(`${self.baseAddress}/Company/GetOpenings/`, {
+                        headers: { 'Content-Type': 'application/json' },
+                    }).then(res => {
+                        self.openings = res.data;
+                    }).catch(error => {
+                        console.error(error);
+                    })
                 },
-            };
-            let app3 = Vue.createApp(vueList).mount("#page-top")
-        </script>
+                selectSex(item) {
+                    return item == true ? "男" : "女";
+                },
+            },
+            mounted() {
+                let self = this;
+                self.getOpenings();
+                self.getResumeList();
+                const today = new Date().toISOString().split('T')[0];
+                self.minDate = today;
+            },
+        };
+        let app3 = Vue.createApp(vueList).mount("#page-top")
+    </script>
 }

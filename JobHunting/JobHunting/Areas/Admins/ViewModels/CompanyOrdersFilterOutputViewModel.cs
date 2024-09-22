@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace JobHunting.Areas.Admins.ViewModels
+﻿namespace JobHunting.Areas.Admins.ViewModels
 {
-    public class CompanyOrdersFilterViewModel
+    public class CompanyOrdersFilterOutputViewModel
     {
-        [Key]
         public int OrderId { get; set; }
 
         public int? CompanyId { get; set; }
@@ -19,11 +16,11 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public decimal? Price { get; set; }
 
-        public DateTime PayDate { get; set; }
+        public string PayDate { get; set; }
 
         public int Duration { get; set; }
 
-        public DateTime? Expiration { get; set; }
+        public string Expiration { get; set; }
 
         public string? Intro { get; set; }
 

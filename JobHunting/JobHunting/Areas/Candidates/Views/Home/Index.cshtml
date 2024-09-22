@@ -324,7 +324,6 @@
                 {
                     let _this=this;
                     var form = new FormData();
-                    form.append("CandidateId",1)
                     form.append("ImageFile",document.querySelector("#insertFile").files[0]);
                     axios.post(`${_this.baseAddress}/Candidates/Home/InsertHeadshot`, form,
                     { headers: { 'Content-Type': 'multipart/form-data' } } )
