@@ -52,10 +52,12 @@
                     <div class="text-center">
                         <button id="registerSubmit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill" v-on:click="AddCandidate">註冊</button>
                     </div>
-                <p class="">
-                    <a class="text-start" asp-controller="Home" asp-action="Login">已有會員?登入</a>
-                    <a class="text-end" asp-controller="Home" asp-action="Login">重新發送驗證信件</a>
-                </p>
+                <div class="d-flex justify-content-between" style="">
+                    <div><a class="" asp-controller="Home" asp-action="Login">已有會員?登入</a></div>
+                    <div><a class="" asp-controller="Home" asp-action="ResendVerificationLetter">重新發送驗證信件</a></div>
+                </div>
+                    
+                
 
                 </template>
                 @* 公司端註冊 *@
