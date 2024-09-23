@@ -30,7 +30,6 @@
         public string CompanyName { get; set; }
         public IEnumerable<string>? TitleClassName { get; set; }
         public IEnumerable<string>? TagName { get; set; }
-
-        public bool LikeYN { get; set; }
+        public bool? LikeYN { get; set; }
     }
 }
