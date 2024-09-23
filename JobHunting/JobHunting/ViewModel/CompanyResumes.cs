@@ -28,5 +28,6 @@
         public string Degree { get; set; }
         public object TagObj { get; set; }
         public bool ReleaseYN { get; set; }
+        public bool? LikeYN { get; set; }
     }
 }

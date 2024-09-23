@@ -270,7 +270,7 @@
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                    <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate">
+                                    <input type="date" class="form-control inputDate" v-model="SendAdmission.AdmissionDate" :min="minDate">
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
@@ -315,7 +315,7 @@
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                    <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate">
+                                    <input type="date" class="form-control inputDate" v-model="Sendinterview.Interviewdate" :min="minDate">
                                 </div>
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
@@ -421,6 +421,7 @@
                         AdmissionsendReplyFirstYN: false,
                     },
                     selectedItem: {}, // 用儲存選中的資料
+                    minDate: ''
                 };
             },
             computed: {
@@ -715,6 +716,8 @@
             mounted() {
                 this.receiveResumeData();
                 this.TitleandTag();
+                const today = new Date().toISOString().split('T')[0];
+                this.minDate = today;
             }
         };
         let app = Vue.createApp(VueApp).mount("#receiveResume");

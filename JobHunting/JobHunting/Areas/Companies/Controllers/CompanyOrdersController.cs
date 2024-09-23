@@ -74,8 +74,8 @@ namespace JobHunting.Areas.Companies.Controllers
                     OrderId = co.OrderId,
                     Title = co.Title,
                     Price = co.Price,
-                    OrderDate = co.OrderDate,
-                    PayDate = co.Status ? co.PayDate : null,
+                    OrderDate = co.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
+                    PayDate = co.Status ? co.PayDate.ToString("yyyy年MM月dd日 HH點mm分") : null,
                     Duration = co.Duration,
                     Status = co.Status,
                 })
@@ -84,7 +84,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
         //POST: Companies/CompanyOrders/GetDeadline
         [HttpPost]
-        public async Task<DateTime?> GetDeadline()
+        public async Task<string?> GetDeadline()
         {
             // 從 claims 中取得 CompanyId
             var companyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -94,8 +94,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 return null; // 處理未授權訪問的情況
             }
 
-            var companyDeadline = _context.Companies.AsNoTracking().Where(c => c.CompanyId.ToString() == companyId).Select(c => c.Deadline).SingleOrDefault();
-            return companyDeadline;
+            var companyDeadline = await _context.Companies.AsNoTracking().Where(c => c.CompanyId.ToString() == companyId).Select(c => c.Deadline).FirstOrDefaultAsync();
+            return companyDeadline.HasValue ? companyDeadline.Value.ToString("yyyy年MM月dd日 HH點mm分") : null;
         }
 
         //POST: Companies/CompanyOrders/CancelOrder
