@@ -31,6 +31,8 @@ public partial class CompanyOrder
 
     public bool Status { get; set; }
 
+    public string StatusType { get; set; }
+
     public virtual Company Company { get; set; }
 
     public virtual PricingPlan Plan { get; set; }

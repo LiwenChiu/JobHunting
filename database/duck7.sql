@@ -248,6 +248,7 @@ CREATE TABLE CompanyOrders
 	PayDate datetime not null,
 	Duration int not null,
 	[Status] bit not null default(0),
+	StatusType nvarchar(20),
 )
 GO
 CREATE TABLE Notifications

@@ -65,7 +65,7 @@
                     <td>{{order.title}}</td>
                     <td>{{order.payDate}}</td>
                     <td>{{order.expiration}}</td>
-                    <td><button class="btn btn-light btn-sm">{{orderStatus(order.status)}}</button></td>
+                    @* <td><button class="btn btn-light btn-sm">{{orderStatus(order.statusType)}}</button></td> *@
                 </tr>
             </tbody>
         </table>
@@ -115,7 +115,7 @@
                     this.pageStartSafe = this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
                     request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                    request.OrderId = request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
+                    request.OrderId = request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = this.filterInput;
                     request.PageDraw = this.pageDraw;
                     request.PageLength = this.pageLengthSafe,
                     request.PageStart = this.pageStartSafe;

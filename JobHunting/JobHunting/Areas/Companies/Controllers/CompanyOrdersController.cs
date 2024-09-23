@@ -75,7 +75,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Title = co.Title,
                     Price = co.Price,
                     OrderDate = co.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
-                    PayDate = co.Status ? co.PayDate.ToString("yyyy年MM月dd日 HH點mm分") : "無",
+                    PayDate = co.Status ? co.PayDate.ToString("yyyy年MM月dd日") : "無",
                     Duration = co.Duration,
                     Status = co.Status,
                 })
