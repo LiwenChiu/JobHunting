@@ -2,7 +2,7 @@
 {
     public class CompanyOrdersFilterOutputViewModel
     {
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public int? CompanyId { get; set; }
 
