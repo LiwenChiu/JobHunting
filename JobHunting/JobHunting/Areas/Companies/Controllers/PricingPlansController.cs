@@ -14,6 +14,7 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Web;
 using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -36,22 +37,6 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return Json(new { message = "未授權訪問" });
             }
-            int companyId = int.Parse(CompanyId);
-            string companyIdZeroStr = companyId.ToString("X7");
-            var companyOrderCount = await _context.Companies.AsNoTracking().Where(c => c.CompanyId == companyId).Select(c => c.OrderCount).FirstOrDefaultAsync();
-            string companyOrderCountStr = companyOrderCount.ToString("X7");
-            var baseAddress = "https://localhost:7169";
-
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
-            // 產生測試資訊
-            ViewData["MerchantID"] = Config.GetSection("MerchantID").Value;
-            ViewData["MerchantOrderNo"] = $"{companyIdZeroStr}" + $"{companyOrderCountStr}" + DateTime.Now.ToString("yyyyMMdd");  //訂單編號
-            ViewData["ExpireDate"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd"); //繳費有效期限
-            ViewData["ReturnURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}Admins/PricingPlans/CallbackReturn"; //支付完成返回商店網址
-            ViewData["CustomerURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}Admins/PricingPlans/CallbackCustomer"; //商店取號網址
-            ViewData["NotifyURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}Admins/PricingPlans/CallbackNotify"; //支付通知網址
-            ViewData["ClientBackURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}"; //返回商店網址
-
 
             return View();
         }
@@ -86,72 +71,149 @@ namespace JobHunting.Areas.Companies.Controllers
             });
         }
 
-        // POST: Companies/PricingPlans/PayAgree
+        /// <summary>
+        /// 傳送訂單至藍新金流
+        /// </summary>
+        /// <param name="inModel"></param>
+        /// <returns></returns>
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> PayAgree([FromBody][Bind("PlanId")] PayAgreementViewModel pavm)
+        public async Task<IActionResult> SendToNewebPay([FromBody][Bind("PlanId")] SendToNewebPayInViewModel inModel)
         {
-            string[] returnStatus = new string[2];
-
-            if (!ModelState.IsValid)
-            {
-                returnStatus = ["輸入資料失敗", "失敗"];
-                return returnStatus;
-            }
+            var baseAddress = "https://localhost:7169";
 
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CompanyId))
             {
-                returnStatus = ["未授權訪問", "失敗"];
-                return returnStatus;
+                return Json(new { message = "未授權訪問" });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { message = "失敗" });
             }
 
             int companyId = int.Parse(CompanyId);
-            string companyIdZeroStr = companyId.ToString("X7");            
 
             var company = await _context.Companies.FindAsync(companyId);
-
             if (company == null)
             {
-                returnStatus = ["公司資料不存在", "失敗"];
-                return returnStatus;
+                return Json(new { message = "失敗" });
             }
 
-            string companyOrderCountStr = company.OrderCount.ToString("X7");
+            int orderNumber = company.OrderCount + 1;
 
-            var pricingPlan = await _context.PricingPlans.Where(pp => pp.PlanId == pavm.PlanId)
-                .Select(pp => new PayAgreementPricingPlanViewModel
-                {
-                    PlanId = pp.PlanId,
-                    Title = pp.Title,
-                    Price = pp.Price,
-                    Discount = pp.Discount,
-                    Duration = pp.Duration,
-                }).SingleOrDefaultAsync();
+            var nowTime = DateTime.Now;
+            var ExpirationTime = nowTime.AddDays(3);
+            string ExpirationTimeStr = ExpirationTime.ToString("yyyyMMdd");
 
-            if (pricingPlan == null)
+            string companyIdZeroStr = companyId.ToString("X7");
+            string companyOrderCountStr = orderNumber.ToString("X7");
+
+            var MerchantOrderNo = $"{companyIdZeroStr}" + $"{companyOrderCountStr}" + nowTime.ToString("yyyyMMdd");
+
+            var pricingPlan = await _context.PricingPlans.FindAsync(inModel.PlanId);
+            if (pricingPlan == null || !pricingPlan.Status)
             {
-                returnStatus = ["方案資料不存在", "失敗"];
-                return returnStatus;
+                return Json(new { message = "方案不存在" });
             }
 
-            int orderNumber = company.OrderCount;
-            orderNumber++;
+            var Amt = (pricingPlan.Price) * (pricingPlan.Discount);
+            string? AmtStr = Decimal.ToInt32((decimal)Amt).ToString();
+
+            SendToNewebPayOutViewModel outModel = new SendToNewebPayOutViewModel();
+
+            // 藍新金流線上付款
+
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+
+            var MerchantID = Config.GetSection("MerchantID").Value;
+
+            string ReturnURL = $"{baseAddress}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string CustomerURL = $"{baseAddress}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
+            string NotifyURL = $"{baseAddress}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}{Request.Path}Companies/PricingPlans"; //返回商店網址
+
+            //交易欄位
+            List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
+            // 商店代號
+            TradeInfo.Add(new KeyValuePair<string, string>("MerchantID", MerchantID));
+            // 回傳格式
+            TradeInfo.Add(new KeyValuePair<string, string>("RespondType", "String"));
+            // TimeStamp
+            TradeInfo.Add(new KeyValuePair<string, string>("TimeStamp", DateTimeOffset.Now.ToOffset(new TimeSpan(8, 0, 0)).ToUnixTimeSeconds().ToString()));
+            // 串接程式版本
+            TradeInfo.Add(new KeyValuePair<string, string>("Version", "2.0"));
+            // 商店訂單編號
+            TradeInfo.Add(new KeyValuePair<string, string>("MerchantOrderNo", MerchantOrderNo));
+            // 訂單金額
+            TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
+            // 商品資訊
+            TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
+            // 繳費有效期限(適用於非即時交易)
+            TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
+            // 支付完成返回商店網址
+            TradeInfo.Add(new KeyValuePair<string, string>("ReturnURL", ReturnURL));
+            // 支付通知網址
+            TradeInfo.Add(new KeyValuePair<string, string>("NotifyURL", NotifyURL));
+            // 商店取號網址
+            TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", CustomerURL));
+            // 支付取消返回商店網址
+            TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", ClientBackURL));
+            // 付款人電子信箱
+            TradeInfo.Add(new KeyValuePair<string, string>("Email", company.ContactEmail));
+            // 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
+            TradeInfo.Add(new KeyValuePair<string, string>("EmailModify", "1"));
+            //信用卡 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("CREDIT", "1"));
+            //Apple Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("APPLEPAY", "1"));
+            //Google Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("ANDROIDPAY", "1"));
+            //LINE Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
+            //WEBATM 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("WEBATM", "1"));
+            //ATM 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("VACC", "1"));
+            //超商代碼 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("CVS", "1"));
+            //超商條碼繳費 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("BARCODE", "1"));
+            //玉山Wallet 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("ESUNWALLET", "1"));
+            //台灣Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("TAIWANPAY", "1"));
+
+            string TradeInfoParam = string.Join("&", TradeInfo.Select(x => $"{x.Key}={x.Value}"));
+
+            // API 傳送欄位
+            // 商店代號
+            outModel.MerchantID = MerchantID;
+            // 串接程式版本
+            outModel.Version = "2.0";
+            //交易資料 AES 加解密
+            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+            string TradeInfoEncrypt = EncryptAESHex(TradeInfoParam, HashKey, HashIV);
+            outModel.TradeInfo = TradeInfoEncrypt;
+            //交易資料 SHA256 加密
+            outModel.TradeSha = EncryptSHA256($"HashKey={HashKey}&{TradeInfoEncrypt}&HashIV={HashIV}");
 
             CompanyOrder companyOrder = new CompanyOrder
             {
-                OrderId = $"{companyIdZeroStr}" + $"{companyOrderCountStr}" + DateTime.Now.ToString("yyyyMMdd"),
+                OrderId = MerchantOrderNo,
                 CompanyId = company.CompanyId,
                 CompanyName = company.CompanyName,
                 GUINumber = company.GUINumber,
                 PlanId = pricingPlan.PlanId,
                 OrderNumber = orderNumber,
                 Title = pricingPlan.Title,
-                Price = (pricingPlan.Price) * (pricingPlan.Discount),
-                OrderDate = DateTime.Now,
-                PayDate = DateTime.Now.AddDays(3), //在Status == false 時，PayDate當作付款期限，而當付款完成後，Status == true，PayDate再變成付款完成時間
+                Price = Amt,
+                OrderDate = nowTime,
                 Duration = pricingPlan.Duration,
                 Status = false,
+                StatusType = "尚未付款",
             };
 
             company.OrderCount++;
@@ -166,84 +228,8 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             catch (DbUpdateException ex)
             {
-                returnStatus = ["下單失敗", "失敗"];
-                return returnStatus;
+                return Json(new { message = "失敗" });
             }
-
-            returnStatus = ["下單成功，請於3天內付款", "成功"];
-            return returnStatus;
-
-        }
-
-        /// <summary>
-        /// 傳送訂單至藍新金流
-        /// </summary>
-        /// <param name="inModel"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult SendToNewebPay(SendToNewebPayInViewModel inModel)
-        {
-            SendToNewebPayOutViewModel outModel = new SendToNewebPayOutViewModel();
-
-            // 藍新金流線上付款
-
-            //交易欄位
-            List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
-            // 商店代號
-            TradeInfo.Add(new KeyValuePair<string, string>("MerchantID", inModel.MerchantID));
-            // 回傳格式
-            TradeInfo.Add(new KeyValuePair<string, string>("RespondType", "String"));
-            // TimeStamp
-            TradeInfo.Add(new KeyValuePair<string, string>("TimeStamp", DateTimeOffset.Now.ToOffset(new TimeSpan(8, 0, 0)).ToUnixTimeSeconds().ToString()));
-            // 串接程式版本
-            TradeInfo.Add(new KeyValuePair<string, string>("Version", "2.0"));
-            // 商店訂單編號
-            TradeInfo.Add(new KeyValuePair<string, string>("MerchantOrderNo", inModel.MerchantOrderNo));
-            // 訂單金額
-            TradeInfo.Add(new KeyValuePair<string, string>("Amt", inModel.Amt));
-            // 商品資訊
-            TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", inModel.ItemDesc));
-            // 繳費有效期限(適用於非即時交易)
-            TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", inModel.ExpireDate));
-            // 支付完成返回商店網址
-            TradeInfo.Add(new KeyValuePair<string, string>("ReturnURL", inModel.ReturnURL));
-            // 支付通知網址
-            TradeInfo.Add(new KeyValuePair<string, string>("NotifyURL", inModel.NotifyURL));
-            // 商店取號網址
-            TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", inModel.CustomerURL));
-            // 支付取消返回商店網址
-            TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", inModel.ClientBackURL));
-            // 付款人電子信箱
-            TradeInfo.Add(new KeyValuePair<string, string>("Email", inModel.Email));
-            // 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
-            TradeInfo.Add(new KeyValuePair<string, string>("EmailModify", "0"));
-
-            //信用卡 付款
-            if (inModel.ChannelID == "CREDIT")
-            {
-                TradeInfo.Add(new KeyValuePair<string, string>("CREDIT", "1"));
-            }
-            //ATM 付款
-            if (inModel.ChannelID == "VACC")
-            {
-                TradeInfo.Add(new KeyValuePair<string, string>("VACC", "1"));
-            }
-            string TradeInfoParam = string.Join("&", TradeInfo.Select(x => $"{x.Key}={x.Value}"));
-
-            // API 傳送欄位
-            // 商店代號
-            outModel.MerchantID = inModel.MerchantID;
-            // 串接程式版本
-            outModel.Version = "2.0";
-            //交易資料 AES 加解密
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
-            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
-            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-            string TradeInfoEncrypt = EncryptAESHex(TradeInfoParam, HashKey, HashIV);
-            outModel.TradeInfo = TradeInfoEncrypt;
-            //交易資料 SHA256 加密
-            outModel.TradeSha = EncryptSHA256($"HashKey={HashKey}&{TradeInfoEncrypt}&HashIV={HashIV}");
 
             return Json(outModel);
         }
@@ -467,30 +453,74 @@ namespace JobHunting.Areas.Companies.Controllers
         /// 支付通知網址
         /// </summary>
         /// <returns></returns>
-        public IActionResult CallbackNotify()
+        public async Task<IActionResult> CallbackNotify()
         {
-            // 接收參數
-            StringBuilder receive = new StringBuilder();
-            foreach (var item in Request.Form)
-            {
-                receive.AppendLine(item.Key + "=" + item.Value + "<br>");
-            }
-            ViewData["ReceiveObj"] = receive.ToString();
+            string payReceiveStatus = "";
+            string? MerchantOrderNo = "";
+            DateTime PayTime = new DateTime();
 
             // 解密訊息
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
             string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-            string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
+            string TradeInfoDecrypt = DecryptAESHex(Request.Form["Result"], HashKey, HashIV);
             NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
-            receive.Length = 0;
             foreach (String key in decryptTradeCollection.AllKeys)
             {
-                receive.AppendLine(key + "=" + decryptTradeCollection[key] + "<br>");
+                if (key == "TradeStatus")
+                {
+                    payReceiveStatus = decryptTradeCollection[key];
+                }
+                if (key == "MerchantOrderNo")
+                {
+                    MerchantOrderNo = decryptTradeCollection[key];
+                }
+                if (payReceiveStatus == "1" && key == "PayTime")
+                {
+                    PayTime = DateTime.Parse(decryptTradeCollection[key]);
+                }
             }
-            ViewData["TradeInfo"] = receive.ToString();
 
-            return View();
+            var companyOrder = await _context.CompanyOrders.FindAsync(MerchantOrderNo);
+            if (companyOrder == null)
+            {
+                return NotFound();
+            }
+
+            companyOrder.StatusType = payReceiveStatus switch
+            {
+                string type when type == "0" => "已過期",
+                string type when type == "1" => "付款成功",
+                string type when type == "2" => "付款失敗",
+                string type when type == "3" => "取消付款",
+                string type when type == "6" => "退款",
+                _ => "錯誤",
+            };
+
+            companyOrder.PayDate = PayTime;
+            companyOrder.Status = true;
+
+            if(payReceiveStatus == "1")
+            {
+                var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+                if (company == null) {  return NotFound(); }
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
+                deadline.AddDays(companyOrder.Duration);
+                company.Deadline = deadline;
+            }
+
+            _context.Entry(companyOrder).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }
