@@ -882,28 +882,30 @@ namespace JobHunting.Controllers
                 {
                     if (opening.SearchText.IsNullOrEmpty())
                     {
-                        var temp = sourceUnlogin.Select(c => new
+                        if (!opening.AreaName.IsNullOrEmpty())
                         {
-                            OpeningId = c.OpeningId,
-                            CompanyId = c.CompanyId,
-                            Title = c.Title,
-                            Address = c.Address,
-                            Description = c.Description,
-                            Degree = c.Degree,
-                            Benefits = c.Benefits,
-                            SalaryMax = c.SalaryMax,
-                            SalaryMin = c.SalaryMin,
-                            Time = c.Time,
-                            ContactEmail = c.ContactEmail,
-                            ContactName = c.ContactName,
-                            ContactPhone = c.ContactPhone,
-                            CompanyName = c.Company.CompanyName,
-                            ClassNumber = c.Company.CompanyClassId,
-                            LikeYN = false,
-                        }).Where(b =>
-                             b.Address.Contains(opening.AreaName) ||
-                             (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
-                             b.ClassNumber == opening.ClassNumber
+                            var temp = sourceUnlogin.Select(c => new
+                            {
+                                OpeningId = c.OpeningId,
+                                CompanyId = c.CompanyId,
+                                Title = c.Title,
+                                Address = c.Address,
+                                Description = c.Description,
+                                Degree = c.Degree,
+                                Benefits = c.Benefits,
+                                SalaryMax = c.SalaryMax,
+                                SalaryMin = c.SalaryMin,
+                                Time = c.Time,
+                                ContactEmail = c.ContactEmail,
+                                ContactName = c.ContactName,
+                                ContactPhone = c.ContactPhone,
+                                CompanyName = c.Company.CompanyName,
+                                ClassNumber = c.Company.CompanyClassId,
+                                LikeYN = false,
+                            }).Where(b =>
+                                 b.Address.Contains(opening.AreaName) ||
+                                 (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                                 b.ClassNumber == opening.ClassNumber
                          )
                         .Select(c => new OpeningSelectViewModel
                         {
@@ -923,12 +925,63 @@ namespace JobHunting.Controllers
                             CompanyName = c.CompanyName,
                             LikeYN = null,
                         });
-                        var openingSelectOutput = new OpeningSelectOutputViewModel
+                            var openingSelectOutput = new OpeningSelectOutputViewModel
+                            {
+                                totalDataCount = temp.Count(),
+                                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                            };
+                            return openingSelectOutput;
+                        }
+                        else
                         {
-                            totalDataCount = temp.Count(),
-                            OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
-                        };
-                        return openingSelectOutput;
+                            var temp = sourceUnlogin.Select(c => new
+                            {
+                                OpeningId = c.OpeningId,
+                                CompanyId = c.CompanyId,
+                                Title = c.Title,
+                                Address = c.Address,
+                                Description = c.Description,
+                                Degree = c.Degree,
+                                Benefits = c.Benefits,
+                                SalaryMax = c.SalaryMax,
+                                SalaryMin = c.SalaryMin,
+                                Time = c.Time,
+                                ContactEmail = c.ContactEmail,
+                                ContactName = c.ContactName,
+                                ContactPhone = c.ContactPhone,
+                                CompanyName = c.Company.CompanyName,
+                                ClassNumber = c.Company.CompanyClassId,
+                                LikeYN = false,
+                            }).Where(b =>
+                                 (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                                 b.ClassNumber == opening.ClassNumber
+                         )
+                        .Select(c => new OpeningSelectViewModel
+                        {
+                            OpeningId = c.OpeningId,
+                            CompanyId = c.CompanyId,
+                            Title = c.Title,
+                            Address = c.Address,
+                            Description = c.Description,
+                            Degree = c.Degree,
+                            Benefits = c.Benefits,
+                            SalaryMax = c.SalaryMax,
+                            SalaryMin = c.SalaryMin,
+                            Time = c.Time,
+                            ContactEmail = c.ContactEmail,
+                            ContactName = c.ContactName,
+                            ContactPhone = c.ContactPhone,
+                            CompanyName = c.CompanyName,
+                            LikeYN = null,
+                        });
+                            var openingSelectOutput = new OpeningSelectOutputViewModel
+                            {
+                                totalDataCount = temp.Count(),
+                                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                            };
+                            return openingSelectOutput;
+                        }
+                        
                     }
                     else if (!opening.SearchText.IsNullOrEmpty() && opening.AreaName.IsNullOrEmpty())
                     {
@@ -1081,53 +1134,108 @@ namespace JobHunting.Controllers
             {
                 if (opening.SearchText.IsNullOrEmpty())
                 {
-                    var temp = source.Select(c => new
+                    if (!opening.AreaName.IsNullOrEmpty())
                     {
-                        OpeningId = c.OpeningId,
-                        CompanyId = c.CompanyId,
-                        Title = c.Title,
-                        Address = c.Address,
-                        Description = c.Description,
-                        Degree = c.Degree,
-                        Benefits = c.Benefits,
-                        SalaryMax = c.SalaryMax,
-                        SalaryMin = c.SalaryMin,
-                        Time = c.Time,
-                        ContactEmail = c.ContactEmail,
-                        ContactName = c.ContactName,
-                        ContactPhone = c.ContactPhone,
-                        CompanyName = c.Company.CompanyName,
-                        ClassNumber = c.Company.CompanyClassId,
-                        LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
-                    }).Where(b =>
-                         b.Address.Contains(opening.AreaName) ||
-                         (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
-                         b.ClassNumber == opening.ClassNumber
-                 )
-                .Select(c => new OpeningSelectViewModel
-                {
-                    OpeningId = c.OpeningId,
-                    CompanyId = c.CompanyId,
-                    Title = c.Title,
-                    Address = c.Address,
-                    Description = c.Description,
-                    Degree = c.Degree,
-                    Benefits = c.Benefits,
-                    SalaryMax = c.SalaryMax,
-                    SalaryMin = c.SalaryMin,
-                    Time = c.Time,
-                    ContactEmail = c.ContactEmail,
-                    ContactName = c.ContactName,
-                    ContactPhone = c.ContactPhone,
-                    CompanyName = c.CompanyName,
-                    LikeYN = c.LikeYN
-                });
-                    var openingSelectOutput = new OpeningSelectOutputViewModel
+
+                        {
+                            var temp = source.Select(c => new
+                            {
+                                OpeningId = c.OpeningId,
+                                CompanyId = c.CompanyId,
+                                Title = c.Title,
+                                Address = c.Address,
+                                Description = c.Description,
+                                Degree = c.Degree,
+                                Benefits = c.Benefits,
+                                SalaryMax = c.SalaryMax,
+                                SalaryMin = c.SalaryMin,
+                                Time = c.Time,
+                                ContactEmail = c.ContactEmail,
+                                ContactName = c.ContactName,
+                                ContactPhone = c.ContactPhone,
+                                CompanyName = c.Company.CompanyName,
+                                ClassNumber = c.Company.CompanyClassId,
+                                LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+                            }).Where(b =>
+                                 b.Address.Contains(opening.AreaName) ||
+                                 (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                                 b.ClassNumber == opening.ClassNumber
+                             )
+                            .Select(c => new OpeningSelectViewModel
+                            {
+                                OpeningId = c.OpeningId,
+                                CompanyId = c.CompanyId,
+                                Title = c.Title,
+                                Address = c.Address,
+                                Description = c.Description,
+                                Degree = c.Degree,
+                                Benefits = c.Benefits,
+                                SalaryMax = c.SalaryMax,
+                                SalaryMin = c.SalaryMin,
+                                Time = c.Time,
+                                ContactEmail = c.ContactEmail,
+                                ContactName = c.ContactName,
+                                ContactPhone = c.ContactPhone,
+                                CompanyName = c.CompanyName,
+                                LikeYN = c.LikeYN
+                            });
+                            var openingSelectOutput = new OpeningSelectOutputViewModel
+                            {
+                                totalDataCount = temp.Count(),
+                                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                            };
+                            return openingSelectOutput;
+                        }
+                    }
+                    else
                     {
-                        totalDataCount = temp.Count(),
-                        OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
-                    };
-                    return openingSelectOutput;
+                        var temp = source.Select(c => new
+                        {
+                            OpeningId = c.OpeningId,
+                            CompanyId = c.CompanyId,
+                            Title = c.Title,
+                            Address = c.Address,
+                            Description = c.Description,
+                            Degree = c.Degree,
+                            Benefits = c.Benefits,
+                            SalaryMax = c.SalaryMax,
+                            SalaryMin = c.SalaryMin,
+                            Time = c.Time,
+                            ContactEmail = c.ContactEmail,
+                            ContactName = c.ContactName,
+                            ContactPhone = c.ContactPhone,
+                            CompanyName = c.Company.CompanyName,
+                            ClassNumber = c.Company.CompanyClassId,
+                            LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+                        }).Where(b =>
+                             (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                             b.ClassNumber == opening.ClassNumber
+                         )
+                        .Select(c => new OpeningSelectViewModel
+                        {
+                            OpeningId = c.OpeningId,
+                            CompanyId = c.CompanyId,
+                            Title = c.Title,
+                            Address = c.Address,
+                            Description = c.Description,
+                            Degree = c.Degree,
+                            Benefits = c.Benefits,
+                            SalaryMax = c.SalaryMax,
+                            SalaryMin = c.SalaryMin,
+                            Time = c.Time,
+                            ContactEmail = c.ContactEmail,
+                            ContactName = c.ContactName,
+                            ContactPhone = c.ContactPhone,
+                            CompanyName = c.CompanyName,
+                            LikeYN = c.LikeYN
+                        });
+                        var openingSelectOutput = new OpeningSelectOutputViewModel
+                        {
+                            totalDataCount = temp.Count(),
+                            OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                        };
+                        return openingSelectOutput;
+                    }
                 }
                 else if (!opening.SearchText.IsNullOrEmpty() && opening.AreaName.IsNullOrEmpty())
                 {
@@ -1240,7 +1348,6 @@ namespace JobHunting.Controllers
                     };
                     return openingSelectOutput;
                 }
-
             }
             else
             {
