@@ -3,6 +3,7 @@ using JobHunting.Areas.Candidates.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
+using System.Security.Claims;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -18,6 +19,7 @@ namespace JobHunting.Areas.Admins.Controllers
         [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
         public IActionResult Index()
         {
+            Console.WriteLine(User.FindFirst(ClaimTypes.Role)?.Value);
             return View();
         }
         [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]

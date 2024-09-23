@@ -1,6 +1,7 @@
 ﻿using JobHunting.Areas.Companies.ViewModel;
 using JobHunting.Models;
 using JobHunting.ViewModel;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,12 +26,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-
-        //[Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
-        [Authorize(Roles = "company")]
+        [Authorize(AuthenticationSchemes = $"{CookieAuthenticationDefaults.AuthenticationScheme},AdminScheme", Roles = "company,admin")]
         public async Task<IActionResult> CompanyIndex()
         {
-            return View();
+                return View();
         }
         public async Task<IActionResult> ResumeDetail(int? resumeID)
         {

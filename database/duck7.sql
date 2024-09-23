@@ -38,6 +38,7 @@ CREATE TABLE Companies
 	[Status] bit not null default(0),
 	[Date] datetime not null,
 	Deadline datetime,
+	OrderCount int not null default(0),
 )
 GO
 CREATE TABLE TitleCategories
@@ -230,13 +231,14 @@ CREATE TABLE PricingPlans
 GO
 CREATE TABLE CompanyOrders
 (
-	OrderId int primary key identity,
+	OrderId nchar(22) primary key,
 	CompanyId int
 		references Companies(CompanyId)
 		on delete set null,
 	PlanId int
 		references PricingPlans(PlanId)
 		on delete set null,
+	OrderNumber int not null,
 	CompanyName nvarchar(60) not null,
 	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
