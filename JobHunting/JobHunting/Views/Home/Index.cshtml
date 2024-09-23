@@ -63,16 +63,18 @@
             </div>
         </div>
     </div>
-
-    <div class="row" style="width:95%">
+    <div class="container text-center">
+    <div class="row " >
        <div class="col-sm-2 row">
             <div class="col-sm-6 ms-auto">
                 <label>第</label>
-                <input style="width:3vh;" v-model.number.trim="currentPage" />
+                <select v-model="currentPageSafe" v-on:change="turnPage(currentPageSafe)">
+                    <option v-for="page in totalPage" :value="page">{{page}}</option>
+                </select>
                 <label>頁</label>
             </div>
        </div>
-        <div class="col-sm-4">
+        <div class="col-sm-8">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" v-on:click="turnPagePrevious()">
@@ -93,11 +95,12 @@
         </div>
         <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
-                <label>每頁</label>
+                <label>一頁</label>
                 <input style="width:3vh;" v-model.number.trim="perpage" />
-                <label>筆職缺</label>
+                <label>筆</label>
             </div>
         </div>
+    </div>
     </div>
 
     @* 履歷清單 *@
@@ -323,7 +326,7 @@
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
-                    currentPageSafe: null,
+                    currentPageSafe: "",
                     totalDataCount: null,
                     totalPage: null,
                     openings: [],
@@ -360,7 +363,7 @@
                         this.zipCode = "";
                         this.salary = null;
                         this.classNumber = "";
-                    this.filterOpenings();
+                        this.filterOpenings();
                 },
                 turnPage: function (page) {
                     this.currentPage = page;
@@ -378,52 +381,13 @@
                         this.filterOpenings();
                     }
                 },
-                openingsList() {
-                    let self = this;
-                    this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
-                    this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
-                    let params = new URLSearchParams();
-                    params.append("page", this.currentPageSafe);
-                    params.append("count", this.perpageSafe);
-                    var request = {
-                        params: params,
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    };
-                    axios.get(`${self.baseAddress}/Home/OpeningsList`,request)
-                    .then(res => {
-                            self.openings = res.data.openingsIndexOutput;
-                            self.totalDataCount = res.data.totalDataCount;
-                            self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
-                    }).catch(error => {
-                        console.error(error);
-                    })
-                        .finally(() => {
-                            if (this.currentPage <= 1) {
-                                this.isturnPagePreviousDisabled = true;
-                            }
-                            else {
-                                this.isturnPagePreviousDisabled = false;
-                            }
-
-                            if (this.currentPage >= this.totalPage) {
-                                this.currentPage = this.totalPage;
-                                this.isturnPageNextDisabled = true;
-                            }
-                            else {
-                                this.isturnPageNextDisabled = false;
-                            }
-                        });
-                },
                 filterOpenings(){
                     let self = this;
                     this.currentPageSafe = this.currentPage == null || this.currentPage == "" ? 1 : this.currentPage;
                     this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
-                    let params = new URLSearchParams();
-                    params.append("page", this.currentPageSafe);
-                    params.append("count", this.perpageSafe);
                     var request = {
+                        page: self.currentPageSafe,
+                        count: self.perpageSafe,
                         searchText: self.filter,
                         area: self.city,
                         zipCode: self.zipCode,
@@ -431,23 +395,23 @@
                         classNumber: self.classNumber,
                     };
                         axios.post(`${self.baseAddress}/Home/SelectOpeningsList`, request, {
-                            params: params,
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.openings = res.data.openingsIndexOutput;
                             self.totalDataCount = res.data.totalDataCount;
                             self.totalPage = Number.isInteger((res.data.totalDataCount) / (self.perpageSafe)) ? parseInt((res.data.totalDataCount) / (self.perpageSafe)) : parseInt((res.data.totalDataCount) / (self.perpageSafe)) + 1;
+                            self.currentPage = 1;
                         }).catch(err => JSON.stringify(err))
                           .finally(() => {
-                              if (this.currentPage <= 1) {
+                              if (this.currentPageSafe <= 1) {
                                   this.isturnPagePreviousDisabled = true;
                               }
                               else {
                                   this.isturnPagePreviousDisabled = false;
                               }
 
-                              if (this.currentPage >= this.totalPage) {
-                                  this.currentPage = this.totalPage;
+                              if (this.currentPageSafe >= this.totalPage) {
+                                  this.currentPageSafe = this.totalPage;
                                   this.isturnPageNextDisabled = true;
                               }
                               else {
@@ -602,13 +566,7 @@
                     if(this.currentPage > this.totalPage){
                         this.currentPage = this.totalPage;
                     }
-                    // this.filterOpenings();
-                },
-                currentPage:function(){
-                    if (this.perpage == null || this.perpage == "") {
-                        this.perpage = 5;
-                    }
-                    // this.filterOpenings();
+                    this.filterOpenings();
                 },
             },
             mounted() {
