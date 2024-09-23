@@ -245,10 +245,10 @@ CREATE TABLE CompanyOrders
 	Price money
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
-	PayDate datetime not null,
+	PayDate datetime,
 	Duration int not null,
 	[Status] bit not null default(0),
-	StatusType nvarchar(20),
+	StatusType nvarchar(20) not null,
 )
 GO
 CREATE TABLE Notifications

@@ -58,16 +58,18 @@ namespace JobHunting.Areas.Companies.Controllers
                 PayDate = co.PayDate,
                 Duration = co.Duration,
                 Status = co.Status,
+                StatusType = co.StatusType,
             });
 
             // Apply numeric filters dynamically
             if (int.TryParse(cofvm.Filter, out int filterNumber) || !string.IsNullOrEmpty(cofvm.Filter))
             {
-                query = query.Where(co => co.Title.Contains(cofvm.Filter) || co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()));
+                query = query.Where(co => co.Title.Contains(cofvm.Filter) || co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()) || co.StatusType.Contains(cofvm.Filter));
             }
 
             // Final projection and ordering
             var orders = query
+                .OrderBy(co => co.Status)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -75,12 +77,12 @@ namespace JobHunting.Areas.Companies.Controllers
                     Title = co.Title,
                     Price = co.Price,
                     OrderDate = co.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
-                    PayDate = co.Status ? co.PayDate.ToString("yyyy年MM月dd日") : "無",
+                    PayDate = co.Status ? co.PayDate.Value.ToString("yyyy年MM月dd日") : "無",
                     Duration = co.Duration,
                     Status = co.Status,
+                    StatusType = co.StatusType,
                 })
-                .OrderBy(co => co.Status)
-                .ThenByDescending(co => co.OrderNumber);
+                .OrderByDescending(co => co.OrderNumber);
 
             return orders;
         }

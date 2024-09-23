@@ -19,14 +19,14 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public decimal? Price { get; set; }
 
-        public DateTime PayDate { get; set; }
+        public DateTime? PayDate { get; set; }
 
         public int Duration { get; set; }
 
-        public DateTime? Expiration { get; set; }
-
         public string? Intro { get; set; }
 
-        public string StatusType { get; set; }
+        public bool Status { get; set; }
+
+        public string? StatusType { get; set; }
     }
 }

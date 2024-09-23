@@ -37,7 +37,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return Json(new { message = "未授權訪問" });
             }
-            
+
             return View();
         }
 
@@ -80,6 +80,8 @@ namespace JobHunting.Areas.Companies.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SendToNewebPay([FromBody][Bind("PlanId")] SendToNewebPayInViewModel inModel)
         {
+            var baseAddress = "https://localhost:7169";
+
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CompanyId))
             {
@@ -127,9 +129,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            var baseAddress = "https://localhost:7169";
-
-            string ReturnURL= $"{baseAddress}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string ReturnURL = $"{baseAddress}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
             string CustomerURL = $"{baseAddress}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
             string NotifyURL = $"{baseAddress}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
             string ClientBackURL = $"{Request.Scheme}://{Request.Host}{Request.Path}Companies/PricingPlans"; //返回商店網址
@@ -211,9 +211,9 @@ namespace JobHunting.Areas.Companies.Controllers
                 Title = pricingPlan.Title,
                 Price = Amt,
                 OrderDate = nowTime,
-                PayDate = ExpirationTime, //在Status == false 時，PayDate當作付款期限，而當付款完成後，Status == true，PayDate再變成付款完成時間
                 Duration = pricingPlan.Duration,
                 Status = false,
+                StatusType = "尚未付款",
             };
 
             company.OrderCount++;
@@ -467,11 +467,11 @@ namespace JobHunting.Areas.Companies.Controllers
             NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
             foreach (String key in decryptTradeCollection.AllKeys)
             {
-                if(key == "TradeStatus")
+                if (key == "TradeStatus")
                 {
                     payReceiveStatus = decryptTradeCollection[key];
                 }
-                if(key == "MerchantOrderNo")
+                if (key == "MerchantOrderNo")
                 {
                     MerchantOrderNo = decryptTradeCollection[key];
                 }
@@ -497,11 +497,19 @@ namespace JobHunting.Areas.Companies.Controllers
                 _ => "錯誤",
             };
 
-            if (payReceiveStatus == "1")
+            companyOrder.PayDate = PayTime;
+            companyOrder.Status = true;
+
+            if(payReceiveStatus == "1")
             {
-                companyOrder.PayDate = PayTime;
-                companyOrder.Status = true;
+                var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+                if (company == null) {  return NotFound(); }
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
+                deadline.AddDays(companyOrder.Duration);
+                company.Deadline = deadline;
             }
+
+            _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
             {
