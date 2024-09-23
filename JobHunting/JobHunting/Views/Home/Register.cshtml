@@ -164,6 +164,7 @@
                             Email:_this.Email,
                             Password:_this.Password,
                             VerifyEmailYN:_this.VerifyEmailYN,
+                            ConfirmPassword:_this.ConfirmPassword,
                             RegisterTime:convertToFullDateTime(_this.RegisterTime),
                           };
                             fetch(`${_this.baseAddress}/Home/AddCandidateRedgister`, {
@@ -205,6 +206,7 @@
                         ContactName: _this.addCompanies.ContactName,
                         ContactPhone: _this.addCompanies.ContactPhone,
                         ContactEmail: _this.addCompanies.ContactEmail,
+                        ConfirmPassword:_this.ConfirmPassword,
                         Status: _this.addCompanies.Status,
                         Date: convertToFullDateTime(_this.addCompanies.Date),
                         Address: _this.addCompanies.Address,

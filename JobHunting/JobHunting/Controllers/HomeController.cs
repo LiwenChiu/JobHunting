@@ -37,14 +37,7 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult CandidateResetPassword()
-        {
-            return View();
-        }
-        public IActionResult CompanyResetPassword()
-        {
-            return View();
-        }
+
         public IActionResult ResendVerificationLetter()
         {
             return View();
@@ -537,6 +530,11 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
             }
 
+            if (cr.Password != cr.ConfirmPassword)
+            {
+                return Json(new { success = false, message = "密碼與確認密碼不一致。" });
+            }
+
             // 檢查電子郵件或身份證號是否已存在
             if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId))
             {
@@ -589,6 +587,11 @@ namespace JobHunting.Controllers
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+            if (cr.Password != cr.ConfirmPassword)
+            {
+                return Json(new { success = false, message = "密碼與確認密碼不一致。" });
             }
 
             // 驗證統一編號

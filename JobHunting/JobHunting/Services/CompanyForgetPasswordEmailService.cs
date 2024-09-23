@@ -4,20 +4,20 @@ using System.Text;
 
 namespace JobHunting.Services
 {
-    public class ForgetPasswordEmailService
+    public class CompanyForgetPasswordEmailService
     {
         public string GenerateVerificationToken(string email)
         {
             //token = guid唯一碼
             string token = Guid.NewGuid().ToString();
             //設定驗證信為10分鐘到期
-            DateTime expiry = DateTime.UtcNow.AddMinutes(10);
+            DateTime expiry = DateTime.UtcNow.AddMinutes(5);
 
             //base64編碼
             string encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
             string encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-            string verificationLink = $"https://localhost:7169/ForgetPassword/VerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
+            string verificationLink = $"https://localhost:7169/ForgetPassword/CompanyVerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
 
             return verificationLink;
         }

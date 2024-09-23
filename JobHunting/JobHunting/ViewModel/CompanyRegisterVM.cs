@@ -32,7 +32,7 @@ namespace JobHunting.ViewModel
         //[DataType(DataType.Password)]
         //[Display(Name = "Confirm password")]
         //[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        //public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; }
 
         public bool Status { get; set; }
 
