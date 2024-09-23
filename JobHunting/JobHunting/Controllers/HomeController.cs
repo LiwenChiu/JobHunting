@@ -558,8 +558,7 @@ namespace JobHunting.Controllers
 
                 _context.Candidates.Add(inster);
                 await _context.SaveChangesAsync();
-                //生成token
-                string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
+                //string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
                 _emailserver.SendEmail(cr.Email, $"您已使用{cr.Email} 註冊'小鴨上工'的會員成功");
                 return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱查閱驗證信件'", });
             }
@@ -741,7 +740,7 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "資料未填寫正確", });
             }
 
-            string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
+            //string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
             _emailserver.SendEmail(svl.Email, $"您已使用{svl.Email} 註冊'小鴨上工'的會員成功");
             return Json(new { success = true, message = "以重新發送驗證信'請務必前往您的信箱查閱信件'", });
         }

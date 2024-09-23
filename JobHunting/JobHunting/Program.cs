@@ -12,9 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
-//發送Email
+//發送註冊信件
 builder.Services.AddSingleton<EmailService>();
+//重新發送驗證信
 builder.Services.AddSingleton<ReviewMaillService>();
+//忘記密碼
+builder.Services.AddSingleton<ForgetPasswordEmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
