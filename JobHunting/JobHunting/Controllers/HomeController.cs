@@ -37,6 +37,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+        public IActionResult CandidateResetPassword()
+        {
+            return View();
+        }
+        public IActionResult CompanyResetPassword()
+        {
+            return View();
+        }
         public IActionResult ResendVerificationLetter()
         {
             return View();

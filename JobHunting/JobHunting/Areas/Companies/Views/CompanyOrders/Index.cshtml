@@ -80,8 +80,7 @@
             methods: {
                 getCompanyOrders: function () {
                     let request = {};
-                    request.Price = request.Duration = Number.isNaN(Number(this.searchOrderInput)) ? -1 : Number(this.searchOrderInput);
-                    request.Title = request.OrderDate = request.PayDate = this.searchOrderInput;
+                    request.Filter = this.searchOrderInput;
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -101,8 +100,7 @@
                     return this.deadline === null ? "無" : this.deadline;
                 },
                 cancelOrder: function (orderId) {
-                    let request = {};
-                    request.orderId = orderId;
+                    let request = { OrderId : orderId };
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
                         headers: {
                             'Content-Type': 'application/json'
