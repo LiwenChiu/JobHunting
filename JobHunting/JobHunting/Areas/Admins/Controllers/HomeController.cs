@@ -28,10 +28,6 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
        
-        public IActionResult Login()
-        {
-            return View();
-        }
 
          
 
