@@ -36,6 +36,6 @@
         public string MilitaryService { get; set; }
         public object TagObj { get; set; }
         public object TitleObj { get; set; }
-        public bool LikeYN { get; set; }
+        public bool? LikeYN { get; set; }
     }
 }

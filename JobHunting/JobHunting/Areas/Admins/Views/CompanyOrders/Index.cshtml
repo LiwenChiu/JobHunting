@@ -48,7 +48,7 @@
         <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
                 <tr>
-                    <th scope="col">訂單ID</th>
+                    @* <th scope="col">訂單ID</th> *@
                     <th scope="col">公司名稱</th>
                     <th scope="col">統一編號</th>
                     <th scope="col">方案名稱</th>
@@ -59,7 +59,7 @@
             </thead>
             <tbody>
                 <tr v-for="order in companyOrders">
-                    <td>{{order.orderId}}</td>
+                    @* <td><small>{{order.orderId}}</small></td> *@
                     <td>{{order.companyName}}</td>
                     <td>{{order.guiNumber}}</td>
                     <td>{{order.title}}</td>
@@ -114,8 +114,8 @@
                     this.pageLengthSafe = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
                     this.pageStartSafe = this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
-                    request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                    request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
+                    request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                    request.OrderId = request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
                     request.PageDraw = this.pageDraw;
                     request.PageLength = this.pageLengthSafe,
                     request.PageStart = this.pageStartSafe;

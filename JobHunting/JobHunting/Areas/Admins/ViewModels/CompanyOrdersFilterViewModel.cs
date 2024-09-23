@@ -5,7 +5,7 @@ namespace JobHunting.Areas.Admins.ViewModels
     public class CompanyOrdersFilterViewModel
     {
         [Key]
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public int? CompanyId { get; set; }
 

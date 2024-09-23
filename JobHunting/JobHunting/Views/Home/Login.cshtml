@@ -1,14 +1,17 @@
 ﻿@using JobHunting.ViewModel
 @model CompositeLogin
 
-@* @section Styles {
+@section Styles {
     <style>
-        .form-label {
+/*         .form-label {
             color: steelblue;
             font-weight: bold;
+        } */
+        a{
+            text-decoration: none;
         }
     </style>
-} *@
+}
 <div id="applogin">
     <div class="row justify-content-center">
         <div class="col-md-4">
@@ -25,16 +28,12 @@
                         <label class="btn btn-outline-warning" for="btnradio2">徵才者</label>
                     </div>
                 </div>
+
                 <template v-if="role == 'candidate'">
                     <div class="form-floating mb-3">
-                        <input v-model="NationalId" asp-for="CandidateLoginVM.NationalId" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="NationalID" aria-required="true" placeholder="身分證字號" required v-on:keyup.enter.exact="DoLogin" />
-                        <label class="form-label">身分證字號</label>
-                        <span asp-validation-for="CandidateLoginVM.NationalId" class="text-danger"></span>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input v-model="Email" asp-for="CandidateLoginVM.Email" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="username" aria-required="true" placeholder="name@example.com" v-on:keyup.enter.exact="DoLogin" />
-                        <label asp-for="CandidateLoginVM.Email" class="form-label">電子信箱</label>
-                        <span asp-validation-for="CandidateLoginVM.Email" class="text-danger"></span>
+                        <input v-model="Candidatelogin" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="loginIdentifier" aria-required="true" placeholder="電子郵件或身分證字號" required v-on:keyup.enter.exact="DoLogin" />
+                        <label class="form-label">電子郵件或身分證字號</label>
+                        <span class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
                         <input v-model="Password" asp-for="CandidateLoginVM.Password" class="form-control rounded-pill bg-danger bg-opacity-25" autocomplete="current-password" aria-required="true" placeholder="password" type="password" v-on:keyup.enter.exact="DoLogin" />
@@ -57,10 +56,11 @@
                     </div>
                 </template>
                 <div class="text-center">
-                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin" >登入</button><br />
-                    <p>
-                        <a asp-controller="Home" asp-action="Register">註冊會員</a>
-                    </p>
+                    <button id="login-submit" type="submit" class="w-50 btn btn-md btn-warning rounded-pill py-2" v-on:click="DoLogin">登入</button><br />
+                </div>
+                <div class="d-flex justify-content-between" style="">
+                    <div><a asp-controller="Home" asp-action="Register">註冊會員</a></div>
+                    <div><a class="" asp-controller="ForgetPassword" asp-action="ForgetPasswordMail">忘記密碼</a></div>
                 </div>
             </section>
         </div>
@@ -76,8 +76,7 @@
                 return {
                     baseAddress: "https://localhost:7169",
                     role: 'candidate',
-                    NationalId: '',
-                    Email: '',
+                    Candidatelogin: '',
                     Password: '',
                     GUINumber: ''
                 };
@@ -90,8 +89,7 @@
                     let request = {
                         Role: _this.role,
                         CandidateLoginVM: _this.role == 'candidate' ? {
-                            NationalId: _this.NationalId,
-                            Email: _this.Email,
+                            Candidatelogin: _this.Candidatelogin,
                             Password: _this.Password
                         } : null,
                         CompanyLoginVM: _this.role == 'company' ? {
@@ -116,7 +114,8 @@
                             console.error(error);
                             alert('登入過程中發生錯誤');
                         });
-                }
+                },
+
 
             }
         };
