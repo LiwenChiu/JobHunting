@@ -828,6 +828,297 @@ namespace JobHunting.Controllers
 
             return "";
         }
+        //public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening)
+        //{
+        //    var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        //    if (candidateIdClaim == null)
+        //    {
+        //        EditResume(opening);
+        //        var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Where(y => y.ReleaseYN == true);
+        //        if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+        //        {
+        //            if (opening.SearchText.IsNullOrEmpty())
+        //            {
+        //                var temp = sourceUnlogin.Select(c => new
+        //                {
+        //                    OpeningId = c.OpeningId,
+        //                    CompanyId = c.CompanyId,
+        //                    Title = c.Title,
+        //                    Address = c.Address,
+        //                    Description = c.Description,
+        //                    Degree = c.Degree,
+        //                    Benefits = c.Benefits,
+        //                    SalaryMax = c.SalaryMax,
+        //                    SalaryMin = c.SalaryMin,
+        //                    Time = c.Time,
+        //                    ContactEmail = c.ContactEmail,
+        //                    ContactName = c.ContactName,
+        //                    ContactPhone = c.ContactPhone,
+        //                    CompanyName = c.Company.CompanyName,
+        //                    ClassNumber = c.Company.CompanyClassId,
+        //                    LikeYN = false,
+        //                }).Where(b =>
+        //                     b.Address.Substring(0, 3) == opening.Area ||
+        //                     (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+        //                     b.ClassNumber == opening.ClassNumber
+        //                 )
+        //                .Select(c => new OpeningSelectViewModel
+        //                {
+        //                    OpeningId = c.OpeningId,
+        //                    CompanyId = c.CompanyId,
+        //                    Title = c.Title,
+        //                    Address = c.Address,
+        //                    Description = c.Description,
+        //                    Degree = c.Degree,
+        //                    Benefits = c.Benefits,
+        //                    SalaryMax = c.SalaryMax,
+        //                    SalaryMin = c.SalaryMin,
+        //                    Time = c.Time,
+        //                    ContactEmail = c.ContactEmail,
+        //                    ContactName = c.ContactName,
+        //                    ContactPhone = c.ContactPhone,
+        //                    CompanyName = c.CompanyName,
+        //                    LikeYN = null,
+        //                });
+        //                var openingSelectOutput = new OpeningSelectOutputViewModel
+        //                {
+        //                    totalDataCount = temp.Count(),
+        //                    OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //                };
+        //                return openingSelectOutput;
+        //            }
+        //            else
+        //            {
+        //                var temp = sourceUnlogin.Select(c => new
+        //                {
+        //                    OpeningId = c.OpeningId,
+        //                    CompanyId = c.CompanyId,
+        //                    Title = c.Title,
+        //                    Address = c.Address,
+        //                    Description = c.Description,
+        //                    Degree = c.Degree,
+        //                    Benefits = c.Benefits,
+        //                    SalaryMax = c.SalaryMax,
+        //                    SalaryMin = c.SalaryMin,
+        //                    Time = c.Time,
+        //                    ContactEmail = c.ContactEmail,
+        //                    ContactName = c.ContactName,
+        //                    ContactPhone = c.ContactPhone,
+        //                    CompanyName = c.Company.CompanyName,
+        //                    ClassNumber = c.Company.CompanyClassId,
+        //                    LikeYN = false,
+        //                }).Where(b =>
+        //                     b.CompanyName.Contains(opening.SearchText) ||
+        //                     b.Benefits.Contains(opening.SearchText) ||
+        //                     b.Description.Contains(opening.SearchText) ||
+        //                     b.Title.Contains(opening.SearchText) ||
+        //                     b.Address.Contains(opening.SearchText) ||
+        //                     b.Time.Contains(opening.SearchText) ||
+        //                     b.Address.Substring(0, 3) == opening.Area ||
+        //                     (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+        //                     b.ClassNumber == opening.ClassNumber
+        //                 )
+        //                .Select(c => new OpeningSelectViewModel
+        //                {
+        //                    OpeningId = c.OpeningId,
+        //                    CompanyId = c.CompanyId,
+        //                    Title = c.Title,
+        //                    Address = c.Address,
+        //                    Description = c.Description,
+        //                    Degree = c.Degree,
+        //                    Benefits = c.Benefits,
+        //                    SalaryMax = c.SalaryMax,
+        //                    SalaryMin = c.SalaryMin,
+        //                    Time = c.Time,
+        //                    ContactEmail = c.ContactEmail,
+        //                    ContactName = c.ContactName,
+        //                    ContactPhone = c.ContactPhone,
+        //                    CompanyName = c.CompanyName,
+        //                    LikeYN = null,
+        //                });
+        //                var openingSelectOutput = new OpeningSelectOutputViewModel
+        //                {
+        //                    totalDataCount = temp.Count(),
+        //                    OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //                };
+        //                return openingSelectOutput;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var temp = sourceUnlogin.Select(b => new OpeningSelectViewModel
+        //            {
+        //                OpeningId = b.OpeningId,
+        //                CompanyId = b.CompanyId,
+        //                Title = b.Title,
+        //                Address = b.Address,
+        //                Description = b.Description,
+        //                Degree = b.Degree,
+        //                Benefits = b.Benefits,
+        //                SalaryMax = b.SalaryMax,
+        //                SalaryMin = b.SalaryMin,
+        //                Time = b.Time,
+        //                ContactEmail = b.ContactEmail,
+        //                ContactName = b.ContactName,
+        //                ContactPhone = b.ContactPhone,
+        //                CompanyName = b.Company.CompanyName,
+        //                LikeYN = null,
+        //            });
+
+        //            var openingSelectOutput = new OpeningSelectOutputViewModel
+        //            {
+        //                totalDataCount = temp.Count(),
+        //                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //            };
+
+        //            return openingSelectOutput;
+        //        }
+
+        //    }
+        //    var candidateId = int.Parse(candidateIdClaim.Value);
+
+        //    EditResume(opening);
+        //    var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Where(y => y.ReleaseYN == true);
+        //    if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+        //    {
+        //        if (opening.SearchText.IsNullOrEmpty())
+        //        {
+        //            var temp = source.Select(c => new
+        //            {
+        //                OpeningId = c.OpeningId,
+        //                CompanyId = c.CompanyId,
+        //                Title = c.Title,
+        //                Address = c.Address,
+        //                Description = c.Description,
+        //                Degree = c.Degree,
+        //                Benefits = c.Benefits,
+        //                SalaryMax = c.SalaryMax,
+        //                SalaryMin = c.SalaryMin,
+        //                Time = c.Time,
+        //                ContactEmail = c.ContactEmail,
+        //                ContactName = c.ContactName,
+        //                ContactPhone = c.ContactPhone,
+        //                CompanyName = c.Company.CompanyName,
+        //                ClassNumber = c.Company.CompanyClassId,
+        //                LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+        //            }).Where(b =>
+        //                 b.Address.Substring(0, 3) == opening.Area ||
+        //                 (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+        //                 b.ClassNumber == opening.ClassNumber
+        //         )
+        //        .Select(c => new OpeningSelectViewModel
+        //        {
+        //            OpeningId = c.OpeningId,
+        //            CompanyId = c.CompanyId,
+        //            Title = c.Title,
+        //            Address = c.Address,
+        //            Description = c.Description,
+        //            Degree = c.Degree,
+        //            Benefits = c.Benefits,
+        //            SalaryMax = c.SalaryMax,
+        //            SalaryMin = c.SalaryMin,
+        //            Time = c.Time,
+        //            ContactEmail = c.ContactEmail,
+        //            ContactName = c.ContactName,
+        //            ContactPhone = c.ContactPhone,
+        //            CompanyName = c.CompanyName,
+        //            LikeYN = c.LikeYN
+        //        });
+        //            var openingSelectOutput = new OpeningSelectOutputViewModel
+        //            {
+        //                totalDataCount = temp.Count(),
+        //                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //            };
+        //            return openingSelectOutput;
+        //        }
+        //        else
+        //        {
+        //            var temp = source.Select(c => new
+        //            {
+        //                OpeningId = c.OpeningId,
+        //                CompanyId = c.CompanyId,
+        //                Title = c.Title,
+        //                Address = c.Address,
+        //                Description = c.Description,
+        //                Degree = c.Degree,
+        //                Benefits = c.Benefits,
+        //                SalaryMax = c.SalaryMax,
+        //                SalaryMin = c.SalaryMin,
+        //                Time = c.Time,
+        //                ContactEmail = c.ContactEmail,
+        //                ContactName = c.ContactName,
+        //                ContactPhone = c.ContactPhone,
+        //                CompanyName = c.Company.CompanyName,
+        //                ClassNumber = c.Company.CompanyClassId,
+        //                LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+        //            }).Where(b =>
+        //                 b.CompanyName.Contains(opening.SearchText) ||
+        //                 b.Benefits.Contains(opening.SearchText) ||
+        //                 b.Description.Contains(opening.SearchText) ||
+        //                 b.Title.Contains(opening.SearchText) ||
+        //                 b.Time.Contains(opening.SearchText) ||
+        //                 b.Address.Contains(opening.SearchText) ||
+        //                 b.Address.Substring(0, 3) == opening.Area ||
+        //                 (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+        //                 b.ClassNumber == opening.ClassNumber
+        //         )
+        //        .Select(c => new OpeningSelectViewModel
+        //        {
+        //            OpeningId = c.OpeningId,
+        //            CompanyId = c.CompanyId,
+        //            Title = c.Title,
+        //            Address = c.Address,
+        //            Description = c.Description,
+        //            Degree = c.Degree,
+        //            Benefits = c.Benefits,
+        //            SalaryMax = c.SalaryMax,
+        //            SalaryMin = c.SalaryMin,
+        //            Time = c.Time,
+        //            ContactEmail = c.ContactEmail,
+        //            ContactName = c.ContactName,
+        //            ContactPhone = c.ContactPhone,
+        //            CompanyName = c.CompanyName,
+        //            LikeYN = c.LikeYN
+        //        });
+        //            var openingSelectOutput = new OpeningSelectOutputViewModel
+        //            {
+        //                totalDataCount = temp.Count(),
+        //                OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //            };
+        //            return openingSelectOutput;
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        var temp = source.Select(b => new OpeningSelectViewModel
+        //        {
+        //            OpeningId = b.OpeningId,
+        //            CompanyId = b.CompanyId,
+        //            Title = b.Title,
+        //            Address = b.Address,
+        //            Description = b.Description,
+        //            Degree = b.Degree,
+        //            Benefits = b.Benefits,
+        //            SalaryMax = b.SalaryMax,
+        //            SalaryMin = b.SalaryMin,
+        //            Time = b.Time,
+        //            ContactEmail = b.ContactEmail,
+        //            ContactName = b.ContactName,
+        //            ContactPhone = b.ContactPhone,
+        //            CompanyName = b.Company.CompanyName,
+        //            LikeYN = b.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+        //        });
+        //        var openingSelectOutput = new OpeningSelectOutputViewModel
+        //        {
+        //            totalDataCount = temp.Count(),
+        //            OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+        //        };
+
+        //        return openingSelectOutput;
+        //    }
+        //}
+
         public async Task<OpeningSelectOutputViewModel> SelectOpeningsList([FromBody] OpeningSelectInputViewModel opening)
         {
             var candidateIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -835,7 +1126,7 @@ namespace JobHunting.Controllers
             {
                 EditResume(opening);
                 var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Where(y => y.ReleaseYN == true);
-                if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+                if (opening.SearchText != "" || opening.AreaName != "" || opening.ClassNumber != "" || opening.Salary != null)
                 {
                     if (opening.SearchText.IsNullOrEmpty())
                     {
@@ -858,7 +1149,7 @@ namespace JobHunting.Controllers
                             ClassNumber = c.Company.CompanyClassId,
                             LikeYN = false,
                         }).Where(b =>
-                             b.Address.Substring(0, 3) == opening.Area ||
+                             b.Address.Contains(opening.AreaName) ||
                              (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                              b.ClassNumber == opening.ClassNumber
                          )
@@ -880,6 +1171,61 @@ namespace JobHunting.Controllers
                             CompanyName = c.CompanyName,
                             LikeYN = null,
                         });
+                        var openingSelectOutput = new OpeningSelectOutputViewModel
+                        {
+                            totalDataCount = temp.Count(),
+                            OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                        };
+                        return openingSelectOutput;
+                    }
+                    else if (!opening.SearchText.IsNullOrEmpty() && opening.AreaName.IsNullOrEmpty())
+                    {
+                        var temp = sourceUnlogin.Select(c => new
+                        {
+                            OpeningId = c.OpeningId,
+                            CompanyId = c.CompanyId,
+                            Title = c.Title,
+                            Address = c.Address,
+                            Description = c.Description,
+                            Degree = c.Degree,
+                            Benefits = c.Benefits,
+                            SalaryMax = c.SalaryMax,
+                            SalaryMin = c.SalaryMin,
+                            Time = c.Time,
+                            ContactEmail = c.ContactEmail,
+                            ContactName = c.ContactName,
+                            ContactPhone = c.ContactPhone,
+                            CompanyName = c.Company.CompanyName,
+                            ClassNumber = c.Company.CompanyClassId,
+                            LikeYN = false,
+                        }).Where(b =>
+                             b.CompanyName.Contains(opening.SearchText) ||
+                             b.Benefits.Contains(opening.SearchText) ||
+                             b.Description.Contains(opening.SearchText) ||
+                             b.Title.Contains(opening.SearchText) ||
+                             b.Time.Contains(opening.SearchText) ||
+                             b.Address.Contains(opening.SearchText) ||
+                             (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                             b.ClassNumber == opening.ClassNumber
+                     )
+                    .Select(c => new OpeningSelectViewModel
+                    {
+                        OpeningId = c.OpeningId,
+                        CompanyId = c.CompanyId,
+                        Title = c.Title,
+                        Address = c.Address,
+                        Description = c.Description,
+                        Degree = c.Degree,
+                        Benefits = c.Benefits,
+                        SalaryMax = c.SalaryMax,
+                        SalaryMin = c.SalaryMin,
+                        Time = c.Time,
+                        ContactEmail = c.ContactEmail,
+                        ContactName = c.ContactName,
+                        ContactPhone = c.ContactPhone,
+                        CompanyName = c.CompanyName,
+                        LikeYN = null,
+                    });
                         var openingSelectOutput = new OpeningSelectOutputViewModel
                         {
                             totalDataCount = temp.Count(),
@@ -914,7 +1260,7 @@ namespace JobHunting.Controllers
                              b.Title.Contains(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText) ||
                              b.Time.Contains(opening.SearchText) ||
-                             b.Address.Substring(0, 3) == opening.Area ||
+                             b.Address.Contains(opening.AreaName) ||
                              (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                              b.ClassNumber == opening.ClassNumber
                          )
@@ -973,13 +1319,13 @@ namespace JobHunting.Controllers
 
                     return openingSelectOutput;
                 }
-                
+
             }
             var candidateId = int.Parse(candidateIdClaim.Value);
 
             EditResume(opening);
             var source = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Where(y => y.ReleaseYN == true);
-            if (opening.SearchText != "" || opening.Area != "" || opening.ZipCode != "" || opening.ClassNumber != "" || opening.Salary != null)
+            if (opening.SearchText != "" || opening.AreaName != "" || opening.ClassNumber != "" || opening.Salary != null)
             {
                 if (opening.SearchText.IsNullOrEmpty())
                 {
@@ -1002,7 +1348,62 @@ namespace JobHunting.Controllers
                         ClassNumber = c.Company.CompanyClassId,
                         LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                     }).Where(b =>
-                         b.Address.Substring(0, 3) == opening.Area ||
+                         b.Address.Contains(opening.AreaName) ||
+                         (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
+                         b.ClassNumber == opening.ClassNumber
+                 )
+                .Select(c => new OpeningSelectViewModel
+                {
+                    OpeningId = c.OpeningId,
+                    CompanyId = c.CompanyId,
+                    Title = c.Title,
+                    Address = c.Address,
+                    Description = c.Description,
+                    Degree = c.Degree,
+                    Benefits = c.Benefits,
+                    SalaryMax = c.SalaryMax,
+                    SalaryMin = c.SalaryMin,
+                    Time = c.Time,
+                    ContactEmail = c.ContactEmail,
+                    ContactName = c.ContactName,
+                    ContactPhone = c.ContactPhone,
+                    CompanyName = c.CompanyName,
+                    LikeYN = c.LikeYN
+                });
+                    var openingSelectOutput = new OpeningSelectOutputViewModel
+                    {
+                        totalDataCount = temp.Count(),
+                        OpeningsIndexOutput = temp.Skip((opening.Page - 1) * opening.Count).Take(opening.Count),
+                    };
+                    return openingSelectOutput;
+                }
+                else if (!opening.SearchText.IsNullOrEmpty() && opening.AreaName.IsNullOrEmpty())
+                {
+                    var temp = source.Select(c => new
+                    {
+                        OpeningId = c.OpeningId,
+                        CompanyId = c.CompanyId,
+                        Title = c.Title,
+                        Address = c.Address,
+                        Description = c.Description,
+                        Degree = c.Degree,
+                        Benefits = c.Benefits,
+                        SalaryMax = c.SalaryMax,
+                        SalaryMin = c.SalaryMin,
+                        Time = c.Time,
+                        ContactEmail = c.ContactEmail,
+                        ContactName = c.ContactName,
+                        ContactPhone = c.ContactPhone,
+                        CompanyName = c.Company.CompanyName,
+                        ClassNumber = c.Company.CompanyClassId,
+                        LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
+                    }).Where(b =>
+                         b.CompanyName.Contains(opening.SearchText) ||
+                         b.Benefits.Contains(opening.SearchText) ||
+                         b.Description.Contains(opening.SearchText) ||
+                         b.Title.Contains(opening.SearchText) ||
+                         b.Time.Contains(opening.SearchText) ||
+                         b.Address.Contains(opening.SearchText) ||
                          (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                          b.ClassNumber == opening.ClassNumber
                  )
@@ -1058,7 +1459,7 @@ namespace JobHunting.Controllers
                          b.Title.Contains(opening.SearchText) ||
                          b.Time.Contains(opening.SearchText) ||
                          b.Address.Contains(opening.SearchText) ||
-                         b.Address.Substring(0, 3) == opening.Area ||
+                         b.Address.Contains(opening.AreaName) ||
                          (opening.Salary >= b.SalaryMin && opening.Salary <= b.SalaryMax) ||
                          b.ClassNumber == opening.ClassNumber
                  )
@@ -1087,7 +1488,7 @@ namespace JobHunting.Controllers
                     };
                     return openingSelectOutput;
                 }
-                
+
             }
             else
             {
@@ -1118,14 +1519,13 @@ namespace JobHunting.Controllers
                 return openingSelectOutput;
             }
         }
-
         public string NormalizeAddress(string address)
         {
             return address.Replace("臺", "台");
         }
         public void EditResume(OpeningSelectInputViewModel opening)
         {
-            opening.Area = NormalizeAddress(opening.Area);
+            opening.AreaName = NormalizeAddress(opening.AreaName);
         }
 
 
