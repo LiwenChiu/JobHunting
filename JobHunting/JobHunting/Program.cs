@@ -7,6 +7,8 @@ using JobHunting.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Hangfire;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,13 +39,20 @@ builder.Services.AddDbContext<DuckCompaniesContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
 });
-  
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+// Add Hangfire services
+builder.Services.AddHangfire(configuration =>
+    configuration.UseSqlServerStorage(builder.Configuration.GetConnectionString("Duck")));
+
+// Add Hangfire server
+builder.Services.AddHangfireServer(); // 過去在 UseHangfireServer 的配置現在移到這裡
+builder.Services.AddScoped<PlanExpiredService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,8 +66,8 @@ builder.Services.AddAuthentication(options =>
     options.LoginPath = "/Admins/Home/Login"
 
 );
-
 builder.Services.AddAuthorization();  // 添加授權服務
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,6 +81,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -102,6 +112,21 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+app.UseHangfireDashboard();
+using (var scope = app.Services.CreateScope())
+{
+    var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
 
+    // 每天執行一次，檢查即將到期的公司並發送提醒
+    RecurringJob.AddOrUpdate(
+        "SendExpirationReminders",
+        () => companyService.SendExpirationReminders(),
+        Cron.Daily);
+
+    // 每天執行一次，檢查過期的公司並關閉其職缺
+    RecurringJob.AddOrUpdate(
+        "CloseExpiredJobOpenings",
+        () => companyService.CloseExpiredJobOpenings(),
+        Cron.Daily);
+}
 app.Run();
- 
