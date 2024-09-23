@@ -37,6 +37,10 @@ namespace JobHunting.Controllers
         {
             return View();
         }
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
         public IActionResult CandidateResetPassword()
         {
             return View();
@@ -815,15 +819,26 @@ namespace JobHunting.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var scheme = User.FindFirst("AuthenticationScheme")?.Value;  // 從 Claims 中獲取身份驗證架構
 
-            if (!string.IsNullOrEmpty(userId) && role == "candidate")
+            if (!string.IsNullOrEmpty(userId))
             {
-                return "candidate";
-            }
+                if (role == "candidate")
+                {
+                    return "candidate";
+                }
 
-            if (!string.IsNullOrEmpty(userId) && role == "company")
-            {
-                return "company";
+                // 如果身份驗證架構是 AdminScheme，且角色是 admin
+                if (role == "admin" && scheme == "AdminScheme")
+                {
+                    return "admin";
+                }
+
+                // 如果身份驗證架構是預設的，且角色是 company
+                if (role == "company")
+                {
+                    return "company";
+                }
             }
 
             return "";

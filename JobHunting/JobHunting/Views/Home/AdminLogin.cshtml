@@ -1,0 +1,82 @@
+﻿    
+@section Styles{
+    <style>
+        .form-group {
+            margin: 30px;
+        }
+    </style>
+
+}
+
+<div id="adminLogin" v-on:keyup.enter.exact="DoLogin">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div><h3 class="text-center font-weight-light my-4">登入</h3></div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label class="control-label">員工編號:</label>
+                                    <input v-model="PersonnelCode" class="form-control rounded-pill" v-on:keyup.enter.exact="DoLogin" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">密碼 :</label>
+                                    <input v-model="Password" class="form-control rounded-pill" type="password" v-on:keyup.enter.exact="DoLogin" />
+                                    </div>
+                                    <div class="form-group text-center">
+                                    <input type="submit" value="登入" class="btn btn-primary rounded-pill" v-on:click="DoLogin"  />
+                                    </div>
+                                    <div class="small"><a href="register.html">註冊</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </main>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+    <script>
+        const adminLogin = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7169",
+                    PersonnelCode: '',
+                    Password: '',
+                };
+            },
+            methods: {
+                DoLogin: function (event) {
+    
+                    let _this = this;
+                    event.preventDefault();
+                    let request = {
+                        PersonnelCode: _this.PersonnelCode,
+                        Password: _this.Password
+                    };
+    
+                    axios({
+                        method: 'post',
+                        url: `${_this.baseAddress}/Home/AdminDoLogin`,
+                        data: request
+                    })
+                        .then(function (response) {
+                            console.log(response.data);
+                            window.location.href = '/Admins';
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+    
+                }
+            }
+        };
+        Vue.createApp(adminLogin).mount("#adminLogin");
+    </script>
+}
+        
