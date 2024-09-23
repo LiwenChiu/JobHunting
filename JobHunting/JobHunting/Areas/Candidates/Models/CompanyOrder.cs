@@ -7,11 +7,13 @@ namespace JobHunting.Areas.Candidates.Models;
 
 public partial class CompanyOrder
 {
-    public int OrderId { get; set; }
+    public string OrderId { get; set; }
 
     public int? CompanyId { get; set; }
 
     public int? PlanId { get; set; }
+
+    public int OrderNumber { get; set; }
 
     public string CompanyName { get; set; }
 

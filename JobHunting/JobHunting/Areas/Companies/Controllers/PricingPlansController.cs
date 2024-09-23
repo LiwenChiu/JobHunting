@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using System.Collections.Specialized;
 using System.Web;
+using Newtonsoft.Json.Linq;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -30,11 +31,21 @@ namespace JobHunting.Areas.Companies.Controllers
         // GET: Companies/PricingPlans
         public async Task<IActionResult> Index()
         {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return Json(new { message = "未授權訪問" });
+            }
+            int companyId = int.Parse(CompanyId);
+            string companyIdZeroStr = companyId.ToString("X7");
+            var companyOrderCount = await _context.Companies.AsNoTracking().Where(c => c.CompanyId == companyId).Select(c => c.OrderCount).FirstOrDefaultAsync();
+            string companyOrderCountStr = companyOrderCount.ToString("X7");
+            var baseAddress = "https://localhost:7169";
 
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             // 產生測試資訊
             ViewData["MerchantID"] = Config.GetSection("MerchantID").Value;
-            ViewData["MerchantOrderNo"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");  //訂單編號
+            ViewData["MerchantOrderNo"] = $"{companyIdZeroStr}" + $"{companyOrderCountStr}" + DateTime.Now.ToString("yyyyMMdd");  //訂單編號
             ViewData["ExpireDate"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd"); //繳費有效期限
             ViewData["ReturnURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}Admins/PricingPlans/CallbackReturn"; //支付完成返回商店網址
             ViewData["CustomerURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}Admins/PricingPlans/CallbackCustomer"; //商店取號網址
@@ -87,6 +98,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 returnStatus = ["輸入資料失敗", "失敗"];
                 return returnStatus;
             }
+
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CompanyId))
             {
@@ -94,19 +106,18 @@ namespace JobHunting.Areas.Companies.Controllers
                 return returnStatus;
             }
 
-            var company = await _context.Companies.Where(c => c.CompanyId.ToString() == CompanyId)
-                .Select(c => new PayAgreementCompanyViewModel
-                {
-                    CompanyId = c.CompanyId,
-                    CompanyName = c.CompanyName,
-                    GUINumber = c.GUINumber,
-                }).SingleOrDefaultAsync();
+            int companyId = int.Parse(CompanyId);
+            string companyIdZeroStr = companyId.ToString("X7");            
+
+            var company = await _context.Companies.FindAsync(companyId);
 
             if (company == null)
             {
                 returnStatus = ["公司資料不存在", "失敗"];
                 return returnStatus;
             }
+
+            string companyOrderCountStr = company.OrderCount.ToString("X7");
 
             var pricingPlan = await _context.PricingPlans.Where(pp => pp.PlanId == pavm.PlanId)
                 .Select(pp => new PayAgreementPricingPlanViewModel
@@ -124,12 +135,17 @@ namespace JobHunting.Areas.Companies.Controllers
                 return returnStatus;
             }
 
+            int orderNumber = company.OrderCount;
+            orderNumber++;
+
             CompanyOrder companyOrder = new CompanyOrder
             {
+                OrderId = $"{companyIdZeroStr}" + $"{companyOrderCountStr}" + DateTime.Now.ToString("yyyyMMdd"),
                 CompanyId = company.CompanyId,
                 CompanyName = company.CompanyName,
                 GUINumber = company.GUINumber,
                 PlanId = pricingPlan.PlanId,
+                OrderNumber = orderNumber,
                 Title = pricingPlan.Title,
                 Price = (pricingPlan.Price) * (pricingPlan.Discount),
                 OrderDate = DateTime.Now,
@@ -138,9 +154,23 @@ namespace JobHunting.Areas.Companies.Controllers
                 Status = false,
             };
 
-            returnStatus = ["下單成功，請於3天內付款", "成功"];
+            company.OrderCount++;
+
+            _context.Entry(company).State = EntityState.Modified;
+
             _context.CompanyOrders.Add(companyOrder);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                returnStatus = ["下單失敗", "失敗"];
+                return returnStatus;
+            }
+
+            returnStatus = ["下單成功，請於3天內付款", "成功"];
             return returnStatus;
 
         }
