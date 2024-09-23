@@ -37,18 +37,14 @@ namespace JobHunting.Controllers
         {
             return View();
         }
-        public IActionResult CandidateResetPassword()
-        {
-            return View();
-        }
-        public IActionResult CompanyResetPassword()
-        {
-            return View();
-        }
+
         public IActionResult ResendVerificationLetter()
         {
             return View();
         }
+
+
+
 
         public async Task<OpeningsIndexOutputViewModel> OpeningsList(int page, int count)
         {
@@ -534,6 +530,11 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
             }
 
+            if (cr.Password != cr.ConfirmPassword)
+            {
+                return Json(new { success = false, message = "密碼與確認密碼不一致。" });
+            }
+
             // 檢查電子郵件或身份證號是否已存在
             if (await _context.Candidates.AnyAsync(c => c.NationalId == cr.NationalId))
             {
@@ -563,8 +564,7 @@ namespace JobHunting.Controllers
 
                 _context.Candidates.Add(inster);
                 await _context.SaveChangesAsync();
-                //生成token
-                string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
+                //string verificationUrl = _emailserver.GenerateVerificationToken(cr.Email);
                 _emailserver.SendEmail(cr.Email, $"您已使用{cr.Email} 註冊'小鴨上工'的會員成功");
                 return Json(new { success = true, message = "您已註冊會員完成，'小鴨上工歡迎您','請務必前往您的信箱查閱驗證信件'", });
             }
@@ -587,6 +587,11 @@ namespace JobHunting.Controllers
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "註冊資料未填寫完成 or 未填寫正確" });
+            }
+
+            if (cr.Password != cr.ConfirmPassword)
+            {
+                return Json(new { success = false, message = "密碼與確認密碼不一致。" });
             }
 
             // 驗證統一編號
@@ -703,6 +708,16 @@ namespace JobHunting.Controllers
             return RedirectToAction("Login", "Home");
 
         }
+        //管理端審核通知信的跳轉登入畫面
+        [HttpGet]
+        public IActionResult VerifyStatusEmail()
+        {
+
+            // 跳轉到登入頁面
+            return RedirectToAction("Login", "Home");
+        }
+
+
 
         //驗證信件重新發送
         [HttpPost]
@@ -736,7 +751,7 @@ namespace JobHunting.Controllers
                 return Json(new { success = false, message = "資料未填寫正確", });
             }
 
-            string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
+            //string verificationUrl = _emailserver.GenerateVerificationToken(svl.Email);
             _emailserver.SendEmail(svl.Email, $"您已使用{svl.Email} 註冊'小鴨上工'的會員成功");
             return Json(new { success = true, message = "以重新發送驗證信'請務必前往您的信箱查閱信件'", });
         }
