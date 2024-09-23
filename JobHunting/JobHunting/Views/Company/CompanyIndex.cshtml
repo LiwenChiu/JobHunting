@@ -25,8 +25,8 @@
                 <select v-model="city" v-on:change="getArea">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select v-model="zipCode">
-                    <option v-for="item in area" :value="item.zipCode">{{item.AreaName}}</option>
+                <select v-model="areaName">
+                    <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
@@ -236,7 +236,7 @@
                     resumesCount:null,
                     cityList:[],
                     city:"",
-                    zipCode:"",
+                    areaName: "",
                     cancel: false,
                     baseAddress: "https://localhost:7169"
                 };
@@ -247,7 +247,7 @@
                 },
                 cancelSelect(){      //取消篩選條件
                     let self = this;
-                    self.filter = self.city = self.zipCode = self.edu = "", self.skill = null;
+                    self.filter = self.city = self.areaName = self.edu = "", self.skill = null;
                     self.filterResumes();
                 },
                 selectSex(item) {
@@ -256,7 +256,7 @@
                 mergeID(item) {    //產生個別履歷唯一modal的ID
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeID;
-                    strID = str + num;
+                    strID = "Id" + str + num;
                     return strID;
                 },
                 setPage(page) {     //當按到第幾頁顯示的資料
@@ -274,9 +274,8 @@
                         perpage: self.perpage,
                         currentpage: self.currentPageNow,
                         sex:null,
-                        serchText: self.filter,
-                        area: self.city,
-                        zipCode: self.zipCode,
+                        searchText: self.filter,
+                        areaName: self.city + self.areaName,
                         edu: self.edu,
                         skill: self.skill
                     };

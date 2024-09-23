@@ -34,8 +34,8 @@
                 <select v-model="city" v-on:change="getArea">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select v-model="zipCode">
-                    <option v-for="item in area" :value="item.zipCode">{{item.AreaName}}</option>
+                <select v-model="areaName">
+                    <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
@@ -335,7 +335,7 @@
                     companyClassList: [],
                     city: "",
                     area: [],
-                    zipCode: "",
+                    areaName: "",
                     classNumber: "",
                     salary:null,
                     filter:"",
@@ -360,7 +360,7 @@
                 clearSearch: function () {
                     this.filter = "";
                         this.city = "";
-                        this.zipCode = "";
+                        this.areaName = "";
                         this.salary = null;
                         this.classNumber = "";
                         this.filterOpenings();
@@ -389,8 +389,7 @@
                         page: self.currentPageSafe,
                         count: self.perpageSafe,
                         searchText: self.filter,
-                        area: self.city,
-                        zipCode: self.zipCode,
+                        areaName: self.city + self.areaName,
                         salary: self.salary,
                         classNumber: self.classNumber,
                     };

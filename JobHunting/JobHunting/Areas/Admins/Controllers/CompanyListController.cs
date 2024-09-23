@@ -93,7 +93,7 @@ namespace JobHunting.Areas.Admins.Controllers
             if(ey.Status == true)
             {
                 _reviewMaillService.SendEmail(ESV.ContactEmail, "恭喜！您的申請已通過審核",ESV.ContactName, ESV.CompanyName);
-                return Json(new { success = true, message = "更改審核狀態成功" });
+                return Json(new { success = true, message = "更改審核狀態成功。並已發信通知申請人" });
             }
             else
             {
@@ -103,13 +103,7 @@ namespace JobHunting.Areas.Admins.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult VerifyEmail()
-        {
 
-            // 跳轉到登入頁面
-            return RedirectToAction("Login", "Home");
-        }
 
 
 

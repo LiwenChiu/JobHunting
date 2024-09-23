@@ -1,12 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using System.Text;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace JobHunting.Services
 {
-
-    public class EmailService
+    public class CandidateForgetPasswordEmailService
     {
         public string GenerateVerificationToken(string email)
         {
@@ -19,7 +17,7 @@ namespace JobHunting.Services
             string encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
             string encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-            string verificationLink = $"https://localhost:7169/Home/VerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
+            string verificationLink = $"https://localhost:7169/ForgetPassword/CandidateVerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
 
             return verificationLink;
         }
@@ -36,12 +34,14 @@ namespace JobHunting.Services
             string emailBody = $@"
                 <html>
                 <body>
-                    <h1>感謝您註冊！</h1>
-                    <p>請點擊下方連結以完成您的電子郵件驗證：</p>
-                    <p><a href='{verifyUrl}'>點擊這裡驗證</a></p>
+                   <h1>忘記密碼通知</h1>
+                    <p>您好，我們收到了您重置密碼的請求。</p>
+                    <p>請點擊下方連結以重設您的密碼：</p>
+                    <p><a href='{verifyUrl}'>點擊這裡重設密碼</a></p>
                     <p>如果您無法點擊連結，請將以下網址複製到瀏覽器中打開：</p>
                     <p>{verifyUrl}</p>
                     <br/>
+                    <p>如果您未提出此請求，請忽略此郵件。</p>
                     <p>此為系統自動發送的郵件，請勿回覆。</p>
                 </body>
                 </html>";
