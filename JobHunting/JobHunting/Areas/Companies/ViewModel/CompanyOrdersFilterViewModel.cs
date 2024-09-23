@@ -3,14 +3,5 @@
     public class CompanyOrdersFilterViewModel
     {
         public string? Filter { get; set; }
-        //public string Title { get; set; }
-
-        //public decimal? Price { get; set; }
-
-        //public string OrderDate { get; set; }
-
-        //public string PayDate { get; set; }
-
-        //public int Duration { get; set; }
     }
 }

@@ -81,8 +81,6 @@
                 getCompanyOrders: function () {
                     let request = {};
                     request.Filter = this.searchOrderInput;
-                    // request.Price = request.Duration = Number.isNaN(Number(this.searchOrderInput)) ? -1 : Number(this.searchOrderInput);
-                    // request.Title = request.OrderDate = request.PayDate = this.searchOrderInput;
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
                         headers: {
                             'Content-Type': 'application/json'

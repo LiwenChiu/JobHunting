@@ -32,27 +32,6 @@ namespace JobHunting.Areas.Companies.Controllers
             return View();
         }
 
-        //// GET: Companies/CompanyOrders/IndexJson
-        //[HttpGet]
-        //public JsonResult IndexJson()
-        //{
-        //    var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    var companyId = int.Parse(CompanyId);
-        //    var Order = _context.CompanyOrders.Where(co => co.CompanyId == companyId)
-        //        .Select(p => new
-        //        {
-        //            OrderID = p.OrderId,
-        //            CompanyName = p.CompanyName,
-        //            GUINumber = p.GUINumber,
-        //            Title = p.Title,
-        //            Price = p.Price,
-        //            OrderDate = p.OrderDate,
-        //            Status = p.Status
-        //        });
-
-        //    return Json(Order);
-        //}
-
         //POST: Companies/CompanyOrders/GetCompanyOrders
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -81,22 +60,14 @@ namespace JobHunting.Areas.Companies.Controllers
                 Status = co.Status,
             });
 
-            // Apply filters dynamically for string fields
-            if (!string.IsNullOrEmpty(cofvm.Filter))
-            {
-                query = query.Where(co => co.Title.Contains(cofvm.Filter) ||
-                                          co.OrderDate.ToString().Contains(cofvm.Filter) ||
-                                          (co.Status && co.PayDate.ToString().Contains(cofvm.Filter)));
-            }
-
             // Apply numeric filters dynamically
-            if (int.TryParse(cofvm.Filter, out int filterNumber))
+            if (int.TryParse(cofvm.Filter, out int filterNumber) || !string.IsNullOrEmpty(cofvm.Filter))
             {
-                query = query.Where(co => co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()));
+                query = query.Where(co => co.Title.Contains(cofvm.Filter) || co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()));
             }
 
             // Final projection and ordering
-            var orders = await query
+            var orders = query
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -109,10 +80,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Status = co.Status,
                 })
                 .OrderBy(co => co.Status)
-                .ThenByDescending(co => co.OrderNumber)
-                .ToListAsync(); // Ensure asynchronous execution
-
-             //|| (co.PayDate != null && co.PayDate.ToString("yyyy年MM月dd日 HH點mm分").Contains(cofvm.Filter))
+                .ThenByDescending(co => co.OrderNumber);
 
             return orders;
         }
