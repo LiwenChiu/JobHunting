@@ -80,8 +80,6 @@ namespace JobHunting.Areas.Companies.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SendToNewebPay([FromBody][Bind("PlanId")] SendToNewebPayInViewModel inModel)
         {
-            var baseAddress = "https://localhost:7169";
-
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CompanyId))
             {
@@ -129,10 +127,10 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{baseAddress}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
-            string CustomerURL = $"{baseAddress}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{baseAddress}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}{Request.Path}Companies/PricingPlans"; //返回商店網址
+            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            //string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
+            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
@@ -150,14 +148,16 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
+            // 交易有效時間
+            TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "600"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址
             TradeInfo.Add(new KeyValuePair<string, string>("ReturnURL", ReturnURL));
             // 支付通知網址
             TradeInfo.Add(new KeyValuePair<string, string>("NotifyURL", NotifyURL));
-            // 商店取號網址
-            TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", CustomerURL));
+            //// 商店取號網址
+            //TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", CustomerURL));
             // 支付取消返回商店網址
             TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", ClientBackURL));
             // 付款人電子信箱
@@ -313,13 +313,14 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public IActionResult CallbackReturn()
         {
-            // 接收參數
-            StringBuilder receive = new StringBuilder();
+            // 付款失敗跳離執行
             foreach (var item in Request.Form)
             {
-                receive.AppendLine(item.Key + "=" + item.Value + "<br>");
+                if(item.Key == "Status" && item.Value != "SUCCESS")
+                {
+                    return BadRequest();
+                }
             }
-            ViewData["ReceiveObj"] = receive.ToString();
 
             // 解密訊息
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
@@ -328,12 +329,26 @@ namespace JobHunting.Areas.Companies.Controllers
 
             string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
             NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
-            receive.Length = 0;
+
+            // 接收TradeInfo參數
+            NewebPayReturnTradeInfoViewModel result = new NewebPayReturnTradeInfoViewModel();
             foreach (String key in decryptTradeCollection.AllKeys)
             {
-                receive.AppendLine(key + "=" + decryptTradeCollection[key] + "<br>");
+                if(key == "Amt")
+                {
+                    result.Amt = decryptTradeCollection[key];
+                }
+                else if(key == "MerchantOrderNo")
+                {
+                    result.MerchantOrderNo = decryptTradeCollection[key];
+                }
+                else if(key == "PayTime")
+                {
+                    result.PayTime = decryptTradeCollection[key];
+                }
             }
-            ViewData["TradeInfo"] = receive.ToString();
+
+            ViewData["CallbackReturnResult"] = result;
 
             return View();
         }
@@ -420,34 +435,34 @@ namespace JobHunting.Areas.Companies.Controllers
             }
         }
 
-        /// <summary>
-        /// 商店取號網址
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult CallbackCustomer()
-        {
-            // 接收參數
-            StringBuilder receive = new StringBuilder();
-            foreach (var item in Request.Form)
-            {
-                receive.AppendLine(item.Key + "=" + item.Value + "<br>");
-            }
-            ViewData["ReceiveObj"] = receive.ToString();
+        ///// <summary>
+        ///// 商店取號網址
+        ///// </summary>
+        ///// <returns></returns>
+        //public IActionResult CallbackCustomer()
+        //{
+        //    // 接收參數
+        //    StringBuilder receive = new StringBuilder();
+        //    foreach (var item in Request.Form)
+        //    {
+        //        receive.AppendLine(item.Key + "=" + item.Value + "<br>");
+        //    }
+        //    ViewData["ReceiveObj"] = receive.ToString();
 
-            // 解密訊息
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
-            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
-            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-            string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
-            NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
-            receive.Length = 0;
-            foreach (String key in decryptTradeCollection.AllKeys)
-            {
-                receive.AppendLine(key + "=" + decryptTradeCollection[key] + "<br>");
-            }
-            ViewData["TradeInfo"] = receive.ToString();
-            return View();
-        }
+        //    // 解密訊息
+        //    IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+        //    string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+        //    string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+        //    string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
+        //    NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
+        //    receive.Length = 0;
+        //    foreach (String key in decryptTradeCollection.AllKeys)
+        //    {
+        //        receive.AppendLine(key + "=" + decryptTradeCollection[key] + "<br>");
+        //    }
+        //    ViewData["TradeInfo"] = receive.ToString();
+        //    return View();
+        //}
 
         /// <summary>
         /// 支付通知網址
@@ -455,6 +470,15 @@ namespace JobHunting.Areas.Companies.Controllers
         /// <returns></returns>
         public async Task<IActionResult> CallbackNotify()
         {
+            // 付款失敗跳離執行
+            foreach (var item in Request.Form)
+            {
+                if (item.Key == "Status" && item.Value != "SUCCESS")
+                {
+                    return BadRequest();
+                }
+            }
+
             string payReceiveStatus = "";
             string? MerchantOrderNo = "";
             DateTime PayTime = new DateTime();
