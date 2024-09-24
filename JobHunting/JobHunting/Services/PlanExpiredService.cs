@@ -6,10 +6,12 @@ namespace JobHunting.Services
     public class PlanExpiredService
     {
         private readonly DuckContext _context;
+        private readonly PlanExpiredEmailService _emailService;
 
-        public PlanExpiredService(DuckContext context)
+        public PlanExpiredService(DuckContext context, PlanExpiredEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         // 發送到期前7天的提醒通知
@@ -23,8 +25,22 @@ namespace JobHunting.Services
 
             foreach (var company in companies)
             {
-                // 發送提醒邏輯
-                // 比如：使用EmailService發送郵件提醒公司
+                var subject = "方案到期提醒";
+                var body = $@"
+                <html>
+                <body>
+                      <p>親愛的 {company.CompanyName},</p>
+                      <p>您的方案將在 {company.Deadline.Value.ToShortDateString()} 到期。</p>
+                      <p>請前往選擇新的方案，以免影響您的服務。</p>
+                      <p><a href='https://localhost:7169/Companies/PricingPlans'>點擊這裡選擇方案</a></p>
+                      <p>祝好，<br/>小鴨上工</p>
+                </body>
+                </html>";
+
+
+                var toEmail = company.ContactEmail;
+
+                await _emailService.SendEmailAsync(toEmail, subject, body);
                 Console.WriteLine($"發送提醒給公司: {company.CompanyName}, 他們的方案將在 {company.Deadline.Value.ToShortDateString()} 到期.");
             }
         }
@@ -51,6 +67,7 @@ namespace JobHunting.Services
                 {
                     opening.ReleaseYN = false;
                 }
+                company.Deadline = null;
 
                 // 保存變更
                 await _context.SaveChangesAsync();

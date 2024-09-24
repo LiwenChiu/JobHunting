@@ -123,7 +123,8 @@ namespace JobHunting.Areas.Companies.Controllers
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
-            opinionLetter.SendTime = letter.SendTime;
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            opinionLetter.SendTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
 
             if (letter.ImageFile != null)
             {

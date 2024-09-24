@@ -30,7 +30,7 @@
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobRequirements">求職條件</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#autobiography">自傳</a></li>
                 <li v-for="item in resumeList">
-                    <template v-if="item.likeYN == null && item.companyId != null">
+                    <template v-if="memberRole == 'company'">
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#interviewMailBtn" style="color:white">
                             面試
@@ -129,7 +129,8 @@
                                 </label>
                             </div>
                             <div>
-                                <label class="" v-for="tag in item.tagObj">能力標籤: {{tag.tagName}} </label>
+                                <label for="" class="mb-2 mx-1">能力標籤: </label>
+                                <label class="" v-for="(tag,index) in item.tagObj">{{tag.tagName}} <span v-if="index < item.tagObj.length-1">、</span></label>
                             </div>
                         </p>
 
@@ -212,7 +213,6 @@
                     resumeId: "@Html.DisplayFor(model => model.ResumeId)",
                     candidateId: "@Html.DisplayFor(model => model.CandidateId)",
                     resumeList: [],
-                    companyId: 3,
                     openings: [],
                     openingId: "",
                     date: "",
@@ -221,7 +221,8 @@
                     subjectLine: "",
                     content: "",
                     baseAddress: "https://localhost:7169",
-                    minDate: ''
+                    minDate: '',
+                    memberRole:"",
                 };
             },
             methods: {
@@ -247,7 +248,7 @@
                         Content: self.content,
                     };
                     request.AppointmentTime = self.convertTimeOnly(self.time);
-                    axios.post(`${self.baseAddress}/Company/AddInterview`, request, {
+                    axios.post('@Url.Action("AddInterview", "Company")', request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
@@ -257,7 +258,7 @@
                 },
                 getResumeList() {
                     let self = this;
-                    axios.get(`${self.baseAddress}/Company/ResumeDetail`, {
+                    axios.get('@Url.Action("ResumeDetail", "Company")', {
                         params: {
                             resumeID: self.resumeId,
                         },
@@ -273,7 +274,7 @@
                     request = {
                         resumeId: self.resumeId
                     };
-                    axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
+                    axios.post('@Url.Action("AddFavorite", "Company")', request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data);
@@ -287,7 +288,7 @@
                     let request = {
                         ResumeId: self.resumeId,
                     };
-                    axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
+                    axios.post('@Url.Action("DeleteFavorite", "Company")', request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         alert(res.data)
@@ -299,7 +300,7 @@
 
                 getOpenings() {
                     let self = this;
-                    axios.get(`${self.baseAddress}/Company/GetOpenings/`, {
+                    axios.get('@Url.Action("GetOpenings", "Company")', {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         self.openings = res.data;
@@ -310,6 +311,19 @@
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
+                getRole() {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                    })
+                        .catch(function (error) {
+                                console.log(error);
+                    });
+                 },
             },
             mounted() {
                 let self = this;
@@ -317,6 +331,7 @@
                 self.getResumeList();
                 const today = new Date().toISOString().split('T')[0];
                 self.minDate = today;
+                self.getRole();
             },
         };
         let app3 = Vue.createApp(vueList).mount("#page-top")

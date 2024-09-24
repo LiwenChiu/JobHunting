@@ -77,7 +77,7 @@
         <div class="col-sm-8">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="turnPagePrevious()">
+                        <li class="page-item" v-on:click="setPage(currentPageSafe-1)">
                         <button type="button" class="page-link" aria-label="Previous" v-bind:disabled="isturnPagePreviousDisabled">
                             <span aria-hidden="true">&laquo;</span>
                         </button>
@@ -85,7 +85,7 @@
                     <li v-for="page in totalPage" class="page-item" v-on:click="turnPage(page)">
                         <button type="button" class="page-link">{{page}}</button>
                     </li>
-                    <li class="page-item" v-on:click="turnPageNext()">
+                        <li class="page-item" v-on:click="setPage(currentPageSafe+1)">
                         <button type="button" class="page-link" aria-label="Next" v-bind:disabled="isturnPageNextDisabled">
                             <span aria-hidden="true">&raquo;</span>
                         </button>
@@ -272,7 +272,7 @@
         <div>
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" v-on:click="turnPagePrevious()">
+                    <li class="page-item" v-on:click="setPage(currentPageSafe-1)">
                         <button type="button" class="page-link" aria-label="Previous" v-bind:disabled="isturnPagePreviousDisabled">
                             <span aria-hidden="true">&laquo;</span>
                         </button>
@@ -280,7 +280,7 @@
                     <li v-for="page in totalPage" class="page-item" v-on:click="turnPage(page)">
                         <button type="button" class="page-link">{{page}}</button>
                     </li>
-                    <li class="page-item" v-on:click="turnPageNext()">
+                    <li class="page-item" v-on:click="setPage(currentPageSafe+1)">
                         <button type="button" class="page-link" aria-label="Next" v-bind:disabled="isturnPageNextDisabled">
                             <span aria-hidden="true">&raquo;</span>
                         </button>
@@ -326,7 +326,7 @@
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
-                    currentPageSafe: "",
+                    currentPageSafe: null,
                     totalDataCount: null,
                     totalPage: null,
                     openings: [],
@@ -365,21 +365,16 @@
                         this.classNumber = "";
                         this.filterOpenings();
                 },
+                setPage(page) {     //當按到第幾頁顯示的資料
+                    if (page <= 0 || page > this.totalPage) {
+                        return
+                    }
+                    this.currentPage = page
+                    this.filterOpenings();
+                },
                 turnPage: function (page) {
                     this.currentPage = page;
                     this.filterOpenings();
-                },
-                turnPagePrevious: function () {
-                    if (this.currentPage != 1) {
-                        this.currentPage--;
-                        this.filterOpenings();
-                    }
-                },
-                turnPageNext: function () {
-                    if (this.currentPage != this.totalPage) {
-                        this.currentPage++;
-                        this.filterOpenings();
-                    }
                 },
                 filterOpenings(){
                     let self = this;
@@ -393,7 +388,7 @@
                         salary: self.salary,
                         classNumber: self.classNumber,
                     };
-                        axios.post(`${self.baseAddress}/Home/SelectOpeningsList`, request, {
+                    axios.post('@Url.Action("SelectOpeningsList", "Home")', request, {
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.openings = res.data.openingsIndexOutput;
@@ -430,7 +425,7 @@
                     }
                 },
                 getCity() {
-                    axios.get('/cityjson/CityCountyData.json')  //根目錄資料
+                    axios.get('@Url.Content("~/cityjson/CityCountyData.json")')  //根目錄資料
                         .then(model => {
                             this.cityList = model.data;
                         })
@@ -443,8 +438,8 @@
                 },
                 getCompanyClass() {
                     let self = this;
-                    axios.get(`${self.baseAddress}/Home/CompanyClassSelect`)  
-                        .then(model => {
+                    axios.get('@Url.Action("CompanyClassSelect", "Home")')
+                                .then(model => {
                             self.companyClassList = model.data;
                         })
                         .catch(function (error) {

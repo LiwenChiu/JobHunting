@@ -21,6 +21,7 @@ builder.Services.AddSingleton<ReviewMaillService>();
 //忘記密碼
 builder.Services.AddSingleton<CandidateForgetPasswordEmailService>();
 builder.Services.AddSingleton<CompanyForgetPasswordEmailService>();
+builder.Services.AddSingleton<PlanExpiredEmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
@@ -46,6 +47,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
 // Add Hangfire services
 builder.Services.AddHangfire(configuration =>
     configuration.UseSqlServerStorage(builder.Configuration.GetConnectionString("Duck")));
@@ -70,9 +72,10 @@ builder.Services.AddAuthorization();  // 添加授權服務
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
 else
@@ -116,17 +119,22 @@ app.UseHangfireDashboard();
 using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
-
+    var options = new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time")
+    };
     // 每天執行一次，檢查即將到期的公司並發送提醒
     RecurringJob.AddOrUpdate(
         "SendExpirationReminders",
-        () => companyService.SendExpirationReminders(),
-        Cron.Daily);
+    () => companyService.SendExpirationReminders(),
+    "59 23 * * *",
+    options);
 
     // 每天執行一次，檢查過期的公司並關閉其職缺
     RecurringJob.AddOrUpdate(
         "CloseExpiredJobOpenings",
-        () => companyService.CloseExpiredJobOpenings(),
-        Cron.Daily);
+    () => companyService.CloseExpiredJobOpenings(),
+    "59 23 * * *",
+    options);
 }
 app.Run();
