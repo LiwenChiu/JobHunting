@@ -15,6 +15,8 @@ using System.Collections.Specialized;
 using System.Web;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -23,10 +25,12 @@ namespace JobHunting.Areas.Companies.Controllers
     public class PricingPlansController : Controller
     {
         private readonly DuckCompaniesContext _context;
+        private readonly Logger<PricingPlansController> _logger;
 
-        public PricingPlansController(DuckCompaniesContext context)
+        public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Companies/PricingPlans
@@ -127,10 +131,10 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string ReturnURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
             //string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans"; //返回商店網址
+            string NotifyURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
@@ -311,14 +315,19 @@ namespace JobHunting.Areas.Companies.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CallbackReturn()
+        public async Task<IActionResult> CallbackReturn()
         {
+            var formString = JsonSerializer.Serialize(Request.Form);
+            _logger.LogInformation(formString);
+
+            string NewebPayStatus = "";
             // 付款失敗跳離執行
             foreach (var item in Request.Form)
             {
-                if(item.Key == "Status" && item.Value != "SUCCESS")
+                if (item.Key == "Status")
                 {
-                    return BadRequest();
+                    NewebPayStatus = item.Value;
+                    break;
                 }
             }
 
@@ -326,26 +335,110 @@ namespace JobHunting.Areas.Companies.Controllers
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
             string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-
             string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
             NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
 
             // 接收TradeInfo參數
             NewebPayReturnTradeInfoViewModel result = new NewebPayReturnTradeInfoViewModel();
+            result.Status = NewebPayStatus;
             foreach (String key in decryptTradeCollection.AllKeys)
             {
-                if(key == "Amt")
+                if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
+                {
+                    _logger.LogInformation(TradeInfoDecrypt);
+                    return BadRequest();
+                }
+                if (key == "Message")
+                {
+                    result.Message = decryptTradeCollection[key];
+                }
+                if (key == "MerchantID")
+                {
+                    result.MerchantID = decryptTradeCollection[key];
+                }
+                if (key == "Amt")
                 {
                     result.Amt = decryptTradeCollection[key];
                 }
-                else if(key == "MerchantOrderNo")
+                if (key == "TradeNo")
+                {
+                    result.TradeNo = decryptTradeCollection[key];
+                }
+                if (key == "MerchantOrderNo")
                 {
                     result.MerchantOrderNo = decryptTradeCollection[key];
                 }
-                else if(key == "PayTime")
+                if (key == "PaymentType")
                 {
-                    result.PayTime = decryptTradeCollection[key];
+                    result.PaymentType = decryptTradeCollection[key];
                 }
+                if (NewebPayStatus == "SUCCESS" && key == "PayTime")
+                {
+                    result.PayTime = DateTime.Parse(decryptTradeCollection[key]);
+                }
+                else if (NewebPayStatus != "SUCCESS" && key == "PayTime")
+                {
+                    result.PayTime = null;
+                }
+                if (key == "IP")
+                {
+                    result.IP = decryptTradeCollection[key];
+                }
+                if (key == "EscrowBank")
+                {
+                    result.EscrowBank = decryptTradeCollection[key];
+                }
+            }
+
+            var companyOrder = await _context.CompanyOrders.FindAsync(result.MerchantOrderNo);
+            if (companyOrder == null)
+            {
+                return NotFound();
+            }
+
+            //companyOrder.StatusType = payReceiveStatus switch
+            //{
+            //    string type when type == "0" => "已過期",
+            //    string type when type == "1" => "付款成功",
+            //    string type when type == "2" => "付款失敗",
+            //    string type when type == "3" => "取消付款",
+            //    string type when type == "6" => "退款",
+            //    _ => "錯誤",
+            //};
+            companyOrder.Status = true;
+            if (NewebPayStatus == "SUCCESS")
+            {
+                companyOrder.StatusType = "付款成功";
+            }
+            else
+            {
+                companyOrder.StatusType = "付款失敗";
+            }
+            companyOrder.NewebPayStatus = NewebPayStatus;
+            companyOrder.NewebPayMessage = result.Message;
+            companyOrder.TradeNo = result.TradeNo;
+            companyOrder.PaymentType = result.PaymentType;
+            companyOrder.IP = result.IP;
+            companyOrder.EscrowBank = result.EscrowBank;
+
+            var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+            if (company == null) { return NotFound(); }
+            if (!companyOrder.Status)
+            {
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
+                deadline.AddDays(companyOrder.Duration);
+                company.Deadline = deadline;
+            }
+
+            _context.Entry(companyOrder).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
             }
 
             ViewData["CallbackReturnResult"] = result;
@@ -470,18 +563,20 @@ namespace JobHunting.Areas.Companies.Controllers
         /// <returns></returns>
         public async Task<IActionResult> CallbackNotify()
         {
-            // 付款失敗跳離執行
+            var formString = JsonSerializer.Serialize(Request.Form);
+            _logger.LogInformation(formString);
+
+            string NewebPayStatus = "";
             foreach (var item in Request.Form)
             {
-                if (item.Key == "Status" && item.Value != "SUCCESS")
+                if (item.Key == "Status")
                 {
-                    return BadRequest();
+                    NewebPayStatus = item.Value;
+                    break;
                 }
             }
 
-            string payReceiveStatus = "";
-            string? MerchantOrderNo = "";
-            DateTime PayTime = new DateTime();
+            string MerchantOrderNo = "";
 
             // 解密訊息
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
@@ -491,17 +586,9 @@ namespace JobHunting.Areas.Companies.Controllers
             NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
             foreach (String key in decryptTradeCollection.AllKeys)
             {
-                if (key == "TradeStatus")
-                {
-                    payReceiveStatus = decryptTradeCollection[key];
-                }
                 if (key == "MerchantOrderNo")
                 {
                     MerchantOrderNo = decryptTradeCollection[key];
-                }
-                if (payReceiveStatus == "1" && key == "PayTime")
-                {
-                    PayTime = DateTime.Parse(decryptTradeCollection[key]);
                 }
             }
 
@@ -511,23 +598,80 @@ namespace JobHunting.Areas.Companies.Controllers
                 return NotFound();
             }
 
-            companyOrder.StatusType = payReceiveStatus switch
+            if (companyOrder.Status)
             {
-                string type when type == "0" => "已過期",
-                string type when type == "1" => "付款成功",
-                string type when type == "2" => "付款失敗",
-                string type when type == "3" => "取消付款",
-                string type when type == "6" => "退款",
-                _ => "錯誤",
-            };
+                return Ok();
+            }
 
-            companyOrder.PayDate = PayTime;
+            // 接收TradeInfo參數
+            NewebPayReturnTradeInfoViewModel result = new NewebPayReturnTradeInfoViewModel();
+            result.Status = NewebPayStatus;
+            result.MerchantOrderNo = MerchantOrderNo;
+            foreach (String key in decryptTradeCollection.AllKeys)
+            {
+                if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
+                {
+                    _logger.LogInformation(TradeInfoDecrypt);
+                    return BadRequest();
+                }
+                if (key == "Message")
+                {
+                    result.Message = decryptTradeCollection[key];
+                }
+                if (key == "MerchantID")
+                {
+                    result.MerchantID = decryptTradeCollection[key];
+                }
+                if (key == "Amt")
+                {
+                    result.Amt = decryptTradeCollection[key];
+                }
+                if (key == "TradeNo")
+                {
+                    result.TradeNo = decryptTradeCollection[key];
+                }
+                if (key == "PaymentType")
+                {
+                    result.PaymentType = decryptTradeCollection[key];
+                }
+                if (NewebPayStatus == "SUCCESS" && key == "PayTime")
+                {
+                    result.PayTime = DateTime.Parse(decryptTradeCollection[key]);
+                }
+                else if (NewebPayStatus != "SUCCESS" && key == "PayTime")
+                {
+                    result.PayTime = null;
+                }
+                if (key == "IP")
+                {
+                    result.IP = decryptTradeCollection[key];
+                }
+                if (key == "EscrowBank")
+                {
+                    result.EscrowBank = decryptTradeCollection[key];
+                }
+            }
+
             companyOrder.Status = true;
-
-            if(payReceiveStatus == "1")
+            if (NewebPayStatus == "SUCCESS")
             {
-                var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
-                if (company == null) {  return NotFound(); }
+                companyOrder.StatusType = "付款成功";
+            }
+            else
+            {
+                companyOrder.StatusType = "付款失敗";
+            }
+            companyOrder.NewebPayStatus = NewebPayStatus;
+            companyOrder.NewebPayMessage = result.Message;
+            companyOrder.TradeNo = result.TradeNo;
+            companyOrder.PaymentType = result.PaymentType;
+            companyOrder.IP = result.IP;
+            companyOrder.EscrowBank = result.EscrowBank;
+
+            var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+            if (company == null) { return NotFound(); }
+            if (!companyOrder.Status)
+            {
                 DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
                 deadline.AddDays(companyOrder.Duration);
                 company.Deadline = deadline;

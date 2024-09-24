@@ -33,6 +33,18 @@ public partial class CompanyOrder
 
     public string StatusType { get; set; }
 
+    public string NewebPayStatus { get; set; }
+
+    public string NewebPayMessage { get; set; }
+
+    public string TradeNo { get; set; }
+
+    public string PaymentType { get; set; }
+
+    public string IP { get; set; }
+
+    public string EscrowBank { get; set; }
+
     public virtual Company Company { get; set; }
 
     public virtual PricingPlan Plan { get; set; }
