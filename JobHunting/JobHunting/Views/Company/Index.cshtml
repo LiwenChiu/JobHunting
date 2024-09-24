@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-warning">
-                    <template v-if="item.likeYN != null">
+                    <template v-if="memberRole == 'company'">
                         <template v-if="item.likeYN == false">
                         <button class="btn btn-danger" v-on:click="addFavorite(item.resumeID)">儲存</button>
                         </template>
@@ -238,7 +238,8 @@
                     city:"",
                     areaName: "",
                     cancel: false,
-                    baseAddress: "https://localhost:7169"
+                    baseAddress: "https://localhost:7169",
+                    memberRole: ""
                 };
             },
             methods: {
@@ -357,12 +358,26 @@
                             console.error(error);
                         });
                 },
+                getRole () {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
             },
             mounted() {
                 this.getTag();
                 this.getCity();
                 this.filterResumes();
-                this.getDegree()
+                this.getDegree();
+                this.getRole();
             }
         };
         let vacancies = Vue.createApp(vueList).mount("#app2");
