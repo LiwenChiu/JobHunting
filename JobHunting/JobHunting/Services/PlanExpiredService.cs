@@ -51,6 +51,7 @@ namespace JobHunting.Services
                 {
                     opening.ReleaseYN = false;
                 }
+                company.Deadline = null;
 
                 // 保存變更
                 await _context.SaveChangesAsync();
