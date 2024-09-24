@@ -73,7 +73,7 @@
             <div class="col-sm-8">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item" v-on:click="setPage(currentPage-1)">
+                        <li class="page-item" v-on:click="setPage(currentPageNow-1)">
                             <a class="page-link" href="#homeList" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -81,7 +81,7 @@
                         <li v-for="item in totalPage" class="page-item" v-on:click="setPage(item)">
                             <a class="page-link" href="#homeList">{{item}}</a>
                         </li>
-                        <li class="page-item" v-on:click="setPage(currentPage+1)">
+                        <li class="page-item" v-on:click="setPage(currentPageNow+1)">
                             <a class="page-link" href="#homeList" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
