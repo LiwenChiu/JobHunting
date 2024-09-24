@@ -12,6 +12,7 @@ using System.Numerics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
+using System.Text;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -108,6 +109,100 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var companyDeadline = company.Deadline;
             return companyDeadline.HasValue ? companyDeadline.Value.ToString("yyyy年MM月dd日 HH點mm分") : null;
+        }
+
+        /// <summary>
+        /// 傳送查詢要求至藍新金流
+        /// </summary>
+        /// <param name="inModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendToNewebPaySearch([FromBody][Bind("OrderId")] SendToNewebPaySearchInViewModel inModel)
+        {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return Json(new { message = "未授權訪問" });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { message = "失敗" });
+            }
+
+            int companyId = int.Parse(CompanyId);
+
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                return Json(new { message = "失敗" });
+            }
+
+            var companyOrder = await _context.CompanyOrders.FindAsync(inModel.OrderId);
+            if(companyOrder == null || companyOrder.CompanyId != companyId || !companyOrder.Status)
+            {
+                return Json(new { message = "訂單錯誤" });
+            }
+
+            SendToNewebPaySearchOutViewModel outModel = new SendToNewebPaySearchOutViewModel();
+
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+
+            var MerchantID = Config.GetSection("MerchantID").Value;
+            int Price = decimal.ToInt32(companyOrder.Price);
+
+            List<KeyValuePair<string,string>> CheckValue = new List<KeyValuePair<string,string>>();
+            CheckValue.Add(new KeyValuePair<string, string>("Amt", Price.ToString()));
+            CheckValue.Add(new KeyValuePair<string, string>("MerchantID", MerchantID));
+            CheckValue.Add(new KeyValuePair<string, string>("MerchantOrderNo", companyOrder.OrderId));
+
+            string CheckValueParam = string.Join("&", CheckValue.Select(x => $"{x.Key}={x.Value}"));
+
+            outModel.MerchantID = MerchantID;
+            outModel.Version = "1.3";
+            outModel.RespondType = "String";
+
+            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+            string HashIVStr = $"IV={HashIV}";
+
+            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+            string HashKeyStr = $"Key={HashKey}";
+
+            string[] CheckValueList = [HashIVStr, CheckValueParam, HashKeyStr];
+
+            string CheckValueStr = string.Join("&", CheckValueList);
+
+            string CheckValueEncrypt = EncryptSHA256(CheckValueStr);
+
+            outModel.CheckValue = CheckValueEncrypt;
+            outModel.TimeStamp = DateTimeOffset.Now.ToOffset(new TimeSpan(8, 0, 0)).ToUnixTimeSeconds().ToString();
+            outModel.MerchantOrderNo = companyOrder.OrderId;
+            outModel.Amt = Price;
+
+            return Json(outModel);
+        }
+
+        /// <summary>
+        /// 字串加密SHA256
+        /// </summary>
+        /// <param name="source">加密前字串</param>
+        /// <returns>加密後字串</returns>
+        public string EncryptSHA256(string source)
+        {
+            string result = string.Empty;
+
+            using (System.Security.Cryptography.SHA256 algorithm = System.Security.Cryptography.SHA256.Create())
+            {
+                var hash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(source));
+
+                if (hash != null)
+                {
+                    result = BitConverter.ToString(hash)?.Replace("-", string.Empty)?.ToUpper();
+                }
+
+            }
+            return result;
         }
 
         //POST: Companies/CompanyOrders/CancelOrder

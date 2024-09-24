@@ -80,8 +80,6 @@ namespace JobHunting.Areas.Companies.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SendToNewebPay([FromBody][Bind("PlanId")] SendToNewebPayInViewModel inModel)
         {
-            var baseAddress = "https://localhost:7169";
-
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(CompanyId))
             {
@@ -129,10 +127,10 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{baseAddress}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
-            string CustomerURL = $"{baseAddress}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{baseAddress}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}{Request.Path}Companies/PricingPlans"; //返回商店網址
+            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
+            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/CompanyOrders"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();

@@ -54,12 +54,19 @@
                     <td>{{order.orderDate}}</td>
                     <td>{{order.payDate == null ? "無" : order.payDate}}</td>
                     <td>{{order.statusType}}</td>
-                    <td><template v-if="!order.status"><button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button></template></td>
+                    <td>
+                        <template v-if="!order.status">
+                            <button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button>
+                        </template>
+                        <template v-else>
+                            <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
+                        </template>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
-    
+
 </div>
 
 @section Scripts
@@ -86,7 +93,7 @@
                             'Content-Type': 'application/json'
                         },
                     }).then(response => this.orders = response.data)
-                    .catch(err => { alert(err) });
+                        .catch(err => { alert(err) });
 
                     // 拿Companies裡的Deadline
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`, {
@@ -99,8 +106,44 @@
                 showDeadline() {
                     return this.deadline === null ? "請購買方案" : this.deadline;
                 },
+                SendToNewebPaySearch:function(orderId){
+                    var self = this;
+
+                    // 訂單Id
+                    var postData = {};
+                    postData['OrderId'] = orderId;
+
+                    axios.post(`${self.baseAddress}/Companies/CompanyOrders/SendToNewebPaySearch`, postData,{
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                            const returnObj = response.data;
+
+                            // 呼叫藍新金流 API
+                            const form = document.createElement('form');
+                            form.method = 'post';
+                            form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
+                            // form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
+
+                            for (const key in returnObj) {
+                                if (returnObj.hasOwnProperty(key)) {
+                                    const hiddenField = document.createElement('input');
+                                    hiddenField.type = 'hidden';
+                                    hiddenField.name = key;
+                                    hiddenField.value = returnObj[key];
+                                    form.appendChild(hiddenField);
+                                }
+                            }
+                            document.body.appendChild(form);
+                            form.submit();
+                        })
+                        .catch(error => {
+                            alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
+                        });
+                },
                 cancelOrder: function (orderId) {
-                    let request = { OrderId : orderId };
+                    let request = { OrderId: orderId };
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -116,12 +159,12 @@
                     let time = window.setTimeout((() => this.alertStatus = ""), 5000);
                 },
             },
-            watch:{
-                searchOrderInput:function(){
+            watch: {
+                searchOrderInput: function () {
                     this.getCompanyOrders();
                 },
             },
-            mounted:function(){
+            mounted: function () {
                 this.getCompanyOrders();
             },
         };
