@@ -83,9 +83,6 @@
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">履歷瀏覽</a></li>
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="Index">職缺瀏覽</a></li>
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                                <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn text-danger">登出</button>
-                                </form>
                                 <form asp-area="" asp-controller="Home" asp-action="AdminLogout" method="post">
                                     <button type="submit" class="btn nav-link">管理者登出</button>
                                 </form>
@@ -101,7 +98,6 @@
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Login">登入</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Register">註冊</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="AdminLogin">管理者登入</a></li>
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Index">管理中心</a></li>
                         </ul>
                     </div>
                 </template>
