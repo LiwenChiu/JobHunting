@@ -922,8 +922,8 @@ namespace JobHunting.Controllers
                 if (opening.Salary != null)
                 {
                     sourceUnlogin = sourceUnlogin.Where(b =>
-                             opening.Salary >= b.SalaryMin &&
-                             opening.Salary <= b.SalaryMax);
+                             opening.Salary <= b.SalaryMin ||
+                             b.SalaryMax >= opening.Salary );
                 }
                 if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == "" && opening.Salary == null)
                 {
@@ -999,8 +999,8 @@ namespace JobHunting.Controllers
                 if (opening.Salary != null)
                 {
                     sourcelogin = sourcelogin.Where(b =>
-                             opening.Salary >= b.SalaryMin &&
-                             opening.Salary <= b.SalaryMax);
+                             opening.Salary <= b.SalaryMin ||
+                             b.SalaryMax >= opening.Salary);
                 }
                 if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == "" && opening.Salary == null)
                 {
