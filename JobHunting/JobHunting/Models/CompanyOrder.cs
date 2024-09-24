@@ -7,11 +7,13 @@ namespace JobHunting.Models;
 
 public partial class CompanyOrder
 {
-    public int OrderId { get; set; }
+    public string OrderId { get; set; }
 
     public int? CompanyId { get; set; }
 
     public int? PlanId { get; set; }
+
+    public int OrderNumber { get; set; }
 
     public string CompanyName { get; set; }
 
@@ -23,11 +25,13 @@ public partial class CompanyOrder
 
     public DateTime OrderDate { get; set; }
 
-    public DateTime PayDate { get; set; }
+    public DateTime? PayDate { get; set; }
 
     public int Duration { get; set; }
 
     public bool Status { get; set; }
+
+    public string StatusType { get; set; }
 
     public virtual Company Company { get; set; }
 

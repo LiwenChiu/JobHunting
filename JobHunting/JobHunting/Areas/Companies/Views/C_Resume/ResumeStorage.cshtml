@@ -190,7 +190,7 @@
                                                 <div class="inputOutAreas">
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                        <input type="date" class="form-control inputDate">
+                                                        <input type="date" class="form-control inputDate" :min="minDate">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
@@ -229,7 +229,7 @@
                                                 <div class="inputOutAreas">
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">日期：</label>
-                                                        <input type="date" class="form-control inputDate">
+                                                        <input type="date" class="form-control inputDate" :min="minDate">
                                                     </div>
                                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                                         <label for=" inputCompanyName" class="col-sm-2 col-form-label labelTime">時間：</label>
@@ -297,6 +297,7 @@
 
                     resumes: [], //從後端撈回來的資料存入這邊
                     filter: "",
+                    minDate: ''
                 };
             },
             computed: {
@@ -342,6 +343,8 @@
             //每次重新載入網頁時會自動初始化撈出資料
             mounted() {
                 this.resumeStorageData();
+                const today = new Date().toISOString().split('T')[0];
+                this.minDate = today;
             }
         }; let app = Vue.createApp(VueApp).mount("#resumeStorage");
     </script>

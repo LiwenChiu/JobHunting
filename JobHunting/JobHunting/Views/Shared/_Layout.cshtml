@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="~/css/oldstyles.css" rel="stylesheet" />
     <link href="~/css/styles.css" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
 
@@ -97,8 +98,8 @@
                             <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="CompanyIndex">公司首頁</a></li>
                             </ul>
                             </li> *@
-                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">履歷瀏覽</a></li>
-                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="CompanyIndex">職缺瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="CompanyIndex">履歷瀏覽</a></li>
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                                 <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
                                     <button type="submit" class="btn text-danger">登出</button>
@@ -150,7 +151,7 @@
                             </li> *@
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Login">登入</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="AdminLogin">管理者登入</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Index">管理中心</a></li>
                         </ul>
                     </div>

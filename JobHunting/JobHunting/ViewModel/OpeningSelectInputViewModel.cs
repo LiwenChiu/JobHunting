@@ -4,8 +4,9 @@
     {
         public string? ClassNumber { get; set; }
         public int? Salary { get; set; }
-        public string? Area { get; set; }
+        public string AreaName { get; set; }
         public string? SearchText { get; set; }
-        public string? ZipCode { get; set; }
+        public int Page { get; set; }
+        public int Count { get; set; }
     }
 }

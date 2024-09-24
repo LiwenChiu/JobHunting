@@ -27,17 +27,19 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobDescription">工作內容</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
             <li v-for="item in openingList">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#applyMailBtn" style="color:white">
-                    應徵
-                </button>
-                <template v-if="item.likeYN == false">
-                    <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
-                        暫存
-                    </button>
-                </template>
-                <template v-else>
-                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite">已存</button>
+                <template v-if="item.likeYN != null">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#applyMailBtn" style="color:white">
+                            應徵
+                        </button>
+                        <template v-if="item.likeYN == false">
+                            <button type="button" class="btn btn-primary btn-sm" v-on:click="addFavorite" style="color:white">
+                                暫存
+                            </button>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-outline-danger btn-sm" v-on:click="deleteFavorite">已存</button>
+                        </template>
                 </template>
             </li>
         </ul>
@@ -74,16 +76,16 @@
                                     <label for="" class="mb-2">上班時段 : {{item.time}}</label>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="mb-2" >職務名稱 : </label>
-                                    <label for="" class="mb-2" v-for="className in item.titleClassName">{{className}}</label>
+                                    <label for="" class="mb-2 mx-1" >職務名稱 : </label>
+                                    <label for="" class="mb-2" v-for="(className,index) in item.titleClassName">{{className}}<span v-if="index < item.titleClassName.length -1">、</span></label>
                                 </div>
                                 <div class="col">
                                     <label for="" class="mb-2">薪資條件 : {{item.salaryMin}} ~ {{item.salaryMax}}</label>
                                 </div>
                                 <div class="col">
                                     <label for="" class="mb-2 ">學歷要求 : {{item.degree}}</label>
-                                    <label for="" class="mb-2 mx-3">技能要求 : </label>
-                                    <label for="" class="mb-2 " v-for="tag in item.tagName">{{tag}} </label>
+                                    <label for="" class="mb-2 mx-1">技能要求 : </label>
+                                    <label for="" class="mb-2 " v-for="(tag,index) in item.tagName">{{tag}}<span v-if="index < item.tagName.length-1">、</span></label>
                                 </div>
                                 <div class="card-body " id="benefits">
                                     <h5 class="card-title text-center" style="">福利制度</h5>

@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Drawing.Configuration;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -34,85 +35,13 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        // GET: Admins/CompanyOrders/IndexJson
-        public async Task<JsonResult> IndexJson()
-        {
-            return Json(_context.CompanyOrders.Include(co => co.Plan).Select(co => new
-            {
-                OrderId = co.OrderId,
-                CompanyId = co.CompanyId,
-                PlanId = co.PlanId,
-                CompanyName = co.CompanyName,
-                GUINumber = co.GUINumber,
-                Title = co.Title,
-                Price = co.Price,
-                PayDate = co.PayDate,
-                Duration = co.Duration,
-                Intro = co.Plan.Intro,
-                Status = co.Status,
-            }));
-        }
-
-        ////POST: Admins/CompanyOrders/BootFilterPage
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<IEnumerable<CompanyOrdersFilterViewModel>> BootFilterPage([FromBody][Bind("OrderId,CompanyId,PlanId,CompanyName,GUINumber,Title,Price,PayDate,Duration,Intro,Status")] CompanyOrdersViewModel covm)
-        //{
-        //    CultureInfo cultureTW = new CultureInfo("zh-TW");
-
-        //    return _context.CompanyOrders.Include(co => co.Plan).Select(co => new
-        //    {
-        //        OrderId = co.OrderId,
-        //        CompanyId = co.CompanyId,
-        //        PlanId = co.PlanId,
-        //        CompanyName = co.CompanyName,
-        //        GUINumber = co.GUINumber,
-        //        Title = co.Title,
-        //        Price = co.Price,
-        //        PayDate = co.PayDate.ToString(),
-        //        Duration = co.Duration,
-        //        Expiration = co.Status ? co.PayDate.AddDays(co.Duration).ToString() : null,
-        //        Intro = co.Plan.Intro,
-        //        Status = co.Status,
-        //    }).Where(covmfilter => covmfilter.OrderId.ToString().Contains(covm.OrderId.ToString()) ||
-        //                            covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
-        //                            covmfilter.PlanId.ToString().Contains(covm.PlanId.ToString()) ||
-        //                            covmfilter.CompanyName.Contains(covm.CompanyName) ||
-        //                            covmfilter.GUINumber.Contains(covm.GUINumber) ||
-        //                            covmfilter.Title.Contains(covm.Title) ||
-        //                            covmfilter.Price.ToString().Contains(covm.Price.ToString()) ||
-        //                            covmfilter.PayDate.Contains(covm.PayDate) ||
-        //                            covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
-        //                            covmfilter.Expiration.Contains(covm.Expiration) ||
-        //                            covmfilter.Intro.Contains(covm.Intro) ||
-        //                            (covmfilter.Status ? "已付款" : "尚未付款").Contains(covm.Status))
-        //    .Select(co => new CompanyOrdersFilterViewModel
-        //    {
-        //        OrderId = co.OrderId,
-        //        CompanyId = co.CompanyId,
-        //        PlanId = co.PlanId,
-        //        CompanyName = co.CompanyName,
-        //        GUINumber = co.GUINumber,
-        //        Title = co.Title,
-        //        Price = co.Price,
-        //        PayDate = co.PayDate,
-        //        //PayDate = DateTime.Parse(co.PayDate).ToString(cultureTW),
-        //        Duration = co.Duration,
-        //        Expiration = co.Expiration == null ? "無" : co.Expiration,
-        //        //Expiration = DateTime.Parse(co.Expiration).ToString(cultureTW),
-        //        Intro = co.Intro,
-        //        Status = co.Status,
-        //    });
-        //}
-
         //POST: Admins/CompanyOrders/BootFilterPaging
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<CompanyOrdersOutputViewModel> BootFilterPaging([FromBody][Bind("OrderId,CompanyId,PlanId,CompanyName,GUINumber,Title,Price,PayDate,Duration,Intro,Status,PageDraw,PageLength,PageStart")] CompanyOrdersViewModel covm)
+        public async Task<CompanyOrdersOutputViewModel> BootFilterPaging([FromBody][Bind("OrderId,CompanyId,PlanId,CompanyName,GUINumber,Title,Price,PayDate,Duration,Intro,StatusType,PageDraw,PageLength,PageStart")] CompanyOrdersViewModel covm)
         {
-            CultureInfo cultureTW = new CultureInfo("zh-TW");
-
             var companyorders = _context.CompanyOrders.Include(co => co.Plan).AsNoTracking()
+                .OrderByDescending(co => co.PayDate)
                 .Select(co => new CompanyOrdersFilterViewModel
                 {
                     OrderId = co.OrderId,
@@ -122,13 +51,12 @@ namespace JobHunting.Areas.Admins.Controllers
                     GUINumber = co.GUINumber,
                     Title = co.Title,
                     Price = co.Price,
-                    PayDate = co.PayDate,
+                    PayDate = co.StatusType == "付款成功" ? co.PayDate : null,
                     Duration = co.Duration,
-                    Expiration = co.Status ? co.PayDate.AddDays(co.Duration) : null,
                     Intro = co.Plan.Intro,
-                    Status = co.Status
-                }).Where(covmfilter => covmfilter.OrderId.ToString().Contains(covm.OrderId.ToString()) ||
-                                        covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
+                    Status = co.Status,
+                    StatusType = co.StatusType,
+                }).Where(covmfilter => covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
                                         covmfilter.PlanId.ToString().Contains(covm.PlanId.ToString()) ||
                                         covmfilter.CompanyName.Contains(covm.CompanyName) ||
                                         covmfilter.GUINumber.Contains(covm.GUINumber) ||
@@ -136,9 +64,9 @@ namespace JobHunting.Areas.Admins.Controllers
                                         covmfilter.Price.ToString().Contains(covm.Price.ToString()) ||
                                         covmfilter.PayDate.ToString().Contains(covm.PayDate) ||
                                         covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
-                                        covmfilter.Expiration.ToString().Contains(covm.Expiration) ||
                                         covmfilter.Intro.Contains(covm.Intro) ||
-                                        (covmfilter.Status ? "已付款" : "尚未付款").Contains(covm.Status))
+                                        covmfilter.StatusType.Contains(covm.StatusType))
+                .OrderBy(co => co.Status)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -148,12 +76,10 @@ namespace JobHunting.Areas.Admins.Controllers
                     GUINumber = co.GUINumber,
                     Title = co.Title,
                     Price = co.Price,
-                    PayDate = co.PayDate.ToString("yyyy/MM/dd HH:mm:ss"),
+                    PayDate = co.PayDate.HasValue ? co.PayDate.Value.ToString("yyyy/MM/dd HH:mm:ss") : "無",
                     Duration = co.Duration,
-                    Expiration = co.Expiration.HasValue ? co.Expiration.Value.ToString("yyyy/MM/dd HH:mm:ss") : "無",
-                    Intro = co.Intro,
-                    Status = co.Status,
-                }).OrderBy(co => co.Status).ThenByDescending(co => co.OrderId);
+                    StatusType = co.StatusType.IsNullOrEmpty() ? "尚未付款" : co.StatusType,
+                });
 
             var filterPaging = new CompanyOrdersOutputViewModel
             {

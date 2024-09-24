@@ -53,7 +53,7 @@
                     <td>{{order.price}}</td>
                     <td>{{order.orderDate}}</td>
                     <td>{{order.payDate == null ? "無" : order.payDate}}</td>
-                    <td>{{order.status ? "已付款" : "尚未付款"}}</td>
+                    <td>{{order.statusType}}</td>
                     <td><template v-if="!order.status"><button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button></template></td>
                 </tr>
             </tbody>
@@ -80,13 +80,12 @@
             methods: {
                 getCompanyOrders: function () {
                     let request = {};
-                    request.Price = request.Duration = Number.isNaN(Number(this.searchOrderInput)) ? -1 : Number(this.searchOrderInput);
-                    request.Title = request.OrderDate = request.PayDate = this.searchOrderInput;
+                    request.Filter = this.searchOrderInput;
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                    }).then(response => this.orders = response.data )
+                    }).then(response => this.orders = response.data)
                     .catch(err => { alert(err) });
 
                     // 拿Companies裡的Deadline
@@ -98,11 +97,10 @@
                         .catch(err => { alert(err) });
                 },
                 showDeadline() {
-                    return this.deadline === null ? "無" : this.deadline;
+                    return this.deadline === null ? "請購買方案" : this.deadline;
                 },
                 cancelOrder: function (orderId) {
-                    let request = {};
-                    request.orderId = orderId;
+                    let request = { OrderId : orderId };
                     axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
                         headers: {
                             'Content-Type': 'application/json'

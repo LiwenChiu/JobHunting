@@ -2,7 +2,9 @@
 {
     public class CompanyOrdersFilterOutputViewModel
     {
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
+
+        public int OrderNumber { get; set; }
 
         public string Title { get; set; }
 
@@ -15,5 +17,7 @@
         public int Duration { get; set; }
 
         public bool Status { get; set; }
+
+        public string StatusType { get; set; }
     }
 }

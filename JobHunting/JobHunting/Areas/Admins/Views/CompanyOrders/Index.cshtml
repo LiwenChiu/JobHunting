@@ -48,24 +48,26 @@
         <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
                 <tr>
-                    <th scope="col">訂單ID</th>
+                    @* <th scope="col">訂單ID</th> *@
                     <th scope="col">公司名稱</th>
                     <th scope="col">統一編號</th>
                     <th scope="col">方案名稱</th>
-                    <th scope="col">付款時間/截止時間</th>
-                    <th scope="col">到期時間</th>
+                    <th scope="col">金額</th>
+                    <th scope="col">付款時間</th>
+                    <th scope="col">方案天數</th>
                     <th scope="col">付款狀態</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="order in companyOrders">
-                    <td>{{order.orderId}}</td>
+                    @* <td><small>{{order.orderId}}</small></td> *@
                     <td>{{order.companyName}}</td>
                     <td>{{order.guiNumber}}</td>
                     <td>{{order.title}}</td>
+                    <td>{{order.price}}</td>
                     <td>{{order.payDate}}</td>
-                    <td>{{order.expiration}}</td>
-                    <td><button class="btn btn-light btn-sm">{{orderStatus(order.status)}}</button></td>
+                    <td>{{order.duration}}</td>
+                    <td><button class="btn btn-light btn-sm">{{order.statusType}}</button></td>
                 </tr>
             </tbody>
         </table>
@@ -114,8 +116,8 @@
                     this.pageLengthSafe = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
                     this.pageStartSafe = this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
                     let request = {};
-                    request.OrderId = request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
-                    request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.Status = this.filterInput;
+                    request.CompanyId = request.PlanId = request.Price = request.Duration = (Number.isNaN(Number(this.filterInput)) ? -1 : Number(this.filterInput));
+                    request.OrderId = request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.StatusType = this.filterInput;
                     request.PageDraw = this.pageDraw;
                     request.PageLength = this.pageLengthSafe,
                     request.PageStart = this.pageStartSafe;
@@ -143,14 +145,6 @@
                             this.turnPageNextisdisabled = false;
                         }
                     });
-                },
-                orderStatus: function (status) {
-                    if (status) {
-                        return "已付款";
-                    }
-                    else {
-                        return "尚未付款";
-                    }
                 },
                 turnPage: function (page) {
                     this.pageStart = page;

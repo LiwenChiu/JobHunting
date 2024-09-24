@@ -9,178 +9,86 @@
     </style>
 }
 <div id="PricingPlans" class="py-2">
-    <div style="position: relative">
-        @* 通知 *@
-        <template v-if="alertStatus == '成功'">
-            <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
-                <strong>{{alertText}}</strong>
-                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
-            </div>
-        </template>
-        <template v-else-if="alertStatus == '失敗'">
-            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
-                <strong>{{alertText}}</strong>
-                <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
-            </div>
-        </template>
-
-        <h3 class="" align="center">方案選擇</h3>
-        <div class="container" style="overflow-y:auto;height:73vh">
-            <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
-                <div class="col-11 pt-sm-1">
-                    <div class="card overcard">
-                        <div class="card-body">
-                            <div class="row row-cols-2 align-items-center">
-                                <p class="col-sm-2">{{plan.title}}</p>
-                                <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
-                                <p class="col-sm-2">{{plan.duration}}天</p>
-                                <p class="col-sm-2">${{plan.price}}</p>
-                                <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
-                            </div>
+    <h3 class="" align="center">方案選擇</h3>
+    <div class="container" style="overflow-y:auto;height:73vh">
+        <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
+            <div class="col-11 pt-sm-1">
+                <div class="card overcard">
+                    <div class="card-body">
+                        <div class="row row-cols-2 align-items-center">
+                            <p class="col-sm-2">{{plan.title}}</p>
+                            <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
+                            <p class="col-sm-2">{{plan.duration}}天</p>
+                            <p class="col-sm-2">${{plan.price}}</p>
+                            <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
+                            <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
-            <div class="col-md-10">
-                <label for="filterPlan" class="px-3">方案搜尋: </label>
-                <input type="search" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
-                <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
-            </div>
+    </div>
+    <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
+        <div class="col-md-10">
+            <label for="filterPlan" class="px-3">方案搜尋: </label>
+            <input type="search" style="border-radius: 5px; width:70%;" placeholder="請輸入查詢關鍵字" v-model.trim="filterPlantext" v-on:keydown.enter.exact="bootFilterPage();" />
+            <button class="btn btn-warning text-light" v-on:click="filterPlantext = '';bootFilterPage();">清除</button>
         </div>
+    </div>
 
-        @* 介紹 *@
-        <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning">
-                        <h3 class="modal-title text-light" id="IntroLabel">方案介紹</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p class="h5" style="width:100%;word-break:break-all;">{{clickedPlanIntro}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                    </div>
+    @* 介紹 *@
+    <div class="modal fade" id="Intro" data-bs-keyboard="false" tabindex="-1" aria-labelledby="IntroLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="IntroLabel">方案介紹</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="h5" style="width:100%;word-break:break-all;">{{clickedPlanIntro}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        @* 購買方案Modal *@
-        <div class="modal fade" id="paymentAgreement" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning">
-                        <h3 class="modal-title text-light" id="paymentAgreementLabel">請問是否要購買此方案</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h5>方案: {{selectedPlanTitle}} </h5>
-                        <template v-if="selectedPlanDiscount === 1">
-                            <h5>應付金額: NT${{selectedPlanPrice}}</h5>
+    @* 購買方案Modal *@
+    <div class="modal fade" id="paymentAgreement" data-bs-keyboard="false" tabindex="-1" aria-labelledby="paymentAgreementLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="paymentAgreementLabel">請問是否要購買此方案</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>方案: {{selectedPlanTitle}} </h5>
+                    <template v-if="selectedPlanDiscount === 1">
+                        <h5>應付金額: NT${{selectedPlanPrice}}</h5>
+                    </template>
+                    <template v-else>
+                        <template v-if="(selectedPlanDiscount*100)%10 === 0">
+                            <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*10}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
                         </template>
                         <template v-else>
-                            <template v-if="(selectedPlanDiscount*100)%10 === 0">
-                                <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*10}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
+                            <template v-if="selectedPlanDiscount*100 < 10">
+                                <h5>應付金額: NT${{selectedPlanPrice}} × 0{{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
                             </template>
                             <template v-else>
-                                <template v-if="selectedPlanDiscount*100 < 10">
-                                    <h5>應付金額: NT${{selectedPlanPrice}} × 0{{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
-                                </template>
-                                <template v-else>
-                                    <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
-                                </template>
+                                <h5>應付金額: NT${{selectedPlanPrice}} × {{selectedPlanDiscount*100}}折 = NT${{selectedPlanPrice*selectedPlanDiscount}}</h5>
                             </template>
                         </template>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning text-light" data-bs-target="#NewebPayment" data-bs-toggle="modal" >確認付款</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
-                    </div>
+                    </template>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary text-light" data-bs-dismiss="modal" v-on:click="SendToNewebPay()">確認付款</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
                 </div>
             </div>
         </div>
-
-        @* 購買資訊藍新金流Modal *@
-        <div class="modal fade" id="NewebPayment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="NewebPaymentLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h3 class="modal-title text-light" id="NewebPaymentLabel">藍新金流串接範例</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="selectedPlanId = null;selectedPlanTitle = '';"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card">
-                            <div class="card-header">
-                                API 欄位
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">商店代號</label>
-                                        <input type="text" class="form-control" id="MerchantID" v-model="addForm.MerchantID">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">訂單編號</label>
-                                        <input type="text" class="form-control" id="MerchantOrderNo" v-model="addForm.MerchantOrderNo">
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">商品說明</label>
-                                        <input type="text" class="form-control" id="ItemDesc" v-model="addForm.ItemDesc">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">商品金額</label>
-                                        <input type="text" class="form-control" id="Amt" v-model="addForm.Amt">
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">繳費有效期限</label>
-                                        <input type="text" class="form-control" id="ExpireDate" v-model="addForm.ExpireDate">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">付款人電子信箱</label>
-                                        <input type="text" class="form-control" id="Email" v-model="addForm.Email">
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">支付完成返回網址</label>
-                                        <input type="text" class="form-control" id="ReturnURL" v-model="addForm.ReturnURL">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">商店取號網址</label>
-                                        <input type="text" class="form-control" id="CustomerURL" v-model="addForm.CustomerURL">
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">支付通知網址</label>
-                                        <input type="text" class="form-control" id="NotifyURL" v-model="addForm.NotifyURL">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">返回商店網址</label>
-                                        <input type="text" class="form-control" id="ClientBackURL" v-model="addForm.ClientBackURL">
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-primary" v-on:click="SendToNewebPay('VACC')">ATM 付款</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary text-light" data-bs-dismiss="modal" v-on:click="payAgree(selectedPlanId);">確認付款</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="selectedPlanId = null;selectedPlanTitle = '';">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
 </div>
 
 
@@ -189,7 +97,7 @@
 {
     <script>
         let vueAppPricingPlans = {
-            data(){
+            data() {
                 return {
                     baseAddress: "https://localhost:7169",
                     CompanyId: 1,
@@ -200,86 +108,44 @@
                     selectedPlanId: null,
                     selectedPlanPrice: null,
                     selectedPlanDiscount: null,
-                    alertText: "",
-                    alertStatus: "",
-
-                    addForm: {
-                        MerchantID: '@ViewData["MerchantID"]' //商品代號
-                        , MerchantOrderNo: '@ViewData["MerchantOrderNo"]'
-                        , ItemDesc: '測試商品'
-                        , Amt: '100'
-                        , ExpireDate: '@ViewData["ExpireDate"]'
-                        , ReturnURL: '@ViewData["ReturnURL"]'
-                        , CustomerURL: '@ViewData["CustomerURL"]'
-                        , NotifyURL: '@ViewData["NotifyURL"]'
-                        , ClientBackURL: '@ViewData["ClientBackURL"]'
-                        , Email: 'xxxx@gmail.com'
-                    },
                 };
             },
-            methods:{
-                bootFilterPage:function(){
+            methods: {
+                bootFilterPage: function () {
                     let request = {};
                     request.Title = this.filterPlantext
                     request.Intro = this.filterPlantext;
                     request.Duration = request.Price = (Number.isNaN(Number(this.filterPlantext)) ? -1 : Number(this.filterPlantext));
-                    request.Discount = (Number.isNaN(Number(this.filterPlantext)) ? -1 : Number(this.filterPlantext))/100;
-                    axios.post(`${this.baseAddress}/Companies/PricingPlans/BootFilterPage`,request,{
-                        headers:{
-                            'Content-Type':'application/json'
+                    request.Discount = (Number.isNaN(Number(this.filterPlantext)) ? -1 : Number(this.filterPlantext)) / 100;
+                    axios.post(`${this.baseAddress}/Companies/PricingPlans/BootFilterPage`, request, {
+                        headers: {
+                            'Content-Type': 'application/json'
                         }
                     }).then(response => {
                         this.pricingPlans = response.data;
                     }).catch(err => { alert(err) });
                 },
-                payAgree: function (selectedPlanId) {
-                    let request = {};
-                    request.PlanId = selectedPlanId;
-                    axios.post(`${this.baseAddress}/Companies/PricingPlans/PayAgree`, request, {
-                        headers: {
-                            'Content-Type':'application/json'
-                        }
-                    })
-                    .then(response => {
-                        this.alertText = response.data[0];
-                        this.alertStatus = response.data[1];
-                    })
-                    .catch(err => { alert(err) });
-                    this.alertOut();
-                },
-                alertOut: function () {
-                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
-                },
-
                 // 傳送至藍新金流
-                SendToNewebPay(ChannelID) {
+                SendToNewebPay() {
                     var self = this;
 
-                    // 組合表單資料
+                    // 方案Id
                     var postData = {};
-                    postData['ChannelID'] = ChannelID;
-                    postData['MerchantID'] = self.addForm.MerchantID;
-                    postData['MerchantOrderNo'] = self.addForm.MerchantOrderNo;
-                    postData['ItemDesc'] = self.addForm.ItemDesc;
-                    postData['Amt'] = self.addForm.Amt;
-                    postData['ExpireDate'] = self.addForm.ExpireDate;
-                    postData['ReturnURL'] = self.addForm.ReturnURL;
-                    postData['CustomerURL'] = self.addForm.CustomerURL;
-                    postData['NotifyURL'] = self.addForm.NotifyURL;
-                    postData['ClientBackURL'] = self.addForm.ClientBackURL;
-                    postData['Email'] = self.addForm.Email;
+                    postData['PlanId'] = self.selectedPlanId;
 
-                    // 使用 jQuery Ajax 傳送至後端
-                    $.ajax({
-                        url: '@Url.Content("~/Home/SendToNewebPay")',
-                        method: 'POST',
-                        dataType: 'json',
-                        data: { inModel: postData, __RequestVerificationToken: $('@Html.AntiForgeryToken()').val() },
-                        success: function (returnObj) {
+                    // 使用 axios 傳送至後端
+                    axios.post(`${self.baseAddress}/Companies/PricingPlans/SendToNewebPay`, postData,{
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            const returnObj = response.data;
+
                             // 呼叫藍新金流 API
                             const form = document.createElement('form');
                             form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway';//藍新金流驗證網址(測試環境)
+                            form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(測試環境)
 
                             for (const key in returnObj) {
                                 if (returnObj.hasOwnProperty(key)) {
@@ -292,19 +158,18 @@
                             }
                             document.body.appendChild(form);
                             form.submit();
-                        },
-                        error: function (err) {
-                            alert(err.status + " " + err.statusText + '\n' + err.responseText);
-                        }
-                    });
-                }
+                        })
+                        .catch(error => {
+                            alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
+                        });
+                },
             },
-            watch:{
-                filterPlantext:function(){
+            watch: {
+                filterPlantext: function () {
                     this.bootFilterPage();
                 },
             },
-            mounted:function(){
+            mounted: function () {
                 this.bootFilterPage();
             },
         };

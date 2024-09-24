@@ -4,7 +4,7 @@ namespace JobHunting.Areas.Admins.ViewModels
 {
     public class CompanyOrdersViewModel
     {
-        public int? OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public int? CompanyId { get; set; }
 
@@ -26,7 +26,7 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public string? Intro { get; set; }
 
-        public string? Status { get; set; }
+        public string? StatusType { get; set; }
 
         public int? PageDraw { get; set; }
 
