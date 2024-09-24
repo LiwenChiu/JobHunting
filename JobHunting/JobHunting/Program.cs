@@ -21,6 +21,7 @@ builder.Services.AddSingleton<ReviewMaillService>();
 //忘記密碼
 builder.Services.AddSingleton<CandidateForgetPasswordEmailService>();
 builder.Services.AddSingleton<CompanyForgetPasswordEmailService>();
+builder.Services.AddSingleton<PlanExpiredEmailService>();
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
