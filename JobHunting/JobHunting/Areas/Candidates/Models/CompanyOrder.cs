@@ -21,7 +21,7 @@ public partial class CompanyOrder
 
     public string Title { get; set; }
 
-    public decimal? Price { get; set; }
+    public decimal Price { get; set; }
 
     public DateTime OrderDate { get; set; }
 

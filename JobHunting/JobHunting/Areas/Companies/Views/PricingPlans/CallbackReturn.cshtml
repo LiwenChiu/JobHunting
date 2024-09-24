@@ -1,7 +1,24 @@
-﻿<div style="width:80%">
-    <h1>支付回傳訊息</h1>
-    <h3>接收參數:</h3>
-    @Html.Raw(ViewData["ReceiveObj"])
-    <h3>交易訊息:</h3>
-    @Html.Raw(ViewData["TradeInfo"])
+﻿@{
+    NewebPayReturnTradeInfoViewModel result = ViewData["CallbackReturnResult"] as NewebPayReturnTradeInfoViewModel;
+}
+
+@section Styles
+{
+    <style>
+        .content {
+            display: inline-block;
+            height: auto;
+            line-height: 1;
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<div style="height: 70vh;">
+    <div class="content">
+        <h1>付款完成</h1>
+        <h3>訂單編號: @result.MerchantOrderNo</h3>
+        <h3>金額: @result.Amt</h3>
+        <h3>付款時間: @result.PayTime</h3>
+    </div>
 </div>
