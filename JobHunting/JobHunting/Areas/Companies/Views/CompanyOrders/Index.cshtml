@@ -10,25 +10,11 @@
 }
 
 
-<div class="container tableOutside pt-1" id="appCompanyOrders" style="position: relative">
-
-    @* 通知 *@
-    <template v-if="alertStatus == '成功'">
-        <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute">
-            <strong>{{alertText}}</strong>
-            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
-        </div>
-    </template>
-    <template v-else-if="alertStatus == '失敗'">
-        <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute">
-            <strong>{{alertText}}</strong>
-            <button type="button" class="btn-close" aria-label="Close" v-on:click="alertStatus=''"></button>
-        </div>
-    </template>
+<div class="container tableOutside pt-1" id="appCompanyOrders">
 
     <div class="row">
-        <h1 class="col-sm-8">最終日期: {{deadline}}</h1>
-        <div class="col-sm-4">
+        <h1 class="col-sm-9">最終日期: {{deadline}} 23點59分59秒</h1>
+        <div class="col-sm-3">
             <input id="searchOrder" class="form-control" placeholder="搜尋關鍵字" v-model="searchOrderInput" />
         </div>
     </div>
@@ -56,7 +42,7 @@
                     <td>{{order.statusType}}</td>
                     <td>
                         <template v-if="!order.status">
-                            <button type="button" class="btn btn-danger text-light" v-on:click="cancelOrder(order.orderId)">取消</button>
+                            <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
                         <template v-else>
                             <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
@@ -79,8 +65,6 @@
                     orders: [],
                     deadline: null,
                     searchOrderInput: "",
-                    alertText: "",
-                    alertStatus: "",
                 }
             },
             computed: {},
@@ -142,21 +126,41 @@
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                         });
                 },
-                cancelOrder: function (orderId) {
-                    let request = { OrderId: orderId };
-                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/CancelOrder`, request, {
+                SendToNewebPayCancel: function (orderId) {
+                     var self = this;
+
+                    // 訂單Id
+                    var postData = {};
+                    postData['OrderId'] = orderId;
+
+                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/SendToNewebPayCancel`, postData, {
                         headers: {
                             'Content-Type': 'application/json'
                         },
                     }).then(response => {
-                        this.alertText = response.data[0];
-                        this.alertStatus = response.data[1];
-                        this.getCompanyOrders();
-                        this.alertOut();
-                    }).catch(err => { alert(err) });
-                },
-                alertOut: function () {
-                    let time = window.setTimeout((() => this.alertStatus = ""), 5000);
+                            const returnObj = response.data;
+
+                            // 呼叫藍新金流 API
+                            const form = document.createElement('form');
+                            form.method = 'post';
+                            form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
+                            // form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
+
+                            for (const key in returnObj) {
+                                if (returnObj.hasOwnProperty(key)) {
+                                    const hiddenField = document.createElement('input');
+                                    hiddenField.type = 'hidden';
+                                    hiddenField.name = key;
+                                    hiddenField.value = returnObj[key];
+                                    form.appendChild(hiddenField);
+                                }
+                            }
+                            document.body.appendChild(form);
+                            form.submit();
+                        })
+                        .catch(error => {
+                            alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
+                        });
                 },
             },
             watch: {

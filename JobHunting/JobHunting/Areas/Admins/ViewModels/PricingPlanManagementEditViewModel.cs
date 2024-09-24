@@ -8,9 +8,9 @@
 
         public int Duration { get; set; }
 
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
 
-        public decimal? Discount { get; set; }
+        public decimal Discount { get; set; }
 
         public bool Status { get; set; }
     }

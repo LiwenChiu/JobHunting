@@ -108,7 +108,7 @@ namespace JobHunting.Areas.Companies.Controllers
             }
 
             var companyDeadline = company.Deadline;
-            return companyDeadline.HasValue ? companyDeadline.Value.ToString("yyyy年MM月dd日 HH點mm分") : null;
+            return companyDeadline.HasValue ? companyDeadline.Value.ToString("yyyy年MM月dd日") : null;
         }
 
         /// <summary>
@@ -116,6 +116,7 @@ namespace JobHunting.Areas.Companies.Controllers
         /// </summary>
         /// <param name="inModel"></param>
         /// <returns></returns>
+        ///POST: Companies/CompanyOrders/SendToNewebPaySearch
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SendToNewebPaySearch([FromBody][Bind("OrderId")] SendToNewebPaySearchInViewModel inModel)
@@ -205,10 +206,15 @@ namespace JobHunting.Areas.Companies.Controllers
             return result;
         }
 
-        //POST: Companies/CompanyOrders/CancelOrder
+        /// <summary>
+        /// 傳送取消授權要求至藍新金流
+        /// </summary>
+        /// <param name="inModel"></param>
+        /// <returns></returns>
+        //POST: Companies/CompanyOrders/SendToNewebPayCancel
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<Array> CancelOrder([FromBody][Bind("OrderId")] CancelOrderViewModel covm)
+        public async Task<Array> SendToNewebPayCancel([FromBody][Bind("OrderId")] SendToNewebPayCancelInViewModel inModel)
         {
             string[] returnStatus = new string[2];
             var companyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -230,12 +236,14 @@ namespace JobHunting.Areas.Companies.Controllers
                 return returnStatus;
             }
 
-            var order = await _context.CompanyOrders.FindAsync(covm.OrderId);
+            var order = await _context.CompanyOrders.FindAsync(inModel.OrderId);
             if (order == null || order.CompanyId != parsedCompanyId)
             {
                 returnStatus = ["訂單不存在", "失敗"];
                 return returnStatus;
             }
+
+
 
             _context.CompanyOrders.Remove(order);
 
