@@ -36,6 +36,7 @@ namespace JobHunting.Controllers
         }
         public IActionResult Index()
         {
+            _logger.LogInformation("進入首頁");
             return View();
         }
         public IActionResult AdminLogin()
