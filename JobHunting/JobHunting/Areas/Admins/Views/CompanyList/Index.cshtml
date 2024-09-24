@@ -83,6 +83,7 @@
         Vue.createApp({
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     filter: "",
                     companylist:[],
@@ -114,12 +115,13 @@
                 },
                 CompanyListData: function () {
                     // alert("AAA");
-                    fetch("/Admins/CompanyList/IndexJson", {
+                    let _this = this;
+                    fetch(`${_this.baseAddress}/Admins/CompanyList/IndexJson`, {
                         method:"GET"
                     }).then(response => {
                         return response.json();
                     }).then(data => {
-                        return this.companylist=data
+                        return _this.companylist=data
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     })
