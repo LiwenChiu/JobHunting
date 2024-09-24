@@ -30,7 +30,7 @@
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobRequirements">求職條件</a></li>
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#autobiography">自傳</a></li>
                 <li v-for="item in resumeList">
-                    <template v-if="item.likeYN == null && item.companyId != null">
+                    <template v-if="memberRole == 'company'">
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#interviewMailBtn" style="color:white">
                             面試
@@ -213,7 +213,6 @@
                     resumeId: "@Html.DisplayFor(model => model.ResumeId)",
                     candidateId: "@Html.DisplayFor(model => model.CandidateId)",
                     resumeList: [],
-                    companyId: 3,
                     openings: [],
                     openingId: "",
                     date: "",
@@ -222,7 +221,8 @@
                     subjectLine: "",
                     content: "",
                     baseAddress: "https://localhost:7169",
-                    minDate: ''
+                    minDate: '',
+                    memberRole:"",
                 };
             },
             methods: {
@@ -311,6 +311,19 @@
                 selectSex(item) {
                     return item == true ? "男" : "女";
                 },
+                getRole() {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                    })
+                        .catch(function (error) {
+                                console.log(error);
+                    });
+                 },
             },
             mounted() {
                 let self = this;
@@ -318,6 +331,7 @@
                 self.getResumeList();
                 const today = new Date().toISOString().split('T')[0];
                 self.minDate = today;
+                self.getRole();
             },
         };
         let app3 = Vue.createApp(vueList).mount("#page-top")
