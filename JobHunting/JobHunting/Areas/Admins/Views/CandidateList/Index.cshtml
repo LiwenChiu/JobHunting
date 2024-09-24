@@ -78,7 +78,7 @@
 
                     candidatelist: [], //後端撈的資料陣列
                     filter: "",
-
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                                                     
                 }
@@ -104,12 +104,13 @@
                 },
                 CandidateListData: function () {
                     // alert("AAA");
-                    fetch("/Admins/CandidateList/IndexJson_candidate", {
+                    let _this = this;
+                    fetch(`${_this.baseAddress}/Admins/CandidateList/IndexJson_candidate`, {
                         method: "GET"
                     }).then(response => {
                         return response.json();
                     }).then(data => {
-                        return this.candidatelist = data
+                        return _this.candidatelist = data
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     })
