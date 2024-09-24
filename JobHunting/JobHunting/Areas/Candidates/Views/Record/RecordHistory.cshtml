@@ -14,7 +14,7 @@
                     <th>
                         <select class="btn" style="font-weight:bold" v-model.lazy="selectedOpening">
                             <option :value="undefined" selected>職缺名稱</option>
-                            <option v-for="item in openings" :value="item.openingTitle">{{item.openingTitle}}</option>
+                            <option v-for="item in uniqueOpenings" :value="item">{{ item }}</option>
                         </select>
                     </th>
                     <th>履歷</th>
@@ -222,6 +222,9 @@
                     }
                     return this.openings
                 },
+                uniqueOpenings() {
+                    return [...new Set(this.openings.map(item => item.openingTitle))];
+                }
 
             },
             methods: {

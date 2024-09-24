@@ -56,6 +56,9 @@ namespace JobHunting.Areas.Admins.Controllers
                 Name = p.Name,
                 Degree = p.Degree,
                 Address = p.Address,
+                VerifyEmailYN = p.VerifyEmailYN,
+                RegisterTime = p.RegisterTime,
+                Email = p.Email,
             });
         }
 

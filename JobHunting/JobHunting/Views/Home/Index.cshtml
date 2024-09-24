@@ -323,6 +323,8 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
+
                     perpage: 5, //一頁的資料數
                     perpageSafe: null,
                     currentPage: 1,
@@ -398,6 +400,7 @@
                         }).catch(err => JSON.stringify(err))
                           .finally(() => {
                               if (this.currentPageSafe <= 1) {
+                                  this.currentPageSafe = 1;
                                   this.isturnPagePreviousDisabled = true;
                               }
                               else {

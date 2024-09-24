@@ -1,4 +1,8 @@
-﻿@section Styles
+﻿@{
+    ViewData["Title"] = "客服中心";
+}
+
+@section Styles
 {
     <style>
 
@@ -144,6 +148,7 @@
                     opinionLetterModal: {},
                     filter:"",
                     baseAddress: "https://localhost:7169",
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                 }
             },
             computed: {
@@ -169,12 +174,13 @@
                 },
                 OpinionData: function () {
                     // alert("AAA");
-                    fetch("/Admins/ClientServiceCenter/IndexJson_opinionletter", {
+                    let _this = this;
+                    fetch(`${_this.baseAddress}/Admins/ClientServiceCenter/IndexJson_opinionletter`, {
                         method:"GET"
                     }).then(response => {
                         return response.json();
                     }).then(data => {
-                            return this.opinionlist=data
+                            return _this.opinionlist=data
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     })

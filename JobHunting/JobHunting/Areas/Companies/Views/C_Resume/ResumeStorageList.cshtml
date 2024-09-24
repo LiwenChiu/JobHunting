@@ -1,11 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "履歷暫存";
+    ViewData["Title"] = "履歷收藏";
 }
 @section Styles {
     <style>
         .scrollable-div {
             height: 200px; /* 固定高度 */
             overflow-y: auto; /* 當內容超出時，顯示垂直捲軸 */
+        }
+
+        .certification:hover{
+            transform:scale(3);
         }
     </style>
 }
@@ -140,7 +144,7 @@
                                                                      <div class="col">
                                                                          <label for="" class="mb-2">
                                                                              證照 : 
-                                                                        <img v-if="item.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="待上傳" />
+                                                                        <img v-if="item.certification != null" class="certification rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="證照" />
                                                                          </label>
                                                                      </div>
                                                                      <div>

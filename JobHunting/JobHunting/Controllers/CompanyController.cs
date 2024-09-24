@@ -22,12 +22,9 @@ namespace JobHunting.Controllers
             _context = context;
             _hostingEnvironment = hostingEnvironment;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
         [Authorize(AuthenticationSchemes = $"{CookieAuthenticationDefaults.AuthenticationScheme},AdminScheme", Roles = "company,admin")]
-        public async Task<IActionResult> CompanyIndex()
+        public async Task<IActionResult> Index()
         {
                 return View();
         }
