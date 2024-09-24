@@ -249,6 +249,12 @@ CREATE TABLE CompanyOrders
 	Duration int not null,
 	[Status] bit not null default(0),
 	StatusType nvarchar(20) not null,
+	NewebPayStatus nvarchar(10),
+	NewebPayMessage nvarchar(50),
+	TradeNo nvarchar(20),
+	PaymentType nvarchar(10),
+	[IP] nvarchar(15),
+	EscrowBank nvarchar(10),
 )
 GO
 CREATE TABLE Notifications
