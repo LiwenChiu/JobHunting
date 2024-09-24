@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Drawing.Configuration;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -34,31 +35,13 @@ namespace JobHunting.Areas.Admins.Controllers
             return View();
         }
 
-        // GET: Admins/CompanyOrders/IndexJson
-        public async Task<JsonResult> IndexJson()
-        {
-            return Json(_context.CompanyOrders.Include(co => co.Plan).Select(co => new
-            {
-                OrderId = co.OrderId,
-                CompanyId = co.CompanyId,
-                PlanId = co.PlanId,
-                CompanyName = co.CompanyName,
-                GUINumber = co.GUINumber,
-                Title = co.Title,
-                Price = co.Price,
-                PayDate = co.PayDate,
-                Duration = co.Duration,
-                Intro = co.Plan.Intro,
-                Status = co.Status,
-            }));
-        }
-
         //POST: Admins/CompanyOrders/BootFilterPaging
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<CompanyOrdersOutputViewModel> BootFilterPaging([FromBody][Bind("OrderId,CompanyId,PlanId,CompanyName,GUINumber,Title,Price,PayDate,Duration,Intro,Status,PageDraw,PageLength,PageStart")] CompanyOrdersViewModel covm)
+        public async Task<CompanyOrdersOutputViewModel> BootFilterPaging([FromBody][Bind("OrderId,CompanyId,PlanId,CompanyName,GUINumber,Title,Price,PayDate,Duration,Intro,StatusType,PageDraw,PageLength,PageStart")] CompanyOrdersViewModel covm)
         {
             var companyorders = _context.CompanyOrders.Include(co => co.Plan).AsNoTracking()
+                .OrderByDescending(co => co.PayDate)
                 .Select(co => new CompanyOrdersFilterViewModel
                 {
                     OrderId = co.OrderId,
@@ -68,11 +51,11 @@ namespace JobHunting.Areas.Admins.Controllers
                     GUINumber = co.GUINumber,
                     Title = co.Title,
                     Price = co.Price,
-                    PayDate = co.PayDate,
+                    PayDate = co.StatusType == "付款成功" ? co.PayDate : null,
                     Duration = co.Duration,
-                    Expiration = co.Status ? co.PayDate.AddDays(co.Duration) : null,
                     Intro = co.Plan.Intro,
-                    Status = co.Status
+                    Status = co.Status,
+                    StatusType = co.StatusType,
                 }).Where(covmfilter => covmfilter.CompanyId.ToString().Contains(covm.CompanyId.ToString()) ||
                                         covmfilter.PlanId.ToString().Contains(covm.PlanId.ToString()) ||
                                         covmfilter.CompanyName.Contains(covm.CompanyName) ||
@@ -81,10 +64,9 @@ namespace JobHunting.Areas.Admins.Controllers
                                         covmfilter.Price.ToString().Contains(covm.Price.ToString()) ||
                                         covmfilter.PayDate.ToString().Contains(covm.PayDate) ||
                                         covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
-                                        covmfilter.Expiration.ToString().Contains(covm.Expiration) ||
                                         covmfilter.Intro.Contains(covm.Intro) ||
-                                        (covmfilter.Status ? "已付款" : "尚未付款").Contains(covm.Status))
-                .OrderBy(co => co.PayDate)
+                                        covmfilter.StatusType.Contains(covm.StatusType))
+                .OrderBy(co => co.Status)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -94,12 +76,10 @@ namespace JobHunting.Areas.Admins.Controllers
                     GUINumber = co.GUINumber,
                     Title = co.Title,
                     Price = co.Price,
-                    PayDate = co.PayDate.ToString("yyyy/MM/dd HH:mm:ss"),
+                    PayDate = co.PayDate.HasValue ? co.PayDate.Value.ToString("yyyy/MM/dd HH:mm:ss") : "無",
                     Duration = co.Duration,
-                    Expiration = co.Expiration.HasValue ? co.Expiration.Value.ToString("yyyy/MM/dd HH:mm:ss") : "無",
-                    Intro = co.Intro,
-                    Status = co.Status,
-                }).OrderBy(co => co.Status);
+                    StatusType = co.StatusType.IsNullOrEmpty() ? "尚未付款" : co.StatusType,
+                });
 
             var filterPaging = new CompanyOrdersOutputViewModel
             {
