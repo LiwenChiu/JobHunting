@@ -16,13 +16,13 @@ namespace JobHunting.Areas.Admins.Controllers
         {
             _context = context;
         }
-        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public IActionResult Index()
         {
             Console.WriteLine(User.FindFirst(ClaimTypes.Role)?.Value);
             return View();
         }
-        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public IActionResult MemberManagement()
         {
             return View();

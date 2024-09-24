@@ -527,10 +527,10 @@ namespace JobHunting.Controllers
                     new Claim(ClaimTypes.Role, "admin")                              // 設定角色為 admin
                 };
 
-                var claimsIdentity = new ClaimsIdentity(claims, "AdminScheme");
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 // 使用 Cookie 認證進行登入
-                await HttpContext.SignInAsync("AdminScheme", new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
                 return Json(new { success = true, message = "管理者登入成功", role = "admin" });
             }
@@ -796,12 +796,12 @@ namespace JobHunting.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AdminLogout()
         {
             // 執行登出操作，清除使用者登入資訊
-            await HttpContext.SignOutAsync("AdminScheme");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // 重導向到登入頁面或首頁
             return RedirectToAction("AdminLogin", "Home");
