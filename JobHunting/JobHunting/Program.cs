@@ -119,17 +119,22 @@ app.UseHangfireDashboard();
 using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
-
+    var options = new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time")
+    };
     // 每天執行一次，檢查即將到期的公司並發送提醒
     RecurringJob.AddOrUpdate(
         "SendExpirationReminders",
-        () => companyService.SendExpirationReminders(),
-        Cron.Daily);
+    () => companyService.SendExpirationReminders(),
+    "59 23 * * *",
+    options);
 
     // 每天執行一次，檢查過期的公司並關閉其職缺
     RecurringJob.AddOrUpdate(
         "CloseExpiredJobOpenings",
-        () => companyService.CloseExpiredJobOpenings(),
-        Cron.Daily);
+    () => companyService.CloseExpiredJobOpenings(),
+    "59 23 * * *",
+    options);
 }
 app.Run();
