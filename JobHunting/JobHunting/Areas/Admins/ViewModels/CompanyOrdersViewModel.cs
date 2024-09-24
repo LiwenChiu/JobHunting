@@ -26,7 +26,7 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public string? Intro { get; set; }
 
-        public string? Status { get; set; }
+        public string? StatusType { get; set; }
 
         public int? PageDraw { get; set; }
 

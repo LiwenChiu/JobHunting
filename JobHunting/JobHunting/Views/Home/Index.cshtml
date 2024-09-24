@@ -393,7 +393,7 @@
                         salary: self.salary,
                         classNumber: self.classNumber,
                     };
-                        axios.post(`${self.baseAddress}/Home/SelectOpeningsList`, request, {
+                    axios.post('@Url.Action("SelectOpeningsList", "Home")', request, {
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
                             self.openings = res.data.openingsIndexOutput;
@@ -429,7 +429,7 @@
                     }
                 },
                 getCity() {
-                    axios.get('/cityjson/CityCountyData.json')  //根目錄資料
+                    axios.get('@Url.Content("~/cityjson/CityCountyData.json")')  //根目錄資料
                         .then(model => {
                             this.cityList = model.data;
                         })
@@ -442,8 +442,8 @@
                 },
                 getCompanyClass() {
                     let self = this;
-                    axios.get(`${self.baseAddress}/Home/CompanyClassSelect`)  
-                        .then(model => {
+                    axios.get('@Url.Action("CompanyClassSelect", "Home")')
+                                .then(model => {
                             self.companyClassList = model.data;
                         })
                         .catch(function (error) {

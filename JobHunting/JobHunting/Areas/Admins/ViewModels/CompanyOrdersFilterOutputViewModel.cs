@@ -24,6 +24,6 @@
 
         public string? Intro { get; set; }
 
-        public bool Status { get; set; }
+        public string StatusType { get; set; }
     }
 }
