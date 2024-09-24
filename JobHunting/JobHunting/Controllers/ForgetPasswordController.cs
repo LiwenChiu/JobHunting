@@ -30,7 +30,7 @@ namespace JobHunting.Controllers
 
         public IActionResult CandidateResetPassword()
         {
-
+            
             string email = TempData["candidateEmail"].ToString();
 
             var td = new CandidateResetPasswordInputModel //把tempdata的email傳到viewmodel
@@ -72,7 +72,7 @@ namespace JobHunting.Controllers
             {
                 return BadRequest("無效的驗證連結。");
             }
-
+            //將連結後，會將使用者
             TempData["candidateEmail"] = EncodingEmail;
 
             // 跳轉到修改密碼頁面

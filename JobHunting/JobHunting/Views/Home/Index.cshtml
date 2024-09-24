@@ -398,6 +398,7 @@
                         }).catch(err => JSON.stringify(err))
                           .finally(() => {
                               if (this.currentPageSafe <= 1) {
+                                  this.currentPageSafe = 1;
                                   this.isturnPagePreviousDisabled = true;
                               }
                               else {

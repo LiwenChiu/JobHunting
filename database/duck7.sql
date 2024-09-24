@@ -222,9 +222,9 @@ CREATE TABLE PricingPlans
 	Title nvarchar(40) not null,
 	Intro nvarchar(100),
 	Duration int not null,
-	Price money
+	Price money not null
 		CHECK(Price >= 0),
-	Discount decimal(7,6) default(1)
+	Discount decimal(7,6) not null default(1)
 		CHECK((Discount <= 1) AND (Discount > 0)),
 	[Status] bit not null default(1),
 )
@@ -242,7 +242,7 @@ CREATE TABLE CompanyOrders
 	CompanyName nvarchar(60) not null,
 	GUINumber nchar(8) not null,
 	Title nvarchar(40) not null,
-	Price money
+	Price money not null
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
 	PayDate datetime,

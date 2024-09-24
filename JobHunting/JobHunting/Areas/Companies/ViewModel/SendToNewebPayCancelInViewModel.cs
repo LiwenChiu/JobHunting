@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Companies.ViewModel
 {
-    public class CancelOrderViewModel
+    public class SendToNewebPayCancelInViewModel
     {
         public string OrderId { get; set; }
     }
