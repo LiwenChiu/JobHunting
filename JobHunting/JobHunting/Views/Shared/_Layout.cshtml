@@ -191,6 +191,8 @@
         let vueLetter = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     letterclass: "",
                     subjectLine: "",
                     content: "",
@@ -206,7 +208,7 @@
                     form.append("Content", self.content);
                     form.append("SendTime", today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
-                    axios.post('https://localhost:7169/Home/AddLetter', form, {
+                    axios.post(`${self.baseAddress}/Home/AddLetter`, form, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     }).then(res => {
                         alert(res.data)
@@ -243,6 +245,7 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     memberRole: "",
                 };
             },
