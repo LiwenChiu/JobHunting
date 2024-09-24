@@ -393,7 +393,9 @@ namespace JobHunting.Controllers
             opinionLetter.Class = letter.Letterclass;
             opinionLetter.SubjectLine = letter.SubjectLine;
             opinionLetter.Content = letter.Content;
-            opinionLetter.SendTime = letter.SendTime;
+            //opinionLetter.SendTime = letter.SendTime;
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            opinionLetter.SendTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
             IsPicture(letter, opinionLetter);  // 根據你的邏輯處理圖片
             _context.OpinionLetters.Add(opinionLetter);
             await _context.SaveChangesAsync();
