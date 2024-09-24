@@ -27,7 +27,7 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobDescription">工作內容</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
             <li v-for="item in openingList">
-                <template v-if="item.likeYN != null">
+                <template v-if="item.likeYN != null && memberRole == 'candidate'">
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#applyMailBtn" style="color:white">
                             應徵
@@ -154,7 +154,7 @@
                         companyId: "@Html.DisplayFor(model => model.CompanyId)",
                         openingList: [],
                         resumes: [],
-                        resumeId: null,
+                        memberRole:"",
                         baseAddress: "https://localhost:7169",
                     };
                 },
@@ -227,12 +227,25 @@
                             console.error(error);
                         })
                     },
-
+                    getRole() {
+                    let self = this;
+                    axios({
+                        method: 'get',
+                        url: `${self.baseAddress}/Home/GetRole`,
+                    })
+                        .then(function (response) {
+                            self.memberRole = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    },
                 },
                 mounted() {
                     let self = this;
                     self.getOpeningDetail();
                     self.getResumes();
+                    self.getRole();
                 },
             };
         let app = Vue.createApp(openigdetail).mount("#page-top")
