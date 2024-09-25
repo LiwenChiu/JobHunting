@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
-    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [Area("Admins")]
     public class TagManagementController : Controller
     {
