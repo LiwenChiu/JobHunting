@@ -138,7 +138,7 @@ namespace JobHunting.Areas.Companies.Controllers
             string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
             //string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
             string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans"; //返回商店網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/Index"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
@@ -157,7 +157,7 @@ namespace JobHunting.Areas.Companies.Controllers
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
             //// 交易有效時間
-            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "600"));
+            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址
@@ -170,28 +170,26 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", ClientBackURL));
             // 付款人電子信箱
             TradeInfo.Add(new KeyValuePair<string, string>("Email", company.ContactEmail));
-            //// 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
-            //TradeInfo.Add(new KeyValuePair<string, string>("EmailModify", "1"));
-            ////信用卡 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("CREDIT", "1"));
-            ////Apple Pay 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("APPLEPAY", "1"));
-            ////Google Pay 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("ANDROIDPAY", "1"));
-            ////LINE Pay 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
-            ////WEBATM 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("WEBATM", "1"));
+            //信用卡 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("CREDIT", "1"));
+            //Apple Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("APPLEPAY", "1"));
+            //Google Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("ANDROIDPAY", "1"));
+            //LINE Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
+            //WEBATM 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("WEBATM", "1"));
             //ATM 付款
             TradeInfo.Add(new KeyValuePair<string, string>("VACC", "1"));
-            ////超商代碼 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("CVS", "1"));
-            ////超商條碼繳費 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("BARCODE", "1"));
-            ////玉山Wallet 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("ESUNWALLET", "1"));
-            ////台灣Pay 付款
-            //TradeInfo.Add(new KeyValuePair<string, string>("TAIWANPAY", "1"));
+            //超商代碼 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("CVS", "1"));
+            //超商條碼繳費 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("BARCODE", "1"));
+            //玉山Wallet 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("ESUNWALLET", "1"));
+            //台灣Pay 付款
+            TradeInfo.Add(new KeyValuePair<string, string>("TAIWANPAY", "1"));
 
             string TradeInfoParam = string.Join("&", TradeInfo.Select(x => $"{x.Key}={x.Value}"));
 
@@ -208,66 +206,39 @@ namespace JobHunting.Areas.Companies.Controllers
             //交易資料 SHA256 加密
             outModel.TradeSha = EncryptSHA256($"HashKey={HashKey}&{TradeInfoEncrypt}&HashIV={HashIV}");
 
-            //CompanyOrder companyOrder = new CompanyOrder
-            //{
-            //    OrderId = MerchantOrderNo,
-            //    CompanyId = company.CompanyId,
-            //    CompanyName = company.CompanyName,
-            //    GUINumber = company.GUINumber,
-            //    PlanId = pricingPlan.PlanId,
-            //    OrderNumber = orderNumber,
-            //    Title = pricingPlan.Title,
-            //    Price = Amt,
-            //    OrderDate = nowTime,
-            //    Duration = pricingPlan.Duration,
-            //    Status = false,
-            //    StatusType = "尚未付款",
-            //};
+            CompanyOrder companyOrder = new CompanyOrder
+            {
+                OrderId = MerchantOrderNo,
+                CompanyId = company.CompanyId,
+                CompanyName = company.CompanyName,
+                GUINumber = company.GUINumber,
+                PlanId = pricingPlan.PlanId,
+                OrderNumber = orderNumber,
+                Title = pricingPlan.Title,
+                Price = Amt,
+                OrderDate = nowTime,
+                Duration = pricingPlan.Duration,
+                Status = false,
+                StatusType = "尚未付款",
+            };
 
-            //company.OrderCount++;
+            company.OrderCount++;
 
-            //_context.Entry(company).State = EntityState.Modified;
+            _context.Entry(company).State = EntityState.Modified;
 
-            //_context.CompanyOrders.Add(companyOrder);
+            _context.CompanyOrders.Add(companyOrder);
 
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateException ex)
-            //{
-            //    return Json(new { message = "失敗" });
-            //}
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { message = "失敗" });
+            }
 
             return Json(outModel);
         }
-
-        ////POST: Companies/PricingPlans/AddCompanyOrder
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<> AddCompanyOrder()
-        //{
-        //    var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(CompanyId))
-        //    {
-        //        return Json(new { message = "未授權訪問" });
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Json(new { message = "失敗" });
-        //    }
-
-        //    int companyId = int.Parse(CompanyId);
-
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    if (company == null)
-        //    {
-        //        return Json(new { message = "失敗" });
-        //    }
-
-        //    int orderNumber = company.OrderCount + 1;
-        //}
 
         /// <summary>
         /// 加密後再轉 16 進制字串
