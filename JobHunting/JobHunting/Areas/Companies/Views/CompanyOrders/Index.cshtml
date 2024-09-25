@@ -107,8 +107,8 @@
                             // 呼叫藍新金流 API
                             const form = document.createElement('form');
                             form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
-                            // form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
+                            // form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
+                            form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
 
                             for (const key in returnObj) {
                                 if (returnObj.hasOwnProperty(key)) {
@@ -143,8 +143,8 @@
                             // 呼叫藍新金流 API
                             const form = document.createElement('form');
                             form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
-                            // form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
+                            // form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
+                            form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
 
                             for (const key in returnObj) {
                                 if (returnObj.hasOwnProperty(key)) {
