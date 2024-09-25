@@ -106,19 +106,19 @@ namespace JobHunting.Controllers
 
             int candidateID = int.Parse(candidateIdClaim.Value);
             var resumes = _context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID);
-            if(!resumes.IsNullOrEmpty())
-            {
+            //if(!resumes.IsNullOrEmpty())
+            //{
                 return Json(resumes.Select(p => new ResumesListViewModel
                 {
                     CandidateId = p.CandidateId,
                     ResumesId = p.ResumeId,
                     Title = p.Title,
                 }));
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home", new { area = "Candidates" });
-            }
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Index", "Home", new { area = "Candidates" });
+            //}
             //return Json(_context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID).Select(p => new ResumesListViewModel
             //{
             //    CandidateId = p.CandidateId,
