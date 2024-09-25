@@ -18,6 +18,7 @@ namespace JobHunting.Services
             string encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
             string verificationLink = $"https://localhost:7169/ForgetPassword/CandidateVerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
+            //string verificationLink = $"https://duckjobhunting.azurewebsites.net/ForgetPassword/CandidateVerifyEmail?token={encodedToken}&email={encodedEmail}&expiry={expiry.Ticks}";
 
             return verificationLink;
         }

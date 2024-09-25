@@ -9,7 +9,7 @@ namespace JobHunting.Services
         public void SendEmail(string receiveMail, string subject,string ContactName,string CompanyName)
         {
             //驗證連結，會調用HomeController的VerifyEmail方法來判斷並修改驗證狀態
-            string verifyUrl = $"https://localhost:7169/Home/VerifyStatusEmail";
+            string verifyUrl = $"https://duckjobhunting.azurewebsites.net/Home/VerifyStatusEmail";
 
             // 建立郵件內容
             string emailBody = $@"

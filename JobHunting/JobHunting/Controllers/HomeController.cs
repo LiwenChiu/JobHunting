@@ -672,6 +672,7 @@ namespace JobHunting.Controllers
 
                 using (var httpClient = _httpClientFactory.CreateClient())
                 {
+                    //向 API 發送 GET 請求，並等待回應
                     var response = await httpClient.GetAsync(apiUrl);
                     if (response.IsSuccessStatusCode)
                     {
@@ -679,11 +680,12 @@ namespace JobHunting.Controllers
 
                         var options = new JsonSerializerOptions
                         {
+                            //忽略大小寫
                             PropertyNameCaseInsensitive = true
                         };
                         var companies = JsonSerializer.Deserialize<List<CompanyInfoGUINumber>>(content, options);
 
-                        //確保公司名稱與傳回結果中的公司名稱相符
+                        //確認 API 返回的公司名稱是否與提供的 CompanyName 相符（忽略大小寫）
                         if (companies != null && companies.Any())
                         {
                             return companies.Any(c => c.Company_Name.Equals(CompanyName, StringComparison.OrdinalIgnoreCase));
