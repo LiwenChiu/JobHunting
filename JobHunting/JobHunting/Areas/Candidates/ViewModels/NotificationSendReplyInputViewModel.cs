@@ -6,5 +6,9 @@
         public int NotificationId { get; set; }
 
         public string Reply {  get; set; }
+
+        public bool InterviewYN { get; set; }
+
+        public bool HireYN { get; set; }
     }
 }
