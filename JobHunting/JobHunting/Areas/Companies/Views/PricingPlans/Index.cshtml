@@ -19,7 +19,7 @@
                             <p class="col-sm-2">{{plan.title}}</p>
                             <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
                             <p class="col-sm-2">{{plan.duration}}天</p>
-                            <p class="col-sm-2">${{plan.price}}</p>
+                            <p class="col-sm-2">NT${{plan.price}}</p>
                             <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
                             <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
                         </div>
