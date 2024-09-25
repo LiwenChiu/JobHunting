@@ -71,6 +71,7 @@ namespace JobHunting.Areas.Companies.Controllers
             // Final projection and ordering
             var orders = query
                 .OrderBy(co => co.Status)
+                .ThenByDescending(co => co.OrderDate)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -82,8 +83,8 @@ namespace JobHunting.Areas.Companies.Controllers
                     Duration = co.Duration,
                     Status = co.Status,
                     StatusType = co.StatusType,
-                })
-                .OrderByDescending(co => co.OrderNumber);
+                });
+                
 
             return orders;
         }
@@ -174,7 +175,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             SendToNewebPaySearchOutViewModel outModel = new SendToNewebPaySearchOutViewModel();
 
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             var MerchantID = Config.GetSection("MerchantID").Value;
             int Price = decimal.ToInt32(companyOrder.Price);
@@ -283,7 +284,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             SendToNewebPayCancelOutViewModel outModel = new SendToNewebPayCancelOutViewModel();
 
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
