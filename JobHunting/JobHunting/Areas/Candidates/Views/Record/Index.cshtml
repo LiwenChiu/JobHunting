@@ -106,7 +106,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="">職缺名稱:</label>
-                                        <p>{{item.title}}</p>
+                                        <p>{{item.openingTitle}}</p>
                                         <label class="">公司名稱:</label>
                                         <p>{{item.companyName}}</p>
                                         <label class="">工作地點:</label>
@@ -184,6 +184,7 @@
         let VueApp = {
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     openings: [], //應徵過的職缺
 
