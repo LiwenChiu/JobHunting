@@ -3,6 +3,7 @@ using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mime;
 using System.Security.Claims;
 
 namespace JobHunting.Controllers
@@ -381,6 +383,20 @@ namespace JobHunting.Controllers
             Resume c = await _context.Resumes.FindAsync(id);
             byte[] ImageContent = c?.Headshot != null ? c.Headshot : System.IO.File.ReadAllBytes(FileName);
             return File(ImageContent, "image/jpeg");
+        }
+        public async Task<FileResult> DownloadFile(int id)
+        {
+            string WebRootPath = _hostingEnvironment.WebRootPath;
+            Resume c = await _context.Resumes.FindAsync(id);
+            byte[] FileContent = c.Certification;
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = "證照",     // 設定下載檔案名稱
+                // Inline= false,        // 禁止直接顯示檔案內容
+            };
+            Response.Headers.Append("Content-Disposition", cd.ToString());
+            var fs = FileContent;
+            return File(fs, MediaTypeNames.Application.Octet);
         }
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
