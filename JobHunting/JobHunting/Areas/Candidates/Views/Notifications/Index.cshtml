@@ -30,7 +30,7 @@
 
     <div class="selectbutton text-center pt-2">
         <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '面試邀請';">面試邀請</button>
-        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '結果通知';">結果通知</button>
+        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '錄取通知';">錄取通知</button>
         <input type="text" class="" placeholder="搜尋關鍵字" v-model.trim="filterInput" />
         <button type="button" class="btn btn-warning text-light btn-sm mx-1" v-on:click="filterInput = '';">清空</button>
     </div>
@@ -236,6 +236,7 @@
         let vueAppNotifications = {
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     alertText: "",
                     alertStatus: "",
