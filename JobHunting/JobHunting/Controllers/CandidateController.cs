@@ -3,6 +3,7 @@ using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace JobHunting.Controllers
@@ -104,13 +105,27 @@ namespace JobHunting.Controllers
             }
 
             int candidateID = int.Parse(candidateIdClaim.Value);
-
-            return Json(_context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID).Select(p => new ResumesListViewModel
+            var resumes = _context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID);
+            if(!resumes.IsNullOrEmpty())
             {
-                CandidateId = p.CandidateId,
-                ResumesId = p.ResumeId,
-                Title = p.Title
-            }));
+                return Json(resumes.Select(p => new ResumesListViewModel
+                {
+                    CandidateId = p.CandidateId,
+                    ResumesId = p.ResumeId,
+                    Title = p.Title,
+                }));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "Candidates" });
+            }
+            //return Json(_context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID).Select(p => new ResumesListViewModel
+            //{
+            //    CandidateId = p.CandidateId,
+            //    ResumesId = p.ResumeId,
+            //    Title = p.Title,
+            //    ResumeIsExist = p.ResumeId != null ? true : false,
+            //}));
         }
         [HttpPost]
         public async Task<string> AddApply([FromBody] AddApplyViewModel letter)

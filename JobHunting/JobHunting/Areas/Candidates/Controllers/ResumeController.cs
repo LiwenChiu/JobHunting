@@ -198,11 +198,11 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return Unauthorized("未授權訪問");
             }
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return NotFound(new { Message = "wrong" });
-            //}
-           
+            if (Creatr.Title ==null)
+            {
+                return Json(new { success = false, message = "履歷名稱未填寫" });
+            }
+
 
             try
             {
@@ -306,7 +306,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             catch (Exception ex) 
             {
-                return Json(new { message = "新增履歷失敗" });
+                return Json(new { success = false, message = "新增履歷失敗" });
             }
             //return Json(new { success = true, message = "新增履歷成功" });
 
@@ -330,6 +330,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         [HttpPost]
         public async Task<IActionResult> EditReleaseYN([FromBody][Bind("ReleaseYN", "ResumeId")] ResumeInputModel rm)
         {
+            
 
 
             var r = await _context.Resumes.FindAsync(rm.ResumeId);
@@ -362,6 +363,11 @@ namespace JobHunting.Areas.Candidates.Controllers
 
             try
             {
+                if (rm.Title == null)
+                {
+                    return Json(new { success = false, message = "履歷名稱不能空白" });
+                }
+
                 var r = await _context.Resumes
             .Include(o => o.TitleClasses).Include(t => t.Tags)
             .FirstOrDefaultAsync(o => o.ResumeId == rm.ResumeId);

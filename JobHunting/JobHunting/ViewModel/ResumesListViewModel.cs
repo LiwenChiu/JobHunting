@@ -2,8 +2,8 @@
 {
     public class ResumesListViewModel
     {
-        public int ResumesId { get; set; }
-        public int CandidateId { get; set; }
-        public string Title { get; set; }
+        public int? ResumesId { get; set; }
+        public int? CandidateId { get; set; }
+        public string? Title { get; set; }
     }
 }

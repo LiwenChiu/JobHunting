@@ -306,7 +306,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
-                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
+                        <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試邀請</h3>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     @* 面試通知內容 *@
@@ -332,7 +332,7 @@
 
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
-                                    <textarea class="form-control " style="height:150px" name="面試通知訊息" v-model="Sendinterview.Content"></textarea>
+                                    <textarea class="form-control " style="height:150px" name="面試邀請訊息" v-model="Sendinterview.Content"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -408,7 +408,7 @@
                         Interviewtime: "",
                         place: "",
                         Content: "",
-                        Interviewnotice: "面試通知",
+                        Interviewnotice: "面試邀請",
                         sendDate: new Date(),
                         interviewReplyYN: false,
                         interviewReplyFirstYN: false,
