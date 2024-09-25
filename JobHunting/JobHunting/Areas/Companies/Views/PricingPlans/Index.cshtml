@@ -110,6 +110,7 @@
                     selectedPlanId: null,
                     selectedPlanPrice: null,
                     selectedPlanDiscount: null,
+                    responseData: null,
                 };
             },
             methods: {
@@ -136,31 +137,35 @@
                     postData['PlanId'] = self.selectedPlanId;
 
                     // 使用 axios 傳送至後端
-                    axios.post(`${self.baseAddress}/Companies/PricingPlans/SendToNewebPay`, postData,{
+                    axios.post(`${self.baseAddress}/Companies/PricingPlans/SendToNewebPay`, postData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
-                            const returnObj = response.data;
+                        let returnObj = {};
+                        returnObj['MerchantID'] = response.data.merchantID;
+                        returnObj['Version'] = response.data.version;
+                        returnObj['TradeInfo'] = response.data.tradeInfo;
+                        returnObj['TradeSha'] = response.data.tradeSha;
 
-                            // 呼叫藍新金流 API
-                            const form = document.createElement('form');
-                            form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(測試環境)
-                            // form.action = 'https://core.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(正式環境)
+                        // 呼叫藍新金流 API
+                        const form = document.createElement('form');
+                        form.method = 'post';
+                        // form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(測試環境)
+                        form.action = 'https://core.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(正式環境)
 
-                            for (const key in returnObj) {
-                                if (returnObj.hasOwnProperty(key)) {
-                                    const hiddenField = document.createElement('input');
-                                    hiddenField.type = 'hidden';
-                                    hiddenField.name = key;
-                                    hiddenField.value = returnObj[key];
-                                    form.appendChild(hiddenField);
-                                }
+                        for (const key in returnObj) {
+                            if (returnObj.hasOwnProperty(key)) {
+                                const hiddenField = document.createElement('input');
+                                hiddenField.type = 'hidden';
+                                hiddenField.name = key;
+                                hiddenField.value = returnObj[key];
+                                form.appendChild(hiddenField);
                             }
-                            document.body.appendChild(form);
-                            form.submit();
-                        })
+                        }
+                        document.body.appendChild(form);
+                        form.submit();
+                    })
                         .catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                         });
