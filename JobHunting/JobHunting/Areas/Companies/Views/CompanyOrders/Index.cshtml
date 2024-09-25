@@ -30,6 +30,7 @@
                     <td>付款時間</td>
                     <td>付款狀態</td>
                     <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -41,11 +42,11 @@
                     <td>{{order.payDate == null ? "無" : order.payDate}}</td>
                     <td>{{order.statusType}}</td>
                     <td>
+                        <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
+                    </td>
+                    <td>
                         <template v-if="!order.status">
                             <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
-                        </template>
-                        <template v-else>
-                            <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
                         </template>
                     </td>
                 </tr>
@@ -64,14 +65,71 @@
                 <div class="modal-body">
                     <p class="h5" style="width:100%;word-break:break-all;">交易編號: {{searchData.tradeNo}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">訂單編號: {{searchData.orderId}}</p>
+                    <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">方案: {{searchData.title}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">方案天數{{searchData.duration}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">價格: {{searchData.price}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">方案天數: {{searchData.duration}}天</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">價格: NT${{searchData.price}}</p>
+                    <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">下單時間: {{searchData.orderdate}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate}}</p>
+                    <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.newebPayStatus}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">訂單訊息: {{searchData.newebPayMessage}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 找不到訂單Modal *@
+    <div class="modal fade" id="SearchNULLModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="SearchNULLModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h3 class="modal-title text-light" id="SearchNULLModalLabel">未找到訂單</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h1>訂單不存在</h1>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 取消訂單成功Modal *@
+    <div class="modal fade" id="CancelModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="CancelModalLabel">{{cancelMessage}}</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h1>訂單編號:{{selectedCancelOrder}} {{cancelMessage}}</h1>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* 取消訂單失敗Modal *@
+    <div class="modal fade" id="CancelFalseModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CancelFalseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h3 class="modal-title text-light" id="CancelFalseModalLabel">{{cancelMessage}}</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3>訂單編號:{{selectedCancelOrder}} {{cancelMessage}}</h3>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -93,6 +151,8 @@
                     deadline: null,
                     searchOrderInput: "",
                     searchData: [],
+                    selectedCancelOrder: null,
+                    cancelMessage: "",
                 }
             },
             computed: {},
@@ -131,38 +191,18 @@
                         }
                     }).then(response => {
                         if (response.data.status) {
-                            if (response.data.searchStatus) {
-                                this.searchData = response.data.orderData;
-                                $("#SearchModal").modal("show");
-                            }
-                            else if (!response.data.searchStatus) {
-                                const returnObj = response.data.outModelreturnObj;
-
-                                // 呼叫藍新金流 API
-                                const form = document.createElement('form');
-                                form.method = 'post';
-                                // form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
-                                form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
-
-                                for (const key in returnObj) {
-                                    if (returnObj.hasOwnProperty(key)) {
-                                        const hiddenField = document.createElement('input');
-                                        hiddenField.type = 'hidden';
-                                        hiddenField.name = key;
-                                        hiddenField.value = returnObj[key];
-                                        form.appendChild(hiddenField);
-                                    }
-                                }
-                                document.body.appendChild(form);
-                                form.submit();
-                            }
+                            this.searchData = response.data.orderData;
+                            $("#SearchModal").modal("show");
+                        }
+                        else if (!response.data.status) {
+                            $("#SearchNULLModal").modal("show");
                         }
                     }).catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                         });
                 },
                 SendToNewebPayCancel: function (orderId) {
-                     var self = this;
+                    this.selectedCancelOrder = orderId;
 
                     // 訂單Id
                     var postData = {};
@@ -173,25 +213,14 @@
                             'Content-Type': 'application/json'
                         },
                     }).then(response => {
-                            const returnObj = response.data;
-
-                            // 呼叫藍新金流 API
-                            const form = document.createElement('form');
-                            form.method = 'post';
-                            // form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
-                            form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
-
-                            for (const key in returnObj) {
-                                if (returnObj.hasOwnProperty(key)) {
-                                    const hiddenField = document.createElement('input');
-                                    hiddenField.type = 'hidden';
-                                    hiddenField.name = key;
-                                    hiddenField.value = returnObj[key];
-                                    form.appendChild(hiddenField);
-                                }
-                            }
-                            document.body.appendChild(form);
-                            form.submit();
+                        if (response.data.status){
+                            this.cancelMessage = response.data.message;
+                            $("#CancelModal").modal("show");
+                        }
+                        else if (!response.data.status){
+                            this.cancelMessage = response.data.message;
+                            $("#CancelFalseModal").modal("show");
+                        }
                         })
                         .catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
