@@ -165,9 +165,18 @@ namespace JobHunting.Areas.Companies.Controllers
                 {
                     Status = true,
                     SearchStatus = true,
-                    CompanyData = new SendToNewebPaySearchOutputCompanyViewModel
+                    OrderData = new SendToNewebPaySearchOutputCompanyViewModel
                     {
-
+                        OrderId = companyOrder.OrderId,
+                        Price = decimal.ToInt32(companyOrder.Price),
+                        Title = companyOrder.Title,
+                        Orderdate = companyOrder.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
+                        PayDate = companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分"),
+                        Duration = companyOrder.Duration,
+                        NewebPayStatus = companyOrder.NewebPayStatus,
+                        NewebPayMessage = companyOrder.NewebPayMessage,
+                        TradeNo = companyOrder.TradeNo,
+                        PaymentType = companyOrder.PaymentType,
                     },
                     outModelreturnObj = null,
                 };
@@ -212,7 +221,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 Status = true,
                 SearchStatus = false,
-                CompanyData = null,
+                OrderData = null,
                 outModelreturnObj = outModel,
             };
         }

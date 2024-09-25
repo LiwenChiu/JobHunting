@@ -2,6 +2,6 @@
 {
     public class SendToNewebPaySearchInViewModel
     {
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
     }
 }
