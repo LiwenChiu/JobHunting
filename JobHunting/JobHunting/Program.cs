@@ -18,10 +18,15 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<EmailService>();
 //重新發送驗證信
 builder.Services.AddSingleton<ReviewMaillService>();
-//忘記密碼
+//求職者忘記密碼
 builder.Services.AddSingleton<CandidateForgetPasswordEmailService>();
+//公司忘記密碼
 builder.Services.AddSingleton<CompanyForgetPasswordEmailService>();
+//公司訂閱天數即將到期Email通知
 builder.Services.AddSingleton<PlanExpiredEmailService>();
+//定時到藍新金流檢查Status==false的訂單狀態，再改寫或取消DB的Data
+//builder.Services.AddSingleton<NewebPaySearchService>();
+
 builder.Services.AddDbContext<DuckContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Duck"));
@@ -55,6 +60,7 @@ builder.Services.AddHangfire(configuration =>
 // Add Hangfire server
 builder.Services.AddHangfireServer(); // 過去在 UseHangfireServer 的配置現在移到這裡
 builder.Services.AddScoped<PlanExpiredService>();
+//builder.Services.AddScoped<NewebPaySearchService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -116,9 +122,12 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 app.UseHangfireDashboard();
+
 using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
+    //var NewebPaySearchService = scope.ServiceProvider.GetRequiredService<NewebPaySearchService>();
+
     var options = new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time")
@@ -136,5 +145,8 @@ using (var scope = app.Services.CreateScope())
     () => companyService.CloseExpiredJobOpenings(),
     "59 23 * * *",
     options);
+
+    //RecurringJob.AddOrUpdate("NewebPaySearchStatusFalse", () => NewebPaySearchService.NewebPaySearchStatusFalse(), "0 0 * ? ***", options);
 }
+
 app.Run();
