@@ -521,7 +521,7 @@
                             },
                         })
                         .then(response => {
-                            if (res.data.length == 0) {
+                            if (response.data.length == 0) {
                                 alert("請新增至少一筆履歷")
                                 window.location.href = '@Url.Action("Index", "Resume", new { area = "Candidates" })'
                             }
