@@ -32,7 +32,7 @@
                 <li v-for="item in resumeList">
                     <template v-if="memberRole == 'company'">
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#interviewMailBtn" style="color:white">
+                                data-bs-target="#interviewMailBtn" style="color:white" v-on:click="getOpenings">
                             面試
                         </button>
                         <template v-if="item.likeYN == false">
@@ -304,7 +304,13 @@
                     axios.get('@Url.Action("GetOpenings", "Company")', {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        self.openings = res.data;
+                        if (res.data.length == 0) {
+                            alert("請新增至少一筆職缺")
+                            window.location.href = '@Url.Action("Index", "Openings", new { area = "Companies" })'
+                        }
+                        else {
+                            self.openings = res.data;
+                        }
                     }).catch(error => {
                         console.error(error);
                     })
@@ -328,7 +334,7 @@
             },
             mounted() {
                 let self = this;
-                self.getOpenings();
+                // self.getOpenings();
                 self.getResumeList();
                 const today = new Date().toISOString().split('T')[0];
                 self.minDate = today;
