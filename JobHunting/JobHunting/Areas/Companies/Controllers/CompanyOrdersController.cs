@@ -71,6 +71,7 @@ namespace JobHunting.Areas.Companies.Controllers
             // Final projection and ordering
             var orders = query
                 .OrderBy(co => co.Status)
+                .ThenByDescending(co => co.OrderDate)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -82,8 +83,8 @@ namespace JobHunting.Areas.Companies.Controllers
                     Duration = co.Duration,
                     Status = co.Status,
                     StatusType = co.StatusType,
-                })
-                .OrderByDescending(co => co.OrderNumber);
+                });
+                
 
             return orders;
         }
@@ -111,78 +112,110 @@ namespace JobHunting.Areas.Companies.Controllers
             return companyDeadline.HasValue ? companyDeadline.Value.ToString("yyyy年MM月dd日") : null;
         }
 
-        ///// <summary>
-        ///// 傳送查詢要求至藍新金流
-        ///// </summary>
-        ///// <param name="inModel"></param>
-        ///// <returns></returns>
-        /////POST: Companies/CompanyOrders/SendToNewebPaySearch
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> SendToNewebPaySearch([FromBody][Bind("OrderId")] SendToNewebPaySearchInViewModel inModel)
-        //{
-        //    var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(CompanyId))
-        //    {
-        //        return Json(new { message = "未授權訪問" });
-        //    }
+        /// <summary>
+        /// 傳送查詢要求至藍新金流
+        /// </summary>
+        /// <param name="inModel"></param>
+        /// <returns></returns>
+        ///POST: Companies/CompanyOrders/SendToNewebPaySearch
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<SendToNewebPaySearchOutputVueViewModel> SendToNewebPaySearch([FromBody][Bind("OrderId")] SendToNewebPaySearchInViewModel inModel)
+        {
+            var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = false,
+                };
+            }
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Json(new { message = "失敗" });
-        //    }
+            if (!ModelState.IsValid)
+            {
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = false,
+                };
+            }
 
-        //    int companyId = int.Parse(CompanyId);
+            int companyId = int.Parse(CompanyId);
 
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    if (company == null)
-        //    {
-        //        return Json(new { message = "失敗" });
-        //    }
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = false,
+                };
+            }
 
-        //    var companyOrder = await _context.CompanyOrders.FindAsync(inModel.OrderId);
-        //    if(companyOrder == null || companyOrder.CompanyId != companyId || !companyOrder.Status)
-        //    {
-        //        return Json(new { message = "訂單錯誤" });
-        //    }
+            var companyOrder = await _context.CompanyOrders.FindAsync(inModel.OrderId);
+            if (companyOrder == null || companyOrder.CompanyId != companyId || !companyOrder.Status)
+            {
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = false,
+                };
+            }
 
-        //    SendToNewebPaySearchOutViewModel outModel = new SendToNewebPaySearchOutViewModel();
+            if (companyOrder.Status)
+            {
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = true,
+                    SearchStatus = true,
+                    CompanyData = new SendToNewebPaySearchOutputCompanyViewModel
+                    {
 
-        //    IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+                    },
+                    outModelreturnObj = null,
+                };
+            }
 
-        //    var MerchantID = Config.GetSection("MerchantID").Value;
-        //    int Price = decimal.ToInt32(companyOrder.Price);
+            SendToNewebPaySearchOutViewModel outModel = new SendToNewebPaySearchOutViewModel();
 
-        //    List<KeyValuePair<string,string>> CheckValue = new List<KeyValuePair<string,string>>();
-        //    CheckValue.Add(new KeyValuePair<string, string>("Amt", Price.ToString()));
-        //    CheckValue.Add(new KeyValuePair<string, string>("MerchantID", MerchantID));
-        //    CheckValue.Add(new KeyValuePair<string, string>("MerchantOrderNo", companyOrder.OrderId));
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-        //    string CheckValueParam = string.Join("&", CheckValue.Select(x => $"{x.Key}={x.Value}"));
+            var MerchantID = Config.GetSection("MerchantID").Value;
+            int Price = decimal.ToInt32(companyOrder.Price);
 
-        //    outModel.MerchantID = MerchantID;
-        //    outModel.Version = "1.3";
-        //    outModel.RespondType = "String";
+            List<KeyValuePair<string, string>> CheckValue = new List<KeyValuePair<string, string>>();
+            CheckValue.Add(new KeyValuePair<string, string>("Amt", Price.ToString()));
+            CheckValue.Add(new KeyValuePair<string, string>("MerchantID", MerchantID));
+            CheckValue.Add(new KeyValuePair<string, string>("MerchantOrderNo", companyOrder.OrderId));
 
-        //    string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-        //    string HashIVStr = $"IV={HashIV}";
+            string CheckValueParam = string.Join("&", CheckValue.Select(x => $"{x.Key}={x.Value}"));
 
-        //    string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
-        //    string HashKeyStr = $"Key={HashKey}";
+            outModel.MerchantID = MerchantID;
+            outModel.Version = "1.3";
+            outModel.RespondType = "String";
 
-        //    string[] CheckValueList = [HashIVStr, CheckValueParam, HashKeyStr];
+            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+            string HashIVStr = $"IV={HashIV}";
 
-        //    string CheckValueStr = string.Join("&", CheckValueList);
+            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+            string HashKeyStr = $"Key={HashKey}";
 
-        //    string CheckValueEncrypt = EncryptSHA256(CheckValueStr);
+            string[] CheckValueList = [HashIVStr, CheckValueParam, HashKeyStr];
 
-        //    outModel.CheckValue = CheckValueEncrypt;
-        //    outModel.TimeStamp = DateTimeOffset.Now.ToOffset(new TimeSpan(8, 0, 0)).ToUnixTimeSeconds().ToString();
-        //    outModel.MerchantOrderNo = companyOrder.OrderId;
-        //    outModel.Amt = Price;
+            string CheckValueStr = string.Join("&", CheckValueList);
 
-        //    return Json(outModel);
-        //}
+            string CheckValueEncrypt = EncryptSHA256(CheckValueStr);
+
+            outModel.CheckValue = CheckValueEncrypt;
+            outModel.TimeStamp = DateTimeOffset.Now.ToOffset(new TimeSpan(8, 0, 0)).ToUnixTimeSeconds().ToString();
+            outModel.MerchantOrderNo = companyOrder.OrderId;
+            outModel.Amt = Price;
+
+            return new SendToNewebPaySearchOutputVueViewModel
+            {
+                Status = true,
+                SearchStatus = false,
+                CompanyData = null,
+                outModelreturnObj = outModel,
+            };
+        }
 
         /// <summary>
         /// 字串加密SHA256
@@ -239,7 +272,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return Json(new { message = "訂單不存在" });
             }
 
-            List<KeyValuePair<string,string>> PostData_ = new List<KeyValuePair<string,string>>();
+            List<KeyValuePair<string, string>> PostData_ = new List<KeyValuePair<string, string>>();
             PostData_.Add(new KeyValuePair<string, string>("RespondType", "String"));
             PostData_.Add(new KeyValuePair<string, string>("Version", "1.0"));
             PostData_.Add(new KeyValuePair<string, string>("Amt", order.Price.ToString()));
@@ -251,13 +284,13 @@ namespace JobHunting.Areas.Companies.Controllers
 
             SendToNewebPayCancelOutViewModel outModel = new SendToNewebPayCancelOutViewModel();
 
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
             outModel.MerchantID_ = MerchantID;
             outModel.PostData_ = PostData_Param;
-             
+
             _context.CompanyOrders.Remove(order);
 
             try
