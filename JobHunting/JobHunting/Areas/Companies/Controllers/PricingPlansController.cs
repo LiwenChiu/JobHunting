@@ -25,12 +25,16 @@ namespace JobHunting.Areas.Companies.Controllers
     public class PricingPlansController : Controller
     {
         private readonly DuckCompaniesContext _context;
-        private readonly Logger<PricingPlansController> _logger;
+        //private readonly Logger<PricingPlansController> _logger;
 
-        public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
+        //public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
+        //{
+        //    _context = context;
+        //    _logger = logger;
+        //}
+        public PricingPlansController(DuckCompaniesContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         // GET: Companies/PricingPlans
@@ -317,8 +321,8 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IActionResult> CallbackReturn()
         {
-            var formString = JsonSerializer.Serialize(Request.Form);
-            _logger.LogInformation(formString);
+            //var formString = JsonSerializer.Serialize(Request.Form);
+            //_logger.LogInformation(formString);
 
             string NewebPayStatus = "";
             // 付款失敗跳離執行
@@ -345,7 +349,6 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
                 {
-                    _logger.LogInformation(TradeInfoDecrypt);
                     return BadRequest();
                 }
                 if (key == "Message")
@@ -563,8 +566,8 @@ namespace JobHunting.Areas.Companies.Controllers
         /// <returns></returns>
         public async Task<IActionResult> CallbackNotify()
         {
-            var formString = JsonSerializer.Serialize(Request.Form);
-            _logger.LogInformation(formString);
+            //var formString = JsonSerializer.Serialize(Request.Form);
+            //_logger.LogInformation(formString);
 
             string NewebPayStatus = "";
             foreach (var item in Request.Form)
@@ -611,7 +614,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
                 {
-                    _logger.LogInformation(TradeInfoDecrypt);
+                    //_logger.LogInformation(TradeInfoDecrypt);
                     return BadRequest();
                 }
                 if (key == "Message")
