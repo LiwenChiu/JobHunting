@@ -25,12 +25,16 @@ namespace JobHunting.Areas.Companies.Controllers
     public class PricingPlansController : Controller
     {
         private readonly DuckCompaniesContext _context;
-        private readonly Logger<PricingPlansController> _logger;
+        //private readonly Logger<PricingPlansController> _logger;
 
-        public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
+        //public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
+        //{
+        //    _context = context;
+        //    _logger = logger;
+        //}
+        public PricingPlansController(DuckCompaniesContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         // GET: Companies/PricingPlans
@@ -127,14 +131,14 @@ namespace JobHunting.Areas.Companies.Controllers
 
             // 藍新金流線上付款
 
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
             //string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}Companies/PricingPlans"; //返回商店網址
+            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/Index"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
@@ -152,8 +156,8 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
-            // 交易有效時間
-            TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "600"));
+            //// 交易有效時間
+            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址
@@ -166,8 +170,6 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", ClientBackURL));
             // 付款人電子信箱
             TradeInfo.Add(new KeyValuePair<string, string>("Email", company.ContactEmail));
-            // 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
-            TradeInfo.Add(new KeyValuePair<string, string>("EmailModify", "1"));
             //信用卡 付款
             TradeInfo.Add(new KeyValuePair<string, string>("CREDIT", "1"));
             //Apple Pay 付款
@@ -317,8 +319,8 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IActionResult> CallbackReturn()
         {
-            var formString = JsonSerializer.Serialize(Request.Form);
-            _logger.LogInformation(formString);
+            //var formString = JsonSerializer.Serialize(Request.Form);
+            //_logger.LogInformation(formString);
 
             string NewebPayStatus = "";
             // 付款失敗跳離執行
@@ -332,7 +334,7 @@ namespace JobHunting.Areas.Companies.Controllers
             }
 
             // 解密訊息
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
             string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
             string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
@@ -345,7 +347,6 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
                 {
-                    _logger.LogInformation(TradeInfoDecrypt);
                     return BadRequest();
                 }
                 if (key == "Message")
@@ -543,7 +544,7 @@ namespace JobHunting.Areas.Companies.Controllers
         //    ViewData["ReceiveObj"] = receive.ToString();
 
         //    // 解密訊息
-        //    IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+        //    IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         //    string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
         //    string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
         //    string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
@@ -563,8 +564,8 @@ namespace JobHunting.Areas.Companies.Controllers
         /// <returns></returns>
         public async Task<IActionResult> CallbackNotify()
         {
-            var formString = JsonSerializer.Serialize(Request.Form);
-            _logger.LogInformation(formString);
+            //var formString = JsonSerializer.Serialize(Request.Form);
+            //_logger.LogInformation(formString);
 
             string NewebPayStatus = "";
             foreach (var item in Request.Form)
@@ -579,7 +580,7 @@ namespace JobHunting.Areas.Companies.Controllers
             string MerchantOrderNo = "";
 
             // 解密訊息
-            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
             string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
             string TradeInfoDecrypt = DecryptAESHex(Request.Form["Result"], HashKey, HashIV);
@@ -611,7 +612,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
                 {
-                    _logger.LogInformation(TradeInfoDecrypt);
+                    //_logger.LogInformation(TradeInfoDecrypt);
                     return BadRequest();
                 }
                 if (key == "Message")

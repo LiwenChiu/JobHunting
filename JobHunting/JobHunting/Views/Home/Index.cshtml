@@ -39,7 +39,8 @@
                 </select>
             </div>
             <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="">選擇薪資範圍</label>
+                <label class="calculator-dropdown-label" for="">期望薪資</label>
+                <br>
                 <input type="number" value="0" v-model="salary" min="0" step="1000" required />
             </div>
             <div class="col-sm-4">
@@ -147,7 +148,7 @@
 
         @* 未登入職缺詳細 *@
         <div class="modal fade" id="applyJobUnLoginModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobUnLoginModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
                         <h3 class="CompanyNameh3 text-center text-light" id="applyJobUnLoginModalLabel">{{openingModal.openingTitle}} - </h3>
@@ -203,7 +204,7 @@
 
         @* 登入後職缺詳細 *@
         <div class="modal fade" id="applyJobModal" tabindex="-1" data-bs-keyboard="false" role="dialog" aria-labelledby="applyJobModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
                         <h3 class="CompanyNameh3 text-center text-light">{{openingModal.openingTitle}} - </h3>
@@ -519,7 +520,15 @@
                                 "Content-Type": "application/json",
                             },
                         })
-                        .then(response => this.resumes = response.data)
+                        .then(response => {
+                            if (response.data.length == 0) {
+                                alert("請新增至少一筆履歷")
+                                window.location.href = '@Url.Action("Index", "Resume", new { area = "Candidates" })'
+                            }
+                            else {
+                                this.resumes = response.data
+                            }
+                        })   
                         .catch(err => { alert(err) });
                 },
                 applyJob: function () {

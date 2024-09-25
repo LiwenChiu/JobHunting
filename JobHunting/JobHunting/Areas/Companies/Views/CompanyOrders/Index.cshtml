@@ -53,6 +53,33 @@
         </table>
     </div>
 
+    @* 詳情Modal *@
+    <div class="modal fade" id="SearchModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="SearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="h5" style="width:100%;word-break:break-all;">交易編號: {{searchData.tradeNo}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">訂單編號: {{searchData.orderId}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">方案: {{searchData.title}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">方案天數{{searchData.duration}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">價格: {{searchData.price}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">下單時間: {{searchData.orderdate}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.newebPayStatus}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">訂單訊息: {{searchData.newebPayMessage}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts
@@ -61,10 +88,12 @@
         let vueAppCompanyOrders = {
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     orders: [],
                     deadline: null,
                     searchOrderInput: "",
+                    searchData: [],
                 }
             },
             computed: {},
@@ -91,10 +120,10 @@
                     return this.deadline === null ? "請購買方案" : this.deadline;
                 },
                 SendToNewebPaySearch:function(orderId){
-                    var self = this;
+                    let self = this;
 
                     // 訂單Id
-                    var postData = {};
+                    let postData = {};
                     postData['OrderId'] = orderId;
 
                     axios.post(`${self.baseAddress}/Companies/CompanyOrders/SendToNewebPaySearch`, postData,{
@@ -102,27 +131,34 @@
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
-                            const returnObj = response.data;
-
-                            // 呼叫藍新金流 API
-                            const form = document.createElement('form');
-                            form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
-                            // form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
-
-                            for (const key in returnObj) {
-                                if (returnObj.hasOwnProperty(key)) {
-                                    const hiddenField = document.createElement('input');
-                                    hiddenField.type = 'hidden';
-                                    hiddenField.name = key;
-                                    hiddenField.value = returnObj[key];
-                                    form.appendChild(hiddenField);
-                                }
+                        if (response.data.status) {
+                            if (response.data.searchStatus) {
+                                this.searchData = response.data.orderData;
+                                $("#SearchModal").modal("show");
                             }
-                            document.body.appendChild(form);
-                            form.submit();
-                        })
-                        .catch(error => {
+                            else if (!response.data.searchStatus) {
+                                const returnObj = response.data.outModelreturnObj;
+
+                                // 呼叫藍新金流 API
+                                const form = document.createElement('form');
+                                form.method = 'post';
+                                // form.action = 'https://ccore.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢驗證網址(測試環境)
+                                form.action = 'https://core.newebpay.com/API/QueryTradeInfo'; // 藍新金流單筆交易查詢正式網址
+
+                                for (const key in returnObj) {
+                                    if (returnObj.hasOwnProperty(key)) {
+                                        const hiddenField = document.createElement('input');
+                                        hiddenField.type = 'hidden';
+                                        hiddenField.name = key;
+                                        hiddenField.value = returnObj[key];
+                                        form.appendChild(hiddenField);
+                                    }
+                                }
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+                        }
+                    }).catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                         });
                 },
@@ -143,8 +179,8 @@
                             // 呼叫藍新金流 API
                             const form = document.createElement('form');
                             form.method = 'post';
-                            form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
-                            // form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
+                            // form.action = 'https://ccore.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權驗證網址(測試環境)
+                            form.action = 'https://core.newebpay.com/API/CreditCard/Cancel'; // 藍新金流單筆交易取消授權正式網址
 
                             for (const key in returnObj) {
                                 if (returnObj.hasOwnProperty(key)) {

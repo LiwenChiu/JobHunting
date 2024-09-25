@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
-    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [Area("Admins")]
     public class CompanyOrdersController : Controller
     {

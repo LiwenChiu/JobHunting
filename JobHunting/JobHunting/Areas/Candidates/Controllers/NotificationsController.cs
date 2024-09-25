@@ -124,11 +124,12 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Notifications/SendFirstReply
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("NotificationId,Reply")] NotificationSendReplyInputViewModel nsrivm)
+        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("NotificationId,Reply,InterviewYN,HireYN")] NotificationSendReplyInputViewModel nsrivm)
         {
             if (!ModelState.IsValid)
             {
-                return new NotificationSendReplyOutputViewModel {
+                return new NotificationSendReplyOutputViewModel
+                {
                     AlertText = "格式不正確",
                     AlertStatus = false,
                 };
@@ -139,6 +140,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return new NotificationSendReplyOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
             }
             var candidateNotification = await _context.Notifications.FindAsync(nsrivm.NotificationId);
+            
 
             if (candidateNotification == null || candidateNotification.CandidateId != candidateId)
             {
@@ -149,10 +151,15 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
+            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.NotificationId);
+
+            
             candidateNotification.Reply = nsrivm.Reply;
             candidateNotification.ReplyFirstYN = true;
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
+            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            resumeOpeningRecords.HireYN = nsrivm.HireYN;
 
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try

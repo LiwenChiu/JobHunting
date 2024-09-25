@@ -30,7 +30,7 @@
 
     <div class="selectbutton text-center pt-2">
         <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '面試邀請';">面試邀請</button>
-        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '結果通知';">結果通知</button>
+        <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '錄取通知';">錄取通知</button>
         <input type="text" class="" placeholder="搜尋關鍵字" v-model.trim="filterInput" />
         <button type="button" class="btn btn-warning text-light btn-sm mx-1" v-on:click="filterInput = '';">清空</button>
     </div>
@@ -129,6 +129,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="cancelNotificationModal()"></button>
                     </div>
                 </template>
+
                 <div class="modal-body">
                     <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                         <div class="inputOutAreas">
@@ -165,24 +166,45 @@
                             </template>
                             <template v-else>
                                 <template v-if="notificationModal.replyFirstYN === false">
+
                                 <template v-if="notificationModal.editReplyYN == false">
                                     <button class="btn btn-warning text-light" v-on:click="notificationModal.editReplyYN = true">回覆</button>
                                 </template>
+
                                 <template v-else>
+                                    <template  v-if="notificationModal.status == '面試邀請'">
+                                        
+                                        <div>
+                                            <label class="me-2">回覆邀請 : </label>
+                                            <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRaido"></label>
+                                            <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRaido"></label>
+                                        </div>
+                                    </template>
+                                    <template  v-else>
+                                        <div>
+                                            <label class="me-2">回覆邀請 : </label>
+                                            <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRaido"></label>
+                                            <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRaido"></label>
+                                        </div>
+                                    </template>
+                                        
                                     <div class="row pb-1">
                                         <button class="btn btn-warning text-light col-sm-9" v-on:click="sendFirstReply()">確認回覆</button>
                                         <button class="btn btn-secondary text-light col-sm-3" v-on:click="cancalReply()">取消</button>
                                     </div>
                                     <textarea rows="8" cols="75" class="form-control" style="width:100%;overflow:auto;word-break:break-all;" v-model.trim="notificationModal.reply">{{notificationModal.reply}}</textarea>
                                 </template>
+
                             </template>
                             <template v-else>
+
                                 <template v-if="notificationModal.editReplyYN == false">
                                     <button class="btn btn-warning text-light pb-1" v-on:click="notificationModal.editReplyYN = true">修改回覆</button>
                                     <div class="container border border-1">
                                         <p>{{notificationModal.reply}}</p>
                                     </div>
                                 </template>
+
                                 <template v-else>
                                     <div class="row pb-1">
                                         <button class="btn btn-warning text-light col-sm-9" v-on:click="sendReply()">確認修改</button>
@@ -190,6 +212,7 @@
                                     </div>
                                     <textarea rows="8" cols="75" class="form-control" style="width:100%;overflow:auto;word-break:break-all;" v-model.trim="notificationModal.reply">{{notificationModal.reply}}</textarea>
                                 </template>
+
                             </template>
                             </template>
                             
@@ -213,6 +236,7 @@
         let vueAppNotifications = {
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     alertText: "",
                     alertStatus: "",
@@ -222,6 +246,8 @@
                     pageStart: 1,
                     totalDataCount: null,   //總共幾筆資料
                     totalPage: null,    //總共幾頁
+                    interviewRaido:null,
+                    HireRaido:null,
                 };
             },
             methods: {
@@ -253,6 +279,8 @@
                     let request = {};
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
+                    request.InterviewYN = this.interviewRaido;
+                    request.HireYN = this.HireRaido;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
                         this.alertText = "回覆不可為空";
                         this.alertStatus = false;

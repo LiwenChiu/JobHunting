@@ -88,7 +88,7 @@
 
     @* 意見信件card *@
     <div class="row">  
-        <div class="card rounded-5 col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
+        <div class="card col-3 m-2" style="width: 20rem; height: 18rem;" v-for="item in opinionlist.slice(pageStart,pageEnd)">     
             <div class="card-body">
                 @* 隱藏信件 *@
                 <div class="col-1" style="margin-left:auto">
@@ -204,7 +204,7 @@
                     opinionLetterModal: {},
                     filter:"",
                     baseAddress: "https://localhost:7169",
-
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     letterClass: "",
                     subjectLine: "",
                     content: "",

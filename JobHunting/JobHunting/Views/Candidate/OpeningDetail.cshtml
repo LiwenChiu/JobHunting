@@ -27,9 +27,9 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#jobDescription">工作內容</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
             <li v-for="item in openingList">
-                <template v-if="item.likeYN != null && memberRole == 'candidate'">
+                <template v-if="memberRole == 'candidate'">
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#applyMailBtn" style="color:white">
+                                data-bs-target="#applyMailBtn" style="color:white" v-on:click="getResumes">
                             應徵
                         </button>
                         <template v-if="item.likeYN == false">
@@ -177,7 +177,13 @@
                         axios.get(`${self.baseAddress}/Candidate/GetResumes`,{
                             headers: { 'Content-Type': 'application/json' },
                         }).then(res => {
+                            if (res.data.length == 0) {
+                                alert("請新增至少一筆履歷")
+                                window.location.href = '@Url.Action("Index", "Resume", new { area = "Candidates" })'
+                            }
+                            else {
                             self.resumes = res.data;
+                            }  
                         }).catch(error => {
                             console.error(error);
                         })
@@ -240,11 +246,11 @@
                             console.log(error);
                         });
                     },
+
                 },
                 mounted() {
                     let self = this;
                     self.getOpeningDetail();
-                    self.getResumes();
                     self.getRole();
                 },
             };
