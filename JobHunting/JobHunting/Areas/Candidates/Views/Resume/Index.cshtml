@@ -58,238 +58,239 @@
                     </div>
                 </div>
             </div>
-            @*履歷新增內容*@
+        </div>
 
-            <div class="modal fade"
-                 id="insertmodelID"
-                 tabindex="-1"
-                 data-bs-backdrop="static"
-                 data-bs-keyboard="false"
-                 role="dialog"
-                 aria-labelledby="modalTitleId"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="card modal-body bg-warning">
-                            <div class="card-body container-fluid">
-                                <div class="modal-header" style="background-color: #f7d179;">
-                                    <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
-                                        <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model.lazy="ResumeName" />
-                                    </h5>
+        @*履歷新增內容*@
 
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal"
-                                            aria-label="Close"
-                                            style="width:5% ;" v-on:click="Createcancel">
-                                    </button>
-                                </div>
+        <div class="modal fade"
+             id="insertmodelID"
+             tabindex="-1"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
+             role="dialog"
+             aria-labelledby="modalTitleId"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                 role="document">
+                <div class="modal-content">
+                    <div class="card modal-body bg-warning">
+                        <div class="card-body container-fluid">
+                            <div class="modal-header" style="background-color: #f7d179;">
+                                <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
+                                    <input type="text" class="text-center " name="name" value="" placeholder="請輸入履歷名稱" v-model.lazy="ResumeName" />
+                                </h5>
 
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        style="width:5% ;" v-on:click="Createcancel">
+                                </button>
+                            </div>
 
-                                                <h5 class="card-title" style="text-align:center">個人資料</h5>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+
+                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <div>
+                                                <a href="#" class="mb-3" v-on:click.prevent="triggerFileInput">
+                                                    <div>
+                                                        @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
+                                                        <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="大頭照" />
+                                                    </div>
+
+                                                </a>
+
+                                                <input id="HeadshotinsertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
+
+
+                                            </div>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label class="mb-2" size="10">
+                                                        名字: 
+
+                                                    </label>
+                                                </div>
                                                 <div>
-                                                    <a href="#" class="mb-3" v-on:click.prevent="triggerFileInput">
-                                                        <div>
-                                                            @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
-                                                            <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="大頭照" />
-                                                        </div>
-
-                                                    </a>
-
-                                                    <input id="HeadshotinsertFile" ref="fileInput" class="" style="" type="file" name="name" value="" accept="image/*" v-on:change="CreatepreviewImage" />
-
+                                                    <label for="" class="mb-2">性別 : </label>
 
                                                 </div>
-                                                <p class="card-text">
-                                                    <div class="col">
-                                                        <label class="mb-2" size="10">
-                                                            名字: {{ResumeD.name}}
+                                                <div class="col">
+                                                    <label for="" class="mb-2">生日 : </label>
 
-                                                        </label>
-                                                    </div>
-                                                    <div>
-                                                        <label for="" class="mb-2">性別 : {{Sexif(ResumeD.sex)}}</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">電話 : </label>
+                                                    <label for="" class="mb-2 mx-3">學歷 : </label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">郵件 : </label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2">就業狀態 :</label>
+                                                </div>
+                                                <div>
+                                                    <p class="card-text">
+                                                        自我介紹：
+                                                        <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
+                                                    </p>
+                                                </div>
+                                            </p>
 
-                                                    </div>
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">生日 : {{ResumeD.birthday}}</label>
-
-                                                    </div>
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                        <label for="" class="mb-2 mx-3">學歷 : {{ResumeD.degree}}</label>
-                                                    </div>
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
-                                                    </div>
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
-                                                    </div>
-                                                    <div>
-                                                        <p class="card-text">
-                                                            自我介紹：
-                                                            <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
-                                                        </p>
-                                                    </div>
-                                                </p>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                                <p class="card-text">
-                                                    <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
-                                                </p>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">求職條件</h5>
-                                                <p class="card-text">
-                                                    <div class="col">
-                                                        <label class="mb-2">希望上班時段: <input type="text" v-model="timeR"></label>
-                                                    </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                            <p class="card-text">
+                                                <div class="col">
+                                                    <label class="mb-2">希望上班時段: <input type="text" v-model="timeR"></label>
+                                                </div>
 
-                                                    <div class="mb-3">
-                                                        <p>
-                                                            <label>
-                                                                <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
-                                                            </label>
-                                                        </p>
+                                                <div class="mb-3">
+                                                    <p>
+                                                        <label>
+                                                            <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
+                                                        </label>
+                                                    </p>
 
-                                                        <div class="collapse" id="TitleClassCollapse">
-                                                            <div class="card card-body">
-                                                                <template v-for="item in titleCategory">
-                                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
-                                                                        {{item.titleCategoryName}}
-                                                                        <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked)}}</span>
-                                                                    </button>
-                                                                    <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
-                                                                        <div class="row">
-                                                                            <div class="px-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
-                                                                                <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="selectedtitleClassId" />
-                                                                                <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <hr />
-                                                                </template>
-                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
-                                                                    其他
-                                                                    <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,TitleClassChecked) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+                                                    <div class="collapse" id="TitleClassCollapse">
+                                                        <div class="card card-body">
+                                                            <template v-for="item in titleCategory">
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnCategoryNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnCategoryNameId(item)">
+                                                                    {{item.titleCategoryName}}
+                                                                    <span class="badge bg-warning" v-if="selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked) > 0">{{selectedFilterTitleCategory(item.titleCategoryId,TitleClassChecked)}}</span>
                                                                 </button>
-                                                                <div class="collapse" id="otherClass">
+                                                                <div class="collapse" v-bind:id="ReturnCategoryNameId(item)">
                                                                     <div class="row">
-                                                                        <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
-                                                                            <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                                                                        <div class="px-2" v-for="TitleClass in filterTitleCategory(item.titleCategoryId)">
+                                                                            <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="selectedtitleClassId" />
                                                                             <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-
-
-                                                        <div class="col">
-                                                            <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
-                                                        </div>
-
-                                                        <div class="col">
-                                                            <label for="" class="mb-2">
-                                                                證照
-                                                                <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
-                                                            </label>
-                                                        </div>
-
-                                                        <p>
-                                                            <label>
-                                                                <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
-                                                                <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
-                                                            </label>
-                                                        </p>
-
-                                                        <div class="collapse" id="TagsCollapse">
-                                                            <div class="card card-body">
-                                                                <template v-for="item in TagClasses">
-                                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
-                                                                        {{item.tagClassName}}
-                                                                        <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
-                                                                    </button>
-                                                                    <div class="collapse" v-bind:id="ReturnClassNameId(item)">
-                                                                        <div class="row">
-                                                                            <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
-                                                                                <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
-                                                                                <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <hr />
-                                                                </template>
-                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
-                                                                    其他
-                                                                    <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
-                                                                </button>
-                                                                <div class="collapse" id="otherClass">
-                                                                    <div class="row">
-                                                                        <div class="col-2" v-for="Tag in filterTagClass(0)">
-                                                                            <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
-                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
-                                                                        </div>
+                                                                <hr />
+                                                            </template>
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                其他
+                                                                <span class="badge bg-warning" v-if="selectedFilterTitleCategory(0,TitleClassChecked) > 0">{{selectedFilterTitleCategory(0,TitleClassChecked)}}</span>
+                                                            </button>
+                                                            <div class="collapse" id="otherClass">
+                                                                <div class="row">
+                                                                    <div class="col-2" v-for="TitleClass in filterTitleCategory(0)">
+                                                                        <input type="checkbox" v-bind:id="ReturnTitleClassNameId(TitleClass)" v-bind:value="TitleClass.titleClassId" v-model="TitleClassChecked" />
+                                                                        <label v-bind:for="ReturnTitleClassNameId(TitleClass)">{{TitleClass.titleClassName}}</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                </p>
+                                                <div>
 
-                                            </div>
+
+                                                    <div class="col">
+                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
+                                                    </div>
+
+                                                    <div class="col">
+                                                        <label for="" class="mb-2">
+                                                            證照
+                                                            <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
+                                                        </label>
+                                                    </div>
+
+                                                    <p>
+                                                        <label>
+                                                            <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                            <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                        </label>
+                                                    </p>
+
+                                                    <div class="collapse" id="TagsCollapse">
+                                                        <div class="card card-body">
+                                                            <template v-for="item in TagClasses">
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                    {{item.tagClassName}}
+                                                                    <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
+                                                                </button>
+                                                                <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                    <div class="row">
+                                                                        <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                            <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
+                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </template>
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                其他
+                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                            </button>
+                                                            <div class="collapse" id="otherClass">
+                                                                <div class="row">
+                                                                    <div class="col-2" v-for="Tag in filterTagClass(0)">
+                                                                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                        <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </p>
+
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">自傳</h5>
-                                                <p class="card-text">
-                                                    <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
-                                                </p>
-                                            </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="text-align:center">自傳</h5>
+                                            <p class="card-text">
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
-                                    <span class="form-control text-center ">
-                                        履歷狀態：
-                                        <select v-model.lazy="releaseYN" class="btn btn-primary ms-4" disabled>
-                                            <option :value="true">開放</option>
-                                            <option :value="false">關閉</option>
-                                        </select>
-                                    </span>
-                                </div>
-                                <div class="form-group" style="text-align:right">
-                                    <button id="insert" type="submit" class="btn btn-success mx-3" @* data-bs-dismiss="modal" *@ v-on:click="CreateNewResume">新增</button>
-                                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" v-on:click="Createcancel">取消</button>
-                                </div>
-
+                            </div>
+                            <div class="col-md-3 ">
+                                <span class="form-control text-center ">
+                                    履歷狀態：
+                                    <select v-model.lazy="releaseYN" class="btn btn-primary ms-4" disabled>
+                                        <option :value="true">開放</option>
+                                        <option :value="false">關閉</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="form-group" style="text-align:right">
+                                <button id="insert" type="submit" class="btn btn-success mx-3" @* data-bs-dismiss="modal" *@ v-on:click="CreateNewResume">新增</button>
+                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" v-on:click="Createcancel">取消</button>
                             </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -297,8 +298,7 @@
 
 
 
-
-
+       
 
 
         @* 履歷內容Modal *@
