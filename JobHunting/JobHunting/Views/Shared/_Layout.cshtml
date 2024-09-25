@@ -49,22 +49,6 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Candidates" asp-controller="Home" asp-action="Index">會員中心</a></li>
                             <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
-                            </ul>
-                            </li> *@
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            </ul>
-                            </li> *@
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                                 <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
                                     <button type="submit" class="btn text-danger">登出</button>
@@ -80,24 +64,6 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Companies" asp-controller="Home" asp-action="Index">會員中心</a></li>
                             <li style="padding:8px;"><button type="button" class="nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員登入/註冊</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
-                            </ul>
-                            </li> *@
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">求職者首頁</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="Index">公司首頁</a></li>
-                            </ul>
-                            </li> *@
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="Index">履歷瀏覽</a></li>
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -117,9 +83,6 @@
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">履歷瀏覽</a></li>
                             <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="Index">職缺瀏覽</a></li>
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                                <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn text-danger">登出</button>
-                                </form>
                                 <form asp-area="" asp-controller="Home" asp-action="AdminLogout" method="post">
                                     <button type="submit" class="btn nav-link">管理者登出</button>
                                 </form>
@@ -132,27 +95,9 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">會員中心</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Index">Admins</a></li>
-                            <li><a class="dropdown-item" asp-area="Companies" asp-controller="Home" asp-action="Index">Companies</a></li>
-                            <li><a class="dropdown-item" asp-area="Candidates" asp-controller="Home" asp-action="Index">Candidates</a></li>
-                            </ul>
-                            </li> *@
-                            @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">返回登入畫面</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="Admins" asp-controller="Home" asp-action="Login">管理者登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">登入</a></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Register">註冊</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="Index">公司首頁</a></li>
-                            </ul>
-                            </li> *@
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Login">登入</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Register">註冊</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="AdminLogin">管理者登入</a></li>
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Index">管理中心</a></li>
                         </ul>
                     </div>
                 </template>
@@ -242,6 +187,8 @@
         let vueLetter = {
             data() {
                 return {
+                    baseAddress: "https://localhost:7169",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     letterclass: "",
                     subjectLine: "",
                     content: "",
@@ -257,7 +204,7 @@
                     form.append("Content", self.content);
                     form.append("SendTime", today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
-                    axios.post('https://localhost:7169/Home/AddLetter', form, {
+                    axios.post(`${self.baseAddress}/Home/AddLetter`, form, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     }).then(res => {
                         alert(res.data)
@@ -294,6 +241,7 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7169",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     memberRole: "",
                 };
             },
