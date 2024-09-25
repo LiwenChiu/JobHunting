@@ -520,7 +520,15 @@
                                 "Content-Type": "application/json",
                             },
                         })
-                        .then(response => this.resumes = response.data)
+                        .then(response => {
+                            if (response.data.length == 0) {
+                                alert("請新增至少一筆履歷")
+                                window.location.href = '@Url.Action("Index", "Resume", new { area = "Candidates" })'
+                            }
+                            else {
+                                this.resumes = response.data
+                            }
+                        })   
                         .catch(err => { alert(err) });
                 },
                 applyJob: function () {

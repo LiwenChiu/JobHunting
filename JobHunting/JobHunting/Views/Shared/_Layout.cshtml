@@ -204,7 +204,7 @@
                     form.append("Content", self.content);
                     form.append("SendTime", today);
                     form.append("ImageFile", document.querySelector("#addFile").files[0]);
-                    axios.post(`${self.baseAddress}/Home/AddLetter`, form, {
+                    axios.post(`/Home/AddLetter`, form, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     }).then(res => {
                         alert(res.data)
