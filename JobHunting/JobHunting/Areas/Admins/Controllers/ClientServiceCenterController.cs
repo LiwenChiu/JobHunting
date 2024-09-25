@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
-    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [Area("Admins")]
     public class ClientServiceCenterController : Controller
     {
