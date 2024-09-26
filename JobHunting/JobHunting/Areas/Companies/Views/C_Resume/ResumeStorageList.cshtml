@@ -25,7 +25,7 @@
                             <h4 class="card-title pb-3 "> {{item.name}}的履歷</h4>
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item.companyId,item.resumeId)"></button>
+                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item)"></button>
                             </div>
                         </div>
                             <div class="text-start">
@@ -599,8 +599,12 @@
                     }
                     
                 },
-                removeCompanyResumeLikeRecords:function(resumeId){
+                removeCompanyResumeLikeRecords:function(item){
                     let _this = this
+                    let request = {
+                        ResumeId:item.resumeId,
+                        companyId:item.companyId,
+                    };
                     let confirmdel = confirm("確定要刪除?");
                     if (confirmdel == true) {
                         fetch(`${_this.baseAddress}/Companies/C_Resume/RemoveCompanyResumeLikeRecords`, {
@@ -608,7 +612,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ResumeId: resumeId })
+                            body: JSON.stringify(request)
                         }).then(res => {
                             return res.json();
                         }).then(data => {

@@ -86,7 +86,8 @@ namespace JobHunting.Areas.Candidates.Controllers
             {
                 return new NotificationCandidateModalOutputViewModel(); // 如果無法抓取 CandidateId，回傳空結果
             }
-            var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).AsNoTracking()
+            var ResumeOpeningRecordId = _context.ResumeOpeningRecords.Select(c => c.ResumeOpeningRecordId);
+            var notification = _context.Notifications.Include(n => n.Candidate).ThenInclude(c => c.Resumes).Include(n => n.Company).ThenInclude(c => c.Openings).ThenInclude(r=>r.ResumeOpeningRecords).AsNoTracking()
                 .Where(n => n.CandidateId == candidateId)
                 .Where(n => n.NotificationId == ncmvm.NotificationId)
                 .Select(n => new NotificationCandidateModalOutputViewModel
@@ -108,6 +109,9 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Reply = n.Reply,
                     ReplyTime = n.ReplyTime,
                     EditReplyYN = false,
+                    InterviewYN = n.Company.Openings.Where(o=>o.OpeningId == n.OpeningId).SelectMany(o=>o.ResumeOpeningRecords).Where(r=>r.ResumeId == n.ResumeId).Select(r=>r.InterviewYN).FirstOrDefault(),
+                    HireYN = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Select(r => r.HireYN).FirstOrDefault(),
+                    ResumeOpeningRecordId = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Select(r => r.ResumeOpeningRecordId).FirstOrDefault(),
                 }).FirstOrDefaultAsync();
 
             if (notification == null)
@@ -124,7 +128,7 @@ namespace JobHunting.Areas.Candidates.Controllers
         //POST: Candidates/Notifications/SendFirstReply
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("NotificationId,Reply,InterviewYN,HireYN")] NotificationSendReplyInputViewModel nsrivm)
+        public async Task<NotificationSendReplyOutputViewModel> SendFirstReply([FromBody][Bind("NotificationId,Reply,InterviewYN,HireYN,ResumeOpeningRecordId")] NotificationSendReplyInputViewModel nsrivm)
         {
             if (!ModelState.IsValid)
             {
@@ -151,7 +155,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
-            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.NotificationId);
+            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
 
             
             candidateNotification.Reply = nsrivm.Reply;
@@ -210,11 +214,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-
+            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
             candidateNotification.Reply = nsrivm.Reply;
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
-
+            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            resumeOpeningRecords.HireYN = nsrivm.HireYN;
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try
             {

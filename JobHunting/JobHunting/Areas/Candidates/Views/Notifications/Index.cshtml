@@ -206,6 +206,23 @@
                                 </template>
 
                                 <template v-else>
+
+                                        <template v-if="notificationModal.editReplyYN == false">
+
+                                            <div>
+                                                <label class="me-2">回覆邀請 : </label>
+                                                <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRaido"></label>
+                                                <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRaido"></label>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div>
+                                                <label class="me-2">回覆邀請 : </label>
+                                                <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRaido"></label>
+                                                <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRaido"></label>
+                                            </div>
+                                        </template>
+
                                     <div class="row pb-1">
                                         <button class="btn btn-warning text-light col-sm-9" v-on:click="sendReply()">確認修改</button>
                                         <button class="btn btn-secondary text-light col-sm-3" v-on:click="cancalReply()">取消</button>
@@ -247,6 +264,7 @@
                     totalPage: null,    //總共幾頁
                     interviewRaido:null,
                     HireRaido:null,
+                    ResumeOpeningRecordId:"",
                 };
             },
             methods: {
@@ -261,6 +279,7 @@
                             this.notifications = response.data.candidateNotificationsFilter;
                             this.totalDataCount = response.data.totalDataCount;
                             this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
+                            
                         })
                         .catch(err => { alert(err) });
                 },
@@ -268,16 +287,22 @@
                     let request = {};
                     request.NotificationId = notificationId,
                         axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotification`, request, {
-                            headers:{
-                                'Content-Type':'application/json'
+                            headers: {
+                                'Content-Type': 'application/json'
                             }
-                        }).then(response => this.notificationModal = response.data)
+                        }).then(response => {
+                            this.notificationModal = response.data;
+                            this.interviewRaido = response.data.interviewYN;
+                            this.HireRaido = response.data.hireYN;
+                            this.ResumeOpeningRecordId = response.data.resumeOpeningRecordId;
+                        })
                         .catch(err => { alert(err) });
                 },
                 sendFirstReply: function () {
                     let request = {};
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
+                    request.ResumeOpeningRecordId = this.ResumeOpeningRecordId;
                     request.InterviewYN = this.interviewRaido;
                     request.HireYN = this.HireRaido;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
@@ -305,6 +330,9 @@
                     let request = {};
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
+                    request.ResumeOpeningRecordId = this.ResumeOpeningRecordId;
+                    request.InterviewYN = this.interviewRaido;
+                    request.HireYN = this.HireRaido;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
                         this.alertText = "回覆不可為空";
                         this.alertStatus = false;

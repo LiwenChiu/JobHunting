@@ -219,6 +219,7 @@
                                                             <p class="card-text form-control overflow-auto" style="height:200px">
                                                                 {{item.autobiography}}
                                                             </p>
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -229,7 +230,7 @@
 
                                     <div class="modal-footer">
                                         @* 暫存按鈕 *@
-                                        <button type="button" class="btn btn-success" v-on:click="addCompanyResumeLikeRecords(item.companyId, item.resumeId)">暫存</button>
+                                        <button type="button" class="btn btn-success" v-on:click="addCompanyResumeLikeRecords(item)">暫存</button>
                                         @* 發送面試通知按鈕 *@
                                         <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                                         @* data-bs-target="#interviewMailBtn" *@ v-on:click="openInterviewModal(item)">
@@ -398,7 +399,6 @@
                     currentPage: 1,
                     filter: "",
                     selectedInterviewYN: undefined,
-
                     selectedHireYN: undefined,
                     selectedOpClassTitleId: '',
                     selectedOpTitleId: undefined,
@@ -685,8 +685,12 @@
                     }
                 },
                     
-                addCompanyResumeLikeRecords:function(resumeId){
+                addCompanyResumeLikeRecords:function(item){
                      let _this = this;
+                     let request = {
+                        ResumeId:item.resumeId,
+                        companyId:item.companyId,
+                     };
                     let confirmdel = confirm("確定要收藏?");
                     if (confirmdel == true){
                         fetch(`${_this.baseAddress}/companies/C_Resume/AddCompanyResumeLikeRecords`, {
@@ -694,7 +698,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ ResumeId: resumeId }),
+                            body: JSON.stringify(request),
                         }).then(res => {
                             return res.json();
                         }).then(data => {
