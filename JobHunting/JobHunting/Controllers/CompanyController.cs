@@ -299,23 +299,35 @@ namespace JobHunting.Controllers
             {
                 return "未找到公司 ID"; // 或返回其他適當的錯誤
             }
-            var CompanyId = int.Parse(companyIdClaim.Value);
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            Notification notificationLetter = new Notification();
-            notificationLetter.CompanyId = CompanyId;
-            notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
-            notificationLetter.OpeningId = letter.OpeningId;
-            notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
-            notificationLetter.Status = letter.Status;
-            notificationLetter.SubjectLine = letter.SubjectLine;
-            notificationLetter.Content = letter.Content;
-            notificationLetter.Address = letter.Address;
-            notificationLetter.SendDate = today;
-            notificationLetter.AppointmentDate = letter.AppointmentDate;
-            notificationLetter.AppointmentTime = letter.AppointmentTime;
-            _context.Notifications.Add(notificationLetter);
-            await _context.SaveChangesAsync();
-            return "發送面試成功";
+            else
+            {
+                var CompanyId = int.Parse(companyIdClaim.Value);
+                var today = DateOnly.FromDateTime(DateTime.Now);
+                Notification notificationLetter = new Notification();
+                if (letter != null)
+                {
+                    notificationLetter.CompanyId = CompanyId;
+                    notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+                    notificationLetter.OpeningId = letter.OpeningId;
+                    notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+                    notificationLetter.Status = letter.Status;
+                    notificationLetter.SubjectLine = letter.SubjectLine;
+                    notificationLetter.Content = letter.Content;
+                    notificationLetter.Address = letter.Address;
+                    notificationLetter.SendDate = today;
+                    notificationLetter.AppointmentDate = letter.AppointmentDate;
+                    notificationLetter.AppointmentTime = letter.AppointmentTime;
+                    _context.Notifications.Add(notificationLetter);
+                    await _context.SaveChangesAsync();
+                    return "發送面試成功";
+                }
+                else
+                {
+                    return "請輸入完整面試資訊";
+                }
+               
+            }
+            
         }
         [HttpPost]
         public async Task<string> AddFavorite([FromBody] AddFavoriteResumeViewModel favorite)

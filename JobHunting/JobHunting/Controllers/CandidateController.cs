@@ -106,31 +106,34 @@ namespace JobHunting.Controllers
 
             int candidateID = int.Parse(candidateIdClaim.Value);
             var resumes = _context.Resumes.Include(a => a.Candidate).Where(c => c.CandidateId == candidateID);
-                return Json(resumes.Select(p => new ResumesListViewModel
-                {
-                    CandidateId = p.CandidateId,
-                    ResumesId = p.ResumeId,
-                    Title = p.Title,
-                }));
-            //else
-            //{
-            //    return RedirectToAction("Index", "Home", new { area = "Candidates" });
-            //}
+            return Json(resumes.Select(p => new ResumesListViewModel
+            {
+                CandidateId = p.CandidateId,
+                ResumesId = p.ResumeId,
+                Title = p.Title,
+            }));
         }
         [HttpPost]
         public async Task<string> AddApply([FromBody] AddApplyViewModel letter)
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            ResumeOpeningRecord applyLetter = new ResumeOpeningRecord();
-            applyLetter.CompanyId = letter.CompanyId;
-            applyLetter.ResumeId = letter.ResumeId;
-            applyLetter.OpeningId = letter.OpeningId;
-            applyLetter.CompanyName = letter.CompanyName;
-            applyLetter.OpeningTitle = letter.OpeningTitle;
-            applyLetter.ApplyDate = today;
-            _context.ResumeOpeningRecords.Add(applyLetter);
-            await _context.SaveChangesAsync();
-            return "發送應徵職缺成功";
+            if(letter != null)
+            {
+                var today = DateOnly.FromDateTime(DateTime.Now);
+                ResumeOpeningRecord applyLetter = new ResumeOpeningRecord();
+                applyLetter.CompanyId = letter.CompanyId;
+                applyLetter.ResumeId = letter.ResumeId;
+                applyLetter.OpeningId = letter.OpeningId;
+                applyLetter.CompanyName = letter.CompanyName;
+                applyLetter.OpeningTitle = letter.OpeningTitle;
+                applyLetter.ApplyDate = today;
+                _context.ResumeOpeningRecords.Add(applyLetter);
+                await _context.SaveChangesAsync();
+                return "發送應徵職缺成功";
+            }
+            else
+            {
+                return "請輸入完整應徵訊息";
+            }
         }
         public async Task<FileResult> GetPicture(int id)
         {

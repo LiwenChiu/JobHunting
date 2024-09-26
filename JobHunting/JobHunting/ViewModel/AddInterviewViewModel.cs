@@ -6,7 +6,7 @@
 
         public string? CandidateId { get; set; }
 
-        public int? OpeningId { get; set; }
+        public int OpeningId { get; set; }
 
         public string? ResumeId { get; set; }
         public string Status { get; set; }
