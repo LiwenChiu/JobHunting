@@ -25,13 +25,7 @@ namespace JobHunting.Areas.Companies.Controllers
     public class PricingPlansController : Controller
     {
         private readonly DuckCompaniesContext _context;
-        //private readonly Logger<PricingPlansController> _logger;
 
-        //public PricingPlansController(DuckCompaniesContext context, Logger<PricingPlansController> logger)
-        //{
-        //    _context = context;
-        //    _logger = logger;
-        //}
         public PricingPlansController(DuckCompaniesContext context)
         {
             _context = context;
@@ -319,9 +313,6 @@ namespace JobHunting.Areas.Companies.Controllers
         [HttpPost]
         public async Task<IActionResult> CallbackReturn()
         {
-            //var formString = JsonSerializer.Serialize(Request.Form);
-            //_logger.LogInformation(formString);
-
             string NewebPayStatus = "";
             // 付款失敗跳離執行
             foreach (var item in Request.Form)
@@ -329,7 +320,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 if (item.Key == "Status")
                 {
                     NewebPayStatus = item.Value;
-                    break;
                 }
             }
 
@@ -397,15 +387,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 return NotFound();
             }
 
-            //companyOrder.StatusType = payReceiveStatus switch
-            //{
-            //    string type when type == "0" => "已過期",
-            //    string type when type == "1" => "付款成功",
-            //    string type when type == "2" => "付款失敗",
-            //    string type when type == "3" => "取消付款",
-            //    string type when type == "6" => "退款",
-            //    _ => "錯誤",
-            //};
             companyOrder.Status = true;
             if (NewebPayStatus == "SUCCESS")
             {
@@ -415,6 +396,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 companyOrder.StatusType = "付款失敗";
             }
+
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
@@ -564,9 +546,6 @@ namespace JobHunting.Areas.Companies.Controllers
         /// <returns></returns>
         public async Task<IActionResult> CallbackNotify()
         {
-            //var formString = JsonSerializer.Serialize(Request.Form);
-            //_logger.LogInformation(formString);
-
             string NewebPayStatus = "";
             foreach (var item in Request.Form)
             {
@@ -612,7 +591,6 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 if (key == "Status" && decryptTradeCollection[key] != NewebPayStatus)
                 {
-                    //_logger.LogInformation(TradeInfoDecrypt);
                     return BadRequest();
                 }
                 if (key == "Message")

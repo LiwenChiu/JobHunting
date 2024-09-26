@@ -173,15 +173,15 @@
 
                                         <div class="modal-footer">
                                             @* 發送面試通知按鈕 *@
-                                                <button  type="button" class="btn btn-primary btn-md"  data-bs-toggle="modal"
-                                                    @* data-bs-target="#interviewMailBtn" *@ v-on:click="openInterviewModal(item)">
+                                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openInterviewModal(item)"
+                                                    @* data-bs-target="#interviewMailBtn" *@ >
                                                 面試
                                                 </button>
 
 
                                             @* 發送錄取通知按鈕 *@
-                                            <button  type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
-                                                    @* data-bs-target="#OfferMailBtn" *@ v-on:click="openAdmissionModal(item)">
+                                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openAdmissionModal(item)"
+                                                    @* data-bs-target="#OfferMailBtn" *@ >
                                                 錄取
                                             </button>
                                            @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
@@ -349,6 +349,7 @@
         let VueApp = {
             data() {
                 return {
+                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     pageStatus: 0,
                     perpage: 8, //一頁的資料數
@@ -420,7 +421,7 @@
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeId;
-                    strID = str + num;
+                    strID = "Interview" + str + num;
                     return strID;
                 },
                 getTitleClassName(titleClassId) {
@@ -488,7 +489,13 @@
                     }).then(response => {
                         return response.json();
                     }).then(data => {
-                        return _this.Openings = data
+                        if (data.length == 0) {
+                            alert("請新增至少一筆職缺")
+                            window.location.href = '@Url.Action("Index", "Openings", new { area = "Companies" })'
+                        }
+                        else {
+                            return _this.Openings = data;
+                        }
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     });
@@ -638,7 +645,6 @@
             //每次重新載入網頁時會自動初始化撈出資料
             mounted() {
                 this.resumeStorageData();
-                this.getOpenings();
                 const today = new Date().toISOString().split('T')[0];
                 this.minDate = today;
             }
