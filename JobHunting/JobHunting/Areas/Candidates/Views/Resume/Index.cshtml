@@ -8,7 +8,9 @@
 @section Styles
 {
     <style>
-
+        .certification:hover {
+            transform: scale(3);
+        }
     </style>
 }
 
@@ -98,7 +100,7 @@
                                                 <a href="#" class="mb-3" v-on:click.prevent="triggerFileInput">
                                                     <div>
                                                         @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
-                                                        <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="大頭照" />
+                                                        <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="待上傳" />
                                                     </div>
 
                                                 </a>
@@ -148,7 +150,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience" style="height:440px"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -269,7 +271,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">自傳</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="9" v-model.lazy="Autobiography"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -372,7 +374,7 @@
                                                     <div>
                                                         <p class="card-text">
                                                             自我介紹：
-                                                            <textarea name="" id="" class="form-control" rows="6">{{ResumeD.intro}}</textarea>
+                                                            <textarea name="" id="" class="form-control" rows="6" v-model="ResumeD.intro"></textarea>
                                                         </p>
                                                     </div>
 
@@ -389,7 +391,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
-                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience" style="height:440px"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -507,7 +509,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
-                                                    <textarea name="" id="" class="form-control" rows="8" v-model.lazy="ResumeD.autobiography"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="10" v-model.lazy="ResumeD.autobiography"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -542,7 +544,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">個人資料</h5>
-                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="待上傳" /></div>
+                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="大頭照" /></div>
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
@@ -579,7 +581,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:250px">
+                                                <p class="card-text form-control overflow-auto" style="height:472px">
                                                     {{ResumeD.workExperience}}
                                                 </p>
                                             </div>
@@ -627,7 +629,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                                <p class="card-text form-control overflow-auto" style="height:213px">
                                                     {{ResumeD.autobiography}}
                                                 </p>
                                             </div>

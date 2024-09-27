@@ -452,7 +452,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
 
-                _context.Update(r);
+                _context.Resumes.Update(r);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)

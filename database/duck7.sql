@@ -122,7 +122,6 @@ CREATE TABLE Resumes
 	Headshot varbinary(Max),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
-	Certification varbinary(Max),
 	[Time] nvarchar(60),
 	[Address] nvarchar(100),
 	ReleaseYN bit not null default(1),
