@@ -109,8 +109,8 @@
                                             </div>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2" size="10" >
-                                                        名字: 
+                                                    <label class="mb-2" size="10">
+                                                        名字:
                                                         {{createResume.name}}
                                                     </label>
                                                 </div>
@@ -298,7 +298,7 @@
 
 
 
-       
+
 
 
         @* 履歷內容Modal *@
@@ -540,31 +540,32 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
                                                 <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="待上傳" /></div>
                                                 <p class="card-text">
                                                     <div class="col">
-                                                        <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
-
+                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{ResumeD.name}} </label>
                                                     </div>
                                                     <div>
-                                                        <label for="" class="mb-2">性別 : {{Sexif(ResumeD.sex)}}</label>
+                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{Sexif(ResumeD.sex)}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">生日 : {{ResumeD.birthday}}</label>
+                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{ResumeD.birthday}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                        <label for="" class="mb-2 mx-3">學歷 : {{ResumeD.degree}}</label>
+                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{ResumeD.phone}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
+                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{ResumeD.degree}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
+                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{ResumeD.email}}</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{ResumeD.employmentStatus}}</label>
                                                     </div>
                                                     <div class="card-body">
-                                                        <h5 class="card-title" style="">自我介紹：</h5>
+                                                        <h5 class="card-title fw-bold">自我介紹：</h5>
                                                         <p class="card-text form-control overflow-auto" style="height:200px">
                                                             {{ResumeD.intro}}
                                                         </p>
@@ -577,8 +578,8 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:250px">
+                                                <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
+                                                <p class="card-text form-control overflow-auto" style="height:512px">
                                                     {{ResumeD.workExperience}}
                                                 </p>
                                             </div>
@@ -590,32 +591,32 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">求職條件</h5>
                                                 <p class="card-text">
                                                     <div class="col">
-                                                        <label class="mb-2">上班時段: {{ResumeD.time}}</label>
+                                                        <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{ResumeD.time}}</label>
                                                     </div>
                                                     <div class="col">
                                                         <label class="">
-                                                            <span class="">希望職缺:    </span>
+                                                            <label class="mb-2 fw-bold">
+                                                                希望職缺:
+                                                            </label>
                                                             {{ getTitleClassName(ResumeD.titleClassId) }}
                                                         </label>
                                                     </div>
                                                     <div class="col">
-                                                        <label class="mb-2">希望上班地點: {{ResumeD.address}}</label>
+                                                        <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{ResumeD.address}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2 ">
+                                                        <label for="" class="mb-2 fw-bold">
                                                             證照:
-                                                            <br>
-
                                                             <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
                                                         </label>
 
                                                     </div>
 
                                                     <div>
-                                                        <label class="">能力標籤:</label>
+                                                        <label class="fw-bold">能力標籤:</label><label class="ms-2"></label>
                                                         {{getTagName(ResumeD.tagId)}}
                                                     </div>
                                                 </p>
@@ -626,7 +627,7 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">自傳</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
                                                 <p class="card-text form-control overflow-auto" style="height:200px">
                                                     {{ResumeD.autobiography}}
                                                 </p>
@@ -729,45 +730,45 @@
 
 @section Scripts
 {
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script>
-            let VueApp = {
-                data() {
-                    return {
-                        // baseAddress: "https://duckjobhunting.azurewebsites.net",
-                        baseAddress: "https://localhost:7169",
-                        pageStatus: 0,
-                        perpage: 7, //一頁的資料數
-                        currentPage: 1,
-                        MessageStatus: 1,
-                        resumevalue: "resumevalue",
-                        Resume:[],
-                        createResume: {
-                            name:"",
-                            sex:"",
-                            birthday:"",
-                            phone:"",
-                            degree:"",
-                            email:"",
-                            employmentStatus:"",
-                        },
-                        backupResume: {},
-                        backupReleaseYNedit: {},
-                        ResumeName:"",
-                        releaseYN:true,
-                        WorkExperience:"",
-                        Autobiography:"",
-                        hopeaddress:"",
-                        timeR: "",
-                        sexYN:false,
-                        ResumeIntro:"",
-                        noimagepreview: "/images/No_Image_Available.jpg",
-                        originalHeadshot: null,
-                        TagClasses: [],
-                        Tags: [],
-                        TagChecked: [],
-                        selectedTagId: [],
-                        TagCheckedOpening: [],
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        let VueApp = {
+            data() {
+                return {
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
+                    baseAddress: "https://localhost:7169",
+                    pageStatus: 0,
+                    perpage: 7, //一頁的資料數
+                    currentPage: 1,
+                    MessageStatus: 1,
+                    resumevalue: "resumevalue",
+                    Resume: [],
+                    createResume: {
+                        name: "",
+                        sex: "",
+                        birthday: "",
+                        phone: "",
+                        degree: "",
+                        email: "",
+                        employmentStatus: "",
+                    },
+                    backupResume: {},
+                    backupReleaseYNedit: {},
+                    ResumeName: "",
+                    releaseYN: true,
+                    WorkExperience: "",
+                    Autobiography: "",
+                    hopeaddress: "",
+                    timeR: "",
+                    sexYN: false,
+                    ResumeIntro: "",
+                    noimagepreview: "/images/No_Image_Available.jpg",
+                    originalHeadshot: null,
+                    TagClasses: [],
+                    Tags: [],
+                    TagChecked: [],
+                    selectedTagId: [],
+                    TagCheckedOpening: [],
 
                     titleClass: [],
                     titleCategory: [],
@@ -1027,36 +1028,36 @@
                         // $("#update").prop("disabled", true);
                         $("#HeadshotEditFile").prop("value", "");
 
-                        }
-                    },
-                    createResumeInformation: function () {
-                        //新增履歷的求職者基本資料
-                        let _this = this;
+                    }
+                },
+                createResumeInformation: function () {
+                    //新增履歷的求職者基本資料
+                    let _this = this;
                     fetch(`${_this.baseAddress}/Candidates/Resume/Candidateinformation`, {
-                            method: "GET",
-                        }).then(response => {
-                            return response.json();
-                        }).then(data => {
-                            _this.createResume.name = data[0].name;
-                            _this.createResume.sex = data[0].sex;
-                            _this.createResume.birthday = data[0].birthday;
-                            _this.createResume.phone = data[0].phone;
-                            _this.createResume.degree = data[0].degree;
-                            _this.createResume.email = data[0].email;
-                            _this.createResume.employmentStatus = data[0].employmentStatus;
-                        }).catch(err => {
-                            alert(JSON.stringify(err))
-                        });
-                    },
-                    //新增履歷的圖片顯示
-                    CreatepreviewImage: function (event) {
-                        let input = event.target.files[0];
-                         let imageType = "image.*";
-                        if (input.type.match(imageType)) {
-                            let reader = new FileReader();
-                            reader.onload = (e) => {
-                                this.noimagepreview = e.target.result;
-                            }
+                        method: "GET",
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                        _this.createResume.name = data[0].name;
+                        _this.createResume.sex = data[0].sex;
+                        _this.createResume.birthday = data[0].birthday;
+                        _this.createResume.phone = data[0].phone;
+                        _this.createResume.degree = data[0].degree;
+                        _this.createResume.email = data[0].email;
+                        _this.createResume.employmentStatus = data[0].employmentStatus;
+                    }).catch(err => {
+                        alert(JSON.stringify(err))
+                    });
+                },
+                //新增履歷的圖片顯示
+                CreatepreviewImage: function (event) {
+                    let input = event.target.files[0];
+                    let imageType = "image.*";
+                    if (input.type.match(imageType)) {
+                        let reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.noimagepreview = e.target.result;
+                        }
 
                         // this.image = input.files[0];
                         reader.readAsDataURL(input);
@@ -1286,11 +1287,11 @@
                 }
             },
 
-                mounted:function(){
-                    this.mountCheckCandidateData();
-                    this.ResumeInformation();
-                    this.createResumeInformation();
-                },
+            mounted: function () {
+                this.mountCheckCandidateData();
+                this.ResumeInformation();
+                this.createResumeInformation();
+            },
 
         };
         let app = Vue.createApp(VueApp).mount("#ResumeApp");
