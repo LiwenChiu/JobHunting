@@ -417,9 +417,9 @@ namespace JobHunting.Controllers
         }
         public async Task<string> Upload([FromForm] CertificationUpLoadViewModel file)
         {
-            if (file == null)
+            if (file.FileData == null)
             {
-                return "File not selected";
+                return "未選擇檔案";
             }
             using (BinaryReader br = new BinaryReader(file.FileData.OpenReadStream()))
             {

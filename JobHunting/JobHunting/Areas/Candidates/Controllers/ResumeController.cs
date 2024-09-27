@@ -74,8 +74,6 @@ namespace JobHunting.Areas.Candidates.Controllers
                 LastEditTime = a.LastEditTime,
             }).OrderByDescending(a => a.LastEditTime));
         }
-
-
         //新增履歷的求職者基本資料
         [HttpGet]
         public async Task<IActionResult> Candidateinformation()
@@ -503,7 +501,23 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             return Json(new { success = true,message = "刪除履歷成功" });
         }
-
+        public async Task<IActionResult> DelCertification(int id)
+        {
+            var certification = await _context.ResumeCertifications.FindAsync(id);
+            if (certification != null)
+            {
+                _context.ResumeCertifications.Remove(certification);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { success = false, message = "刪除檔案失敗" });
+            }
+            return Json(new { success = true, message = "刪除檔案成功" });
+        }
     }
 
 
