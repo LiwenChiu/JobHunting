@@ -151,7 +151,11 @@ namespace JobHunting.Areas.Companies.Controllers
 
                 _context.Notifications.Add(send);
                 await _context.SaveChangesAsync();
+
                 
+            
+
+
             }
             catch(Exception ex)
             {

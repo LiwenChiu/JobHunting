@@ -109,28 +109,28 @@
                                             </div>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2" size="10">
+                                                    <label class="mb-2" size="10" >
                                                         名字: 
-
+                                                        {{createResume.name}}
                                                     </label>
                                                 </div>
                                                 <div>
-                                                    <label for="" class="mb-2">性別 : </label>
+                                                    <label for="" class="mb-2">性別 : {{Sexif(createResume.sex)}}</label>
 
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">生日 : </label>
+                                                    <label for="" class="mb-2">生日 : {{createResume.birthday}}</label>
 
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">電話 : </label>
-                                                    <label for="" class="mb-2 mx-3">學歷 : </label>
+                                                    <label for="" class="mb-2">電話 : {{createResume.phone}}</label>
+                                                    <label for="" class="mb-2 mx-3">學歷 : {{createResume.degree}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">郵件 : </label>
+                                                    <label for="" class="mb-2">郵件 : {{createResume.email}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">就業狀態 :</label>
+                                                    <label for="" class="mb-2">就業狀態 :{{createResume.employmentStatus}}</label>
                                                 </div>
                                                 <div>
                                                     <p class="card-text">
@@ -729,36 +729,45 @@
 
 @section Scripts
 {
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        let VueApp = {
-            data() {
-                return {
-                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
-                    baseAddress: "https://localhost:7169",
-                    pageStatus: 0,
-                    perpage: 7, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
-                    resumevalue: "resumevalue",
-                    Resume: [],
-                    backupResume: {},
-                    backupReleaseYNedit: {},
-                    ResumeName: "",
-                    releaseYN: true,
-                    WorkExperience: "",
-                    Autobiography: "",
-                    hopeaddress: "",
-                    timeR: "",
-                    sexYN: false,
-                    ResumeIntro: "",
-                    noimagepreview: "/images/No_Image_Available.jpg",
-                    originalHeadshot: null,
-                    TagClasses: [],
-                    Tags: [],
-                    TagChecked: [],
-                    selectedTagId: [],
-                    TagCheckedOpening: [],
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script>
+            let VueApp = {
+                data() {
+                    return {
+                        // baseAddress: "https://duckjobhunting.azurewebsites.net",
+                        baseAddress: "https://localhost:7169",
+                        pageStatus: 0,
+                        perpage: 7, //一頁的資料數
+                        currentPage: 1,
+                        MessageStatus: 1,
+                        resumevalue: "resumevalue",
+                        Resume:[],
+                        createResume: {
+                            name:"",
+                            sex:"",
+                            birthday:"",
+                            phone:"",
+                            degree:"",
+                            email:"",
+                            employmentStatus:"",
+                        },
+                        backupResume: {},
+                        backupReleaseYNedit: {},
+                        ResumeName:"",
+                        releaseYN:true,
+                        WorkExperience:"",
+                        Autobiography:"",
+                        hopeaddress:"",
+                        timeR: "",
+                        sexYN:false,
+                        ResumeIntro:"",
+                        noimagepreview: "/images/No_Image_Available.jpg",
+                        originalHeadshot: null,
+                        TagClasses: [],
+                        Tags: [],
+                        TagChecked: [],
+                        selectedTagId: [],
+                        TagCheckedOpening: [],
 
                     titleClass: [],
                     titleCategory: [],
@@ -1018,17 +1027,36 @@
                         // $("#update").prop("disabled", true);
                         $("#HeadshotEditFile").prop("value", "");
 
-                    }
-                },
-                //新增履歷的圖片顯示
-                CreatepreviewImage: function (event) {
-                    let input = event.target.files[0];
-                    let imageType = "image.*";
-                    if (input.type.match(imageType)) {
-                        let reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.noimagepreview = e.target.result;
                         }
+                    },
+                    createResumeInformation: function () {
+                        //新增履歷的求職者基本資料
+                        let _this = this;
+                    fetch(`${_this.baseAddress}/Candidates/Resume/Candidateinformation`, {
+                            method: "GET",
+                        }).then(response => {
+                            return response.json();
+                        }).then(data => {
+                            _this.createResume.name = data[0].name;
+                            _this.createResume.sex = data[0].sex;
+                            _this.createResume.birthday = data[0].birthday;
+                            _this.createResume.phone = data[0].phone;
+                            _this.createResume.degree = data[0].degree;
+                            _this.createResume.email = data[0].email;
+                            _this.createResume.employmentStatus = data[0].employmentStatus;
+                        }).catch(err => {
+                            alert(JSON.stringify(err))
+                        });
+                    },
+                    //新增履歷的圖片顯示
+                    CreatepreviewImage: function (event) {
+                        let input = event.target.files[0];
+                         let imageType = "image.*";
+                        if (input.type.match(imageType)) {
+                            let reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.noimagepreview = e.target.result;
+                            }
 
                         // this.image = input.files[0];
                         reader.readAsDataURL(input);
@@ -1258,10 +1286,11 @@
                 }
             },
 
-            mounted: function () {
-                this.mountCheckCandidateData();
-                this.ResumeInformation();
-            },
+                mounted:function(){
+                    this.mountCheckCandidateData();
+                    this.ResumeInformation();
+                    this.createResumeInformation();
+                },
 
         };
         let app = Vue.createApp(VueApp).mount("#ResumeApp");
