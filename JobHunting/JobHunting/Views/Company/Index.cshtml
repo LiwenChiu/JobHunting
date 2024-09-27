@@ -173,29 +173,63 @@
                     <div class="row">
                         <div class="col-sm-5 ">
                             <div class="row text-center">
-                                <h5>個人資料</h5>
+                                <h5 class="fw-bold">個人資料</h5>
                                 <div class="col-12 col-sm-12">
-                                    <label>{{item.name}}</label>
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-4">
+                                            <label class="fw-bold text-start">姓名 : </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label>{{item.name}}</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    <label>性別:{{selectSex(item.sex)}}</label>
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-4">
+                                            <label class="fw-bold">性別 : </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label>{{selectSex(item.sex)}}</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-sm-12">
-                                    學歷:{{item.degree}}
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-4">
+                                            <label class="fw-bold text-start">學歷 : </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label>{{item.degree}}</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h6 class="text-center">專業技能</h6>
+                                <div class="col-12 col-sm-12">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="fw-bold text-start">專業技能 : </label>
+                                        </div>
+                                        <div class="col-6" v-for="data in item.tagObj">
+                                            <label>{{data.tagName}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                               @*  <h6 class="text-center fw-bold">專業技能 : </h6>
                                 <div class="col-12 col-sm-12" v-for="data in item.tagObj">
                                     {{data.tagName}}
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                         <div class="col-sm-7 ">
                             <div class="row">
-                                <h5 class="text-center">簡介</h5>
-                                <div class="col-12 col-sm-12">
+                                <h5 class="text-center fw-bold">簡介</h5>
+                                <div class="col-12 col-sm-12 text-center">
                                     <p>{{item.intro}}</p>
                                 </div>
-                                <h5 class="text-center">工作經驗</h5>
+                                <h5 class="text-center fw-bold">工作經驗</h5>
                                 <div class="col-12 col-sm-12">
                                     <p>{{item.workExperience}}</p>
                                 </div>
@@ -245,7 +279,8 @@
                     cancel: false,
                     baseAddress: "https://localhost:7169",
                     // baseAddress: "https://duckjobhunting.azurewebsites.net",
-                    memberRole: ""
+                    memberRole: "",
+                    allDegree:[]
                 };
             },
             methods: {
