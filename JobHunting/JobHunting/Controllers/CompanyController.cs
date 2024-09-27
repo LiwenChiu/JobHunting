@@ -403,7 +403,7 @@ namespace JobHunting.Controllers
         }
         public async Task<FileResult> DownloadFile(int resumeId, int certificationId)
         {
-            ResumeCertification c = _context.ResumeCertifications.FirstOrDefault(f => f.ResumeId == resumeId && f.CertificationId == certificationId); 
+            ResumeCertification c = _context.ResumeCertifications.FirstOrDefault(f => f.ResumeId == resumeId && f.CertificationId == certificationId);
             byte[] FileContent = c.FileData;
             var fileName = HttpUtility.UrlPathEncode(c.CertificationName);  //檔名去除無效字符
             ContentDisposition cd = new ContentDisposition

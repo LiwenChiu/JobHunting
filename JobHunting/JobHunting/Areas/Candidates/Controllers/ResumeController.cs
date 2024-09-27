@@ -68,7 +68,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagId = a.Tags.Select(t => t.TagId),
                 TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
-                FileName = a.ResumeCertifications.Select(z => new { z.CertificationId, z.CertificationName }),
+                FileName = a.ResumeCertifications.Select(z => new { z.ResumeId, z.CertificationId, z.CertificationName }),
                 edit = false,
                 ReleaseYNedit = false,
                 LastEditTime = a.LastEditTime,

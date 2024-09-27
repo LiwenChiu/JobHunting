@@ -200,7 +200,8 @@
                                                                 <div class="col">
                                                                     <label for="" class="mb-2">
                                                                         證照 :
-                                                                        <img v-if="item.certification != null" class=" certification rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="證照" />
+                                                                        <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
+                                                                        
                                                                     </label>
                                                                 </div>
                                                                 <div>
@@ -472,7 +473,7 @@
                 mergeID(item) {
                     let str = item.name.replace(/\s/g, "");
                     let num = item.resumeId;
-                    strID = str + num;
+                    strID = "rs" + str + num;
                     return strID;
                 },
                 selectSex(item) {

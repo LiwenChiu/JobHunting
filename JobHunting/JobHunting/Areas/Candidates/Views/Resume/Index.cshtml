@@ -454,7 +454,6 @@
                                                         <label for="" class="mb-2">
                                                             證照
                                                             <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
-                                                           
                                                         </label>
                                                         <input id="CertificationEditFile" type="file" accept="image/*" />
                                                     </div>
@@ -609,7 +608,7 @@
                                                         <label for="" class="mb-2 ">
                                                             證照:
                                                             <br>
-                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Candidates/Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
                                                         </label>
 
                                                     </div>
