@@ -74,6 +74,20 @@ namespace JobHunting.Areas.Candidates.Controllers
                 LastEditTime = a.LastEditTime,
             }).OrderByDescending(a => a.LastEditTime));
         }
+        public async Task<JsonResult> GetCertification(int id)
+        {
+            
+            var cer = _context.ResumeCertifications.Where(x => x.ResumeId == id);
+            if(cer != null)
+            {
+                return Json(cer);
+            }
+            else
+            {
+                return Json(new { message = "沒有證照" });
+            }
+            
+        }
         //新增履歷的求職者基本資料
         [HttpGet]
         public async Task<IActionResult> Candidateinformation()

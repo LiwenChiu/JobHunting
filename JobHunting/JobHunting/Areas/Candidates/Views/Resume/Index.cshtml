@@ -54,7 +54,7 @@
                 <div class="card-footer" style="background-color:transparent">
                     <div class="text-center">
                         <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary">
+                                :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary" v-on:click="getResumeCertifications(ResumeD.resumeid)">
                             詳細
                         </button>
                     </div>
@@ -455,10 +455,10 @@
                                                     <div class="col">
                                                         <label for=""  class="mb-2">
                                                             證照:
-                                                            <label v-for="(certifications,index) in ResumeD.fileName">
-                                                                <label :id="certifications.certificationId+certifications.certificationName">
+                                                            <label v-for="(certifications,index) in CertificationList">
+                                                                <label :id='"cer"+certifications.certificationId'>
                                                                     <input type="button" class="btn btn-outline-primary btn-sm" :value="certifications.certificationName" v-on:click="deltCertifications(certifications)" />
-                                                                    <span v-if="index < ResumeD.fileName.length-1">、</span>
+                                                                    <span v-if="index < CertificationList.length-1">、</span>
                                                                 </label>
                                                             </label>
                                                             
@@ -783,6 +783,7 @@
                         TagChecked: [],
                         selectedTagId: [],
                         TagCheckedOpening: [],
+                        CertificationList:[],
                     titleClass: [],
                     titleCategory: [],
                     TitleClassChecked: [],
@@ -821,6 +822,7 @@
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then(res => {
                         alert(res.data);
+                        this.getResumeCertifications(item.resumeid);
                         document.querySelector('#CertificationEditFile').value = "";
                     }).catch(err => { alert(err) });
                 },
@@ -830,20 +832,22 @@
                         axios.delete(`${this.baseAddress}/Candidates/Resume/DelCertification/${item.certificationId}`, {
                             headers: { "Content-Type": "application/json", },
                         }).then(res => {
-                            let ID = '#' + this.mergeID(item);
-                            $(ID).remove();
-                            alert(res.data);
-                            
+                            alert(res.data.message);
+                            this.getResumeCertifications(item.resumeId);
                         }).catch(err => {
                             console.log(err);
                         })
                     }
                 },
-                mergeID(item) {    //產生個別履歷唯一modal的ID
-                    let str = item.certificationName.replace(/\s/g, "");
-                    let num = item.certificationId;
-                    strID = "Id" + str + num;
-                    return strID;
+                getResumeCertifications(item) {
+                    let self = this;
+                    axios.get(`${this.baseAddress}/Candidates/Resume/GetCertification/${item}`, {
+                        headers: { "Content-Type": "application/json", },
+                    }).then(res => {
+                        self.CertificationList = res.data;
+                    }).catch(err => {
+                        console.log(err);
+                    })
                 },
                 triggerFileInput() {
                     this.$refs.fileInput.click();
