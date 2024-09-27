@@ -193,5 +193,6 @@ namespace JobHunting.Controllers
 
             return "取消收藏職缺成功";
         }
+
     }
 }
