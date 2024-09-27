@@ -389,7 +389,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 return NotFound();
             }
 
-            companyOrder.Status = true;
             if (NewebPayStatus == "SUCCESS")
             {
                 companyOrder.StatusType = "付款成功";
@@ -418,6 +417,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 company.Deadline = deadline;
             }
 
+            companyOrder.Status = true;
             _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -740,10 +740,12 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 companyOrder.StatusType = "付款失敗";
             }
+
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
@@ -751,7 +753,9 @@ namespace JobHunting.Areas.Companies.Controllers
             if (company == null) { return NotFound(); }
             if (!companyOrder.Status)
             {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
+                var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+                var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
                 deadline.AddDays(companyOrder.Duration);
                 company.Deadline = deadline;
             }
