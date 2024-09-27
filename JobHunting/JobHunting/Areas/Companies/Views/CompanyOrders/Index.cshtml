@@ -45,7 +45,7 @@
                         <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
                     </td>
                     <td>
-                        <template v-if="!order.status">
+                        <template v-if="!order.status || order.statusType == '取號完成'">
                             <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
                     </td>
@@ -145,8 +145,8 @@
         let vueAppCompanyOrders = {
             data() {
                 return {
-                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
-                    baseAddress: "https://localhost:7169",
+                    baseAddress: "https://duckjobhunting.azurewebsites.net",
+                    // baseAddress: "https://localhost:7169",
                     orders: [],
                     deadline: null,
                     searchOrderInput: "",
