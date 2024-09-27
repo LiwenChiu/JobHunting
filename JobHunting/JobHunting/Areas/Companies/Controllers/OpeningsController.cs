@@ -96,9 +96,9 @@ namespace JobHunting.Areas.Companies.Controllers
                 ReleaseYN = o.ReleaseYN
             }).Where(a =>
                 a.CompanyId == CompanyId &&
-                a.Address.Contains(ofi.Address) ||
+                (a.Address.Contains(ofi.Address) ||
                 a.Title.Contains(ofi.Title) ||
-                a.Time.Contains(ofi.Time)
+                a.Time.Contains(ofi.Time))
              ).Select(o => new OpeningsFilterOutput
              {
                  OpeningId = o.OpeningId,
