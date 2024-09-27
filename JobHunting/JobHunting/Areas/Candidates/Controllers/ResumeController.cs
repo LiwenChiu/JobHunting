@@ -72,6 +72,28 @@ namespace JobHunting.Areas.Candidates.Controllers
         }
 
 
+        //新增履歷的求職者基本資料
+        [HttpGet]
+        public async Task<IActionResult> Candidateinformation()
+        {
+            var CandidateId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(CandidateId))
+            {
+                return Json(new { message = "未授權訪問" });
+            }
+
+            return Json(_context.Candidates.Where(r=>r.CandidateId.ToString() == CandidateId).Select(a => new
+            {
+                name = a.Name,
+                sex = a.Sex,
+                birthday = a.Birthday,
+                phone = a.Phone,
+                degree = a.Degree,
+                email = a.Email,
+                employmentStatus = a.EmploymentStatus,
+            }));
+
+        }
 
         //撈全部的履歷資料
         //{

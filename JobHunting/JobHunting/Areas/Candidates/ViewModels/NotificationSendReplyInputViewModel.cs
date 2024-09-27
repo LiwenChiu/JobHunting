@@ -10,5 +10,6 @@
         public bool InterviewYN { get; set; }
 
         public bool HireYN { get; set; }
+        public int ResumeOpeningRecordId { get; set; }
     }
 }
