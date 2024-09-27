@@ -821,7 +821,7 @@
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then(res => {
                         alert(res.data);
-                        
+                        document.querySelector('#CertificationEditFile').value = "";
                     }).catch(err => { alert(err) });
                 },
                 deltCertifications(item) {
