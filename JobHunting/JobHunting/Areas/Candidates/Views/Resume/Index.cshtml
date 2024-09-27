@@ -1206,7 +1206,7 @@
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
                     form.append("CertificationFile", document.querySelector('#CertificationEditFile').files[0]);
-                    if (document.querySelector('#CertificationInsertFile').files[0] != null) {
+                    if (document.querySelector('#CertificationEditFile').files[0] != null) {
                         form.append("CertificationName", document.querySelector('#CertificationEditFile').files[0].name);
                         form.append("CertificationType", document.querySelector('#CertificationEditFile').files[0].type);
                     }
