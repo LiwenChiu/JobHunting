@@ -17,6 +17,8 @@ public partial class Notification
 
     public int? ResumeId { get; set; }
 
+    public int ResumeOpeningRecordId { get; set; }
+
     public string Status { get; set; }
 
     public string SubjectLine { get; set; }

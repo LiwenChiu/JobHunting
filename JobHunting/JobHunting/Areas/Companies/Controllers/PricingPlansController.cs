@@ -103,7 +103,8 @@ namespace JobHunting.Areas.Companies.Controllers
 
             int orderNumber = company.OrderCount + 1;
 
-            var nowTime = DateTime.Now;
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
             var ExpirationTime = nowTime.AddDays(3);
             string ExpirationTimeStr = ExpirationTime.ToString("yyyyMMdd");
 
@@ -171,7 +172,7 @@ namespace JobHunting.Areas.Companies.Controllers
             //Google Pay 付款
             TradeInfo.Add(new KeyValuePair<string, string>("ANDROIDPAY", "1"));
             //LINE Pay 付款
-            TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
+            //TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
             //WEBATM 付款
             TradeInfo.Add(new KeyValuePair<string, string>("WEBATM", "1"));
             //ATM 付款
