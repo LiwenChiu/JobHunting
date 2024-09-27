@@ -403,6 +403,7 @@ namespace JobHunting.Areas.Companies.Controllers
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
