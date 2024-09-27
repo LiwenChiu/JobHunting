@@ -68,14 +68,12 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagId = a.Tags.Select(t => t.TagId),
                 TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
-                FileName = a.ResumeCertifications.Select(z => new { z.CertificationId, z.CertificationName }),
+                FileName = a.ResumeCertifications.Select(z => new { z.ResumeId, z.CertificationId, z.CertificationName }),
                 edit = false,
                 ReleaseYNedit = false,
                 LastEditTime = a.LastEditTime,
             }).OrderByDescending(a => a.LastEditTime));
         }
-
-
         //新增履歷的求職者基本資料
         [HttpGet]
         public async Task<IActionResult> Candidateinformation()
@@ -503,7 +501,23 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             return Json(new { success = true,message = "刪除履歷成功" });
         }
-
+        public async Task<IActionResult> DelCertification(int id)
+        {
+            var certification = await _context.ResumeCertifications.FindAsync(id);
+            if (certification != null)
+            {
+                _context.ResumeCertifications.Remove(certification);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { success = false, message = "刪除檔案失敗" });
+            }
+            return Json(new { success = true, message = "刪除檔案成功" });
+        }
     }
 
 
