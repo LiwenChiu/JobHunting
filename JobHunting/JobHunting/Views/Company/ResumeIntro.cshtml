@@ -53,33 +53,43 @@
     <!-- Page Content-->
     <div class="card-body container-fluid row" v-for="item in resumeList">
         <div class="row mt-3" style="margin-left:10px">
-            <div class="col-sm-6">
+            <div class="col-sm-6 mt-5">
                 <div class="card mb-3">
-                    <div class="card-body" id="personalData" style="margin-top:40px">
+                    <div class="card-body" id="personalData">
                         <h5 class="card-title" style="text-align:center">個人資料</h5>
                         <div class="text-start" style="">
                             <p class="card-text ">
-                                <div class="col ">
-                                    <label class="" size="10">姓名 : {{item.name}}</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="mb-2" style="font-weight:bold;">姓名 : </label><label class="ms-2">{{item.name}}</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold">性別 : </label><label class ="ms-2">{{selectSex(item.sex)}}</label>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label for="" class="mb-2">性別 : {{selectSex(item.sex)}}</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">年齡 : </label><label class ="ms-2">{{item.age}}歲</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">電話 : </label><label class ="ms-2">{{item.phone}}</label>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <label for="" class="mb-2">年齡 : {{item.age}}歲</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">學歷 : </label><label class ="ms-2">{{item.degree}}</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">郵件 : </label><label class ="ms-2">{{item.email}}</label>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <label for="" class="mb-2">電話 : {{item.phone}}</label>
-                                    <label for="" class="mb-2 mx-3">學歷 : {{item.degree}}</label>
-                                </div>
-                                <div class="col">
-                                    <label for="" class="mb-2">郵件 : {{item.email}}</label>
-                                </div>
-                                <div class="col">
-                                    <label for="" class="mb-2">就業狀態 : {{item.employmentStatus}}</label>
-                                </div>
-                                <div class="col">
-                                    <label for="" class="mb-2">兵役狀態 : {{item.militaryService}}</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="" class="mb-2" style="font-weight:bold;">兵役狀態 :</label><label class="ms-2">{{item.militaryService}}</label>
+                                    </div>
                                 </div>
                                 <div class="card-body " id="introduceYourself">
                                     <h5 class="card-title text-center" style="">自我介紹：</h5>
@@ -94,11 +104,11 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="card mb-3">
-                    <div class="card-body text-start" id="workExperience" style="margin-top:40px">
-                        <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                        <p class="card-text form-control overflow-auto" style="height:250px">
-                            {{item.workExperience}}
+                <div class="card mb-3 mt-5">
+                    <div class="card-body text-start" id="autobiography">
+                        <h5 class="card-title" style="text-align:center">自傳</h5>
+                        <p class="card-text form-control overflow-auto" style="height:415px">
+                            {{item.autobiography}}
                         </p>
                     </div>
                 </div>
@@ -108,29 +118,29 @@
         <div class="row" style="margin-left:10px">
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body text-start" id="jobRequirements">
-                        <h5 class="card-title" style="text-align:center">求職條件</h5>
+                    <div class="card-body text-start" id="jobRequirements" style="height:260px">
+                        <h5 class="card-title" style="text-align:center;">求職條件</h5>
                         <p class="card-text">
                             <div class="col">
-                                <label class="mb-2">上班時段: {{item.wishTime}}</label>
+                                <label class="mb-2" style="font-weight:bold;">上班時段: </label><label class="ms-2">{{item.wishTime}}</label>
                             </div>
                             <div class="col">
-                                <label class="" v-for="title in item.titleObj">
-                                    <span class="">希望職缺: {{title.titleClassName}} </span>
+                                <label class="mb-2"  v-for="title in item.titleObj">
+                                    <label class="" style="font-weight:bold;">希望職缺: </label><label class="ms-2">{{title.titleClassName}} </label>
                                 </label>
                             </div>
                             <div class="col">
-                                <label class="mb-2">希望上班地點: {{item.wishAddress}}</label>
+                                <label class="mb-2" style="font-weight:bold;">希望上班地點: </label><label class="ms-2">{{item.wishAddress}}</label>
                             </div>
                             <div class="col">
-                                <label for="" class="mb-2">
+                                <label for="" class="mb-2" style="font-weight:bold;">
                                     證照 :
                                     @* <img v-if="item.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="待上傳" /> *@
                                 </label>
-                                <label> <a :href=`${baseAddress}/Company/DownloadFile/${resumeId}`>123</a></label>
+                                <label>  </label><label class="ms-2"><a :href=`${baseAddress}/Company/DownloadFile/${resumeId}`>123</a></label>
                             </div>
                             <div>
-                                <label for="" class="mb-2 mx-1">能力標籤: </label>
+                                <label for="" class="mb-2" style="font-weight:bold;">能力標籤:  </label><label class="ms-2"></label>
                                 <label class="" v-for="(tag,index) in item.tagObj">{{tag.tagName}} <span v-if="index < item.tagObj.length-1">、</span></label>
                             </div>
                         </p>
@@ -140,15 +150,15 @@
             </div>
             <div class="col-sm-6">
                 <div class="card mb-3">
-                    <div class="card-body text-start" id="autobiography">
-                        <h5 class="card-title" style="text-align:center">自傳</h5>
+                    <div class="card-body text-start" id="workExperience">
+                        <h5 class="card-title" style="text-align:center">工作經驗</h5>
                         <p class="card-text form-control overflow-auto" style="height:200px">
-                            {{item.autobiography}}
+                            {{item.workExperience}}
                         </p>
                     </div>
                 </div>
-
             </div>
+            
 
         </div>
     </div>
