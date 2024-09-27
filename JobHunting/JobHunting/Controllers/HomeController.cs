@@ -481,26 +481,29 @@ namespace JobHunting.Controllers
                 // 公司驗證邏輯
                 var company = _context.Companies
                     .FirstOrDefault(c => c.GUINumber == companyLogin.GUINumber);
-                if (!company.Status)
+                if(company != null)
                 {
-                    return Json(new { success = false, message = "公司帳號尚未審核通過" });
-                }
-                if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
-                {
-                    // 驗證通過，建立 claims，包含 CompanyId
-                    var claims = new List<Claim>
+                    if (!company.Status)
+                    {
+                        return Json(new { success = false, message = "公司帳號尚未審核通過" });
+                    }
+                    if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
+                    {
+                        // 驗證通過，建立 claims，包含 CompanyId
+                        var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, company.CompanyId.ToString()),  // 存入 CompanyId
                         new Claim(ClaimTypes.Name, companyLogin.GUINumber),                   // 使用統一編號作為名稱
                         new Claim(ClaimTypes.Role, "company")                                 // 設定角色為 company
                     };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // 使用 Cookie 認證進行登入
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        // 使用 Cookie 認證進行登入
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return Json(new { success = true, message = "公司登入成功", role = "company" });
+                        return Json(new { success = true, message = "公司登入成功", role = "company" });
+                    }
                 }
                 else
                 {
