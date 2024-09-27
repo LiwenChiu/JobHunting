@@ -270,6 +270,11 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { Message = "沒有此公司" });
                 }
 
+                if (coim.SalaryMax < coim.SalaryMin)
+                {
+                    return Json(new { success = false, message = "最高薪資不能低於最低薪資" });
+                }
+
                 var titleClasses = await _context.TitleClasses
                     .Where(tc => coim.TitleClassId.Contains(tc.TitleClassId))
                     .ToListAsync();
@@ -284,7 +289,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Address = coim.Address,
                     RequiredNumber = coim.RequiredNumber,
                     ContactName = coim.ContactName,
-                    ContactPhone = coim.ContactName,
+                    ContactPhone = coim.ContactPhone,
                     ContactEmail = coim.ContactEmail,
                     SalaryMax = coim.SalaryMax,
                     SalaryMin = coim.SalaryMin,
@@ -334,7 +339,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return "下架職缺失敗!";
             }
-            return $"下架職缺ID{opId}成功";
+            return $"下架職缺成功";
         }
         [HttpPost]
         public async Task<string> ToggleStautsTrue([FromBody] int opId)
@@ -353,7 +358,7 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 return "上架職缺失敗!";
             }
-            return $"上架職缺ID{opId}成功";
+            return $"上架職缺成功";
         }
     }
 }
