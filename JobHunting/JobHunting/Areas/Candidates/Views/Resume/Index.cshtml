@@ -453,7 +453,8 @@
                                                     <div class="col">
                                                         <label for="" class="mb-2">
                                                             證照
-                                                            <img v-if="ResumeD.certification !=null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px;" title="待上傳" />
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
+                                                           
                                                         </label>
                                                         <input id="CertificationEditFile" type="file" accept="image/*" />
                                                     </div>
@@ -608,8 +609,7 @@
                                                         <label for="" class="mb-2 ">
                                                             證照:
                                                             <br>
-
-                                                            <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
                                                         </label>
 
                                                     </div>
@@ -1116,7 +1116,11 @@
                         form.append(`TagId[${index}]`, id);
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    form.append("CertificationFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    if (document.querySelector('#CertificationInsertFile').files[0] != null) {
+                        form.append("CertificationName", document.querySelector('#CertificationInsertFile').files[0].name);
+                        form.append("CertificationType", document.querySelector('#CertificationInsertFile').files[0].type);
+                    }
                     // const files = document.querySelector('#CertificationInsertFile').files;
                     // for (let i = 0; i < files.length; i++) {
                     //     form.append("CertificationImageFile", files[i]);
@@ -1173,7 +1177,11 @@
                         form.append(`TagId[${index}]`, id);
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationEditFile').files[0]);
+                    form.append("CertificationFile", document.querySelector('#CertificationEditFile').files[0]);
+                    if (document.querySelector('#CertificationInsertFile').files[0] != null) {
+                        form.append("CertificationName", document.querySelector('#CertificationEditFile').files[0].name);
+                        form.append("CertificationType", document.querySelector('#CertificationEditFile').files[0].type);
+                    }
                     // const files = document.querySelector('#CertificationEditFile').files;
                     // for (let i = 0; i < files.length; i++) {
                     //     form.append("CertificationImageFile", files[i]);

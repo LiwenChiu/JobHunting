@@ -79,7 +79,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 Email = n.Candidate.Email,
                 EmploymentStatus = n.Candidate.EmploymentStatus,
                 Time = n.Time,
-                Certification = n.Certification, /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
+                /*Certification = n.Certification,*/ /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
                 WorkExperience = n.WorkExperience,
                 Autobiography = n.Autobiography,
                 OpeningTitle = _context.ResumeOpeningRecords.Where(ror => ror.ResumeId == n.ResumeId).Select(ror => ror.OpeningTitle).FirstOrDefault(),
@@ -458,7 +458,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               EmploymentStatus = n.Resume.Candidate.EmploymentStatus,
                               Time = n.Resume.Time,
                               Intro = n.Resume.Intro,
-                              Certification = n.Resume.Certification, /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
+                              /*Certification = n.Resume.Certification,*/ /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
                               WorkExperience = n.Resume.WorkExperience,
                               Autobiography = n.Resume.Autobiography,
                               OpeningTitle = n.OpeningTitle,

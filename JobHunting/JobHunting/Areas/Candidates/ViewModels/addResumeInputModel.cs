@@ -14,7 +14,10 @@
         public List<int> TagId { get; set; }
         public List<int> TitleClassId { get; set; }
 
-        public IFormFile CertificationImageFile { get; set; }
+        public IFormFile? CertificationFile { get; set; }
+        public string? CertificationName { get; set; }
+        public string? CertificationType { get; set; }
+
         public IFormFile? HeadshotImageFile { get; set; }
 
 

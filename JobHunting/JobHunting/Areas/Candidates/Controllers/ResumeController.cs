@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Protocol.Plugins;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace JobHunting.Areas.Candidates.Controllers
 {
@@ -41,7 +44,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return Json(new { message = "未授權訪問" });
             }
 
-            return Json(_context.Resumes.Include(r => r.Candidate).Where(w=>w.CandidateId.ToString() == CandidateId).Include(t => t.TitleClasses).Select(a => new
+            return Json(_context.Resumes.Include(r => r.Candidate).Include(s => s.ResumeCertifications).Where(w=>w.CandidateId.ToString() == CandidateId).Include(t => t.TitleClasses).Select(a => new
             {
                 name = a.Candidate.Name,
                 address = a.Address,
@@ -53,7 +56,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 employmentStatus = a.Candidate.EmploymentStatus,
                 time = a.Time,
                 title = a.Title,
-                certification = a.Certification,
+                certification = a.ResumeCertifications.Select(a => a.CertificationName),
                 workExperience = a.WorkExperience,
                 autobiography = a.Autobiography,
                 candidateid = int.Parse(CandidateId),
@@ -65,6 +68,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 TagId = a.Tags.Select(t => t.TagId),
                 TagName = a.Tags.Select(t => t.TagName),
                 headshot = a.Headshot != null ? Convert.ToBase64String(a.Headshot) : null,
+                FileName = a.ResumeCertifications.Select(z => new { z.CertificationId, z.CertificationName }),
                 edit = false,
                 ReleaseYNedit = false,
                 LastEditTime = a.LastEditTime,
@@ -226,7 +230,6 @@ namespace JobHunting.Areas.Candidates.Controllers
                     .Where(t => Creatr.TagId.Contains(t.TagId))
                     .ToListAsync();
 
-
                 Resume insert = new Resume()
                 {
                     Address = Creatr.Address,
@@ -247,11 +250,17 @@ namespace JobHunting.Areas.Candidates.Controllers
                     }
                 }
 
-                if (Creatr.CertificationImageFile != null)
+                if (Creatr.CertificationFile != null)
                 {
-                    using (BinaryReader br = new BinaryReader(Creatr.CertificationImageFile.OpenReadStream()))
+                    using (BinaryReader br = new BinaryReader(Creatr.CertificationFile.OpenReadStream()))
                     {
-                        insert.Certification = br.ReadBytes((int)Creatr.CertificationImageFile.Length);
+                        var fileRecord = new ResumeCertification
+                        {
+                            CertificationName = Creatr.CertificationName,
+                            FileData = br.ReadBytes((int)Creatr.CertificationFile.Length),
+                            ContentType = Creatr.CertificationType,
+                        };
+                        insert.ResumeCertifications.Add(fileRecord);
                     }
                 }
 
@@ -265,8 +274,8 @@ namespace JobHunting.Areas.Candidates.Controllers
                     insert.Tags.Add(tag);
                 }
 
-               
 
+                
                 //var resumeId = insert.ResumeId;
                 //List<string> uploadedFilePaths = new List<string>();
                 ////在wwwroot的images根據求職者的名稱與履歷id建立資料夾
@@ -303,6 +312,8 @@ namespace JobHunting.Areas.Candidates.Controllers
 
                 // 儲存變更並將 ResumeId 自動生成
                 await _context.SaveChangesAsync();
+ 
+
             }
             catch (Exception ex) 
             {
@@ -313,15 +324,6 @@ namespace JobHunting.Areas.Candidates.Controllers
             return Json(new { success = true, message = "新增履歷成功",});
 
         }
-
-
-
-
-
-
-
-
-
         //return View(Creatr);
         //}
 
@@ -358,7 +360,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro", "CertificationImageFile")] ResumeInputModel rm)
+        public async Task<IActionResult> EditResume([FromForm][Bind("Address", "Title", "Autobiography", "WorkExperience", "Time", "ReleaseYN", "ResumeId", "HeadshotImageFile", "TitleClassId", "TagId", "Intro", "CertificationFile", "CertificationName", "CertificationType")] ResumeInputModel rm)
         {
 
             try
@@ -369,7 +371,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 }
 
                 var r = await _context.Resumes
-            .Include(o => o.TitleClasses).Include(t => t.Tags)
+            .Include(o => o.TitleClasses).Include(t => t.Tags).Include(s => s.ResumeCertifications)
             .FirstOrDefaultAsync(o => o.ResumeId == rm.ResumeId);
 
                 var titleClasses = await _context.TitleClasses
@@ -400,11 +402,18 @@ namespace JobHunting.Areas.Candidates.Controllers
                         r.Headshot = br.ReadBytes((int)rm.HeadshotImageFile.Length);
                     }
                 }
-                if (rm.CertificationImageFile != null)
+                if (rm.CertificationFile != null)
                 {
-                    using (BinaryReader br = new BinaryReader(rm.CertificationImageFile.OpenReadStream()))
+                    using (BinaryReader br = new BinaryReader(rm.CertificationFile.OpenReadStream()))
                     {
-                        r.Certification = br.ReadBytes((int)rm.CertificationImageFile.Length);
+                        var fileRecord = new ResumeCertification
+                        {
+                            ResumeId = rm.ResumeId,
+                            CertificationName = rm.CertificationName,
+                            FileData = br.ReadBytes((int)rm.CertificationFile.Length),
+                            ContentType = rm.CertificationType,
+                        };
+                        _context.ResumeCertifications.Add(fileRecord);
                     }
                 }
 
@@ -432,6 +441,20 @@ namespace JobHunting.Areas.Candidates.Controllers
 
         }
 
+        public async Task<FileResult> DownloadFile(int resumeId, int certificationId)
+        {
+            ResumeCertification c = _context.ResumeCertifications.FirstOrDefault(f => f.ResumeId == resumeId && f.CertificationId == certificationId);
+            byte[] FileContent = c.FileData;
+            var fileName = HttpUtility.UrlPathEncode(c.CertificationName);  //檔名去除無效字符
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = fileName,// 設定下載檔案名稱
+                // Inline= false,        // 禁止直接顯示檔案內容
+            };
+            Response.Headers.Append(HeaderNames.ContentDisposition, cd.ToString());
+            var fs = FileContent;
+            return File(fs, MediaTypeNames.Application.Octet);
+        }
 
 
 
