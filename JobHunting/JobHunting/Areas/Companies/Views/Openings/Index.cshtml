@@ -856,8 +856,16 @@
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
-                        alert(response.data)
-                        this.ReceiveOpeningData();
+                        let data = response.data;
+                        if(data.success==true){
+                            alert(data.message);
+                            this.ReceiveOpeningData();
+                        }
+                        else if(data.success==false){
+                            alert(data.message);
+                            window.location.href = data.redirectUrl;
+                        }
+                        else return data.message;
                     }).catch(err => { alert(err) });
                 },
             },
