@@ -71,11 +71,10 @@
                     <p class="h5" style="width:100%;word-break:break-all;">價格: NT${{searchData.price}}</p>
                     <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">下單時間: {{searchData.orderdate}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate ? searchData.payDate : "無"}}</p>
                     <hr />
-                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.newebPayStatus}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">訂單訊息: {{searchData.newebPayMessage}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType ? searchData.paymentType : "無"}}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
