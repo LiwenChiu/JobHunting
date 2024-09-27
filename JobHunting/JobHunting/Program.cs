@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
+using Serilog.Events;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +76,21 @@ builder.Services.AddAuthentication(options =>
 );
 builder.Services.AddAuthorization();  // 添加授權服務
 
+//Log.Logger = new LoggerConfiguration()
+//    .MinimumLevel.Information()
+//    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console()
+//    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
+
+// 設置: 讀取組態檔 (appsettings.json)
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
 //Configure the HTTP request pipeline.
@@ -98,6 +115,7 @@ app.UseMiddleware<IgnoreRouteMiddleware>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSerilogRequestLogging();
 
 app.MapAreaControllerRoute(
     name: "Companies",
