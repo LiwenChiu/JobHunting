@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "DuckAdminsContext",
+   "ContextClassName": "DuckCompaniesContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Areas\/Admins\/Models",
+   "OutputPath": "Areas\/Companies\/Models",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "JobHunting",
    "Schemas": null,
@@ -72,6 +72,10 @@
       },
       {
          "Name": "[dbo].[PricingPlans]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ResumeCertification]",
          "ObjectType": 0
       },
       {

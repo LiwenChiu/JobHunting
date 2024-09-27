@@ -59,6 +59,11 @@
 
     <br />
     @* ----------上方換頁------------------- *@
+@*     <div>
+        <label for="file">Choose file to upload</label>
+        <input type="file" name="file" id="file"/>
+        <button v-on:click="test">上傳</button>
+    </div> *@
     <div class="container text-center">
         <div class="row ">
             <div class="col-sm-2 row">
@@ -244,6 +249,18 @@
                 };
             },
             methods: {
+                upload(item){
+                    var form = new FormData();
+                    form.append("ResumeId",item.resumeId);
+                    form.append("FileData",document.querySelector("#file").files[0]);
+                    form.append("CertificationName",document.querySelector("#file").files[0].name);
+                    form.append("ContentType",document.querySelector("#file").files[0].type);
+                    axios.post('@Url.Action("Upload","Company")',form,{
+                         headers: { "content-type": "multipart/form-data" }
+                    }).then(response => {
+                        alert(response)
+                    }).catch(err => { alert(err) });
+                },
                 goToPage(item){                  //開啟履歷新視窗
                     window.open(`${this.baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`)
                 },

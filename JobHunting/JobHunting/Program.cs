@@ -24,8 +24,6 @@ builder.Services.AddSingleton<CandidateForgetPasswordEmailService>();
 builder.Services.AddSingleton<CompanyForgetPasswordEmailService>();
 //公司訂閱天數即將到期Email通知
 builder.Services.AddSingleton<PlanExpiredEmailService>();
-//定時到藍新金流檢查Status==false的訂單狀態，再改寫或取消DB的Data
-//builder.Services.AddSingleton<NewebPaySearchService>();
 
 builder.Services.AddDbContext<DuckContext>(options =>
 {
@@ -60,7 +58,7 @@ builder.Services.AddHangfire(configuration =>
 // Add Hangfire server
 builder.Services.AddHangfireServer(); // 過去在 UseHangfireServer 的配置現在移到這裡
 builder.Services.AddScoped<PlanExpiredService>();
-//builder.Services.AddScoped<NewebPaySearchService>();
+builder.Services.AddScoped<NewebPaySearchService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -126,7 +124,7 @@ app.UseHangfireDashboard();
 using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
-    //var NewebPaySearchService = scope.ServiceProvider.GetRequiredService<NewebPaySearchService>();
+    var NewebPaySearchService = scope.ServiceProvider.GetRequiredService<NewebPaySearchService>();
 
     var options = new RecurringJobOptions
     {
@@ -146,7 +144,8 @@ using (var scope = app.Services.CreateScope())
     "59 23 * * *",
     options);
 
-    //RecurringJob.AddOrUpdate("NewebPaySearchStatusFalse", () => NewebPaySearchService.NewebPaySearchStatusFalse(), "0 0 * ? ***", options);
+    //每小時執行一次，檢查Status==false的訂單，再於一小時後看他是否還是false，若還是就取消授權
+    RecurringJob.AddOrUpdate("NewebPaySearchStatusFalse", () => NewebPaySearchService.NewebPaySearchStatusFalse(), "0 0 * ? * *", options);
 }
 
 app.Run();

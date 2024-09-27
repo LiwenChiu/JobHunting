@@ -34,8 +34,9 @@
         public string EmploymentStatus { get; set; }
 
         public string MilitaryService { get; set; }
-        public object TagObj { get; set; }
+        public object? TagObj { get; set; }
         public object TitleObj { get; set; }
+        public object? FileName { get; set; }
         public bool? LikeYN { get; set; }
     }
 }

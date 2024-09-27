@@ -51,57 +51,68 @@
     <div class="card-body container-fluid row" v-for="item in openingList">
         <div class="row mt-3" style="margin-left:10px">
             <div class="col-sm-6">
-                <div class="card mb-3">
-                    <div class="card-body" id="openingContent" style="margin-top:40px">
+                <div class="card mb-3 mt-5">
+                    <div class="card-body" id="openingContent" style="">
                         <h5 class="card-title" style="text-align:center">職缺資訊</h5>
                         <div class="text-start" style="">
                             <p class="card-text ">
                                 <div class="col ">
-                                    <label class="" size="10">職缺名稱 : {{item.title}}</label>
+                                    <label class="" style="font-weight:bold;">職缺名稱 : </label><label>{{item.title}}</label>
                                 </div>
+                                <br />
                                 <div>
-                                    <label for="" class="mb-2">公司名稱 : {{item.companyName}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">公司名稱 : </label><label>{{item.companyName}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2">面試地址 : {{item.address}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">面試地址 : </label><label>{{item.address}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2">聯絡人姓名 : {{item.contactName}}</label>
-                                    <label for="" class="mb-2 mx-3">聯絡人電話 : {{item.contactPhone}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人姓名 : </label> <label>{{item.contactName}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2">聯絡人郵件 : {{item.contactEmail}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人電話 : </label> <label>{{item.contactPhone}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2">上班時段 : {{item.time}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人郵件 : </label> <label>{{item.contactEmail}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2 mx-1" >職務名稱 : </label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">上班時段 : </label> <label>{{item.time}}</label>
+                                </div>
+                                <br />
+                                <div class="col">
+                                    <label for="" class="mb-2" style="font-weight:bold;">職務名稱 : </label>
                                     <label for="" class="mb-2" v-for="(className,index) in item.titleClassName">{{className}}<span v-if="index < item.titleClassName.length -1">、</span></label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2">薪資條件 : {{item.salaryMin}} ~ {{item.salaryMax}}</label>
+                                    <label for="" class="mb-2" style="font-weight:bold;">薪資條件 : </label> <label>{{item.salaryMin}} ~ {{item.salaryMax}}</label>
                                 </div>
+                                <br />
                                 <div class="col">
-                                    <label for="" class="mb-2 ">學歷要求 : {{item.degree}}</label>
-                                    <label for="" class="mb-2 mx-1">技能要求 : </label>
+                                    <label for="" class="mb-2 " style="font-weight:bold;">學歷要求 : </label> <label>{{item.degree}}</label>
+                                    <label for="" class="mb-2 ms-5" style="font-weight:bold;">技能要求 : </label>
                                     <label for="" class="mb-2 " v-for="(tag,index) in item.tagName">{{tag}}<span v-if="index < item.tagName.length-1">、</span></label>
-                                </div>
-                                <div class="card-body " id="benefits">
-                                    <h5 class="card-title text-center" style="">福利制度</h5>
-                                    <p class="card-text form-control overflow-auto" style="height:200px">
-                                        {{item.benefits}}
-                                    </p>
                                 </div>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="col-sm-6">
-                <div class="card mb-3">
-                    <div class="card-body text-start" id="jobDescription" style="margin-top:40px">
+                <div class="card mb-3 mt-5">
+                    <div class="card-body " id="benefits">
+                        <h5 class="card-title text-center" style="">福利制度</h5>
+                        <p class="card-text form-control overflow-auto" style="height:200px">
+                            {{item.benefits}}
+                        </p>
+                    </div>
+                    <br />
+                    <div class="card-body text-start" id="jobDescription" style="">
                         <h5 class="card-title" style="text-align:center">工作內容</h5>
                         <p class="card-text form-control overflow-auto" style="height:250px">
                             {{item.description}}
