@@ -661,6 +661,10 @@
                 //新增履歷
                 createOpening: function () {
                     let _this = this;
+                    if (_this.SalaryMax < _this.SalaryMin) {
+                        alert("最高薪資不能低於最低薪資");
+                        return;  // 阻止後續代碼執行
+                        }
                     let request = {};
                     request.Title = _this.Title;
                     request.Address = _this.Address;

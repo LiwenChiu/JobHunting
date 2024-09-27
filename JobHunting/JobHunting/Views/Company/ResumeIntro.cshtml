@@ -61,34 +61,34 @@
                             <p class="card-text ">
                                 <div class="row">
                                     <div class="col-6">
-                                        <label class="mb-2" style="font-weight:bold;">姓名 : </label><label class="ms-2">{{item.name}}</label>
+                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{item.name}}</label>
                                     </div>
                                     <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold">性別 : </label><label class ="ms-2">{{selectSex(item.sex)}}</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">年齡 : </label><label class ="ms-2">{{item.age}}歲</label>
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">電話 : </label><label class ="ms-2">{{item.phone}}</label>
+                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(item.sex)}}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">學歷 : </label><label class ="ms-2">{{item.degree}}</label>
+                                        <label for="" class="mb-2 fw-bold">年齡 : </label><label class="ms-2">{{item.age}}歲</label>
                                     </div>
                                     <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">郵件 : </label><label class ="ms-2">{{item.email}}</label>
+                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{item.phone}}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
+                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{item.degree}}</label>
                                     </div>
                                     <div class="col-6">
-                                        <label for="" class="mb-2" style="font-weight:bold;">兵役狀態 :</label><label class="ms-2">{{item.militaryService}}</label>
+                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{item.email}}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="" class="mb-2 fw-bold">兵役狀態 :</label><label class="ms-2">{{item.militaryService}}</label>
                                     </div>
                                 </div>
                                 <div class="card-body " id="introduceYourself">
@@ -122,24 +122,24 @@
                         <h5 class="card-title" style="text-align:center;">求職條件</h5>
                         <p class="card-text">
                             <div class="col">
-                                <label class="mb-2" style="font-weight:bold;">上班時段: </label><label class="ms-2">{{item.wishTime}}</label>
+                                <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{item.wishTime}}</label>
                             </div>
                             <div class="col">
                                 <label class="mb-2"  v-for="title in item.titleObj">
-                                    <label class="" style="font-weight:bold;">希望職缺: </label><label class="ms-2">{{title.titleClassName}} </label>
+                                    <label class="fw-bold">希望職缺: </label><label class="ms-2">{{title.titleClassName}} </label>
                                 </label>
                             </div>
                             <div class="col">
-                                <label class="mb-2" style="font-weight:bold;">希望上班地點: </label><label class="ms-2">{{item.wishAddress}}</label>
+                                <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{item.wishAddress}}</label>
                             </div>
                             <div class="col">
-                                <label for="" class="mb-2" style="font-weight:bold;">
+                                <label for="" class="mb-2 fw-bold">
                                     證照 :
                                 </label>
                                 <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Company/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
                             </div>
                             <div>
-                                <label for="" class="mb-2" style="font-weight:bold;">能力標籤:  </label><label class="ms-2"></label>
+                                <label for="" class="mb-2 fw-bold">能力標籤:  </label><label class="ms-2"></label>
                                 <label class="" v-for="(tag,index) in item.tagObj">{{tag.tagName}} <span v-if="index < item.tagObj.length-1">、</span></label>
                             </div>
                         </p>
@@ -151,7 +151,7 @@
                 <div class="card mb-3">
                     <div class="card-body text-start" id="workExperience">
                         <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                        <p class="card-text form-control overflow-auto" style="height:200px">
+                        <p class="card-text form-control overflow-auto" style="height:195px">
                             {{item.workExperience}}
                         </p>
                     </div>
