@@ -619,6 +619,7 @@ namespace JobHunting.Areas.Companies.Controllers
             if (result.Status == "SUCCESS")
             {
                 companyOrder.Status = true;
+                companyOrder.StatusType = "取號完成";
             }
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
@@ -731,7 +732,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
             }
 
-            companyOrder.Status = true;
+            
             if (NewebPayStatus == "SUCCESS")
             {
                 companyOrder.StatusType = "付款成功";
@@ -760,6 +761,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 company.Deadline = deadline;
             }
 
+            companyOrder.Status = true;
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
