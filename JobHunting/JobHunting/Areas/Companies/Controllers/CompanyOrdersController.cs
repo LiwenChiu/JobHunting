@@ -218,7 +218,7 @@ namespace JobHunting.Areas.Companies.Controllers
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
+            var outModelReturnResult = outModelReturn.Result;
             if(outModelReturnResult == null)
             {
                 return new SendToNewebPaySearchOutputVueViewModel
@@ -274,6 +274,10 @@ namespace JobHunting.Areas.Companies.Controllers
                 companyOrder.NewebPayMessage = outModelReturn.Message;
                 companyOrder.TradeNo = outModelReturnResult.TradeNo;
                 companyOrder.PaymentType = outModelReturnResult.PaymentType;
+                if(TradeStatus == "1")
+                {
+                    companyOrder.PayDate = DateTime.Parse(outModelReturnResult.PayTime);
+                }
 
                 _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -355,7 +359,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             public string? Status { get; set; }
             public string? Message { get; set; }
-            public List<Result>? Result { get; set; }
+            public Result Result { get; set; }
         }
 
         public class Result
@@ -372,7 +376,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             public string? PaymentType { get; set; }
 
-            public DateTime? PayTime { get; set; }
+            public string? PayTime { get; set; }
         }
 
         /// <summary>
