@@ -131,10 +131,10 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
-            string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/Index"; //返回商店網址
+            string ReturnURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string CustomerURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
+            string NotifyURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/Index"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
