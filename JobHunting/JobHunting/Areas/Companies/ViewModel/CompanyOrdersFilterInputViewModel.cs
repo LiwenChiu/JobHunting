@@ -21,5 +21,7 @@
         public bool Status { get; set; }
 
         public string StatusType { get; set; }
+
+        public string? NewebPayStatus { get; set; }
     }
 }

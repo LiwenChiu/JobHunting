@@ -16,6 +16,7 @@ using System.Text;
 using System.Security.Policy;
 using Newtonsoft.Json;
 using NuGet.Protocol;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -63,6 +64,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 Duration = co.Duration,
                 Status = co.Status,
                 StatusType = co.StatusType,
+                NewebPayStatus = co.NewebPayStatus,
             });
 
             // Apply numeric filters dynamically
@@ -73,8 +75,9 @@ namespace JobHunting.Areas.Companies.Controllers
 
             // Final projection and ordering
             var orders = query
-                .OrderBy(co => co.Status)
-                .ThenByDescending(co => co.OrderDate)
+                //.OrderBy(co => co.Status)
+                .OrderByDescending(co => co.OrderDate)
+                //.ThenBy(co => co.NewebPayStatus)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
