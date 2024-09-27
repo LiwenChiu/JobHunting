@@ -8,7 +8,9 @@
 @section Styles
 {
     <style>
-
+        .certification:hover {
+            transform: scale(3);
+        }
     </style>
 }
 
@@ -98,7 +100,7 @@
                                                 <a href="#" class="mb-3" v-on:click.prevent="triggerFileInput">
                                                     <div>
                                                         @* <label for="imageA" class="rounded float-end form-label">上傳圖片</label> *@
-                                                        <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="大頭照" />
+                                                        <img class="rounded float-end mx-4 img-fluid" :src="noimagepreview" style="width:100px;height:100px" title="待上傳" />
                                                     </div>
 
                                                 </a>
@@ -148,7 +150,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience" style="height:440px"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -269,7 +271,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title" style="text-align:center">自傳</h5>
                                             <p class="card-text">
-                                                <textarea name="" id="" class="form-control overflow-auto" rows="8" v-model.lazy="Autobiography"></textarea>
+                                                <textarea name="" id="" class="form-control overflow-auto" rows="9" v-model.lazy="Autobiography"></textarea>
                                             </p>
                                         </div>
                                     </div>
@@ -372,7 +374,7 @@
                                                     <div>
                                                         <p class="card-text">
                                                             自我介紹：
-                                                            <textarea name="" id="" class="form-control" rows="6">{{ResumeD.intro}}</textarea>
+                                                            <textarea name="" id="" class="form-control" rows="6" v-model="ResumeD.intro"></textarea>
                                                         </p>
                                                     </div>
 
@@ -389,7 +391,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
-                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience" style="height:440px"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -453,7 +455,8 @@
                                                     <div class="col">
                                                         <label for="" class="mb-2">
                                                             證照
-                                                            <img v-if="ResumeD.certification !=null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px;" title="待上傳" />
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
+                                                           
                                                         </label>
                                                         <input id="CertificationEditFile" type="file" accept="image/*" />
                                                     </div>
@@ -506,7 +509,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
-                                                    <textarea name="" id="" class="form-control" rows="8" v-model.lazy="ResumeD.autobiography"></textarea>
+                                                    <textarea name="" id="" class="form-control" rows="10" v-model.lazy="ResumeD.autobiography"></textarea>
                                                 </p>
                                             </div>
                                         </div>
@@ -541,7 +544,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">個人資料</h5>
-                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="待上傳" /></div>
+                                                <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="ResumeD.headshot ? 'data:image/jpeg;base64,' + ResumeD.headshot : noimagepreview" style="width:100px;height:100px" title="大頭照" /></div>
                                                 <p class="card-text">
                                                     <div class="col">
                                                         <label class="mb-2" size="10">姓名:{{ResumeD.name}} </label>
@@ -578,7 +581,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:250px">
+                                                <p class="card-text form-control overflow-auto" style="height:472px">
                                                     {{ResumeD.workExperience}}
                                                 </p>
                                             </div>
@@ -608,8 +611,7 @@
                                                         <label for="" class="mb-2 ">
                                                             證照:
                                                             <br>
-
-                                                            <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
                                                         </label>
 
                                                     </div>
@@ -627,7 +629,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:200px">
+                                                <p class="card-text form-control overflow-auto" style="height:213px">
                                                     {{ResumeD.autobiography}}
                                                 </p>
                                             </div>
@@ -1144,7 +1146,11 @@
                         form.append(`TagId[${index}]`, id);
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotinsertFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    form.append("CertificationFile", document.querySelector('#CertificationInsertFile').files[0]);
+                    if (document.querySelector('#CertificationInsertFile').files[0] != null) {
+                        form.append("CertificationName", document.querySelector('#CertificationInsertFile').files[0].name);
+                        form.append("CertificationType", document.querySelector('#CertificationInsertFile').files[0].type);
+                    }
                     // const files = document.querySelector('#CertificationInsertFile').files;
                     // for (let i = 0; i < files.length; i++) {
                     //     form.append("CertificationImageFile", files[i]);
@@ -1201,7 +1207,11 @@
                         form.append(`TagId[${index}]`, id);
                     });
                     form.append("HeadshotImageFile", document.querySelector('#HeadshotEditFile').files[0]);
-                    form.append("CertificationImageFile", document.querySelector('#CertificationEditFile').files[0]);
+                    form.append("CertificationFile", document.querySelector('#CertificationEditFile').files[0]);
+                    if (document.querySelector('#CertificationEditFile').files[0] != null) {
+                        form.append("CertificationName", document.querySelector('#CertificationEditFile').files[0].name);
+                        form.append("CertificationType", document.querySelector('#CertificationEditFile').files[0].type);
+                    }
                     // const files = document.querySelector('#CertificationEditFile').files;
                     // for (let i = 0; i < files.length; i++) {
                     //     form.append("CertificationImageFile", files[i]);
