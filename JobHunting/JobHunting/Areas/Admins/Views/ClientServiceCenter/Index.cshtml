@@ -238,7 +238,7 @@
 
                 deleteOpinionLetter: function (letterId) {
                     let _this = this;
-                    let c = confirm(`確定要刪除${letterId}嗎?`);
+                    let c = confirm(`確定要刪除嗎?`);
                     if (c == true) {
                         axios.post(`${_this.baseAddress}/Admins/ClientServiceCenter/DeleteLetter`, letterId,
                         { headers: { 'Content-Type': 'application/json' } })

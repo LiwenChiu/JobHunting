@@ -276,6 +276,7 @@ CREATE TABLE Notifications
 		on delete set null,
 	OpeningId int,
 	ResumeId int,
+	ResumeOpeningRecordId int not null,
 	[Status] nvarchar(10),
 	SubjectLine nvarchar(60) not null,
 	Content nvarchar(Max) not null,
