@@ -389,7 +389,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 return NotFound();
             }
 
-            companyOrder.Status = true;
             if (NewebPayStatus == "SUCCESS")
             {
                 companyOrder.StatusType = "付款成功";
@@ -397,24 +396,28 @@ namespace JobHunting.Areas.Companies.Controllers
             else
             {
                 companyOrder.StatusType = "付款失敗";
+                return BadRequest();
             }
 
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
 
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
+
+            companyOrder.Status = true;
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
@@ -537,7 +540,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             // 接收TradeInfo參數
             NewebPayTakeNumberTradeInfoViewModel result = new NewebPayTakeNumberTradeInfoViewModel();
-            
+
             foreach (String key in decryptTradeCollection.AllKeys)
             {
                 if (key == "Status" && decryptTradeCollection[key] == "SUCCESS")
@@ -615,6 +618,7 @@ namespace JobHunting.Areas.Companies.Controllers
             if (result.Status == "SUCCESS")
             {
                 companyOrder.Status = true;
+                companyOrder.StatusType = "取號完成";
             }
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
@@ -727,31 +731,40 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
             }
 
-            companyOrder.Status = true;
+
             if (NewebPayStatus == "SUCCESS")
             {
+                if(companyOrder.StatusType == "付款成功")
+                {
+                    return Ok();
+                }
                 companyOrder.StatusType = "付款成功";
             }
             else
             {
                 companyOrder.StatusType = "付款失敗";
+                return BadRequest();
             }
+
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
 
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
+
+            companyOrder.Status = true;
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
