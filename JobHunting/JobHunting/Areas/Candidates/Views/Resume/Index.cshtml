@@ -615,7 +615,6 @@
                                                             證照:
                                                             <br>
                                                             <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
-                                                            <img v-if="ResumeD.certification != null" class="rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + ResumeD.certification" style="width:50px;height:50px" title="待上傳" />
                                                         </label>
 
                                                     </div>
@@ -631,8 +630,8 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
+                                            <div class="card-body">
                                                 <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
-                                                <p class="card-text form-control overflow-auto" style="height:200px">
                                                 <p class="card-text form-control overflow-auto" style="height:200px">
                                                     {{ResumeD.autobiography}}
                                                 </p>
