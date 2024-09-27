@@ -73,7 +73,7 @@ namespace JobHunting.Services
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
+            var outModelReturnResult = outModelReturn.Result;
             if (outModelReturnResult == null)
             {
                 return;
@@ -188,7 +188,7 @@ namespace JobHunting.Services
         {
             public string Status { get; set; }
             public string Message { get; set; }
-            public List<Result> Result { get; set; }
+            public Result Result { get; set; }
         }
 
         public class Result
