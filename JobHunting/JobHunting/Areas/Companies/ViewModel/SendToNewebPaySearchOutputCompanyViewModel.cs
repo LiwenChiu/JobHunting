@@ -14,13 +14,11 @@
 
         public int Duration { get; set; }
 
-        public string NewebPayStatus { get; set; }
-
-        public string NewebPayMessage { get; set; }
+        public string StatusType { get; set; }
 
         public string TradeNo { get; set; }
 
-        public string PaymentType { get; set; }
+        public string? PaymentType { get; set; }
 
 
     }

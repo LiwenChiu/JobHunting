@@ -174,8 +174,7 @@ namespace JobHunting.Areas.Companies.Controllers
                         Orderdate = companyOrder.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
                         PayDate = companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分"),
                         Duration = companyOrder.Duration,
-                        NewebPayStatus = companyOrder.NewebPayStatus,
-                        NewebPayMessage = companyOrder.NewebPayMessage,
+                        StatusType = companyOrder.StatusType,
                         TradeNo = companyOrder.TradeNo,
                         PaymentType = companyOrder.PaymentType,
                     },
@@ -246,7 +245,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 _ => "錯誤",
             };
 
-            if(companyOrder.StatusType == StatusType)
+            if(companyOrder.StatusType == StatusType || TradeStatus == "0")
             {
                 return new SendToNewebPaySearchOutputVueViewModel
                 {
@@ -259,8 +258,7 @@ namespace JobHunting.Areas.Companies.Controllers
                         Orderdate = companyOrder.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
                         PayDate = companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分"),
                         Duration = companyOrder.Duration,
-                        NewebPayStatus = outModelReturn.Status,
-                        NewebPayMessage = outModelReturn.Message,
+                        StatusType = StatusType,
                         TradeNo = outModelReturnResult.TradeNo,
                         PaymentType = outModelReturnResult.PaymentType,
                     },
@@ -293,20 +291,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             return new SendToNewebPaySearchOutputVueViewModel
             {
-                Status = true,
-                OrderData = new SendToNewebPaySearchOutputCompanyViewModel
-                {
-                    OrderId = companyOrder.OrderId,
-                    Price = decimal.ToInt32(companyOrder.Price),
-                    Title = companyOrder.Title,
-                    Orderdate = companyOrder.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
-                    PayDate = companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分"),
-                    Duration = companyOrder.Duration,
-                    NewebPayStatus = outModelReturn.Status,
-                    NewebPayMessage = outModelReturn.Message,
-                    TradeNo = outModelReturnResult.TradeNo,
-                    PaymentType = outModelReturnResult.PaymentType,
-                },
+                Status = false,
             };
         }
 
