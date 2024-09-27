@@ -410,11 +410,14 @@ namespace JobHunting.Areas.Companies.Controllers
             if (company == null) { return NotFound(); }
             if (!companyOrder.Status)
             {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
+                var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+                var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
                 deadline.AddDays(companyOrder.Duration);
                 company.Deadline = deadline;
             }
 
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
