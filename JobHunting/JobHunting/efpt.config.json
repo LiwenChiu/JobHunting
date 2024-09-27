@@ -1,12 +1,12 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "DuckCompaniesContext",
+   "ContextClassName": "DuckAdminsContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Areas\/Companies\/Models",
+   "OutputPath": "Areas\/Admins\/Models",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "JobHunting",
    "Schemas": null,
@@ -108,6 +108,50 @@
       },
       {
          "Name": "[dbo].[TitleClasses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[AggregatedCounter]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Counter]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Hash]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Job]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[JobParameter]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[JobQueue]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[List]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Schema]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Server]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[Set]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[HangFire].[State]",
          "ObjectType": 0
       }
    ],

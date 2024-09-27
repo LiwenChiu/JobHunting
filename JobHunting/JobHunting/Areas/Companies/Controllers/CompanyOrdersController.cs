@@ -315,7 +315,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 var content = new FormUrlEncodedContent(formData);
 
                 // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
+                HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/QueryTradeInfo", content);
+                //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
                 response.EnsureSuccessStatusCode();
 
                 // 讀取回應內容為字符串
@@ -455,7 +456,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 var content = new FormUrlEncodedContent(formData);
 
                 // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
+                HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/CreditCard/Cancel", content);
+                //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
                 response.EnsureSuccessStatusCode();
 
                 // 讀取回應內容為字符串
