@@ -12,10 +12,10 @@
 
 @* 通知 *@
 <div id="createOpening">
-    <div class="container-fluid row py-2">
+    @* <div class="container-fluid row py-2">
         <label class="form-label">關鍵字搜尋：</label>
-        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup="filterOpenings" />
-    </div>
+        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup.lazy="filterOpenings" />
+    </div> *@
     <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
         <template v-if="alertStatus == '成功'">
             <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">
@@ -661,6 +661,10 @@
                 //新增履歷
                 createOpening: function () {
                     let _this = this;
+                    if (_this.SalaryMax < _this.SalaryMin) {
+                        alert("最高薪資不能低於最低薪資");
+                        return;  // 阻止後續代碼執行
+                        }
                     let request = {};
                     request.Title = _this.Title;
                     request.Address = _this.Address;
@@ -852,8 +856,16 @@
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
-                        alert(response.data)
-                        this.ReceiveOpeningData();
+                        let data = response.data;
+                        if(data.success==true){
+                            alert(data.message);
+                            this.ReceiveOpeningData();
+                        }
+                        else if(data.success==false){
+                            alert(data.message);
+                            window.location.href = data.redirectUrl;
+                        }
+                        else return data.message;
                     }).catch(err => { alert(err) });
                 },
             },

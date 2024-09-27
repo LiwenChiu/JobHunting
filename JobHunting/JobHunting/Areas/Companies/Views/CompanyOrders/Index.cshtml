@@ -45,7 +45,7 @@
                         <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
                     </td>
                     <td>
-                        <template v-if="!order.status">
+                        <template v-if="!order.status || order.statusType == '取號完成'">
                             <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
                     </td>
@@ -63,7 +63,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="h5" style="width:100%;word-break:break-all;">交易編號: {{searchData.tradeNo}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">藍新金流交易序號: {{searchData.tradeNo}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">訂單編號: {{searchData.orderId}}</p>
                     <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">方案: {{searchData.title}}</p>
@@ -74,7 +74,7 @@
                     <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate ? searchData.payDate : "無"}}</p>
                     <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
-                    <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType ? searchData.paymentType : "無"}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType ? GetPaymentType() : "無"}}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -145,7 +145,7 @@
         let vueAppCompanyOrders = {
             data() {
                 return {
-                    //baseAddress: "https://duckjobhunting.azurewebsites.net",
+                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     orders: [],
                     deadline: null,
@@ -178,14 +178,14 @@
                 showDeadline() {
                     return this.deadline === null ? "請購買方案" : this.deadline;
                 },
-                SendToNewebPaySearch:function(orderId){
+                SendToNewebPaySearch: function (orderId) {
                     let self = this;
 
                     // 訂單Id
                     let postData = {};
                     postData['OrderId'] = orderId;
 
-                    axios.post(`${self.baseAddress}/Companies/CompanyOrders/SendToNewebPaySearch`, postData,{
+                    axios.post(`${self.baseAddress}/Companies/CompanyOrders/SendToNewebPaySearch`, postData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -198,8 +198,8 @@
                             $("#SearchNULLModal").modal("show");
                         }
                     }).catch(error => {
-                            alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
-                        });
+                        alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
+                    });
                 },
                 SendToNewebPayCancel: function (orderId) {
                     this.selectedCancelOrder = orderId;
@@ -213,18 +213,40 @@
                             'Content-Type': 'application/json'
                         },
                     }).then(response => {
-                        if (response.data.status){
+                        if (response.data.status) {
                             this.cancelMessage = response.data.message;
                             $("#CancelModal").modal("show");
                         }
-                        else if (!response.data.status){
+                        else if (!response.data.status) {
                             this.cancelMessage = response.data.message;
                             $("#CancelFalseModal").modal("show");
                         }
-                        })
+                    })
                         .catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                         });
+                },
+                GetPaymentType: function () {
+                    switch (this.searchData.paymentType) {
+                        case 'CREDIT':
+                            return "信用卡一次付清";
+                        case 'APPLEPAY':
+                            return "Apple Pay";
+                        case 'ANDROIDPAY':
+                            return "Google Pay";
+                        case 'WEBATM':
+                            return "WEBATM";
+                        case 'VACC':
+                            return "ATM轉帳";
+                        case 'CVS':
+                            return "超商代碼繳費";
+                        case 'BARCODE':
+                            return "超商條碼繳費";
+                        case 'ESUNWALLET':
+                            return "玉山Wallet";
+                        case 'TAIWANPAY':
+                            return "台灣Pay";
+                    }
                 },
             },
             watch: {

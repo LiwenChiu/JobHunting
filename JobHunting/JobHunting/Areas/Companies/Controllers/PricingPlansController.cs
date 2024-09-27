@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
-    [Authorize(Roles = "company")]
     [Area("Companies")]
     public class PricingPlansController : Controller
     {
@@ -31,6 +30,7 @@ namespace JobHunting.Areas.Companies.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "company")]
         // GET: Companies/PricingPlans
         public async Task<IActionResult> Index()
         {
@@ -43,6 +43,7 @@ namespace JobHunting.Areas.Companies.Controllers
             return View();
         }
 
+        [Authorize(Roles = "company")]
         // POST: Companies/PricingPlans/BootFilterPage
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -103,7 +104,8 @@ namespace JobHunting.Areas.Companies.Controllers
 
             int orderNumber = company.OrderCount + 1;
 
-            var nowTime = DateTime.Now;
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
             var ExpirationTime = nowTime.AddDays(3);
             string ExpirationTimeStr = ExpirationTime.ToString("yyyyMMdd");
 
@@ -129,10 +131,10 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var MerchantID = Config.GetSection("MerchantID").Value;
 
-            string ReturnURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
-            //string CustomerURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
-            string NotifyURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/CallbackNotify"; //支付通知網址
-            string ClientBackURL = $"{Request.Scheme}://{Request.Host}/Companies/PricingPlans/Index"; //返回商店網址
+            string ReturnURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackReturn"; //支付完成返回商店網址
+            string CustomerURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackCustomer"; //商店取號網址
+            string NotifyURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/CallbackNotify"; //支付通知網址
+            string ClientBackURL = "https://duckjobhunting.azurewebsites.net/Companies/PricingPlans/Index"; //返回商店網址
 
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
@@ -158,8 +160,8 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("ReturnURL", ReturnURL));
             // 支付通知網址
             TradeInfo.Add(new KeyValuePair<string, string>("NotifyURL", NotifyURL));
-            //// 商店取號網址
-            //TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", CustomerURL));
+            // 商店取號網址
+            TradeInfo.Add(new KeyValuePair<string, string>("CustomerURL", CustomerURL));
             // 支付取消返回商店網址
             TradeInfo.Add(new KeyValuePair<string, string>("ClientBackURL", ClientBackURL));
             // 付款人電子信箱
@@ -171,7 +173,7 @@ namespace JobHunting.Areas.Companies.Controllers
             //Google Pay 付款
             TradeInfo.Add(new KeyValuePair<string, string>("ANDROIDPAY", "1"));
             //LINE Pay 付款
-            TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
+            //TradeInfo.Add(new KeyValuePair<string, string>("LINEPAY", "1"));
             //WEBATM 付款
             TradeInfo.Add(new KeyValuePair<string, string>("WEBATM", "1"));
             //ATM 付款
@@ -387,7 +389,6 @@ namespace JobHunting.Areas.Companies.Controllers
                 return NotFound();
             }
 
-            companyOrder.Status = true;
             if (NewebPayStatus == "SUCCESS")
             {
                 companyOrder.StatusType = "付款成功";
@@ -395,24 +396,28 @@ namespace JobHunting.Areas.Companies.Controllers
             else
             {
                 companyOrder.StatusType = "付款失敗";
+                return BadRequest();
             }
 
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
 
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
+
+            companyOrder.Status = true;
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try
@@ -511,34 +516,129 @@ namespace JobHunting.Areas.Companies.Controllers
             }
         }
 
-        ///// <summary>
-        ///// 商店取號網址
-        ///// </summary>
-        ///// <returns></returns>
-        //public IActionResult CallbackCustomer()
-        //{
-        //    // 接收參數
-        //    StringBuilder receive = new StringBuilder();
-        //    foreach (var item in Request.Form)
-        //    {
-        //        receive.AppendLine(item.Key + "=" + item.Value + "<br>");
-        //    }
-        //    ViewData["ReceiveObj"] = receive.ToString();
+        /// <summary>
+        /// 商店取號網址
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> CallbackCustomer()
+        {
+            // 付款失敗跳離執行
+            foreach (var item in Request.Form)
+            {
+                if (item.Key == "Status" && item.Value != "SUCCESS")
+                {
+                    return BadRequest();
+                }
+            }
 
-        //    // 解密訊息
-        //    IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        //    string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
-        //    string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
-        //    string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
-        //    NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
-        //    receive.Length = 0;
-        //    foreach (String key in decryptTradeCollection.AllKeys)
-        //    {
-        //        receive.AppendLine(key + "=" + decryptTradeCollection[key] + "<br>");
-        //    }
-        //    ViewData["TradeInfo"] = receive.ToString();
-        //    return View();
-        //}
+            // 解密訊息
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+            string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
+            NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
+
+            // 接收TradeInfo參數
+            NewebPayTakeNumberTradeInfoViewModel result = new NewebPayTakeNumberTradeInfoViewModel();
+
+            foreach (String key in decryptTradeCollection.AllKeys)
+            {
+                if (key == "Status" && decryptTradeCollection[key] == "SUCCESS")
+                {
+                    result.Status = decryptTradeCollection[key];
+                }
+                else if (key == "Status" && decryptTradeCollection[key] != "SUCCESS")
+                {
+                    return BadRequest();
+                }
+                if (key == "Message")
+                {
+                    result.Message = decryptTradeCollection[key];
+                }
+                if (key == "MerchantID")
+                {
+                    result.MerchantID = decryptTradeCollection[key];
+                }
+                if (key == "Amt")
+                {
+                    result.Amt = decryptTradeCollection[key];
+                }
+                if (key == "TradeNo")
+                {
+                    result.TradeNo = decryptTradeCollection[key];
+                }
+                if (key == "MerchantOrderNo")
+                {
+                    result.MerchantOrderNo = decryptTradeCollection[key];
+                }
+                if (key == "PaymentType")
+                {
+                    result.PaymentType = decryptTradeCollection[key];
+                }
+                if (key == "ExpireDate")
+                {
+                    result.ExpireDate = DateTime.Parse(decryptTradeCollection[key]);
+                }
+                if (result.PaymentType == "VACC" && key == "BankCode")
+                {
+                    result.BankCode = decryptTradeCollection[key];
+                }
+                if (result.PaymentType == "VACC" && key == "CodeNo")
+                {
+                    result.ATMCodeNo = decryptTradeCollection[key];
+                }
+                if (result.PaymentType == "CVS" && key == "CodeNo")
+                {
+                    result.CodeNo = decryptTradeCollection[key];
+                }
+                if (result.PaymentType == "CVS" && key == "ExpireTime")
+                {
+                    result.ExpireTime = TimeOnly.Parse(decryptTradeCollection[key]).ToString("HH點mm分ss秒");
+                }
+                if (result.PaymentType == "BARCODE" && key == "Barcode_1")
+                {
+                    result.Barcode_1 = decryptTradeCollection[key];
+                }
+                if (result.PaymentType == "BARCODE" && key == "Barcode_2")
+                {
+                    result.Barcode_2 = decryptTradeCollection[key];
+                }
+                if (result.PaymentType == "BARCODE" && key == "Barcode_3")
+                {
+                    result.Barcode_3 = decryptTradeCollection[key];
+                }
+            }
+
+            var companyOrder = await _context.CompanyOrders.FindAsync(result.MerchantOrderNo);
+            if (companyOrder == null)
+            {
+                return NotFound();
+            }
+
+            if (result.Status == "SUCCESS")
+            {
+                companyOrder.Status = true;
+                companyOrder.StatusType = "取號完成";
+            }
+
+            var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+            if (company == null) { return NotFound(); }
+
+            _context.Entry(companyOrder).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }
+
+            ViewData["CallbackTakeNumberReturnResult"] = result;
+
+            return View();
+        }
 
         /// <summary>
         /// 支付通知網址
@@ -631,31 +731,40 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
             }
 
-            companyOrder.Status = true;
+
             if (NewebPayStatus == "SUCCESS")
             {
+                if(companyOrder.StatusType == "付款成功")
+                {
+                    return Ok();
+                }
                 companyOrder.StatusType = "付款成功";
             }
             else
             {
                 companyOrder.StatusType = "付款失敗";
+                return BadRequest();
             }
+
             companyOrder.NewebPayStatus = NewebPayStatus;
             companyOrder.NewebPayMessage = result.Message;
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
+            companyOrder.PayDate = result.PayTime;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? DateTime.Now : company.Deadline);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
 
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
+
+            companyOrder.Status = true;
+            _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
             try

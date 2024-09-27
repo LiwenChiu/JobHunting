@@ -8,95 +8,97 @@
             overflow-y: auto; /* 當內容超出時，顯示垂直捲軸 */
         }
 
-        .certification:hover{
-            transform:scale(3);
+        .certification:hover {
+            transform: scale(3);
         }
     </style>
 }
 
 
-    <div class="container-fluid py-2" id="resumeStorage">
-        <div class="letters row">
-            <div class="col-md-3 mb-4" v-for="item in resumes.slice(pageStart,pageEnd)">
-                <div class="card" style="width: 16rem; height: 16rem;">
-                    <div class="card-body">
-                        <div class="row">
+<div class="container-fluid py-2" id="resumeStorage">
+    <div class="letters row">
+        <div class="col-md-3 mb-4" v-for="item in resumes.slice(pageStart,pageEnd)">
+            <div class="card" style="width: 16rem; height: 16rem;">
+                <div class="card-body">
+                    <div class="row">
                         <div class="col-10 text-center">
                             <h4 class="card-title pb-3 "> {{item.name}}的履歷</h4>
-                            </div>
-                            <div class="col-2">
-                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item)"></button>
-                            </div>
                         </div>
-                            <div class="text-start">
-                                <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 姓名 :{{item.name}}</p>
-                                <span class="card-text"><i class="fa-solid fa-caret-right"></i> 性別 :{{selectSex(item.sex)}}</span>
-                                <p class="card-text"><i class="fa-solid fa-caret-right"></i> 學歷 :{{item.degree}}</p>
-                                <p class="card-text"><i class="fa-solid fa-caret-right"></i> 就業狀態 :{{item.employmentStatus}}</p>
-                            </div>
-                        
-                        <div class="text-center mt-4">
-                            <!-- Button trigger modal --> @* 查看履歷moda *@
-                            <button type="button" data-bs-toggle="modal"
-                                    :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
-                                查看履歷
-                            </button>
+                        <div class="col-2">
+                            <button type="button" class="btn-close justify-content-end" aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item)"></button>
+                        </div>
+                    </div>
+                    <div class="text-start">
+                        <p class="card-subtitle text-body-secondary mt-2"><i class="fa-solid fa-caret-right"></i> 姓名 :{{item.name}}</p>
+                        <span class="card-text"><i class="fa-solid fa-caret-right"></i> 性別 :{{selectSex(item.sex)}}</span>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 學歷 :{{item.degree}}</p>
+                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 就業狀態 :{{item.employmentStatus}}</p>
+                    </div>
 
-                            <!-- Modal -->
-                            <div class="modal fade" 
-                                 :id="mergeID(item)"
-                                 tabindex="-1"
-                                 data-bs-backdrop="static"
-                                 data-bs-keyboard="false"
-                                 role="dialog"
-                                 aria-labelledby="modalTitleId"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
-                                     role="document">
-                                    <div class="modal-content ">
-                                        <div class="card modal-body bg-warning">
-                                            @* 履歷純顯示 *@
-                                            <div class="card-body container-fluid">
-                                                 <div class="modal-header" style="background-color: #f7d179;">
-                                                     <h5 class="modal-titl text-center" id="modal" style="width:95% ;" >
+                    <div class="text-center mt-4">
+                        <!-- Button trigger modal --> @* 查看履歷moda *@
+                        <button type="button" data-bs-toggle="modal"
+                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                            查看履歷
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade"
+                             :id="mergeID(item)"
+                             tabindex="-1"
+                             data-bs-backdrop="static"
+                             data-bs-keyboard="false"
+                             role="dialog"
+                             aria-labelledby="modalTitleId"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+                                 role="document">
+                                <div class="modal-content ">
+                                    <div class="card modal-body bg-warning">
+                                        @* 履歷純顯示 *@
+                                        <div class="card-body container-fluid">
+                                            <div class="modal-header" style="background-color: #f7d179;">
+                                                <h5 class="modal-titl text-center" id="modal" style="width:95% ;">
                                                     {{item.name}}的履歷
-                                                     </h5>
-                                                    <button type="button"
+                                                </h5>
+                                                <button type="button"
                                                         class="btn-close"
                                                         data-bs-dismiss="modal"
                                                         aria-label="Close">
-                                                    </button>
-                                                 </div>
+                                                </button>
+                                            </div>
 
-                                                 <div class="row">
-                                                     <div class="col-sm-6">
-                                                       <div class="card mb-3">
-                                                         <div class="card-body" >
-                                                                 <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="card mb-3">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
                                                             <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="item.headshot ? 'data:image/jpeg;base64,' + item.headshot : noimagepreview" style="width:100px;height:100px" :title="item.candidatename" /></div>
                                                             <div class="text-start" style="">
                                                                 <p class="card-text ">
                                                                     <div class="col ">
-                                                                        <label class="" size="10">姓名 :{{item.name}} </label>
+                                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{item.name}} </label>
                                                                     </div>
                                                                     <div>
-                                                                        <label for="" class="mb-2">性別 : {{selectSex(item.sex)}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(item.sex)}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">生日 : {{item.birthday}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{item.birthday}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">電話 : {{item.phone}}</label>
-                                                                        <label for="" class="mb-2 mx-3">學歷 : {{item.degree}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{item.phone}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">郵件 : {{item.email}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{item.degree}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">就業狀態 : {{item.employmentStatus}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{item.email}}</label>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
                                                                     </div>
                                                                     <div class="card-body ">
-                                                                        <h5 class="card-title text-center" style="">自我介紹：</h5>
+                                                                        <h5 class="card-title text-center fw-bold">自我介紹：</h5>
                                                                         <p class="card-text form-control overflow-auto" style="height:200px">
                                                                             {{item.intro}}
                                                                         </p>
@@ -105,34 +107,34 @@
                                                             </div>
 
 
-                                                         </div>
-                                                       </div>
-                                                     </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                     <div class="col-sm-6">
-                                                         <div class="card mb-3">
-                                                             <div class="card-body text-start">
-                                                                 <h5 class="card-title" style="text-align:center">工作經驗</h5>
-                                                                 <p class="card-text form-control overflow-auto" style="height:250px">
+                                                <div class="col-sm-6">
+                                                    <div class="card mb-3">
+                                                        <div class="card-body text-start">
+                                                            <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
+                                                            <p class="card-text form-control overflow-auto" style="height:512px">
                                                                 {{item.workExperience}}
-                                                                 </p>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                 <div class="row">
-                                                     <div class="col-sm-6">
-                                                         <div class="card mb-3">
-                                                             <div class="card-body text-start">
-                                                                 <h5 class="card-title" style="text-align:center">求職條件</h5>
-                                                                 <p class="card-text">
-                                                                     <div class="col">
-                                                                    <label class="mb-2">上班時段: {{item.time}}</label>
-                                                                     </div>
-                                                                     <div class="col">
-                                                                         <label class="">
-                                                                             <span class="">希望職缺:    </span>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="card mb-3">
+                                                        <div class="card-body text-start">
+                                                            <h5 class="card-title fw-bold">求職條件</h5>
+                                                            <p class="card-text">
+                                                                <div class="col">
+                                                                    <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{item.time}}</label>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <label class="">
+                                                                        <label class="mb-2 fw-bold">希望職缺: </label>
                                                                         {{ getTitleClassName(item.titleClassId) }}
                                                                          </label>
 
@@ -151,23 +153,23 @@
                                                                      <div>
                                                                          <label class="">能力標籤:</label>
                                                                     {{getTagName(item.tagId)}}
-                                                                     </div>
-                                                                 </p>
+                                                                </div>
+                                                            </p>
 
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                     <div class="col-sm-6">
-                                                         <div class="card mb-3">
-                                                             <div class="card-body text-start">
-                                                                 <h5 class="card-title" style="text-align:center">自傳</h5>
-                                                                 <p class="card-text form-control overflow-auto" style="height:200px">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="card mb-3">
+                                                        <div class="card-body text-start">
+                                                            <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
+                                                            <p class="card-text form-control overflow-auto" style="height:200px">
                                                                 {{item.autobiography}}
-                                                                 </p>
-                                                         </div>
-                                                     </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
 
-                                                 </div>
+                                                </div>
 
                                             </div>
                                         </div>
@@ -175,30 +177,30 @@
                                         <div class="modal-footer">
                                             @* 發送面試通知按鈕 *@
                                             <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openInterviewModal(item)"
-                                                    @* data-bs-target="#interviewMailBtn" *@ >
+                                            @* data-bs-target="#interviewMailBtn" *@>
                                                 面試
-                                                </button>
+                                            </button>
 
 
                                             @* 發送錄取通知按鈕 *@
                                             <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openAdmissionModal(item)"
-                                                    @* data-bs-target="#OfferMailBtn" *@ >
+                                            @* data-bs-target="#OfferMailBtn" *@>
                                                 錄取
                                             </button>
-                                           @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
+                                            @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    
-                </div>
+
+                    </div>
                 </div>
             </div>
-            
-                            
-            
+
+
+
         </div>
         <div>
             @* 發送錄取通知 *@
@@ -358,36 +360,36 @@
                     MessageStatus: 1,
                     noimagepreview: "/images/No_Image_Available.jpg",
                     resumes: [], //從後端撈回來的資料存入這邊
-                    Openings:[],
-                    openingId:"",
+                    Openings: [],
+                    openingId: "",
                     filter: "",
                     TagClasses: [],
                     Tags: [],
                     titleClass: [],
                     titleCategory: [],
-                    InterviewYN:false,
-                    resumeId:"",
-                    Sendinterview:{
-                        Purpose:"",
-                        Interviewdate:"",
-                        Interviewtime:"",
-                        place:"",
-                        Content:"",
-                        Interviewnotice:"面試邀請",
-                        sendDate:new Date(),
+                    InterviewYN: false,
+                    resumeId: "",
+                    Sendinterview: {
+                        Purpose: "",
+                        Interviewdate: "",
+                        Interviewtime: "",
+                        place: "",
+                        Content: "",
+                        Interviewnotice: "面試邀請",
+                        sendDate: new Date(),
                         interviewReplyYN: false,
-                        interviewReplyFirstYN:false,
+                        interviewReplyFirstYN: false,
                     },
-                    SendAdmission:{
-                        AdmissionSubjectLine:"",
-                        AdmissionDate:"",
-                        AdmissionTime:"",
-                        AdmissionPlace:"",
-                        AdmissionContent:"",
-                        AdmissionStatus:"錄取通知",
-                        AdmissionsendDate:new Date(),
-                        AdmissionsendReplyYN:false,
-                        AdmissionsendReplyFirstYN:false,
+                    SendAdmission: {
+                        AdmissionSubjectLine: "",
+                        AdmissionDate: "",
+                        AdmissionTime: "",
+                        AdmissionPlace: "",
+                        AdmissionContent: "",
+                        AdmissionStatus: "錄取通知",
+                        AdmissionsendDate: new Date(),
+                        AdmissionsendReplyYN: false,
+                        AdmissionsendReplyFirstYN: false,
                     },
                     selectedItem: {}, // 用儲存選中的資料
                     minDate: ''
@@ -456,11 +458,11 @@
                     }).then(response => {
                         return response.json();
                     })
-                    .then(data => {
-                        return _this.resumes = data
-                    }).catch(err => {
-                        alert(JSON.stringify(err))
-                    });
+                        .then(data => {
+                            return _this.resumes = data
+                        }).catch(err => {
+                            alert(JSON.stringify(err))
+                        });
 
                     //職業類型
                     fetch(`${_this.baseAddress}/Companies/C_Resume/TitleClassJson`, {
@@ -509,10 +511,10 @@
                         candidateId: item.candidateId,
                         // openingId: item.openingId,
                         resumeId: item.resumeId
-                        };
-                     // 打開modal
-                     let modal = new bootstrap.Modal(document.getElementById('interviewMailBtn'));
-                     modal.show();
+                    };
+                    // 打開modal
+                    let modal = new bootstrap.Modal(document.getElementById('interviewMailBtn'));
+                    modal.show();
                 },
                 //打開錄取modal
                 openAdmissionModal(item) {
@@ -522,18 +524,18 @@
                         candidateId: item.candidateId,
                         // openingId: item.openingId,
                         resumeId: item.resumeId
-                        };
-                     // 打開modal
-                     let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
-                     modal.show();
+                    };
+                    // 打開modal
+                    let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
+                    modal.show();
                 },
                 //發送面試通知
                 SendInterviewLetter: function () {
                     let _this = this;
                     let request = {};
                     const confirmdel = confirm("確定要發送?");
-                    if (confirmdel==true){
-                        request.CandidateId = _this.selectedItem.candidateId; 
+                    if (confirmdel == true) {
+                        request.CandidateId = _this.selectedItem.candidateId;
                         request.OpeningId = _this.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
                         request.Status = _this.Sendinterview.Interviewnotice;
@@ -545,46 +547,7 @@
                         request.Address = _this.Sendinterview.place;
                         request.ReplyYN = _this.SendAdmission.interviewReplyYN;
                         request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
-                        fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`,{
-                            method:"POST",
-                            headers: {
-                                "Content-Type": "application/json"  // 指定 JSON 格式
-                            },
-                            body: JSON.stringify(request),  // 將數據序列化為 JSON
-                        }).then(res=>{
-                            return res.json();
-                        }).then(data=>{
-                            if(data.success == true){
-                                alert(data.message);
-                                location.reload(); // 刷新页面
-                            }else if(data.success == false){
-                                alert(data.message);
-                            };
-                        }).catch(err=>{
-                            alert(JSON.stringify(err));
-                        })
-                    }else{
-                        alert("已取消操作")
-                    }
-                    
-                },
-                SendAdmissionLetter:function(){
-                    let _this = this;
-                    let request = {};
-                    let confirmdel = confirm("確定要發送?");
-                    if(confirmdel == true){
-                        request.CandidateId = _this.selectedItem.candidateId; 
-                        request.OpeningId = _this.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
-                        request.Status = _this.SendAdmission.AdmissionStatus,
-                        request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
-                        request.Content = _this.SendAdmission.AdmissionContent,
-                        request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
-                        request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
-                        request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
-                        request.Address = _this.SendAdmission.AdmissionPlace,
-                        request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
-                        fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
+                        fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"  // 指定 JSON 格式
@@ -602,16 +565,55 @@
                         }).catch(err => {
                             alert(JSON.stringify(err));
                         })
-                    }else{
+                    } else {
                         alert("已取消操作")
                     }
-                    
+
                 },
-                removeCompanyResumeLikeRecords:function(item){
+                SendAdmissionLetter: function () {
+                    let _this = this;
+                    let request = {};
+                    let confirmdel = confirm("確定要發送?");
+                    if (confirmdel == true) {
+                        request.CandidateId = _this.selectedItem.candidateId;
+                        request.OpeningId = _this.openingId;
+                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.Status = _this.SendAdmission.AdmissionStatus,
+                            request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
+                            request.Content = _this.SendAdmission.AdmissionContent,
+                            request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
+                            request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
+                            request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
+                            request.Address = _this.SendAdmission.AdmissionPlace,
+                            request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
+                            fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"  // 指定 JSON 格式
+                                },
+                                body: JSON.stringify(request),  // 將數據序列化為 JSON
+                            }).then(res => {
+                                return res.json();
+                            }).then(data => {
+                                if (data.success == true) {
+                                    alert(data.message);
+                                    location.reload(); // 刷新页面
+                                } else if (data.success == false) {
+                                    alert(data.message);
+                                };
+                            }).catch(err => {
+                                alert(JSON.stringify(err));
+                            })
+                    } else {
+                        alert("已取消操作")
+                    }
+
+                },
+                removeCompanyResumeLikeRecords: function (item) {
                     let _this = this
                     let request = {
-                        ResumeId:item.resumeId,
-                        companyId:item.companyId,
+                        ResumeId: item.resumeId,
+                        companyId: item.companyId,
                     };
                     let confirmdel = confirm("確定要刪除?");
                     if (confirmdel == true) {
@@ -633,10 +635,10 @@
                         }).catch(err => {
                             alert(JSON.stringify(err));
                         })
-                    }else{
+                    } else {
                         alert("已取消操作")
                     }
-                    
+
                 },
 
             },

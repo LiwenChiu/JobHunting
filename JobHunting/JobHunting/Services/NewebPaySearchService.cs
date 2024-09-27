@@ -73,7 +73,7 @@ namespace JobHunting.Services
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
+            var outModelReturnResult = outModelReturn.Result;
             if (outModelReturnResult == null)
             {
                 return;
@@ -146,7 +146,7 @@ namespace JobHunting.Services
                     return;
                 }
             }
-
+            
             return;
         }
 
@@ -170,7 +170,8 @@ namespace JobHunting.Services
                 var content = new FormUrlEncodedContent(formData);
 
                 // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
+                HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/QueryTradeInfo", content);
+                //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
                 response.EnsureSuccessStatusCode();
 
                 // 讀取回應內容為字符串
@@ -187,7 +188,7 @@ namespace JobHunting.Services
         {
             public string Status { get; set; }
             public string Message { get; set; }
-            public List<Result> Result { get; set; }
+            public Result Result { get; set; }
         }
 
         public class Result
@@ -292,7 +293,8 @@ namespace JobHunting.Services
                 var content = new FormUrlEncodedContent(formData);
 
                 // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
+                HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/CreditCard/Cancel", content);
+                //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
                 response.EnsureSuccessStatusCode();
 
                 // 讀取回應內容為字符串

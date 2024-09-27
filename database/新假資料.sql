@@ -201,17 +201,17 @@ VALUES
 (N'A334455667', N'tom@example.com', N'$2a$11$hFiVpON.Y0HtSb0xOJbev.lUZYx4PkkUWnUVzV57yKWfjdcwwbEZS', N'蔡志明', 1, '1987-02-14', NULL, N'遊戲開發工程師', N'0955447766', N'新竹市', N'大學', N'在職中', N'免役',1,'2024-09-20'),
 (N'A556677889', N'sam@example.com', N'$2a$11$LU/4lEf0sVDwU.hBN1XiS.Wsb3Z1RaN9iXjeUxQHh2M.bpt7wrAbu', N'何志強', 1, '1991-06-25', NULL, N'證券交易員', N'0933221122', N'宜蘭縣', N'大學', N'在職中', N'役畢',1,'2023-09-20');
 GO
-INSERT INTO Resumes (CandidateId, Title, Intro, Headshot, Autobiography, WorkExperience, Certification, [Time], [Address], ReleaseYN,LastEditTime)
+INSERT INTO Resumes (CandidateId, Title, Intro, Headshot, Autobiography, WorkExperience, [Time], [Address], ReleaseYN,LastEditTime)
 VALUES
-(1, N'軟體工程師履歷', N'具備5年開發經驗', NULL, N'熱愛編程，曾參與大型專案', N'台北軟體公司工作3年', NULL, N'全職', N'台北市大安區', 1, '2024-08-15'),
-(2, N'建築設計師履歷', N'設計創新，符合需求', NULL, N'曾參與多個國內外建築專案', N'在知名建築公司工作4年', NULL, N'全職', N'台中市西屯區', 1, '2024-08-15'),
-(3, N'金融分析師履歷', N'深入分析金融市場', NULL, N'精通投資策略與風險管理', N'在大型金融機構工作3年', NULL, N'全職', N'台南市東區', 1, '2024-08-15'),
-(4, N'物流專員履歷', N'物流規劃經驗豐富', NULL, N'具備貨物調度與管理能力', N'曾在大型物流公司工作5年', NULL, N'全職', N'高雄市三民區', 1, '2024-07-15'),
-(5, N'石油勘探工程師履歷', N'具備能源勘探技術', NULL, N'曾參與多個海外石油項目', N'有超過8年的工作經驗', NULL, N'全職', N'基隆市', 1, '2024-08-20'),
-(6, N'證券交易員履歷', N'專注於金融交易', NULL, N'負責市場監控與操作', N'曾在大型證券公司工作3年', NULL, N'全職', N'桃園市', 1, '2024-09-15'),
-(7, N'食品安全檢驗員履歷', N'具備食品檢驗專業', NULL, N'精通質量控制與檢驗流程', N'曾在知名食品公司工作2年', NULL, N'全職', N'苗栗縣', 1, '2024-08-26'),
-(8, N'遊戲開發工程師履歷', N'遊戲開發經驗豐富', NULL, N'曾參與多款知名遊戲的開發', N'在遊戲公司工作3年', NULL, N'全職', N'新竹市', 1, '2024-08-03'),
-(9, N'證券交易員履歷', N'負責市場操作與交易', NULL, N'在證券行業有豐富經驗', N'曾在證券公司工作2年', NULL, N'全職', N'宜蘭縣', 1, '2024-08-19');
+(1, N'軟體工程師履歷', N'具備5年開發經驗', NULL, N'熱愛編程，曾參與大型專案', N'台北軟體公司工作3年', N'全職', N'台北市大安區', 1, '2024-08-15'),
+(2, N'建築設計師履歷', N'設計創新，符合需求', NULL, N'曾參與多個國內外建築專案', N'在知名建築公司工作4年', N'全職', N'台中市西屯區', 1, '2024-08-15'),
+(3, N'金融分析師履歷', N'深入分析金融市場', NULL, N'精通投資策略與風險管理', N'在大型金融機構工作3年', N'全職', N'台南市東區', 1, '2024-08-15'),
+(4, N'物流專員履歷', N'物流規劃經驗豐富', NULL, N'具備貨物調度與管理能力', N'曾在大型物流公司工作5年', N'全職', N'高雄市三民區', 1, '2024-07-15'),
+(5, N'石油勘探工程師履歷', N'具備能源勘探技術', NULL, N'曾參與多個海外石油項目', N'有超過8年的工作經驗', N'全職', N'基隆市', 1, '2024-08-20'),
+(6, N'證券交易員履歷', N'專注於金融交易', NULL, N'負責市場監控與操作', N'曾在大型證券公司工作3年', N'全職', N'桃園市', 1, '2024-09-15'),
+(7, N'食品安全檢驗員履歷', N'具備食品檢驗專業', NULL, N'精通質量控制與檢驗流程', N'曾在知名食品公司工作2年', N'全職', N'苗栗縣', 1, '2024-08-26'),
+(8, N'遊戲開發工程師履歷', N'遊戲開發經驗豐富', NULL, N'曾參與多款知名遊戲的開發', N'在遊戲公司工作3年', N'全職', N'新竹市', 1, '2024-08-03'),
+(9, N'證券交易員履歷', N'負責市場操作與交易', NULL, N'在證券行業有豐富經驗', N'曾在證券公司工作2年', N'全職', N'宜蘭縣', 1, '2024-08-19');
 GO
 INSERT INTO ResumeTitleClasses (ResumeId, TitleClassId)
 VALUES
@@ -375,27 +375,17 @@ INSERT INTO CompanyOrders (OrderId, CompanyId, PlanId, OrderNumber, CompanyName,
 (N'0000007000000220240921',7, 19, 2, N'永信藥品工業股份有限公司', N'87654321', N'完整計畫訂單', 2400, '2024-09-06', '2024-09-07', 90, 1, N'付款成功'),
 (N'0000002000000220240921',2, 20, 2, N'漁業科技公司', N'23456789', N'定制計畫訂單', 12000, '2024-09-08', '2024-09-09', 365, 1, N'付款成功');
 GO
-INSERT INTO Notifications (CompanyId, CandidateId, OpeningId, ResumeId, [Status], SubjectLine, Content, SendDate, AppointmentDate, AppointmentTime,ReplyYN,Reply,ReplyFirstYN) VALUES
-(1, 1, 1, 1, N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', '2024-08-01', NULL, NULL, 0, NULL,0),
-(2, 2, 2, 2, N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'ssssssssssssssssssssssssssssssssssssss', '2024-08-02', '2024-08-05','09:00:00',1,'感恩，我會前往',1),
-(3, 3, 3, 3, N'錄取通知', N'我們已收到您的申請，我們將在3個工作日內聯繫您。', N'agegefFSFDSDFDSEF', '2024-08-03', NULL, NULL,1,'感恩，我會前往',1),
-(4, 4, 4, 4, N'面試邀請', N'您的面試已確認，請按照下列時間參加。', N'Edfvcdssdcgedsfgstrefdsgtrsef', '2024-08-04', '2024-08-06', '10:00:00',0, NULL,0),
-(5, 5, 5, 5, N'面試邀請', N'您的申請正在審核中，請耐心等待。', N'EAFDfgdsghdjgfrdesdhgfgfds', '2024-08-05', NULL, NULL,1,'感恩，我會前往',1),
-(6, 6, 6, 6, N'面試邀請', N'面試安排已完成，請準時到達。', N'sdfaewfdsFESDeSDedesFF', '2024-08-06', '2024-08-07', '14:00:00',0, NULL,0),
-(7, 7, 7, 7, N'錄取通知', N'您的面試結果已出，請查看詳細資訊。', N'DDSTRHRSHREGDSSDf', '2024-08-07', NULL, NULL,0, NULL,0),
-(8, 8, 8, 8, N'錄取通知', N'我們已回覆您的申請，請查看郵件。', N'aremyse4567tkf.65erghj65', '2024-08-08', NULL, NULL,0, NULL,0),
-(9, 9, 9, 9, N'面試邀請', N'您已被選中參加面試，請確認參加。', N'WRTU645EHTJ,I75U6EHT756urthdretyj6y5esrhghdyu6y5erty6453wrhgdmcj,yfu6y5erg', '2024-08-09', '2024-08-10', '15:00:00',1,'抱歉，我不會前往',1),
-(10, 9, 10, 10, N'錄取通知', N'您的申請狀態已更新，請查看。', N'jgdhmjtdkyrj kurytergd m7urgf mudtr hg tydyergfdxhdjyhfdbvngftr', '2024-08-10', NULL, NULL,1,'感恩，我會前往',1),
-(11, 1, 11, 1, N'面試邀請', N'面試時間已安排，請準時參加。', N'asgehrehtjhz', '2024-08-11', '2024-08-12', '11:00:00',0, NULL,0),
-(12, 2, 12, 2, N'錄取通知', N'我們已經完成了面試，請查看結果。', N'eehte5454rdfgr3', '2024-08-12', NULL, NULL,0, NULL,0),
-(13, 3, 13, 3, N'面試邀請', N'我們已確認您的申請，請耐心等待。', N'24354ytujmhngesr', '2024-08-13', NULL, NULL,0,NULL,0),
-(14, 4, 14, 4, N'面試邀請', N'面試安排已完成，請按時參加。', N'2345ytyresdgnbmhgfdresdx', '2024-08-14', '2024-08-15', '16:00:00',1,'感恩，我會前往',1),
-(15, 5, 15, 5, N'面試邀請', N'您的申請進度已更新，請查看詳情。', N'salkjbgikjsfdks;ikjsf', '2024-08-15', NULL, NULL,0, NULL,0),
-(2, 6, 2, 6, N'面試邀請', N'我們邀請您參加面試，請查看詳細安排。', N'dhgnyhtddjytywrsfng', '2024-08-16', '2024-08-17', '09:30:00',1,'感恩，我會前往',1),
-(13, 7, 13, 7, N'錄取通知', N'面試時間已確認，請準時參加。', N'TGyajstjyhdf', '2024-08-17', '2024-08-18', '13:00:00',0, NULL,0),
-(8, 8, 8, 8, N'錄取通知', N'我們已經審核您的申請，請查看結果。', N'Sfgdzrggnhfstrhsfb', '2024-08-18', NULL, NULL,1,'感恩，我會前往',1),
-(5, 9, 5, 9, N'面試邀請', N'面試時間已安排，請務必準時。', N'awdfgcgrfftrgs', '2024-08-19', '2024-08-20', '10:30:00',1,'感恩，我會前往',1),
-(10, 9, 10, 10, N'面試邀請', N'您的申請狀態已更新，請查看。', N'sgfgegsfh', '2024-08-20', NULL, NULL,0,NULL,0);
+INSERT INTO Notifications (CompanyId, CandidateId, OpeningId, ResumeId, ResumeOpeningRecordId,[Status], SubjectLine, Content, SendDate, AppointmentDate, AppointmentTime,ReplyYN,Reply,ReplyFirstYN) VALUES
+(1, 1, 1, 1, 1,N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', '2024-08-01', NULL, NULL, 0, NULL,0),
+(2, 2, 2, 2, 2,N'面試邀請', N'我們邀請您參加面試，請查看詳情。', N'ssssssssssssssssssssssssssssssssssssss', '2024-08-02', '2024-08-05','09:00:00',1,'感恩，我會前往',1),
+(3, 3, 3, 3, 3,N'錄取通知', N'我們已收到您的申請，我們將在3個工作日內聯繫您。', N'agegefFSFDSDFDSEF', '2024-08-03', NULL, NULL,1,'感恩，我會前往',1),
+(4, 4, 4, 4, 4,N'面試邀請', N'您的面試已確認，請按照下列時間參加。', N'Edfvcdssdcgedsfgstrefdsgtrsef', '2024-08-04', '2024-08-06', '10:00:00',0, NULL,0),
+(5, 5, 5, 5, 5,N'面試邀請', N'您的申請正在審核中，請耐心等待。', N'EAFDfgdsghdjgfrdesdhgfgfds', '2024-08-05', NULL, NULL,1,'感恩，我會前往',1),
+(6, 6, 6, 6, 6,N'面試邀請', N'面試安排已完成，請準時到達。', N'sdfaewfdsFESDeSDedesFF', '2024-08-06', '2024-08-07', '14:00:00',0, NULL,0),
+(7, 7, 7, 7, 7,N'錄取通知', N'您的面試結果已出，請查看詳細資訊。', N'DDSTRHRSHREGDSSDf', '2024-08-07', NULL, NULL,0, NULL,0),
+(8, 8, 8, 8, 8,N'錄取通知', N'我們已回覆您的申請，請查看郵件。', N'aremyse4567tkf.65erghj65', '2024-08-08', NULL, NULL,0, NULL,0),
+(9, 9, 9, 9, 9,N'面試邀請', N'您已被選中參加面試，請確認參加。', N'WRTU645EHTJ,I75U6EHT756urthdretyj6y5esrhghdyu6y5erty6453wrhgdmcj,yfu6y5erg', '2024-08-09', '2024-08-10', '15:00:00',1,'抱歉，我不會前往',1),
+(10, 9, 10, 10, 10,N'錄取通知', N'您的申請狀態已更新，請查看。', N'jgdhmjtdkyrj kurytergd m7urgf mudtr hg tydyergfdxhdjyhfdbvngftr', '2024-08-10', NULL, NULL,1,'感恩，我會前往',1);
 GO
 INSERT INTO Admins (PersonnelCode, Email, [Password], [Name], Authority, [Status]) VALUES
 (1001, N'admin1@example.com', N'password1', N'張三', 1, 1),

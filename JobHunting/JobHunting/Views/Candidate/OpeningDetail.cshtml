@@ -57,46 +57,46 @@
                         <div class="text-start" style="">
                             <p class="card-text ">
                                 <div class="col ">
-                                    <label class="" style="font-weight:bold;">職缺名稱 : </label><label>{{item.title}}</label>
+                                    <label class="fw-bold">職缺名稱 : </label><label class="ms-2">{{item.title}}</label>
                                 </div>
                                 <br />
                                 <div>
-                                    <label for="" class="mb-2" style="font-weight:bold;">公司名稱 : </label><label>{{item.companyName}}</label>
+                                    <label for="" class="mb-2 fw-bold">公司名稱 : </label><label class="ms-2">{{item.companyName}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">面試地址 : </label><label>{{item.address}}</label>
+                                    <label for="" class="mb-2 fw-bold">面試地址 : </label><label class="ms-2">{{item.address}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人姓名 : </label> <label>{{item.contactName}}</label>
+                                    <label for="" class="mb-2 fw-bold">聯絡人姓名 : </label> <label class="ms-2">{{item.contactName}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人電話 : </label> <label>{{item.contactPhone}}</label>
+                                    <label for="" class="mb-2 fw-bold">聯絡人電話 : </label> <label class="ms-2">{{item.contactPhone}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">聯絡人郵件 : </label> <label>{{item.contactEmail}}</label>
+                                    <label for="" class="mb-2 fw-bold">聯絡人郵件 : </label> <label class="ms-2">{{item.contactEmail}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">上班時段 : </label> <label>{{item.time}}</label>
+                                    <label for="" class="mb-2 fw-bold">上班時段 : </label> <label class="ms-2">{{item.time}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">職務名稱 : </label>
-                                    <label for="" class="mb-2" v-for="(className,index) in item.titleClassName">{{className}}<span v-if="index < item.titleClassName.length -1">、</span></label>
+                                    <label for="" class="mb-2 fw-bold">職務名稱 : </label>
+                                    <label for="" class="mb-2 ms-2" v-for="(className,index) in item.titleClassName">{{className}}<span v-if="index < item.titleClassName.length -1">、</span></label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2" style="font-weight:bold;">薪資條件 : </label> <label>{{item.salaryMin}} ~ {{item.salaryMax}}</label>
+                                    <label for="" class="mb-2 fw-bold">薪資條件 : </label> <label class="ms-2">{{item.salaryMin}} ~ {{item.salaryMax}}</label>
                                 </div>
                                 <br />
                                 <div class="col">
-                                    <label for="" class="mb-2 " style="font-weight:bold;">學歷要求 : </label> <label>{{item.degree}}</label>
-                                    <label for="" class="mb-2 ms-5" style="font-weight:bold;">技能要求 : </label>
-                                    <label for="" class="mb-2 " v-for="(tag,index) in item.tagName">{{tag}}<span v-if="index < item.tagName.length-1">、</span></label>
+                                    <label for="" class="mb-2 fw-bold">學歷要求 : </label> <label class="ms-2">{{item.degree}}</label>
+                                    <label for="" class="mb-2 ms-5 fw-bold">技能要求 : </label>
+                                    <label for="" class="mb-2 ms-2" v-for="(tag,index) in item.tagName">{{tag}}<span v-if="index < item.tagName.length-1">、</span></label>
                                 </div>
                             </p>
                         </div>
@@ -114,7 +114,7 @@
                     <br />
                     <div class="card-body text-start" id="jobDescription" style="">
                         <h5 class="card-title" style="text-align:center">工作內容</h5>
-                        <p class="card-text form-control overflow-auto" style="height:250px">
+                        <p class="card-text form-control overflow-auto" style="height:263px">
                             {{item.description}}
                         </p>
                     </div>
@@ -167,6 +167,7 @@
                         resumes: [],
                         memberRole:"",
                         baseAddress: "https://localhost:7169",
+                        // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     };
                 },
                 methods: {

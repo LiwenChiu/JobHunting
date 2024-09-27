@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using System.Text;
 using System.Security.Policy;
 using Newtonsoft.Json;
+using NuGet.Protocol;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobHunting.Areas.Companies.Controllers
 {
@@ -62,6 +64,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 Duration = co.Duration,
                 Status = co.Status,
                 StatusType = co.StatusType,
+                NewebPayStatus = co.NewebPayStatus,
             });
 
             // Apply numeric filters dynamically
@@ -72,8 +75,9 @@ namespace JobHunting.Areas.Companies.Controllers
 
             // Final projection and ordering
             var orders = query
-                .OrderBy(co => co.Status)
-                .ThenByDescending(co => co.OrderDate)
+                //.OrderBy(co => co.Status)
+                .OrderByDescending(co => co.OrderDate)
+                //.ThenBy(co => co.NewebPayStatus)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -81,7 +85,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Title = co.Title,
                     Price = co.Price,
                     OrderDate = co.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
-                    PayDate = co.Status ? co.PayDate.Value.ToString("yyyy年MM月dd日") : "無",
+                    PayDate = co.Status ? co.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分") : "無",
                     Duration = co.Duration,
                     Status = co.Status,
                     StatusType = co.StatusType,
@@ -217,7 +221,7 @@ namespace JobHunting.Areas.Companies.Controllers
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
+            var outModelReturnResult = outModelReturn.Result;
             if(outModelReturnResult == null)
             {
                 return new SendToNewebPaySearchOutputVueViewModel
@@ -273,6 +277,10 @@ namespace JobHunting.Areas.Companies.Controllers
                 companyOrder.NewebPayMessage = outModelReturn.Message;
                 companyOrder.TradeNo = outModelReturnResult.TradeNo;
                 companyOrder.PaymentType = outModelReturnResult.PaymentType;
+                if(TradeStatus == "1")
+                {
+                    companyOrder.PayDate = DateTime.Parse(outModelReturnResult.PayTime);
+                }
 
                 _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -296,12 +304,14 @@ namespace JobHunting.Areas.Companies.Controllers
         }
 
         // Search訂單 發送 form-data 的 POST 請求
-        private static async Task<TradeInfoResponse> SearchPostFormDataAsync(SendToNewebPaySearchOutViewModel outModel)
+        private static async Task<TradeInfoResponse?> SearchPostFormDataAsync(SendToNewebPaySearchOutViewModel outModel)
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                // 設置 form-data
-                var formData = new Dictionary<string, string>
+                using (HttpClient client = new HttpClient())
+                {
+                    // Set up form data
+                    var formData = new Dictionary<string, string>
             {
                 { "MerchantID", outModel.MerchantID },
                 { "Version", outModel.Version },
@@ -312,44 +322,64 @@ namespace JobHunting.Areas.Companies.Controllers
                 { "Amt", outModel.Amt.ToString() },
             };
 
-                var content = new FormUrlEncodedContent(formData);
+                    var content = new FormUrlEncodedContent(formData);
 
-                // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
-                response.EnsureSuccessStatusCode();
+                    // Send POST request
+                    HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/QueryTradeInfo", content);
+                    //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/QueryTradeInfo", content);
+                    response.EnsureSuccessStatusCode();
 
-                // 讀取回應內容為字符串
-                string responseBody = await response.Content.ReadAsStringAsync();
+                    // Read response content as string
+                    string responseBody = await response.Content.ReadAsStringAsync();
 
-                // 將回應的 JSON 反序列化為 TradeInfoResponse 類型
-                TradeInfoResponse tradeInfoResponse = JsonConvert.DeserializeObject<TradeInfoResponse>(responseBody);
+                    // Deserialize JSON response into TradeInfoResponse object
+                    TradeInfoResponse? tradeInfoResponse = JsonConvert.DeserializeObject<TradeInfoResponse>(responseBody);
 
-                return tradeInfoResponse;
+                    return tradeInfoResponse;
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Handle request errors
+                Console.WriteLine($"Request error: {httpEx.Message}");
+                return null;
+            }
+            catch (JsonException jsonEx)
+            {
+                // Handle JSON deserialization errors
+                Console.WriteLine($"JSON error: {jsonEx.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle other potential exceptions
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                return null;
             }
         }
 
         public class TradeInfoResponse
         {
-            public string Status { get; set; }
-            public string Message { get; set; }
-            public List<Result> Result { get; set; }
+            public string? Status { get; set; }
+            public string? Message { get; set; }
+            public Result Result { get; set; }
         }
 
         public class Result
         {
-            public string MerchantID { get; set; }
+            public string? MerchantID { get; set; }
 
             public int Amt { get; set; }
 
-            public string TradeNo { get; set; }
+            public string? TradeNo { get; set; }
 
-            public string MerchantOrderNo { get; set; }
+            public string? MerchantOrderNo { get; set; }
 
-            public string TradeStatus { get; set; }
+            public string? TradeStatus { get; set; }
 
-            public string PaymentType { get; set; }
+            public string? PaymentType { get; set; }
 
-            public DateTime? PayTime { get; set; }
+            public string? PayTime { get; set; }
         }
 
         /// <summary>
@@ -455,7 +485,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 var content = new FormUrlEncodedContent(formData);
 
                 // 發送 POST 請求並接收回應
-                HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
+                HttpResponseMessage response = await client.PostAsync("https://ccore.newebpay.com/API/CreditCard/Cancel", content);
+                //HttpResponseMessage response = await client.PostAsync("https://core.newebpay.com/API/CreditCard/Cancel", content);
                 response.EnsureSuccessStatusCode();
 
                 // 讀取回應內容為字符串
