@@ -26,5 +26,8 @@
         public bool ReplyYN { get; set; }
         public bool ReplyFirstYN { get; set; }
 
+        public bool InterviewYN { get; set; }
+
+        public bool HireYN { get; set; }
     }
 }

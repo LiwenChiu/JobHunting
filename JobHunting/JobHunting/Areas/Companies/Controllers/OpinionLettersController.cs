@@ -140,5 +140,16 @@ namespace JobHunting.Areas.Companies.Controllers
             return Ok("新增意見信件成功");
         }
 
+
+        //GET:Companies/OpinionLetters/GetPicture/{id}
+        [HttpGet]
+        public async Task<FileResult> GetPicture(int id)
+        {
+            string Filename = Path.Combine("wwwroot", "images", "No_Image_Available.jpg");
+            OpinionLetter ol = await _context.OpinionLetters.FindAsync(id);
+            byte[] ImageContent = ol?.Attachment != null ? ol.Attachment : System.IO.File.ReadAllBytes(Filename);
+            return File(ImageContent, "image/jpg");
+        }
+
     }
 }

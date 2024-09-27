@@ -128,6 +128,15 @@ CREATE TABLE Resumes
 	ReleaseYN bit not null default(1),
 	LastEditTime datetime not null,
 )
+CREATE TABLE [dbo].[ResumeCertification] (
+    [CertificationId]   INT             IDENTITY (1, 1) NOT NULL,
+    [ResumeId]          INT             NOT NULL,
+    [CertificationName] NVARCHAR (60)   NULL,
+    [FileData]          VARBINARY (MAX) NULL,
+    [ContentType]       NVARCHAR (20)   NULL,
+    PRIMARY KEY CLUSTERED ([CertificationId] ASC),
+    FOREIGN KEY ([ResumeId]) REFERENCES [dbo].[Resumes] ([ResumeId]) ON DELETE CASCADE
+);
 GO
 CREATE TABLE ResumeTitleClasses
 (

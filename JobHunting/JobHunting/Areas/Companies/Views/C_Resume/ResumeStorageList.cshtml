@@ -25,7 +25,7 @@
                             <h4 class="card-title pb-3 "> {{item.name}}的履歷</h4>
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item.companyId,item.resumeId)"></button>
+                                <button type="button" class="btn-close justify-content-end"  aria-label="Close" v-on:click="removeCompanyResumeLikeRecords(item)"></button>
                             </div>
                         </div>
                             <div class="text-start">
@@ -58,7 +58,7 @@
                                             @* 履歷純顯示 *@
                                             <div class="card-body container-fluid">
                                                  <div class="modal-header" style="background-color: #f7d179;">
-                                                     <h5 class="modal-titl text-center" id="modal" style="width:95% ;" v-model="">
+                                                     <h5 class="modal-titl text-center" id="modal" style="width:95% ;" >
                                                     {{item.name}}的履歷
                                                      </h5>
                                                     <button type="button"
@@ -206,7 +206,7 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
-                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="SendAdmission.AdmissionStatus">錄用通知</h3>
+                            <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         @* 錄取通知內容 *@
@@ -257,7 +257,7 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
-                            <h3 class="CompanyNameh3 text-center" style="width:95%" v-model="Interviewnotice">面試通知</h3>
+                            <h3 class="CompanyNameh3 text-center" style="width:95%">面試通知</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         @* 面試通知內容 *@
@@ -606,8 +606,12 @@
                     }
                     
                 },
-                removeCompanyResumeLikeRecords:function(resumeId){
+                removeCompanyResumeLikeRecords:function(item){
                     let _this = this
+                    let request = {
+                        ResumeId:item.resumeId,
+                        companyId:item.companyId,
+                    };
                     let confirmdel = confirm("確定要刪除?");
                     if (confirmdel == true) {
                         fetch(`${_this.baseAddress}/Companies/C_Resume/RemoveCompanyResumeLikeRecords`, {
@@ -615,7 +619,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ResumeId: resumeId })
+                            body: JSON.stringify(request)
                         }).then(res => {
                             return res.json();
                         }).then(data => {
