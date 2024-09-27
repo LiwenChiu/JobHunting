@@ -1,21 +1,11 @@
 ﻿@{
+    ViewData["Title"] = "付款完成";
+
     NewebPayReturnTradeInfoViewModel result = ViewData["CallbackReturnResult"] as NewebPayReturnTradeInfoViewModel;
 }
 
-@section Styles
-{
-    <style>
-        .content {
-            display: inline-block;
-            height: auto;
-            line-height: 1;
-            vertical-align: middle;
-        }
-    </style>
-}
-
 <div style="height: 70vh;">
-    <div class="content">
+    <div class="contentCallback">
         <h1>付款完成</h1>
         <h3>訂單編號: @result.MerchantOrderNo</h3>
         <h3>金額: @result.Amt</h3>

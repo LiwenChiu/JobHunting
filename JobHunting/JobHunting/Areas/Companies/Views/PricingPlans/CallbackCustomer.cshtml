@@ -1,7 +1,50 @@
-﻿<div style="width:80%">
-    <h1>商店取號網址</h1>
-    <h3>接收參數:</h3>
-    @Html.Raw(ViewData["ReceiveObj"])
-    <h3>交易訊息:</h3>
-    @Html.Raw(ViewData["TradeInfo"])
+﻿@{
+    ViewData["Title"] = "取號完成";
+}
+
+<div style="height: 70vh;" id="CallbackTakeNumberReturnResultVue">
+    <div class="contentCallback">
+        <h3>藍新金流交易序號: {{result.tradeNo}}</h3>
+        <h3>訂單編號: {{result.merchantOrderNo}}</h3>
+        <h3>金額: {{result.amt}}</h3>
+        <h3>繳費截止日期: {{result.expireDate}}</h3>
+        <h3>支付方式: {{result.paymentType}}</h3>
+        <template v-if="result.paymentType == 'VACC'">
+            <h3>金融機構代碼: {{result.BankCode}}</h3>
+            <h3>繳費代碼: {{result.ATMCodeNo}}</h3>
+        </template>
+        <template v-if="result.paymentType == 'CVS'">
+            <h3>繳費代碼: {{result.CodeNo}}</h3>
+            <h3>繳費截止時間: {{result.ExpireTime}}</h3>
+        </template>
+        <template v-if="result.paymentType == 'BARCODE'">
+            <h3>第一段條碼: {{result.Barcode_1}}</h3>
+            <img v-bind:src="textToBase64Barcode(result.Barcode_1)" v-bind:alt="result.Barcode_1" />
+            <h3>第二段條碼: {{result.Barcode_2}}</h3>
+            <img v-bind:src="textToBase64Barcode(result.Barcode_2)" v-bind:alt="result.Barcode_2" />
+            <h3>第三段條碼: {{result.Barcode_3}}</h3>
+            <img v-bind:src="textToBase64Barcode(result.Barcode_3)" v-bind:alt="result.Barcode_3" />
+        </template>
+    </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        let TakeNumberReturnVueApp = {
+            data() {
+                return {
+                    result: JSON.parse('@Html.Raw(Json.Serialize(ViewData["CallbackTakeNumberReturnResult"]))'),
+                };
+            },
+            method: {
+                textToBase64Barcode: function (text) {
+                    var canvas = document.createElement("canvas");
+                    JsBarcode(canvas, text, { format: "CODE39" });
+                    return canvas.toDataURL("image/png");
+                }
+            },
+        };
+        let appTakeNumberReturn = Vue.createApp(TakeNumberReturnVueApp).mount("#CallbackTakeNumberReturnResultVue");
+    </script>
+}
