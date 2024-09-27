@@ -74,8 +74,12 @@
                         data: request
                     })
                         .then(function (response) {
-                            console.log(response.data);
-                            window.location.href = '/Admins';
+                            if (response.data.success) {
+                                window.location.href = '/Admins';
+                            } else {
+                                alert(response.data.message);
+                                window.location.href = '/Home/AdminLogin';
+                            }
                         })
                         .catch(function (error) {
                             console.log(error);
