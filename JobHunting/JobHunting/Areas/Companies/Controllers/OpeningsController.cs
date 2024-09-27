@@ -342,23 +342,46 @@ namespace JobHunting.Areas.Companies.Controllers
             return $"下架職缺成功";
         }
         [HttpPost]
-        public async Task<string> ToggleStautsTrue([FromBody] int opId)
+        public async Task<IActionResult> ToggleStautsTrue([FromBody] int opId)
         {
-            if (!ModelState.IsValid) return "上架職缺失敗!";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("上架職缺失敗!");
+            }
+
             var opening = await _context.Openings.FindAsync(opId);
-            if (opening == null) return $"找不到此職缺ID{opId}";
+            if (opening == null)
+            {
+                return NotFound($"找不到此職缺ID {opId}");
+            }
+
+            var companyId = opening.CompanyId;
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                return NotFound($"找不到公司ID {companyId}");
+            }
+
+            // 檢查方案是否到期
+            if (company.Deadline == null)
+            {
+                // 返回一個特殊訊息提示前端跳轉
+                return Json(new { success = false, message = "您的方案已過期或未選擇方案", redirectUrl = "/Companies/PricingPlans" });
+            }
 
             opening.ReleaseYN = true;
             _context.Entry(opening).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (DbUpdateConcurrencyException)
             {
-                return "上架職缺失敗!";
+                return StatusCode(500, "上架職缺失敗，請稍後再試！");
             }
-            return $"上架職缺成功";
+
+            return Json(new { success = true, message = "上架職缺成功" });
         }
     }
 }
