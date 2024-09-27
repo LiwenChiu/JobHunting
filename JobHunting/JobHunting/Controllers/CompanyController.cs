@@ -9,10 +9,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Net.Mime;
 using System.Security.Claims;
+using System.Web;
 
 namespace JobHunting.Controllers
 {
@@ -62,6 +65,7 @@ namespace JobHunting.Controllers
                     Address = c.Candidate.Address,
                     TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName }),
+                    FileName = c.ResumeCertifications.Select(z => new { z.CertificationId, z.CertificationName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
                     LikeYN = null,
                 }));
@@ -70,7 +74,7 @@ namespace JobHunting.Controllers
             int companyId = int.Parse(companyIdClaim.Value);
 
             
-            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies)
+            return Json(_context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies).Include(q => q.ResumeCertifications)
                 .Where(y => y.ResumeId == resumeID)
                 .Select(c => new ResumesIntroViewModel
                 {
@@ -92,6 +96,7 @@ namespace JobHunting.Controllers
                     Address = c.Candidate.Address,
                     TagObj = c.Tags.Select(z => new { z.TagId, z.TagName }),
                     TitleObj = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName}),
+                    FileName = c.ResumeCertifications.Select(z => new { z.CertificationId, z.CertificationName }),
                     Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
                     LikeYN = c.Companies.Where(x => x.CompanyId == companyId).FirstOrDefault() != null,
                 }));
@@ -396,20 +401,42 @@ namespace JobHunting.Controllers
             byte[] ImageContent = c?.Headshot != null ? c.Headshot : System.IO.File.ReadAllBytes(FileName);
             return File(ImageContent, "image/jpeg");
         }
-        public async Task<FileResult> DownloadFile(int id)
+        public async Task<FileResult> DownloadFile(int resumeId, int certificationId)
         {
-            string WebRootPath = _hostingEnvironment.WebRootPath;
-            Resume c = await _context.Resumes.FindAsync(id);
-            byte[] FileContent = c.Certification;
+            ResumeCertification c = _context.ResumeCertifications.FirstOrDefault(f => f.ResumeId == resumeId && f.CertificationId == certificationId); 
+            byte[] FileContent = c.FileData;
+            var fileName = HttpUtility.UrlPathEncode(c.CertificationName);  //檔名去除無效字符
             ContentDisposition cd = new ContentDisposition
             {
-                FileName = "證照",     // 設定下載檔案名稱
+                FileName = fileName,// 設定下載檔案名稱
                 // Inline= false,        // 禁止直接顯示檔案內容
             };
-            Response.Headers.Append("Content-Disposition", cd.ToString());
+            Response.Headers.Append(HeaderNames.ContentDisposition, cd.ToString());
             var fs = FileContent;
             return File(fs, MediaTypeNames.Application.Octet);
         }
+        public async Task<string> Upload([FromForm] CertificationUpLoadViewModel file)
+        {
+            if (file == null)
+            {
+                return "File not selected";
+            }
+            using (BinaryReader br = new BinaryReader(file.FileData.OpenReadStream()))
+            {
+                var fileRecord = new ResumeCertification
+                {
+                    ResumeId = file.ResumeId,
+                    CertificationName = file.CertificationName,
+                    FileData = br.ReadBytes((int)file.FileData.Length),
+                    ContentType = file.ContentType
+                };
+
+                _context.ResumeCertifications.Add(fileRecord);
+                await _context.SaveChangesAsync();
+            }
+            return "上傳成功";
+        }
+
         private static void IsPicture(InsterLetter letter, OpinionLetter o)
         {
             if (letter.ImageFile != null)

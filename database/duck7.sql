@@ -122,12 +122,20 @@ CREATE TABLE Resumes
 	Headshot varbinary(Max),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
-	Certification varbinary(Max),
 	[Time] nvarchar(60),
 	[Address] nvarchar(100),
 	ReleaseYN bit not null default(1),
 	LastEditTime datetime not null,
 )
+CREATE TABLE [dbo].[ResumeCertification] (
+    [CertificationId]   INT             IDENTITY (1, 1) NOT NULL,
+    [ResumeId]          INT             NOT NULL,
+    [CertificationName] NVARCHAR (60)   NULL,
+    [FileData]          VARBINARY (MAX) NULL,
+    [ContentType]       NVARCHAR (20)   NULL,
+    PRIMARY KEY CLUSTERED ([CertificationId] ASC),
+    FOREIGN KEY ([ResumeId]) REFERENCES [dbo].[Resumes] ([ResumeId]) ON DELETE CASCADE
+);
 GO
 CREATE TABLE ResumeTitleClasses
 (

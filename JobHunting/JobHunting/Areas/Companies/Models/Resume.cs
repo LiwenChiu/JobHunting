@@ -21,8 +21,6 @@ public partial class Resume
 
     public string WorkExperience { get; set; }
 
-    public byte[] Certification { get; set; }
-
     public string Time { get; set; }
 
     public string Address { get; set; }
@@ -32,6 +30,8 @@ public partial class Resume
     public DateTime LastEditTime { get; set; }
 
     public virtual Candidate Candidate { get; set; }
+
+    public virtual ICollection<ResumeCertification> ResumeCertifications { get; set; } = new List<ResumeCertification>();
 
     public virtual ICollection<ResumeOpeningRecord> ResumeOpeningRecords { get; set; } = new List<ResumeOpeningRecord>();
 
