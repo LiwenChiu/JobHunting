@@ -155,15 +155,18 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
-            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
 
-            
+            //var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
+
+
+
             candidateNotification.Reply = nsrivm.Reply;
             candidateNotification.ReplyFirstYN = true;
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
-            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
-            resumeOpeningRecords.HireYN = nsrivm.HireYN;
+            //面試或錄取同意狀態
+            //resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            //resumeOpeningRecords.HireYN = nsrivm.HireYN;
 
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try
@@ -214,12 +217,15 @@ namespace JobHunting.Areas.Candidates.Controllers
                     AlertStatus = false,
                 };
             }
-            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
+
+            //var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
             candidateNotification.Reply = nsrivm.Reply;
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
-            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
-            resumeOpeningRecords.HireYN = nsrivm.HireYN;
+
+            //面試或錄取同意狀態
+            //resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            //resumeOpeningRecords.HireYN = nsrivm.HireYN;
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try
             {
