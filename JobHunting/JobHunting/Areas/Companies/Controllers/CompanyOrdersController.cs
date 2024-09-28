@@ -167,7 +167,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             if (companyOrder.Status)
             {
-                return new SendToNewebPaySearchOutputVueViewModel
+                var returnData = new SendToNewebPaySearchOutputVueViewModel
                 {
                     Status = true,
                     OrderData = new SendToNewebPaySearchOutputCompanyViewModel
@@ -176,13 +176,15 @@ namespace JobHunting.Areas.Companies.Controllers
                         Price = decimal.ToInt32(companyOrder.Price),
                         Title = companyOrder.Title,
                         Orderdate = companyOrder.OrderDate.ToString("yyyy年MM月dd日 HH點mm分"),
-                        PayDate = companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分"),
+                        PayDate = companyOrder.PayDate.HasValue ? companyOrder.PayDate.Value.ToString("yyyy年MM月dd日 HH點mm分") : null,
                         Duration = companyOrder.Duration,
                         StatusType = companyOrder.StatusType,
-                        TradeNo = companyOrder.TradeNo,
-                        PaymentType = companyOrder.PaymentType,
+                        TradeNo = companyOrder.TradeNo.IsNullOrEmpty() ? null : companyOrder.TradeNo,
+                        PaymentType = companyOrder.PaymentType.IsNullOrEmpty() ? null : companyOrder.PaymentType,
                     },
                 };
+
+                return returnData;
             }
 
             SendToNewebPaySearchOutViewModel outModel = new SendToNewebPaySearchOutViewModel();
@@ -241,11 +243,11 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var StatusType = TradeStatus switch
             {
-                string type when type == "0" => "尚未付款",
-                string type when type == "1" => "付款成功",
-                string type when type == "2" => "付款失敗",
-                string type when type == "3" => "已取消",
-                string type when type == "6" => "退款",
+                "0" => "尚未付款",
+                "1" => "付款成功",
+                "2" => "付款失敗",
+                "3" => "已取消",
+                "6" => "退款",
                 _ => "錯誤",
             };
 
@@ -415,7 +417,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return Json(new { Status = false, message = "訂單不存在" });
             }
 
-            if(order.StatusType != "尚未付款")
+            if(order.PayDate.HasValue)
             {
                 return Json(new { Status = false, message = "訂單取消失敗" });
             }
