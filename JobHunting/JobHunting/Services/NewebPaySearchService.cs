@@ -2,6 +2,7 @@
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
@@ -21,9 +22,12 @@ namespace JobHunting.Services
         {
             var companyOrders = _context.CompanyOrders.Where(co => !co.Status);
 
-            foreach (var companyOrder in companyOrders)
+            if (!companyOrders.IsNullOrEmpty())
             {
-                await SendToNewebPaySearchRecurring(companyOrder);
+                foreach (var companyOrder in companyOrders)
+                {
+                    await SendToNewebPaySearchRecurring(companyOrder);
+                }
             }
         }
 

@@ -27,5 +27,7 @@
         public bool ReplyYN { get; set; }
 
         public bool ReplyFirstYN { get; set; }
+
+        public int ResumeOpeningRecordId { get; set; }
     }
 }

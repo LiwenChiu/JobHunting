@@ -9,7 +9,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using System.Net.Mime;
 using System.Security.Claims;
+using System.Web;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace JobHunting.Areas.Companies.Controllers
@@ -53,6 +56,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return new List<ResumeStorageViewModel>(); // 或處理未授權訪問的情況
             }
             var Result = await _context.Companies.Include(i => i.Resumes).ThenInclude(ti => ti.Tags)
+                          .Include(i => i.Resumes).ThenInclude(ti => ti.ResumeCertifications)
                           .Include(i => i.Resumes).ThenInclude(ti => ti.TitleClasses)
                           .Include(i => i.Resumes).ThenInclude(ti => ti.Candidate)
                           .Include(i => i.Openings).ThenInclude(ti => ti.ResumeOpeningRecords)
@@ -86,13 +90,13 @@ namespace JobHunting.Areas.Companies.Controllers
                 Intro = n.Intro,
                 TitleClassId = n.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
                 TagId = n.Tags.Select(t => t.TagId).ToList(),
+                FileName = n.ResumeCertifications.Select(z => new { z.ResumeId, z.CertificationId, z.CertificationName }),
                 Headshot = n.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
-
+                ResumeOpeningRecordId = n.ResumeOpeningRecords.Select(r=>r.ResumeOpeningRecordId).FirstOrDefault(),
             }));
 
             return companies;
         }
-
         [HttpGet]
         public async Task<IEnumerable<GetOpenIngsOutputmodel>> GetOpenings()
         {
@@ -132,6 +136,23 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { company = "Resume not found" });
                 }
 
+                
+
+                ResumeOpeningRecord ror = new ResumeOpeningRecord
+                {
+                    CompanyId = companyId,
+                    OpeningId = siv.OpeningId,
+                    ResumeId = siv.ResumeId,
+                    ApplyDate = null,
+                    InterviewYN = false,
+                    HireYN = false,
+                    OpeningTitle = siv.OpeningTitle,
+                    CompanyName = company.CompanyName,
+                };
+                _context.ResumeOpeningRecords.Add(ror);
+                await _context.SaveChangesAsync();
+
+
                 Notification send = new Notification
                 {
                      CompanyId = companyId,
@@ -147,6 +168,7 @@ namespace JobHunting.Areas.Companies.Controllers
                      Address = siv.Address,
                      ReplyYN = siv.ReplyYN,
                      ReplyFirstYN = siv.ReplyFirstYN,
+                     ResumeOpeningRecordId = ror.ResumeOpeningRecordId,
                 };
 
                 _context.Notifications.Add(send);
@@ -181,6 +203,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 {
                     return NotFound(new { company = "Resume not found" });
                 }
+                //var resumeOpeningRecord = _context.ResumeOpeningRecords.Where(r => r.ResumeId == siv.ResumeId && r.OpeningId == siv.OpeningId).FirstOrDefault();
+                //var ResumeOpeningRecordId = resumeOpeningRecord.ResumeOpeningRecordId;
 
                 Notification send = new Notification
                 {
@@ -197,6 +221,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Address = siv.Address,
                     ReplyYN = siv.ReplyYN,
                     ReplyFirstYN = siv.ReplyFirstYN,
+                    ResumeOpeningRecordId = siv.ResumeOpeningRecordId,
                 };
 
                 _context.Notifications.Add(send);
@@ -301,6 +326,20 @@ namespace JobHunting.Areas.Companies.Controllers
                 TitleClassName = rtc.TitleClassName,
                 TitleCategoryId = rtc.TitleCategoryId
             }));
+        }
+        public async Task<FileResult> DownloadFile(int resumeId, int certificationId)
+        {
+            ResumeCertification c = _context.ResumeCertifications.FirstOrDefault(f => f.ResumeId == resumeId && f.CertificationId == certificationId);
+            byte[] FileContent = c.FileData;
+            var fileName = HttpUtility.UrlPathEncode(c.CertificationName);  //檔名去除無效字符
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = fileName,// 設定下載檔案名稱
+                // Inline= false,        // 禁止直接顯示檔案內容
+            };
+            Response.Headers.Append(HeaderNames.ContentDisposition, cd.ToString());
+            var fs = FileContent;
+            return File(fs, MediaTypeNames.Application.Octet);
         }
 
         [HttpGet]
@@ -424,7 +463,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Company)
                           .Include(x => x.Opening).ThenInclude(x => x.TitleClasses).Include(x => x.Opening).ThenInclude(x => x.Tags)
-                          .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory).AsNoTracking()
+                          .Include(x => x.Resume).ThenInclude(x => x.Candidate).Include(x => x.Resume).ThenInclude(x => x.ResumeCertifications).Include(x => x.Opening).ThenInclude(x => x.TitleClasses).ThenInclude(x => x.TitleCategory).AsNoTracking()
                           .Where(x => x.CompanyId.ToString() == CompanyId &&
                                  (x.OpeningTitle.Contains(rrim.OpeningTitle) ||
                                  x.Resume.Candidate.Name.Contains(rrim.Name) ||
@@ -462,7 +501,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               EmploymentStatus = n.Resume.Candidate.EmploymentStatus,
                               Time = n.Resume.Time,
                               Intro = n.Resume.Intro,
-                              /*Certification = n.Resume.Certification,*/ /*!= null ? Convert.ToBase64String(n.Certification) : null,*/
+                              FileName = n.Resume.ResumeCertifications.Select(z => new { z.ResumeId, z.CertificationId, z.CertificationName }),
                               WorkExperience = n.Resume.WorkExperience,
                               Autobiography = n.Resume.Autobiography,
                               OpeningTitle = n.OpeningTitle,
@@ -472,7 +511,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               ApplyDate = n.ApplyDate,
                               InterviewYN = n.InterviewYN,
                               HireYN = n.HireYN,
-
+                              ResumeOpeningRecordId = n.ResumeOpeningRecordId,
                           }).ToListAsync();
 
 
