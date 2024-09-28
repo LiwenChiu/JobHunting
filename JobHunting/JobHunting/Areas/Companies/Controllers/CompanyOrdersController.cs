@@ -37,10 +37,8 @@ namespace JobHunting.Areas.Companies.Controllers
             return View();
         }
 
-        //POST: Companies/CompanyOrders/GetCompanyOrders
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IEnumerable<CompanyOrdersFilterOutputViewModel>> GetCompanyOrders([FromBody][Bind("Filter")] CompanyOrdersFilterViewModel cofvm)
+        //GET: Companies/CompanyOrders/GetCompanyOrders
+        public async Task<IEnumerable<CompanyOrdersFilterOutputViewModel>> GetCompanyOrders([FromHeader]string search)//[Bind("Filter")]CompanyOrdersFilterViewModel cofvm
         {
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -68,16 +66,14 @@ namespace JobHunting.Areas.Companies.Controllers
             });
 
             // Apply numeric filters dynamically
-            if (int.TryParse(cofvm.Filter, out int filterNumber) || !string.IsNullOrEmpty(cofvm.Filter))
+            if (int.TryParse(search, out int filterNumber) || !string.IsNullOrEmpty(search))
             {
-                query = query.Where(co => co.Title.Contains(cofvm.Filter) || co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()) || co.StatusType.Contains(cofvm.Filter));
+                query = query.Where(co => co.Title.Contains(search) || co.Price.ToString().Contains(filterNumber.ToString()) || co.Duration.ToString().Contains(filterNumber.ToString()) || co.StatusType.Contains(search));
             }
 
             // Final projection and ordering
             var orders = query
-                //.OrderBy(co => co.Status)
                 .OrderByDescending(co => co.OrderDate)
-                //.ThenBy(co => co.NewebPayStatus)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
@@ -91,12 +87,10 @@ namespace JobHunting.Areas.Companies.Controllers
                     StatusType = co.StatusType,
                 });
 
-
             return orders;
         }
 
-        //POST: Companies/CompanyOrders/GetDeadline
-        [HttpPost]
+        //GET: Companies/CompanyOrders/GetDeadline
         public async Task<string?> GetDeadline()
         {
             // 從 claims 中取得 CompanyId
