@@ -974,8 +974,8 @@
                 },
 
                 mergeID(ResumeD) {
-                    // let str = ResumeD.name.replace(/\s/g,"");
-                    let str = ResumeD.name;
+                    let str = ResumeD.name.replace(/\s/g, "").replace(/\#/g, "");
+                    // let str = ResumeD.name;
                     let num = ResumeD.resumeid;
                     strID = "Id" + str + num;
                     return strID;
