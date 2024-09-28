@@ -223,7 +223,33 @@ namespace JobHunting.Areas.Companies.Controllers
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result;
+            if(outModelReturn.Status != "SUCCESS")
+            {
+                companyOrder.Status = true;
+                companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    return new SendToNewebPaySearchOutputVueViewModel
+                    {
+                        Status = false,
+                    };
+                }
+
+                return new SendToNewebPaySearchOutputVueViewModel
+                {
+                    Status = false,
+                };
+            }
+
+            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
             if(outModelReturnResult == null)
             {
                 return new SendToNewebPaySearchOutputVueViewModel
@@ -334,6 +360,8 @@ namespace JobHunting.Areas.Companies.Controllers
                     // Read response content as string
                     string responseBody = await response.Content.ReadAsStringAsync();
 
+                    //if(responseBody.SingleOrDefault())
+
                     // Deserialize JSON response into TradeInfoResponse object
                     TradeInfoResponse? tradeInfoResponse = JsonConvert.DeserializeObject<TradeInfoResponse>(responseBody);
 
@@ -364,14 +392,14 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             public string? Status { get; set; }
             public string? Message { get; set; }
-            public Result Result { get; set; }
+            public List<Result>? Result { get; set; }
         }
 
         public class Result
         {
             public string? MerchantID { get; set; }
 
-            public int Amt { get; set; }
+            public int? Amt { get; set; }
 
             public string? TradeNo { get; set; }
 

@@ -45,7 +45,7 @@
                         <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
                     </td>
                     <td>
-                        <template v-if="!order.status || order.statusType == '取號完成'">
+                        <template v-if="order.statusType == '取號完成'">
                             <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
                     </td>
@@ -58,10 +58,18 @@
     <div class="modal fade" id="SearchModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="SearchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <template v-if="searchData.statusType == '付款失敗'">
+                    <div class="modal-header bg-danger">
+                        <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="modal-header bg-warning">
+                        <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </template>
                 <div class="modal-body">
                     <p class="h5" style="width:100%;word-break:break-all;">藍新金流交易序號: {{searchData.tradeNo}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">訂單編號: {{searchData.orderId}}</p>
@@ -73,7 +81,12 @@
                     <p class="h5" style="width:100%;word-break:break-all;">下單時間: {{searchData.orderdate}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate ? searchData.payDate : "無"}}</p>
                     <hr />
-                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
+                    <template v-if="searchData.statusType == '付款失敗'">
+                        <p class="h5 text-danger" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
+                    </template>
+                    <template v-else>
+                        <p class="h5 text-primary" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
+                    </template>
                     <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType ? GetPaymentType() : "無"}}</p>
                 </div>
                 <div class="modal-footer">
@@ -199,7 +212,7 @@
                         }
                     }).catch(error => {
                         alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
-                    });
+                    }).finally(() => this.getCompanyOrders());
                 },
                 SendToNewebPayCancel: function (orderId) {
                     this.selectedCancelOrder = orderId;
@@ -224,7 +237,8 @@
                     })
                         .catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
-                        });
+                        })
+                        .finally(() => this.getCompanyOrders());
                 },
                 GetPaymentType: function () {
                     switch (this.searchData.paymentType) {
