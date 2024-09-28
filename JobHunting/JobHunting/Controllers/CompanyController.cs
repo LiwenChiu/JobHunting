@@ -312,7 +312,7 @@ namespace JobHunting.Controllers
                 var CompanyId = int.Parse(companyIdClaim.Value);
                 var today = DateOnly.FromDateTime(DateTime.Now);
                 var company = await _context.Companies.FindAsync(CompanyId);
-                var resumeOpeningRecordId = await _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == letter.ResumeOpeningRecordId).FirstOrDefaultAsync();
+                var hasData = await _context.ResumeOpeningRecords.AnyAsync(c => c.ResumeOpeningRecordId == letter.ResumeOpeningRecordId);
 
                 if(letter.ResumeOpeningRecordId  == null)
                 {
@@ -354,7 +354,7 @@ namespace JobHunting.Controllers
                         return "請輸入完整面試資訊";
                     }
 
-                }else if (resumeOpeningRecordId != null)
+                }else if (hasData)
                 {
                     ResumeOpeningRecord ror = new ResumeOpeningRecord
                     {
