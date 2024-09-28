@@ -149,11 +149,11 @@
                         <textarea class="form-control" style="height:150px" v-model="item.intro"></textarea>
                     </div>
                         
-                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around form-group">
-                        <img class="card-img-top img-fluid"
+                    <div class="d-sm-flex my-1 py-3 mx-3 inputAreas form-group">
+                        <img class="card-img-top img-fluid" style="width:320px;height:240px" asp-append-version=true
                              :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}?rand=${rand}`
-                             style="width:320px;height:240px" asp-append-version=true />
-                        <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($event.target)" accept="image/*" />
+                             />
+                        <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($event.target)" accept="image/*" style="height:30px;width:250px "/>
                     </div>
                         <button id="update" type="submit" class="btn btn-outline-secondary" v-on:click="update(item)">編輯完成</button>
                         <button type="submit" class="btn btn-outline-secondary" v-on:click="cancel(item)">取消</button>
