@@ -35,7 +35,8 @@
         public object? FileName { get; set; }
 
         public IFormFile? HeadshotImageFile { get; set; }
-        
+        public int ResumeOpeningRecordId { get; set; }
+
 
     }
 }

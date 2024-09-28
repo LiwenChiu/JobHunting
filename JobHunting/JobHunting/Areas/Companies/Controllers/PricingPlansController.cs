@@ -152,8 +152,8 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
-            //// 交易有效時間
-            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
+            // 交易有效時間
+            TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址
@@ -395,7 +395,21 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             else
             {
+                companyOrder.Status = true;
                 companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
+
                 return BadRequest();
             }
 
@@ -404,6 +418,7 @@ namespace JobHunting.Areas.Companies.Controllers
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
             companyOrder.PayDate = result.PayTime;
+            companyOrder.ExpireDate = null;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
@@ -415,8 +430,8 @@ namespace JobHunting.Areas.Companies.Controllers
             DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
             deadline = deadline.AddDays(companyOrder.Duration);
             company.Deadline = deadline;
-
             companyOrder.Status = true;
+
             _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -619,6 +634,15 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 companyOrder.Status = true;
                 companyOrder.StatusType = "取號完成";
+                companyOrder.TradeNo = result.TradeNo;
+                companyOrder.PaymentType = result.PaymentType switch
+                {
+                    "VACC" => "ATM轉帳",
+                    "CVS" => "超商代碼繳費",
+                    "BARCODE" => "超商條碼繳費",
+                    _ => "錯誤",
+                };
+                companyOrder.ExpireDate = result.ExpireDate;
             }
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
@@ -742,7 +766,25 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             else
             {
+                companyOrder.Status = true;
+                if (companyOrder.StatusType == "付款失敗")
+                {
+                    return BadRequest();
+                }
                 companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
+
                 return BadRequest();
             }
 
@@ -751,6 +793,7 @@ namespace JobHunting.Areas.Companies.Controllers
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
             companyOrder.PayDate = result.PayTime;
+            companyOrder.ExpireDate = null;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 

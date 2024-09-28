@@ -61,6 +61,7 @@ builder.Services.AddHangfire(configuration =>
 builder.Services.AddHangfireServer(); // 過去在 UseHangfireServer 的配置現在移到這裡
 builder.Services.AddScoped<PlanExpiredService>();
 builder.Services.AddScoped<NewebPaySearchService>();
+builder.Services.AddScoped<NewebPaySearchNonCurrentService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -143,6 +144,7 @@ using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
     var NewebPaySearchService = scope.ServiceProvider.GetRequiredService<NewebPaySearchService>();
+    var NewebPaySearchNonCurrentService = scope.ServiceProvider.GetRequiredService<NewebPaySearchNonCurrentService>();
 
     var options = new RecurringJobOptions
     {
@@ -164,6 +166,9 @@ using (var scope = app.Services.CreateScope())
 
     //每小時執行一次，檢查Status==false的訂單，再於一小時後看他是否還是false，若還是就取消授權
     RecurringJob.AddOrUpdate("NewebPaySearchStatusFalse", () => NewebPaySearchService.NewebPaySearchStatusFalse(), "0 0 * ? * *", options);
+
+    //每天00:00:00執行一次，檢查非即時付款方式取號完成但超過過期時間還未付款卻沒有收到付款通知的訂單，再改資料庫
+    RecurringJob.AddOrUpdate("NewebPaySearchNonCurrentService", () => NewebPaySearchNonCurrentService.NewebPaySearchStatusFalse(), "0 0 * * *", options);
 }
 
 app.Run();

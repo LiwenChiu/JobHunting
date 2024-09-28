@@ -97,9 +97,14 @@
         </div>
     </template>
     <template v-else>
-        <div class="spinner-border text-warning" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+        <template v-if="notificationYN">
+            <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </template>
+       <template v-else>
+           <h1>暫無訊息</h1>
+       </template>
     </template>
 
     @* 錄取狀態modal *@
@@ -176,15 +181,15 @@
                                         
                                         <div>
                                             <label class="me-2">回覆邀請 : </label>
-                                            <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRaido"></label>
-                                            <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRaido"></label>
+                                            <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRadio"></label>
+                                            <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRadio"></label>
                                         </div>
                                     </template>
                                     <template  v-else>
                                         <div>
                                             <label class="me-2">回覆邀請 : </label>
-                                            <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRaido"></label>
-                                            <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRaido"></label>
+                                            <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRadio"></label>
+                                            <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRadio"></label>
                                         </div>
                                     </template>
                                         
@@ -207,19 +212,19 @@
 
                                 <template v-else>
 
-                                        <template v-if="notificationModal.editReplyYN == false">
+                                        <template v-if="notificationModal.status == '面試邀請'">
 
                                             <div>
                                                 <label class="me-2">回覆邀請 : </label>
-                                                <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRaido"></label>
-                                                <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRaido"></label>
+                                                <label class="me-2">同意<input type="radio" :value="true" name="interview" v-model="interviewRadio"></label>
+                                                <label>不同意<input type="radio" :value="false" name="interview" v-model="interviewRadio"></label>
                                             </div>
                                         </template>
                                         <template v-else>
                                             <div>
                                                 <label class="me-2">回覆邀請 : </label>
-                                                <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRaido"></label>
-                                                <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRaido"></label>
+                                                <label class="me-2">同意<input type="radio" :value="true" name="Hire" v-model="HireRadio"></label>
+                                                <label>不同意<input type="radio" :value="false" name="Hire" v-model="HireRadio"></label>
                                             </div>
                                         </template>
 
@@ -263,9 +268,10 @@
                     pageStart: 1,
                     totalDataCount: null,   //總共幾筆資料
                     totalPage: null,    //總共幾頁
-                    interviewRaido:null,
-                    HireRaido:null,
+                    interviewRadio: null,
+                    HireRadio: null,
                     ResumeOpeningRecordId:"",
+                    notificationYN: true,
                 };
             },
             methods: {
@@ -277,10 +283,14 @@
                         headers: { 'Content-Type': 'application/json' } 
                     })
                         .then(response => {
-                            this.notifications = response.data.candidateNotificationsFilter;
-                            this.totalDataCount = response.data.totalDataCount;
-                            this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
-                            
+                            if (response.data.candidateNotificationsFilter.length == 0) {
+                                this.notificationYN = false;
+                            }
+                            else {
+                                this.notifications = response.data.candidateNotificationsFilter;
+                                this.totalDataCount = response.data.totalDataCount;
+                                this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
+                            }
                         })
                         .catch(err => { alert(err) });
                 },
@@ -293,8 +303,8 @@
                             }
                         }).then(response => {
                             this.notificationModal = response.data;
-                            this.interviewRaido = response.data.interviewYN;
-                            this.HireRaido = response.data.hireYN;
+                            this.interviewRadio = response.data.interviewYN;
+                            this.HireRadio = response.data.hireYN;
                             this.ResumeOpeningRecordId = response.data.resumeOpeningRecordId;
                             $("#modalId").modal("show");
                         })
@@ -305,8 +315,8 @@
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
                     request.ResumeOpeningRecordId = this.ResumeOpeningRecordId;
-                    request.InterviewYN = this.interviewRaido;
-                    request.HireYN = this.HireRaido;
+                    request.InterviewYN = this.interviewRadio;
+                    request.HireYN = this.HireRadio;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
                         this.alertText = "回覆不可為空";
                         this.alertStatus = false;
@@ -333,8 +343,8 @@
                     request.NotificationId = this.notificationModal.notificationId;
                     request.Reply = this.notificationModal.reply;
                     request.ResumeOpeningRecordId = this.ResumeOpeningRecordId;
-                    request.InterviewYN = this.interviewRaido;
-                    request.HireYN = this.HireRaido;
+                    request.InterviewYN = this.interviewRadio;
+                    request.HireYN = this.HireRadio;
                     if (this.notificationModal.reply == null || this.notificationModal.reply == "") {
                         this.alertText = "回覆不可為空";
                         this.alertStatus = false;

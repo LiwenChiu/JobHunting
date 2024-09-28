@@ -69,6 +69,7 @@
                     <th>{{item.applyDate}}</th>
                     <td>{{item.openingTitle}}</td>
                     <td>{{item.name}}</td>
+                    
                     @* 是否面試欄位 *@
                     <td v-html="selectInterviewYN(item.interviewYN)">   
                     </td>
@@ -79,13 +80,13 @@
                     <td>
                         <!-- Button trigger modal --> @* 查看履歷modal *@
                         <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                                :data-bs-target="'#resumeModal'" class="btn btn-primary" v-on:click="openresume(item)">
                             查看履歷
                         </button>
 
                         <!-- Modal -->
                         <div class="modal fade"
-                             :id="mergeID(item)"
+                             id="resumeModal"
                              tabindex="-1"
                              data-bs-backdrop="static"
                              data-bs-keyboard="false"
@@ -100,8 +101,9 @@
                                         <div class="card-body container-fluid">
                                             <div class="modal-header" style="background-color: #f7d179;">
                                                 <h5 class="modal-titl text-center" id="modal" style="width:95% ;" >
-                                                    {{item.name}}的履歷
+                                                    {{itemselected.name}}的履歷
                                                 </h5>
+                                                
                                                 <button type="button"
                                                         class="btn-close"
                                                         data-bs-dismiss="modal"
@@ -114,34 +116,34 @@
                                                     <div class="card mb-3">
                                                         <div class="card-body">
                                                             <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
-                                                            <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="item.headshot ? 'data:image/jpeg;base64,' + item.headshot : noimagepreview" style="width:100px;height:100px" :title="item.candidatename" /></div>
+                                                            <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="itemselected.headshot ? 'data:image/jpeg;base64,' + itemselected.headshot : noimagepreview" style="width:100px;height:100px" :title="itemselected.candidatename" /></div>
                                                             <div class="text-start" style="">
                                                                 <p class="card-text ">
                                                                     <div class="col ">
-                                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{item.name}} </label>
+                                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{itemselected.name}} </label>
                                                                     </div>
                                                                     <div>
-                                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(item.sex)}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(itemselected.sex)}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{item.birthday}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{itemselected.birthday}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{item.phone}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{itemselected.phone}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{item.degree}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{itemselected.degree}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{item.email}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{itemselected.email}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{itemselected.employmentStatus}}</label>
                                                                     </div>
                                                                     <div class="card-body ">
                                                                         <h5 class="card-title text-center fw-bold">自我介紹：</h5>
                                                                         <p class="card-text form-control overflow-auto" style="height:200px">
-                                                                            {{item.intro}}
+                                                                            {{itemselected.intro}}
                                                                         </p>
                                                                     </div>
                                                                 </p>
@@ -157,7 +159,7 @@
                                                         <div class="card-body text-start">
                                                             <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
                                                             <p class="card-text form-control overflow-auto" style="height:512px">
-                                                                {{item.workExperience}}
+                                                                {{itemselected.workExperience}}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -171,27 +173,27 @@
                                                             <h5 class="card-title fw-bold" style="text-align:center">求職條件</h5>
                                                             <p class="card-text">
                                                                 <div class="col">
-                                                                    <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{item.time}}</label>
+                                                                    <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{itemselected.time}}</label>
                                                                 </div>
                                                                 <div class="col">
                                                                     <label class="">
                                                                         <label class="mb-2 fw-bold">希望職缺: </label>
-                                                                        {{ getTitleClassName(item.titleClassId) }}
+                                                                        {{ getTitleClassName(itemselected.titleClassId) }}
                                                                     </label>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{item.address}}</label>
+                                                                    <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{itemselected.address}}</label>
                                                                 </div>
                                                                 <div class="col">
                                                                     <label for="" class="mb-2 fw-bold">
                                                                         證照 :
-                                                                        <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
+                                                                        <label v-for="(certifications,index) in itemselected.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
                                                                         
                                                                     </label>
                                                                 </div>
                                                                 <div>
                                                                     <label class="fw-bold">能力標籤:</label><label class="ms-2"></label>
-                                                                    {{getTagName(item.tagId)}}
+                                                                    {{getTagName(itemselected.tagId)}}
                                                                 </div>
                                                             </p>
 
@@ -203,13 +205,12 @@
                                                         <div class="card-body text-start">
                                                             <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
                                                             <p class="card-text form-control overflow-auto" style="height:200px">
-                                                                {{item.autobiography}}
+                                                                {{itemselected.autobiography}}
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -275,6 +276,7 @@
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
                                     <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -388,6 +390,8 @@
                     selectedHireYN: undefined,
                     selectedOpClassTitleId: '',
                     selectedOpTitleId: undefined,
+                    itemselected: "",
+
                     Sendinterview: {
                         Purpose: "",
                         Interviewdate: "",
@@ -455,7 +459,7 @@
                     this.currentPage = page
                 },
                 mergeID(item) {
-                    let str = item.name.replace(/\s/g, "");
+                    let str = item.name.replace(/\s/g, "").replace(/#/g, "");
                     let num = item.resumeId;
                     strID = "rs" + str + num;
                     return strID;
@@ -565,29 +569,19 @@
                 },
                 //打開面試modal
                 openInterviewModal(item) {
-                    // 將資料賦予 selectedItem
-                    this.selectedItem = {
-                        companyId: item.companyId,
-                        candidateId: item.candidateId,
-                        openingId: item.openingId,
-                        resumeId: item.resumeId
-                    };
                     // 打開modal
                     let modal = new bootstrap.Modal(document.getElementById('interviewMailBtn'));
                     modal.show();
                 },
                 //打開錄取modal
                 openAdmissionModal(item) {
-                    // 將資料賦予 selectedItem
-                    this.selectedItem = {
-                        companyId: item.companyId,
-                        candidateId: item.candidateId,
-                        openingId: item.openingId,
-                        resumeId: item.resumeId
-                    };
+
                     // 打開modal
                     let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
                     modal.show();
+                },
+                openresume:function(item){
+                    this.itemselected = item;
                 },
                 //發送面試通知
                 SendInterviewLetter: function () {
@@ -597,9 +591,9 @@
                     const confirmdel = confirm("確定要發送?");
 
                     if (confirmdel == true) {
-                        request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.selectedItem.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.CandidateId = _this.itemselected.candidateId;
+                        request.OpeningId = _this.itemselected.openingId;
+                        request.ResumeId = _this.itemselected.resumeId;
                         request.Status = _this.Sendinterview.Interviewnotice;
                         request.SubjectLine = _this.Sendinterview.Purpose;
                         request.Content = _this.Sendinterview.Content;
@@ -607,8 +601,10 @@
                         request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate);
                         request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime);
                         request.Address = _this.Sendinterview.place;
-                        request.ReplyYN = _this.SendAdmission.interviewReplyYN;
-                        request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
+                        request.ReplyYN = _this.Sendinterview.interviewReplyYN;
+                        request.ReplyFirstYN = _this.Sendinterview.interviewReplyFirstYN;
+                        request.OpeningTitle = _this.itemselected.OpeningTitle;
+                        request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId
                         fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
                             headers: {
@@ -632,14 +628,15 @@
                     }
 
                 },
-                SendAdmissionLetter: function () {
+                SendAdmissionLetter: function (item) {
                     let _this = this;
                     let request = {};
                     let confirmdel = confirm("確定要發送?");
                     if (confirmdel == true) {
-                        request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.selectedItem.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.CandidateId = _this.itemselected.candidateId;
+                        request.OpeningId = _this.itemselected.openingId;
+                        request.ResumeId = _this.itemselected.resumeId;
+                        request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId;
                         request.Status = _this.SendAdmission.AdmissionStatus,
                             request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
                             request.Content = _this.SendAdmission.AdmissionContent,
@@ -648,6 +645,7 @@
                             request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
                             request.Address = _this.SendAdmission.AdmissionPlace,
                             request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
+
                             fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
                                 method: "POST",
                                 headers: {

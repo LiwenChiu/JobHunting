@@ -175,8 +175,8 @@
                         <div class="inputOutAreas">
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
-                                <select v-model="openingId">
-                                    <option v-for="(item,index) in openings" :key="item.openingId" :value="item.openingId">{{item.title}}</option>
+                                <select v-model="selectedOpening">
+                                    <option v-for="(item,index) in openings" :key="item.openingId" :value="item">{{item.title}}</option>
                                 </select>
                             </div>
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
@@ -234,6 +234,7 @@
                     // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     minDate: '',
                     memberRole:"",
+                    selectedItem: {},
                 };
             },
             methods: {
@@ -250,13 +251,14 @@
                     let request = {
                         ResumeId: self.resumeId,
                         CandidateId: self.candidateId,
-                        OpeningId: self.openingId,
+                        OpeningId: self.selectedOpening.openingId,
                         AppointmentDate: self.date,
                         AppointmentTime: "",
                         Status: "面試邀請",
                         Address: self.address,
                         SubjectLine: self.subjectLine,
                         Content: self.content,
+                        OpeningTitle: self.selectedOpening.title,
                     };
                     request.AppointmentTime = self.convertTimeOnly(self.time);
                     axios.post('@Url.Action("AddInterview", "Company")', request, {

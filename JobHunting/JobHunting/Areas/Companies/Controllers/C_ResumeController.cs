@@ -92,6 +92,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 TagId = n.Tags.Select(t => t.TagId).ToList(),
                 FileName = n.ResumeCertifications.Select(z => new { z.ResumeId, z.CertificationId, z.CertificationName }),
                 Headshot = n.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
+                ResumeOpeningRecordId = n.ResumeOpeningRecords.Select(r=>r.ResumeOpeningRecordId).FirstOrDefault(),
             }));
 
             return companies;
@@ -135,28 +136,112 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { company = "Resume not found" });
                 }
 
-                Notification send = new Notification
+                var resumeOpeningRecordId = _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == siv.ResumeOpeningRecordId).FirstOrDefaultAsync();
+
+                if (siv.ResumeOpeningRecordId == null)
                 {
-                     CompanyId = companyId,
-                     CandidateId = siv.CandidateId,
-                     OpeningId = siv.OpeningId,
-                     ResumeId = siv.ResumeId,
-                     Status = siv.Status,
-                     SubjectLine = siv.SubjectLine,
-                     Content = siv.Content,
-                     SendDate = siv.SendDate,
-                     AppointmentDate = siv.AppointmentDate,
-                     AppointmentTime = siv.AppointmentTime,
-                     Address = siv.Address,
-                     ReplyYN = siv.ReplyYN,
-                     ReplyFirstYN = siv.ReplyFirstYN,
-                };
+                    ResumeOpeningRecord ror = new ResumeOpeningRecord
+                    {
+                        CompanyId = companyId,
+                        OpeningId = siv.OpeningId,
+                        ResumeId = siv.ResumeId,
+                        ApplyDate = null,
+                        InterviewYN = false,
+                        HireYN = false,
+                        OpeningTitle = siv.OpeningTitle,
+                        CompanyName = company.CompanyName,
+                    };
+                    _context.ResumeOpeningRecords.Add(ror);
+                    await _context.SaveChangesAsync();
 
-                _context.Notifications.Add(send);
-                await _context.SaveChangesAsync();
+                    Notification send = new Notification
+                    {
+                        CompanyId = companyId,
+                        CandidateId = siv.CandidateId,
+                        OpeningId = siv.OpeningId,
+                        ResumeId = siv.ResumeId,
+                        Status = siv.Status,
+                        SubjectLine = siv.SubjectLine,
+                        Content = siv.Content,
+                        SendDate = siv.SendDate,
+                        AppointmentDate = siv.AppointmentDate,
+                        AppointmentTime = siv.AppointmentTime,
+                        Address = siv.Address,
+                        ReplyYN = siv.ReplyYN,
+                        ReplyFirstYN = siv.ReplyFirstYN,
+                        ResumeOpeningRecordId = ror.ResumeOpeningRecordId,
+                    };
 
-                
-            
+                    _context.Notifications.Add(send);
+                    await _context.SaveChangesAsync();
+                }
+                else if(resumeOpeningRecordId !=null)
+                {
+                    ResumeOpeningRecord ror = new ResumeOpeningRecord
+                    {
+                        CompanyId = companyId,
+                        OpeningId = siv.OpeningId,
+                        ResumeId = siv.ResumeId,
+                        ApplyDate = null,
+                        InterviewYN = false,
+                        HireYN = false,
+                        OpeningTitle = siv.OpeningTitle,
+                        CompanyName = company.CompanyName,
+                    };
+                    _context.ResumeOpeningRecords.Add(ror);
+                    await _context.SaveChangesAsync();
+
+                    Notification send = new Notification
+                    {
+                        CompanyId = companyId,
+                        CandidateId = siv.CandidateId,
+                        OpeningId = siv.OpeningId,
+                        ResumeId = siv.ResumeId,
+                        Status = siv.Status,
+                        SubjectLine = siv.SubjectLine,
+                        Content = siv.Content,
+                        SendDate = siv.SendDate,
+                        AppointmentDate = siv.AppointmentDate,
+                        AppointmentTime = siv.AppointmentTime,
+                        Address = siv.Address,
+                        ReplyYN = siv.ReplyYN,
+                        ReplyFirstYN = siv.ReplyFirstYN,
+                        ResumeOpeningRecordId = ror.ResumeOpeningRecordId,
+                    };
+
+                    _context.Notifications.Add(send);
+                    await _context.SaveChangesAsync();
+                }
+                else {
+                    Notification send = new Notification
+                    {
+                        CompanyId = companyId,
+                        CandidateId = siv.CandidateId,
+                        OpeningId = siv.OpeningId,
+                        ResumeId = siv.ResumeId,
+                        Status = siv.Status,
+                        SubjectLine = siv.SubjectLine,
+                        Content = siv.Content,
+                        SendDate = siv.SendDate,
+                        AppointmentDate = siv.AppointmentDate,
+                        AppointmentTime = siv.AppointmentTime,
+                        Address = siv.Address,
+                        ReplyYN = siv.ReplyYN,
+                        ReplyFirstYN = siv.ReplyFirstYN,
+                        ResumeOpeningRecordId = siv.ResumeOpeningRecordId,
+                    };
+
+                    _context.Notifications.Add(send);
+                    await _context.SaveChangesAsync();
+                }
+
+
+
+
+
+
+
+
 
 
             }
@@ -184,6 +269,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 {
                     return NotFound(new { company = "Resume not found" });
                 }
+                //var resumeOpeningRecord = _context.ResumeOpeningRecords.Where(r => r.ResumeId == siv.ResumeId && r.OpeningId == siv.OpeningId).FirstOrDefault();
+                //var ResumeOpeningRecordId = resumeOpeningRecord.ResumeOpeningRecordId;
 
                 Notification send = new Notification
                 {
@@ -200,6 +287,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Address = siv.Address,
                     ReplyYN = siv.ReplyYN,
                     ReplyFirstYN = siv.ReplyFirstYN,
+                    ResumeOpeningRecordId = siv.ResumeOpeningRecordId,
                 };
 
                 _context.Notifications.Add(send);
@@ -489,7 +577,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               ApplyDate = n.ApplyDate,
                               InterviewYN = n.InterviewYN,
                               HireYN = n.HireYN,
-
+                              ResumeOpeningRecordId = n.ResumeOpeningRecordId,
                           }).ToListAsync();
 
 

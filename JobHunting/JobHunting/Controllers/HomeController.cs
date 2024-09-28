@@ -224,7 +224,7 @@ namespace JobHunting.Controllers
             }
             var candidateId = int.Parse(candidateIdClaim.Value);
             var resumes = _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == candidateId && r.ReleaseYN == true)
+                .Where(r => r.CandidateId == candidateId)
                 .Select(r => new ResumesOutputViewModel
                 {
                     ResumeId = r.ResumeId,
@@ -623,7 +623,7 @@ namespace JobHunting.Controllers
             // 驗證統一編號
             if (!await ValidateGUINumber(cr.GUINumber, cr.CompanyName))
             {
-                return Json(new { success = false, message = "統一編號 or 公司名稱輸入錯誤" });
+                return Json(new { success = false, message = "統一編號 or 公司名稱需與商工登記資料相符" });
             }
 
             if (await _context.Companies.AnyAsync(c => c.GUINumber == cr.GUINumber))

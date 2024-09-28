@@ -629,9 +629,9 @@
                
                 //綁modal target
                 mergeID(item) {
-                    let str = item.title.replace(/\s/g, "");
+                    let str = item.title.replace(/\s/g, "").replace(/#/g, "");
                     let num = item.openingId;
-                    strID = str + num;
+                    strID = "Op" + str + num;
                     return strID;
                 },
                 //列出所有被選到的職業類別
