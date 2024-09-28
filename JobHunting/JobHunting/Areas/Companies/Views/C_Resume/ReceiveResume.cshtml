@@ -101,7 +101,7 @@
                                         <div class="card-body container-fluid">
                                             <div class="modal-header" style="background-color: #f7d179;">
                                                 <h5 class="modal-titl text-center" id="modal" style="width:95% ;" >
-                                                    {{item.name}}的履歷
+                                                    {{itemselected.name}}的履歷
                                                 </h5>
                                                 
                                                 <button type="button"
@@ -116,34 +116,34 @@
                                                     <div class="card mb-3">
                                                         <div class="card-body">
                                                             <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
-                                                            <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="item.headshot ? 'data:image/jpeg;base64,' + item.headshot : noimagepreview" style="width:100px;height:100px" :title="item.candidatename" /></div>
+                                                            <div class="mb-3"><img class="rounded float-end mx-4 img-fluid" :src="itemselected.headshot ? 'data:image/jpeg;base64,' + itemselected.headshot : noimagepreview" style="width:100px;height:100px" :title="itemselected.candidatename" /></div>
                                                             <div class="text-start" style="">
                                                                 <p class="card-text ">
                                                                     <div class="col ">
-                                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{item.name}} </label>
+                                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{itemselected.name}} </label>
                                                                     </div>
                                                                     <div>
-                                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(item.sex)}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{selectSex(itemselected.sex)}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{item.birthday}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{itemselected.birthday}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{item.phone}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{itemselected.phone}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{item.degree}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">學歷 : </label><label class="ms-2">{{itemselected.degree}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{item.email}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{itemselected.email}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{item.employmentStatus}}</label>
+                                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{itemselected.employmentStatus}}</label>
                                                                     </div>
                                                                     <div class="card-body ">
                                                                         <h5 class="card-title text-center fw-bold">自我介紹：</h5>
                                                                         <p class="card-text form-control overflow-auto" style="height:200px">
-                                                                            {{item.intro}}
+                                                                            {{itemselected.intro}}
                                                                         </p>
                                                                     </div>
                                                                 </p>
@@ -159,7 +159,7 @@
                                                         <div class="card-body text-start">
                                                             <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
                                                             <p class="card-text form-control overflow-auto" style="height:512px">
-                                                                {{item.workExperience}}
+                                                                {{itemselected.workExperience}}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -173,27 +173,27 @@
                                                             <h5 class="card-title fw-bold" style="text-align:center">求職條件</h5>
                                                             <p class="card-text">
                                                                 <div class="col">
-                                                                    <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{item.time}}</label>
+                                                                    <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{itemselected.time}}</label>
                                                                 </div>
                                                                 <div class="col">
                                                                     <label class="">
                                                                         <label class="mb-2 fw-bold">希望職缺: </label>
-                                                                        {{ getTitleClassName(item.titleClassId) }}
+                                                                        {{ getTitleClassName(itemselected.titleClassId) }}
                                                                     </label>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{item.address}}</label>
+                                                                    <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{itemselected.address}}</label>
                                                                 </div>
                                                                 <div class="col">
                                                                     <label for="" class="mb-2 fw-bold">
                                                                         證照 :
-                                                                        <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
+                                                                        <label v-for="(certifications,index) in itemselected.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
                                                                         
                                                                     </label>
                                                                 </div>
                                                                 <div>
                                                                     <label class="fw-bold">能力標籤:</label><label class="ms-2"></label>
-                                                                    {{getTagName(item.tagId)}}
+                                                                    {{getTagName(itemselected.tagId)}}
                                                                 </div>
                                                             </p>
 
@@ -205,7 +205,7 @@
                                                         <div class="card-body text-start">
                                                             <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
                                                             <p class="card-text form-control overflow-auto" style="height:200px">
-                                                                {{item.autobiography}}
+                                                                {{itemselected.autobiography}}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -601,8 +601,10 @@
                         request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate);
                         request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime);
                         request.Address = _this.Sendinterview.place;
-                        request.ReplyYN = _this.SendAdmission.interviewReplyYN;
-                        request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
+                        request.ReplyYN = _this.Sendinterview.interviewReplyYN;
+                        request.ReplyFirstYN = _this.Sendinterview.interviewReplyFirstYN;
+                        request.OpeningTitle = _this.itemselected.OpeningTitle;
+                        request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId
                         fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
                             headers: {

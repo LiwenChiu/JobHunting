@@ -14,9 +14,10 @@
 
     <div class="row">
         <h1 class="col-sm-9">最終日期: {{deadline}} 23點59分59秒</h1>
-        <div class="col-sm-3">
-            <input id="searchOrder" class="form-control" placeholder="搜尋關鍵字" v-model="searchOrderInput" />
+        <div class="col-sm-2">
+            <input id="searchOrder" class="form-control" placeholder="搜尋關鍵字" v-model.trim="searchOrderInput" />
         </div>
+        <button type="button" class="col-sm-1 btn btn-warning btn-sm text-light" v-on:click="cleanFilter()">清空</button>
     </div>
 
     <div style="overflow-y:auto;height:81vh">
@@ -30,7 +31,7 @@
                     <td>付款時間</td>
                     <td>付款狀態</td>
                     <td></td>
-                    <td></td>
+                   @*  <td></td> *@
                 </tr>
             </thead>
             <tbody>
@@ -44,11 +45,11 @@
                     <td>
                         <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
                     </td>
-                    <td>
-                        <template v-if="!order.status || order.statusType == '取號完成'">
+                    @* <td>
+                        <template v-if="order.statusType == '取號完成'">
                             <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
-                    </td>
+                    </td> *@
                 </tr>
             </tbody>
         </table>
@@ -58,12 +59,20 @@
     <div class="modal fade" id="SearchModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="SearchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <template v-if="searchData.statusType == '付款失敗'">
+                    <div class="modal-header bg-danger">
+                        <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="modal-header bg-warning">
+                        <h3 class="modal-title text-light" id="SearchModalLabel">訂單資訊</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </template>
                 <div class="modal-body">
-                    <p class="h5" style="width:100%;word-break:break-all;">藍新金流交易序號: {{searchData.tradeNo}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">藍新金流交易序號: {{searchData.tradeNo ? searchData.tradeNo : "無"}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">訂單編號: {{searchData.orderId}}</p>
                     <hr />
                     <p class="h5" style="width:100%;word-break:break-all;">方案: {{searchData.title}}</p>
@@ -73,7 +82,7 @@
                     <p class="h5" style="width:100%;word-break:break-all;">下單時間: {{searchData.orderdate}}</p>
                     <p class="h5" style="width:100%;word-break:break-all;">付款時間: {{searchData.payDate ? searchData.payDate : "無"}}</p>
                     <hr />
-                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: {{searchData.statusType}}</p>
+                    <p class="h5" style="width:100%;word-break:break-all;">訂單狀態: <span class="text-danger" v-if="searchData.statusType == '付款失敗'">{{searchData.statusType}}</span><span class="text-primary" v-else>{{searchData.statusType}}</span></p>
                     <p class="h5" style="width:100%;word-break:break-all;">付款方式: {{searchData.paymentType ? GetPaymentType() : "無"}}</p>
                 </div>
                 <div class="modal-footer">
@@ -160,23 +169,28 @@
                 getCompanyOrders: function () {
                     let request = {};
                     request.Filter = this.searchOrderInput;
-                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, request, {
+                    axios.get(`${this.baseAddress}/Companies/CompanyOrders/GetCompanyOrders`, {
                         headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    }).then(response => this.orders = response.data)
-                        .catch(err => { alert(err) });
-
-                    // 拿Companies裡的Deadline
-                    axios.post(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    }).then(response => this.deadline = response.data == null ? "無" : response.data)
+                            'search': this.searchOrderInput // Sending the search parameter in the header
+                        }
+                    })
+                    .then(response => this.orders = response.data)
                         .catch(err => { alert(err) });
                 },
                 showDeadline() {
-                    return this.deadline === null ? "請購買方案" : this.deadline;
+                    // 拿Companies裡的Deadline
+                    axios.get(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`)
+                    .then(response => this.deadline = (response.data ? response.data : "無"))
+                        .catch(err => { alert(err) })
+                        .finally(() => {
+                            if(this.deadline === null){
+                                alert("請購買方案");
+                            }
+                        });
+                },
+                cleanFilter:function(){
+                    this.searchOrderInput = "";
+                    this.getCompanyOrders();
                 },
                 SendToNewebPaySearch: function (orderId) {
                     let self = this;
@@ -199,7 +213,10 @@
                         }
                     }).catch(error => {
                         alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
-                    });
+                    }).finally(() => {
+                            this.getCompanyOrders();
+                            this.showDeadline();
+                        });
                 },
                 SendToNewebPayCancel: function (orderId) {
                     this.selectedCancelOrder = orderId;
@@ -224,6 +241,10 @@
                     })
                         .catch(error => {
                             alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
+                        })
+                        .finally(() => {
+                            this.getCompanyOrders();
+                            this.showDeadline();
                         });
                 },
                 GetPaymentType: function () {
@@ -256,6 +277,7 @@
             },
             mounted: function () {
                 this.getCompanyOrders();
+                this.showDeadline();
             },
         };
         let app = Vue.createApp(vueAppCompanyOrders).mount("#appCompanyOrders");
