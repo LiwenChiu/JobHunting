@@ -421,7 +421,7 @@
                 },
 
                 mergeID(item) {
-                    let str = item.name.replace(/\s/g, "");
+                    let str = item.name.replace(/\s/g, "").replace(/#/g,"");
                     let num = item.resumeId;
                     strID = "Interview" + str + num;
                     return strID;

@@ -459,7 +459,7 @@
                     this.currentPage = page
                 },
                 mergeID(item) {
-                    let str = item.name.replace(/\s/g, "");
+                    let str = item.name.replace(/\s/g, "").replace(/#/g, "");
                     let num = item.resumeId;
                     strID = "rs" + str + num;
                     return strID;

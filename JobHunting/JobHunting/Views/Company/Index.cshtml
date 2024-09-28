@@ -120,7 +120,7 @@
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
-                    <td><p v-for="data in item.tagObj">{{data.tagName}}</p></td>
+                    <td><p>{{getTagList(item.tagObj)}}</p></td>
                     <td>{{item.address}}</td>
                     <td><button class="btn btn-info" data-bs-toggle="modal" :data-bs-target="'#'+mergeID(item)">預覽</button></td>
                 </tr>
@@ -154,9 +154,10 @@
          role="dialog"
          aria-labelledby="modalTitleId"
          aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
+                    <h4 class="fw-bold">{{item.title}}</h4>
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
@@ -165,68 +166,71 @@
                     </button>
                 </div>
                 <div class="modal-body " style="background-color: #f7d179">
-                    <div class="row">
-                        <div class="col-sm-5 ">
-                            <div class="row text-center">
-                                <h5 class="fw-bold">個人資料</h5>
-                                <div class="col-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-2"></div>
-                                        <div class="col-4">
-                                            <label class="fw-bold text-start">姓名 : </label>
-                                        </div>
-                                        <div class="col-6">
-                                            <label>{{item.name}}</label>
+                    <div class="container mt-4">
+                        <div class="card" style="background-color: #f7d179;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="card border-0" style="background-color: #f7d179;">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title fw-bold">個人資料</h5>
+                                                <div class="row mt-3">
+                                                    <div class="col-12">
+                                                        <div class="row mb-2">
+                                                            <div class="col-4 text-end">
+                                                                <label class="fw-bold">姓名 :</label>
+                                                            </div>
+                                                            <div class="col-8 text-start">
+                                                                <label>{{item.name}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-4 text-end">
+                                                                <label class="fw-bold">性別 :</label>
+                                                            </div>
+                                                            <div class="col-8 text-start">
+                                                                <label>{{selectSex(item.sex)}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-4 text-end">
+                                                                <label class="fw-bold">學歷 :</label>
+                                                            </div>
+                                                            <div class="col-8 text-start">
+                                                                <label>{{item.degree}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-4 text-end">
+                                                                <label class="fw-bold ">技能 :</label>
+                                                            </div>
+                                                            <div class="col-8 text-start">
+                                                                <ul class="list-inline ">
+                                                                    <li class="list-inline-item" v-for="data in item.tagObj">
+                                                                        <span class="badge bg-secondary">{{data.tagName}}</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-2"></div>
-                                        <div class="col-4">
-                                            <label class="fw-bold">性別 : </label>
-                                        </div>
-                                        <div class="col-6">
-                                            <label>{{selectSex(item.sex)}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-2"></div>
-                                        <div class="col-4">
-                                            <label class="fw-bold text-start">學歷 : </label>
-                                        </div>
-                                        <div class="col-6">
-                                            <label>{{item.degree}}</label>
+                                    <div class="col-sm-7">
+                                        <div class="card border-0" style="background-color: #f7d179;">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-center fw-bold">簡介</h5>
+                                                <div class="mb-4">
+                                                    <p>{{item.intro}}</p>
+                                                </div>
+                                                <h5 class="card-title text-center fw-bold">工作經驗</h5>
+                                                <div>
+                                                    <p>{{item.workExperience}}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="fw-bold text-start">專業技能 : </label>
-                                        </div>
-                                        <div class="col-6" v-for="data in item.tagObj">
-                                            <label>{{data.tagName}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                               @*  <h6 class="text-center fw-bold">專業技能 : </h6>
-                                <div class="col-12 col-sm-12" v-for="data in item.tagObj">
-                                    {{data.tagName}}
-                                </div> *@
-                            </div>
-                        </div>
-                        <div class="col-sm-7 ">
-                            <div class="row">
-                                <h5 class="text-center fw-bold">簡介</h5>
-                                <div class="col-12 col-sm-12 text-center">
-                                    <p>{{item.intro}}</p>
-                                </div>
-                                <h5 class="text-center fw-bold">工作經驗</h5>
-                                <div class="col-12 col-sm-12">
-                                    <p>{{item.workExperience}}</p>
                                 </div>
                             </div>
                         </div>
@@ -262,6 +266,7 @@
                     filter: "",
                     resumes: [],
                     filteredResume:[],
+                    tagList:[],
                     tagClasses: [],
                     perpage: 5, //一頁的資料數
                     totalPage: null,
@@ -333,6 +338,16 @@
                                 self.totalPage = Math.ceil(res.data.totalDataCount / self.perpage);
                                 self.currentPage = 1;
                             }).catch(err => JSON.stringify(err))
+                },
+                getTagList(item) {
+                    let str = "";
+                    for (let i = 0; i < item.length;i++){
+                        str += item[i].tagName 
+                        if( i < item.length-1){
+                            str += "、"
+                        }
+                    }
+                    return str;
                 },
                 addFavorite(item) {
                     let self = this;

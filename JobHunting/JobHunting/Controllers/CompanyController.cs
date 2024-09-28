@@ -200,6 +200,7 @@ namespace JobHunting.Controllers
                     {
                         ResumeID = c.ResumeId,
                         CandidateID = c.CandidateId,
+                        Title = c.Title,
                         Intro = c.Intro,
                         Autobiography = c.Autobiography,
                         WorkExperience = c.WorkExperience,
@@ -245,12 +246,14 @@ namespace JobHunting.Controllers
                 {
                     ResumeID = x.ResumeID,
                     CandidateID = x.CandidateID,
+                    Title = x.Title,
                     Intro = x.Intro,
                     Autobiography = x.Autobiography,
                     Address = x.Address,
                     Name = x.Name,
                     Sex = x.Sex,
                     Age = x.Age,
+                    WorkExperience = x.WorkExperience,
                     WishAddress = x.WishAddress,
                     Degree = x.Degree,
                     TagObj = x.skill,
