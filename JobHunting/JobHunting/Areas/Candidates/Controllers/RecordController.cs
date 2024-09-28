@@ -38,7 +38,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
             var query = _context.ResumeOpeningRecords.Include(x => x.Opening).ThenInclude(x => x.Tags)
                 .Include(x => x.Opening).ThenInclude(x => x.TitleClasses)
-                .Where(x => x.Resume.CandidateId == candidateId &&
+                .Where(x => x.Resume.CandidateId == candidateId && x.ApplyDate !=null&&
                         (x.CompanyName.Contains(rv.CompanyName) ||
                         x.ApplyDate.ToString().Contains(rv.ApplyDate) ||
                         x.OpeningTitle.Contains(rv.OpeningTitle) ||
