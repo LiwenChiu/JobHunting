@@ -54,7 +54,7 @@
                 <div class="card-footer" style="background-color:transparent">
                     <div class="text-center">
                         <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary">
+                                :data-bs-target="'#'+mergeID(ResumeD)" class="btn btn-primary" v-on:click="getResumeCertifications(ResumeD.resumeid)">
                             詳細
                         </button>
                     </div>
@@ -453,16 +453,25 @@
                                                         <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">
-                                                            證照
-                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
-                                                           
+                                                        <label for=""  class="mb-2">
+                                                            證照:
+                                                            <label v-for="(certifications,index) in CertificationList">
+                                                                <label :id='"cer"+certifications.certificationId'>
+                                                                    <input type="button" class="btn btn-outline-primary btn-sm" :value="certifications.certificationName" v-on:click="deltCertifications(certifications)" />
+                                                                    <span v-if="index < CertificationList.length-1">、</span>
+                                                                </label>
+                                                            </label>
+                                                            
                                                         </label>
-                                                        <input id="CertificationEditFile" type="file" accept="image/*" />
+                                                        <br>
+                                                        <label>
+                                                            <input id="CertificationEditFile" type="file" accept="image/*" />
+                                                            
+                                                        </label>
+                                                        <burron class="btn btn-primary btn-sm" v-on:click="upload(ResumeD)">上傳檔案</burron>
                                                     </div>
                                                     <div>
                                                         <p>
-                                                            <label>
                                                                 <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
                                                             </label>
                                                         </p>
@@ -492,7 +501,8 @@
                                                                     <div class="row">
                                                                         <div class="col-2" v-for="Tag in filterTagClass(0)">
                                                                             <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
-                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+
+                                                                            <label>                   <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -614,7 +624,7 @@
                                                         <label for="" class="mb-2 fw-bold">
                                                             證照:
                                                             <br>
-                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Resume/DownloadFile/?resumeId=${resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
+                                                            <label v-for="(certifications,index) in ResumeD.fileName"> <a :href=`${baseAddress}/Candidates/Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < ResumeD.fileName.length-1">、</span></label>
                                                         </label>
 
                                                     </div>
@@ -734,46 +744,46 @@
 
 @section Scripts
 {
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        let VueApp = {
-            data() {
-                return {
-                    // baseAddress: "https://duckjobhunting.azurewebsites.net",
-                    baseAddress: "https://localhost:7169",
-                    pageStatus: 0,
-                    perpage: 7, //一頁的資料數
-                    currentPage: 1,
-                    MessageStatus: 1,
-                    resumevalue: "resumevalue",
-                    Resume: [],
-                    createResume: {
-                        name: "",
-                        sex: "",
-                        birthday: "",
-                        phone: "",
-                        degree: "",
-                        email: "",
-                        employmentStatus: "",
-                    },
-                    backupResume: {},
-                    backupReleaseYNedit: {},
-                    ResumeName: "",
-                    releaseYN: true,
-                    WorkExperience: "",
-                    Autobiography: "",
-                    hopeaddress: "",
-                    timeR: "",
-                    sexYN: false,
-                    ResumeIntro: "",
-                    noimagepreview: "/images/No_Image_Available.jpg",
-                    originalHeadshot: null,
-                    TagClasses: [],
-                    Tags: [],
-                    TagChecked: [],
-                    selectedTagId: [],
-                    TagCheckedOpening: [],
-
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script>
+            let VueApp = {
+                data() {
+                    return {
+                        // baseAddress: "https://duckjobhunting.azurewebsites.net",
+                        baseAddress: "https://localhost:7169",
+                        pageStatus: 0,
+                        perpage: 7, //一頁的資料數
+                        currentPage: 1,
+                        MessageStatus: 1,
+                        resumevalue: "resumevalue",
+                        Resume:[],
+                        createResume: {
+                            name:"",
+                            sex:"",
+                            birthday:"",
+                            phone:"",
+                            degree:"",
+                            email:"",
+                            employmentStatus:"",
+                        },
+                        backupResume: {},
+                        backupReleaseYNedit: {},
+                        ResumeName:"",
+                        releaseYN:true,
+                        WorkExperience:"",
+                        Autobiography:"",
+                        hopeaddress:"",
+                        timeR: "",
+                        sexYN:false,
+                        ResumeIntro:"",
+                        noimagepreview: "/images/No_Image_Available.jpg",
+                        originalHeadshot: null,
+                        TagClasses: [],
+                        Tags: [],
+                        TagChecked: [],
+                        selectedTagId: [],
+                        TagCheckedOpening: [],
+                        CertificationList:[],
                     titleClass: [],
                     titleCategory: [],
                     TitleClassChecked: [],
@@ -800,6 +810,45 @@
 
             },
             methods: {
+                upload(item) {
+                    var form = new FormData();
+                    form.append("ResumeId", item.resumeid);
+                    form.append("FileData", document.querySelector('#CertificationEditFile').files[0]);
+                    if (document.querySelector('#CertificationEditFile').files[0] != null) {
+                        form.append("CertificationName", document.querySelector('#CertificationEditFile').files[0].name);
+                        form.append("ContentType", document.querySelector('#CertificationEditFile').files[0].type);
+                    }
+                    axios.post(`${this.baseAddress}/Company/Upload`, form, {
+                        headers: { "Content-Type": "multipart/form-data" }
+                    }).then(res => {
+                        alert(res.data);
+                        this.getResumeCertifications(item.resumeid);
+                        document.querySelector('#CertificationEditFile').value = "";
+                    }).catch(err => { alert(err) });
+                },
+                deltCertifications(item) {
+                    var confirmdel = confirm("確定要刪除?");
+                    if (confirmdel == true){
+                        axios.delete(`${this.baseAddress}/Candidates/Resume/DelCertification/${item.certificationId}`, {
+                            headers: { "Content-Type": "application/json", },
+                        }).then(res => {
+                            alert(res.data.message);
+                            this.getResumeCertifications(item.resumeId);
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }
+                },
+                getResumeCertifications(item) {
+                    let self = this;
+                    axios.get(`${this.baseAddress}/Candidates/Resume/GetCertification/${item}`, {
+                        headers: { "Content-Type": "application/json", },
+                    }).then(res => {
+                        self.CertificationList = res.data;
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
                 triggerFileInput() {
                     this.$refs.fileInput.click();
                 },
@@ -928,7 +977,7 @@
                     // let str = ResumeD.name.replace(/\s/g,"");
                     let str = ResumeD.name;
                     let num = ResumeD.resumeid;
-                    strID = str + num;
+                    strID = "Id" + str + num;
                     return strID;
                 },
 
@@ -1083,6 +1132,7 @@
                         return response.json();
                     }).then(data => {
                         return _this.Resume = data
+                        return _this.CertificationList = data.fileName
                     }).catch(err => {
                         alert(JSON.stringify(err))
                     });
