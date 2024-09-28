@@ -18,5 +18,13 @@
 
         public TimeOnly? AppointmentTime { get; set; }
 
+        public bool InterviewYN { get; set; }
+
+        public bool HireYN { get; set; }
+        public bool Title { get; set; }
+        public string OpeningTitle { get; set; }
+        public string CompanyName { get; set; }
+
+        public int ResumeOpeningRecordId { get; set; }
     }
 }

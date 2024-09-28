@@ -311,29 +311,117 @@ namespace JobHunting.Controllers
             {
                 var CompanyId = int.Parse(companyIdClaim.Value);
                 var today = DateOnly.FromDateTime(DateTime.Now);
-                Notification notificationLetter = new Notification();
-                if (letter != null)
+                var company = await _context.Companies.FindAsync(CompanyId);
+                var resumeOpeningRecordId = _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == letter.ResumeOpeningRecordId).FirstOrDefaultAsync();
+
+                if(letter.ResumeOpeningRecordId  == null)
                 {
-                    notificationLetter.CompanyId = CompanyId;
-                    notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
-                    notificationLetter.OpeningId = letter.OpeningId;
-                    notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
-                    notificationLetter.Status = letter.Status;
-                    notificationLetter.SubjectLine = letter.SubjectLine;
-                    notificationLetter.Content = letter.Content;
-                    notificationLetter.Address = letter.Address;
-                    notificationLetter.SendDate = today;
-                    notificationLetter.AppointmentDate = letter.AppointmentDate;
-                    notificationLetter.AppointmentTime = letter.AppointmentTime;
-                    _context.Notifications.Add(notificationLetter);
+                    ResumeOpeningRecord ror = new ResumeOpeningRecord
+                    {
+                        CompanyId = CompanyId,
+                        OpeningId = letter.OpeningId,
+                        ResumeId = Convert.ToInt32(letter.ResumeId),
+                        ApplyDate = null,
+                        InterviewYN = false,
+                        HireYN = false,
+                        OpeningTitle = letter.OpeningTitle,
+                        CompanyName = company.CompanyName,
+                    };
+                    _context.ResumeOpeningRecords.Add(ror);
                     await _context.SaveChangesAsync();
-                    return "發送面試成功";
+
+                    Notification notificationLetter = new Notification();
+                    if (letter != null)
+                    {
+                        notificationLetter.CompanyId = CompanyId;
+                        notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+                        notificationLetter.OpeningId = letter.OpeningId;
+                        notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+                        notificationLetter.Status = letter.Status;
+                        notificationLetter.SubjectLine = letter.SubjectLine;
+                        notificationLetter.Content = letter.Content;
+                        notificationLetter.Address = letter.Address;
+                        notificationLetter.SendDate = today;
+                        notificationLetter.AppointmentDate = letter.AppointmentDate;
+                        notificationLetter.AppointmentTime = letter.AppointmentTime;
+                        notificationLetter.ResumeOpeningRecordId = ror.ResumeOpeningRecordId;
+                        _context.Notifications.Add(notificationLetter);
+                        await _context.SaveChangesAsync();
+                        return "發送面試成功";
+                    }
+                    else
+                    {
+                        return "請輸入完整面試資訊";
+                    }
+
+                }else if (resumeOpeningRecordId != null)
+                {
+                    ResumeOpeningRecord ror = new ResumeOpeningRecord
+                    {
+                        CompanyId = CompanyId,
+                        OpeningId = letter.OpeningId,
+                        ResumeId = Convert.ToInt32(letter.ResumeId),
+                        ApplyDate = null,
+                        InterviewYN = false,
+                        HireYN = false,
+                        OpeningTitle = letter.OpeningTitle,
+                        CompanyName = company.CompanyName,
+                    };
+                    _context.ResumeOpeningRecords.Add(ror);
+                    await _context.SaveChangesAsync();
+
+                    Notification notificationLetter = new Notification();
+                    if (letter != null)
+                    {
+                        notificationLetter.CompanyId = CompanyId;
+                        notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+                        notificationLetter.OpeningId = letter.OpeningId;
+                        notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+                        notificationLetter.Status = letter.Status;
+                        notificationLetter.SubjectLine = letter.SubjectLine;
+                        notificationLetter.Content = letter.Content;
+                        notificationLetter.Address = letter.Address;
+                        notificationLetter.SendDate = today;
+                        notificationLetter.AppointmentDate = letter.AppointmentDate;
+                        notificationLetter.AppointmentTime = letter.AppointmentTime;
+                        notificationLetter.ResumeOpeningRecordId = ror.ResumeOpeningRecordId;
+                        _context.Notifications.Add(notificationLetter);
+                        await _context.SaveChangesAsync();
+                        return "發送面試成功";
+                    }
+                    else
+                    {
+                        return "請輸入完整面試資訊";
+                    }
+
                 }
                 else
                 {
-                    return "請輸入完整面試資訊";
+                    Notification notificationLetter = new Notification();
+                    if (letter != null)
+                    {
+                        notificationLetter.CompanyId = CompanyId;
+                        notificationLetter.CandidateId = Convert.ToInt32(letter.CandidateId);
+                        notificationLetter.OpeningId = letter.OpeningId;
+                        notificationLetter.ResumeId = Convert.ToInt32(letter.ResumeId);
+                        notificationLetter.Status = letter.Status;
+                        notificationLetter.SubjectLine = letter.SubjectLine;
+                        notificationLetter.Content = letter.Content;
+                        notificationLetter.Address = letter.Address;
+                        notificationLetter.SendDate = today;
+                        notificationLetter.AppointmentDate = letter.AppointmentDate;
+                        notificationLetter.AppointmentTime = letter.AppointmentTime;
+                        notificationLetter.ResumeOpeningRecordId = letter.ResumeOpeningRecordId;
+                        _context.Notifications.Add(notificationLetter);
+                        await _context.SaveChangesAsync();
+                        return "發送面試成功";
+                    }
+                    else
+                    {
+                        return "請輸入完整面試資訊";
+                    }
                 }
-               
+
             }
             
         }
