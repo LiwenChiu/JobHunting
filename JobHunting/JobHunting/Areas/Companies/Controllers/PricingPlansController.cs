@@ -152,8 +152,8 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
-            //// 交易有效時間
-            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
+            // 交易有效時間
+            TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址
@@ -635,13 +635,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 companyOrder.Status = true;
                 companyOrder.StatusType = "取號完成";
                 companyOrder.TradeNo = result.TradeNo;
-                companyOrder.PaymentType = result.PaymentType switch
-                {
-                    "VACC" => "ATM轉帳",
-                    "CVS" => "超商代碼繳費",
-                    "BARCODE" => "超商條碼繳費",
-                    _ => "錯誤",
-                };
+                companyOrder.PaymentType = result.PaymentType;
                 companyOrder.ExpireDate = result.ExpireDate;
             }
 

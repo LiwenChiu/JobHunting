@@ -19,6 +19,8 @@ namespace JobHunting.Areas.Admins.ViewModels
 
         public decimal? Price { get; set; }
 
+        public DateTime OrderDate { get; set; }
+
         public DateTime? PayDate { get; set; }
 
         public int Duration { get; set; }
