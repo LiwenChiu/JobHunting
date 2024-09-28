@@ -312,7 +312,7 @@ namespace JobHunting.Controllers
                 var CompanyId = int.Parse(companyIdClaim.Value);
                 var today = DateOnly.FromDateTime(DateTime.Now);
                 var company = await _context.Companies.FindAsync(CompanyId);
-                var resumeOpeningRecordId = _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == letter.ResumeOpeningRecordId).FirstOrDefaultAsync();
+                var resumeOpeningRecordId = await _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == letter.ResumeOpeningRecordId).FirstOrDefaultAsync();
 
                 if(letter.ResumeOpeningRecordId  == null)
                 {
