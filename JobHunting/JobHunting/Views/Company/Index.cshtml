@@ -29,21 +29,22 @@
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-4">
                 <label class="calculator-dropdown-label" for="apiChoice">技能類別</label>
-                <select v-model="skill">
-                    <optgroup v-for="(item,index) in tagClasses" :label="item.tagClassName">
-                        <option v-for="tag in tagClasses[index].tagObj" :value="tag.tagId">{{tag.tagName}}</option>
-                    </optgroup>
+                <select v-model="tagClassName" v-on:change="getTagName" style="width:72.59px;height:22.93px">
+                    <option v-for="(item,index) in tagClasses" :key="item.tagClassName" :value="item.tagClassName">{{item.tagClassName}}</option>
+                </select>
+                <select v-model="skill" >
+                    <option v-for="item in tagNameList" :value="item.tagId">{{item.tagName}}</option>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-3">
                 <label class="calculator-dropdown-label" for="apiChoice">學歷</label>
-                <select class="select" v-model="edu" style="width:150px;height:30px">
+                <select class="select" v-model="edu" style="width:90px;height:22.93px">
                     <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-2">
                 <button class="btn btn-warning text-light" v-on:click="cancelSelect()">清空</button>
             </div>
         </div>
@@ -268,6 +269,9 @@
                     filteredResume:[],
                     tagList:[],
                     tagClasses: [],
+                    tagClassName: "",
+                    tagNameList:[],
+                    tagName:"",
                     perpage: 5, //一頁的資料數
                     totalPage: null,
                     currentPage: 1,
@@ -289,7 +293,7 @@
                 },
                 cancelSelect(){      //取消篩選條件
                     let self = this;
-                    self.filter = self.city = self.areaName = self.edu = "", self.skill = null;
+                    self.filter = self.city = self.areaName = self.area = self.edu = self.tagClassName = self.tagNameList = "", self.skill = null;
                     self.filterResumes();
                 },
                 selectSex(item) {
@@ -398,6 +402,9 @@
                 },
                 getArea(){        //選到哪個縣市顯示該縣市個別的區
                     this.area = this.cityList.find(x => x.CityName === this.city).AreaList;
+                },
+                getTagName(){
+                    this.tagNameList = this.tagClasses.find(x => x.tagClassName === this.tagClassName).tagObj;
                 },
                 getDegree(){
                     let self = this;
