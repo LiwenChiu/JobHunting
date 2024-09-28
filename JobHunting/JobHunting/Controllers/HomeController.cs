@@ -224,7 +224,7 @@ namespace JobHunting.Controllers
             }
             var candidateId = int.Parse(candidateIdClaim.Value);
             var resumes = _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == candidateId && r.ReleaseYN == true)
+                .Where(r => r.CandidateId == candidateId)
                 .Select(r => new ResumesOutputViewModel
                 {
                     ResumeId = r.ResumeId,
