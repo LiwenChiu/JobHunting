@@ -261,7 +261,7 @@ CREATE TABLE CompanyOrders
 	NewebPayStatus nvarchar(10),
 	NewebPayMessage nvarchar(50),
 	TradeNo nvarchar(20),
-	PaymentType nvarchar(10),
+	PaymentType nvarchar(20),
 	[IP] nvarchar(15),
 	EscrowBank nvarchar(10),
 )

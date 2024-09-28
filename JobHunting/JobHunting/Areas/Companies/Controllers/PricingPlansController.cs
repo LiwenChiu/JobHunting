@@ -152,8 +152,8 @@ namespace JobHunting.Areas.Companies.Controllers
             TradeInfo.Add(new KeyValuePair<string, string>("Amt", AmtStr));
             // 商品資訊
             TradeInfo.Add(new KeyValuePair<string, string>("ItemDesc", pricingPlan.Title));
-            //// 交易有效時間
-            //TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
+            // 交易有效時間
+            TradeInfo.Add(new KeyValuePair<string, string>("TradeLimit", "900"));
             // 繳費有效期限(適用於非即時交易)
             TradeInfo.Add(new KeyValuePair<string, string>("ExpireDate", ExpirationTimeStr));
             // 支付完成返回商店網址

@@ -1,4 +1,5 @@
-﻿using JobHunting.Models;
+﻿using JobHunting.Areas.Companies.ViewModel;
+using JobHunting.Models;
 using JobHunting.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +81,26 @@ namespace JobHunting.Services
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
+            if (outModelReturn.Status != "SUCCESS")
+            {
+                companyOrder.Status = true;
+                companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    return;
+                }
+
+                return;
+            }
+
             var outModelReturnResult = outModelReturn.Result;
             if (outModelReturnResult == null)
             {
@@ -106,6 +127,7 @@ namespace JobHunting.Services
             {
                 companyOrder.StatusType = StatusType;
                 companyOrder.ExpireDate = null;
+                companyOrder.Status = true;
 
                 _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -120,9 +142,9 @@ namespace JobHunting.Services
 
                 return;
             }
-
-            if (TradeStatus == "1")
+            else
             {
+                companyOrder.Status = true;
                 companyOrder.ExpireDate = null;
                 companyOrder.StatusType = StatusType;
                 companyOrder.NewebPayStatus = outModelReturn.Status;

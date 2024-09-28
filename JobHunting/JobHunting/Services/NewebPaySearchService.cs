@@ -77,7 +77,7 @@ namespace JobHunting.Services
             outModel.Amt = Price;
 
             var outModelReturn = SearchPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result;
+            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
             if (outModelReturnResult == null)
             {
                 return;
@@ -192,22 +192,22 @@ namespace JobHunting.Services
         {
             public string Status { get; set; }
             public string Message { get; set; }
-            public Result Result { get; set; }
+            public List<Result>? Result { get; set; }
         }
 
         public class Result
         {
-            public string MerchantID { get; set; }
+            public string? MerchantID { get; set; }
 
-            public int Amt { get; set; }
+            public int? Amt { get; set; }
 
-            public string TradeNo { get; set; }
+            public string? TradeNo { get; set; }
 
-            public string MerchantOrderNo { get; set; }
+            public string? MerchantOrderNo { get; set; }
 
-            public string TradeStatus { get; set; }
+            public string? TradeStatus { get; set; }
 
-            public string PaymentType { get; set; }
+            public string? PaymentType { get; set; }
 
             public DateTime? PayTime { get; set; }
         }
@@ -255,7 +255,7 @@ namespace JobHunting.Services
             outModel.PostData_ = PostData_Encrypt;
 
             var outModelReturn = CancelPostFormDataAsync(outModel).Result;
-            var outModelReturnResult = outModelReturn.Result;
+            var outModelReturnResult = outModelReturn.Result.FirstOrDefault();
             if (outModelReturnResult == null)
             {
                 return;
@@ -317,20 +317,20 @@ namespace JobHunting.Services
 
             public string Message { get; set; }
 
-            public CancelResult Result { get; set; }
+            public List<CancelResult>? Result { get; set; }
         }
 
         public class CancelResult
         {
-            public string MerchantID { get; set; }
+            public string? MerchantID { get; set; }
 
-            public string TradeNo { get; set; }
+            public string? TradeNo { get; set; }
 
-            public int Amt { get; set; }
+            public int? Amt { get; set; }
 
-            public string MerchantOrderNo { get; set; }
+            public string? MerchantOrderNo { get; set; }
 
-            public string CheckCode { get; set; }
+            public string? CheckCode { get; set; }
         }
 
         /// <summary>
