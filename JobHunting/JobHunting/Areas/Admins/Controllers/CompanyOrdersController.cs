@@ -51,7 +51,8 @@ namespace JobHunting.Areas.Admins.Controllers
                     GUINumber = co.GUINumber,
                     Title = co.Title,
                     Price = co.Price,
-                    PayDate = co.StatusType == "付款成功" ? co.PayDate : null,
+                    OrderDate = co.OrderDate,
+                    PayDate = co.PayDate,
                     Duration = co.Duration,
                     Intro = co.Plan.Intro,
                     Status = co.Status,
@@ -66,7 +67,7 @@ namespace JobHunting.Areas.Admins.Controllers
                                         covmfilter.Duration.ToString().Contains(covm.Duration.ToString()) ||
                                         covmfilter.Intro.Contains(covm.Intro) ||
                                         covmfilter.StatusType.Contains(covm.StatusType))
-                .OrderBy(co => co.Status)
+                .OrderByDescending(co => co.OrderDate)
                 .Select(co => new CompanyOrdersFilterOutputViewModel
                 {
                     OrderId = co.OrderId,
