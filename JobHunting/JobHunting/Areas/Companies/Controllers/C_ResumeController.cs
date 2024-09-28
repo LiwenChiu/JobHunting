@@ -238,12 +238,6 @@ namespace JobHunting.Areas.Companies.Controllers
 
 
 
-
-
-
-
-
-
             }
             catch(Exception ex)
             {
