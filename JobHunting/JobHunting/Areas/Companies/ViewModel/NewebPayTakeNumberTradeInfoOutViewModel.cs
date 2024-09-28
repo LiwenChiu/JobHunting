@@ -1,6 +1,6 @@
 ﻿namespace JobHunting.Areas.Companies.ViewModel
 {
-    public class NewebPayTakeNumberTradeInfoViewModel
+    public class NewebPayTakeNumberTradeInfoOutViewModel
     {
         public string Status { get; set; }
 
@@ -16,7 +16,7 @@
 
         public string PaymentType { get; set; }
 
-        public DateTime ExpireDate { get; set; }
+        public string ExpireDate { get; set; }
 
         //ATM 回傳參數
         public string? BankCode { get; set; }

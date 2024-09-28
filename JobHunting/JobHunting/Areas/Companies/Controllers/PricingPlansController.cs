@@ -444,7 +444,21 @@ namespace JobHunting.Areas.Companies.Controllers
                 return BadRequest();
             }
 
-            ViewData["CallbackReturnResult"] = result;
+            var resultOut = new NewebPayReturnTradeInfoOutViewModel
+            {
+                Status = result.Status,
+                Message = result.Message,
+                MerchantID = result.MerchantID,
+                Amt = result.Amt,
+                TradeNo = result.TradeNo,
+                MerchantOrderNo = result.MerchantOrderNo,
+                PaymentType = result.PaymentType,
+                PayTime = result.PayTime.Value.ToString("yyyy年MM月dd日 HH時mm分ss秒"),
+                IP = result.IP,
+                EscrowBank = result.EscrowBank,
+            };
+
+            ViewData["CallbackReturnResult"] = resultOut;
 
             return View();
         }
@@ -653,7 +667,26 @@ namespace JobHunting.Areas.Companies.Controllers
                 return BadRequest();
             }
 
-            ViewData["CallbackTakeNumberReturnResult"] = result;
+            var resultOut = new NewebPayTakeNumberTradeInfoOutViewModel
+            {
+                Status = result.Status,
+                Message = result.Message,
+                MerchantID = result.MerchantID,
+                Amt = result.Amt,
+                TradeNo = result.TradeNo,
+                MerchantOrderNo = result.MerchantOrderNo,
+                PaymentType = result.PaymentType,
+                ExpireDate = result.ExpireDate.ToString("yyyy年MM月dd日 HH時mm分ss秒"),
+                BankCode = result.BankCode,
+                ATMCodeNo = result.ATMCodeNo,
+                CodeNo = result.CodeNo,
+                ExpireTime = result.ExpireTime,
+                Barcode_1 = result.Barcode_1,
+                Barcode_2 = result.Barcode_2,
+                Barcode_3 = result.Barcode_3,
+            };
+
+            ViewData["CallbackTakeNumberReturnResult"] = resultOut;
 
             return View();
         }
