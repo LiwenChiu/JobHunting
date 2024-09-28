@@ -64,5 +64,6 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public List<IFormFile>? CertificationImageFile { get; set; }
         public IFormFile? HeadshotImageFile { get; set; }
+
     }
 }

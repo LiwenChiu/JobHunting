@@ -16,10 +16,8 @@
 
         public string StatusType { get; set; }
 
-        public string TradeNo { get; set; }
+        public string? TradeNo { get; set; }
 
         public string? PaymentType { get; set; }
-
-
     }
 }

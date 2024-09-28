@@ -69,6 +69,7 @@
                     <th>{{item.applyDate}}</th>
                     <td>{{item.openingTitle}}</td>
                     <td>{{item.name}}</td>
+                    
                     @* 是否面試欄位 *@
                     <td v-html="selectInterviewYN(item.interviewYN)">   
                     </td>
@@ -79,13 +80,13 @@
                     <td>
                         <!-- Button trigger modal --> @* 查看履歷modal *@
                         <button type="button" data-bs-toggle="modal"
-                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
+                                :data-bs-target="'#resumeModal'" class="btn btn-primary" v-on:click="openresume(item)">
                             查看履歷
                         </button>
 
                         <!-- Modal -->
                         <div class="modal fade"
-                             :id="mergeID(item)"
+                             id="resumeModal"
                              tabindex="-1"
                              data-bs-backdrop="static"
                              data-bs-keyboard="false"
@@ -102,6 +103,7 @@
                                                 <h5 class="modal-titl text-center" id="modal" style="width:95% ;" >
                                                     {{item.name}}的履歷
                                                 </h5>
+                                                
                                                 <button type="button"
                                                         class="btn-close"
                                                         data-bs-dismiss="modal"
@@ -209,7 +211,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -275,6 +276,7 @@
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelText">訊息﹕</label>
                                     <textarea class="form-control" style="height:150px" name="錄用通知訊息" v-model="SendAdmission.AdmissionContent"></textarea>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -388,6 +390,8 @@
                     selectedHireYN: undefined,
                     selectedOpClassTitleId: '',
                     selectedOpTitleId: undefined,
+                    itemselected: "",
+
                     Sendinterview: {
                         Purpose: "",
                         Interviewdate: "",
@@ -565,29 +569,19 @@
                 },
                 //打開面試modal
                 openInterviewModal(item) {
-                    // 將資料賦予 selectedItem
-                    this.selectedItem = {
-                        companyId: item.companyId,
-                        candidateId: item.candidateId,
-                        openingId: item.openingId,
-                        resumeId: item.resumeId
-                    };
                     // 打開modal
                     let modal = new bootstrap.Modal(document.getElementById('interviewMailBtn'));
                     modal.show();
                 },
                 //打開錄取modal
                 openAdmissionModal(item) {
-                    // 將資料賦予 selectedItem
-                    this.selectedItem = {
-                        companyId: item.companyId,
-                        candidateId: item.candidateId,
-                        openingId: item.openingId,
-                        resumeId: item.resumeId
-                    };
+
                     // 打開modal
                     let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
                     modal.show();
+                },
+                openresume:function(item){
+                    this.itemselected = item;
                 },
                 //發送面試通知
                 SendInterviewLetter: function () {
@@ -597,9 +591,9 @@
                     const confirmdel = confirm("確定要發送?");
 
                     if (confirmdel == true) {
-                        request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.selectedItem.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.CandidateId = _this.itemselected.candidateId;
+                        request.OpeningId = _this.itemselected.openingId;
+                        request.ResumeId = _this.itemselected.resumeId;
                         request.Status = _this.Sendinterview.Interviewnotice;
                         request.SubjectLine = _this.Sendinterview.Purpose;
                         request.Content = _this.Sendinterview.Content;
@@ -632,14 +626,15 @@
                     }
 
                 },
-                SendAdmissionLetter: function () {
+                SendAdmissionLetter: function (item) {
                     let _this = this;
                     let request = {};
                     let confirmdel = confirm("確定要發送?");
                     if (confirmdel == true) {
-                        request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.selectedItem.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
+                        request.CandidateId = _this.itemselected.candidateId;
+                        request.OpeningId = _this.itemselected.openingId;
+                        request.ResumeId = _this.itemselected.resumeId;
+                        request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId;
                         request.Status = _this.SendAdmission.AdmissionStatus,
                             request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
                             request.Content = _this.SendAdmission.AdmissionContent,
@@ -648,6 +643,7 @@
                             request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
                             request.Address = _this.SendAdmission.AdmissionPlace,
                             request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
+
                             fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
                                 method: "POST",
                                 headers: {

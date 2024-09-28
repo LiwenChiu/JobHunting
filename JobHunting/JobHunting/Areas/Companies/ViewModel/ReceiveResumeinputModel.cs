@@ -30,5 +30,6 @@ namespace JobHunting.Areas.Companies.ViewModel
 
         public int OpeningId { get; set; }
 
+        public int ResumeOpeningRecordId { get; set; }
     }
 }
