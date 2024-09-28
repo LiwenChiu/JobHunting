@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -87,7 +88,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 TitleClassId = n.TitleClasses.Select(rtc => rtc.TitleClassId).ToList(),
                 TagId = n.Tags.Select(t => t.TagId).ToList(),
                 Headshot = n.Headshot, /*!= null ? Convert.ToBase64String(n.Headshot) : null,*/
-
+                ResumeOpeningRecordId = n.ResumeOpeningRecords.Select(r=>r.ResumeOpeningRecordId).FirstOrDefault(),
             }));
 
             return companies;
@@ -132,6 +133,23 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { company = "Resume not found" });
                 }
 
+                
+
+                ResumeOpeningRecord ror = new ResumeOpeningRecord
+                {
+                    CompanyId = companyId,
+                    OpeningId = siv.OpeningId,
+                    ResumeId = siv.ResumeId,
+                    ApplyDate = null,
+                    InterviewYN = false,
+                    HireYN = false,
+                    OpeningTitle = siv.OpeningTitle,
+                    CompanyName = company.CompanyName,
+                };
+                _context.ResumeOpeningRecords.Add(ror);
+                await _context.SaveChangesAsync();
+
+
                 Notification send = new Notification
                 {
                      CompanyId = companyId,
@@ -147,6 +165,7 @@ namespace JobHunting.Areas.Companies.Controllers
                      Address = siv.Address,
                      ReplyYN = siv.ReplyYN,
                      ReplyFirstYN = siv.ReplyFirstYN,
+                     ResumeOpeningRecordId = ror.ResumeOpeningRecordId,
                 };
 
                 _context.Notifications.Add(send);
@@ -181,6 +200,8 @@ namespace JobHunting.Areas.Companies.Controllers
                 {
                     return NotFound(new { company = "Resume not found" });
                 }
+                //var resumeOpeningRecord = _context.ResumeOpeningRecords.Where(r => r.ResumeId == siv.ResumeId && r.OpeningId == siv.OpeningId).FirstOrDefault();
+                //var ResumeOpeningRecordId = resumeOpeningRecord.ResumeOpeningRecordId;
 
                 Notification send = new Notification
                 {
@@ -197,6 +218,7 @@ namespace JobHunting.Areas.Companies.Controllers
                     Address = siv.Address,
                     ReplyYN = siv.ReplyYN,
                     ReplyFirstYN = siv.ReplyFirstYN,
+                    ResumeOpeningRecordId = siv.ResumeOpeningRecordId,
                 };
 
                 _context.Notifications.Add(send);
@@ -472,7 +494,7 @@ namespace JobHunting.Areas.Companies.Controllers
                               ApplyDate = n.ApplyDate,
                               InterviewYN = n.InterviewYN,
                               HireYN = n.HireYN,
-
+                              ResumeOpeningRecordId = n.ResumeOpeningRecordId,
                           }).ToListAsync();
 
 
