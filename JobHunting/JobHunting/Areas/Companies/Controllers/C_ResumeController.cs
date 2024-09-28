@@ -124,6 +124,8 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
+                var resumeOpeningRecordId = await _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == siv.ResumeOpeningRecordId).FirstOrDefaultAsync();
+
                 var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(CompanyId) || !int.TryParse(CompanyId, out int companyId))
                 {
@@ -136,9 +138,8 @@ namespace JobHunting.Areas.Companies.Controllers
                     return NotFound(new { company = "Resume not found" });
                 }
 
-                var resumeOpeningRecordId = _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == siv.ResumeOpeningRecordId).FirstOrDefaultAsync();
 
-                if (siv.ResumeOpeningRecordId == null)
+                if (siv.ResumeOpeningRecordId == null || resumeOpeningRecordId != null)
                 {
                     ResumeOpeningRecord ror = new ResumeOpeningRecord
                     {
@@ -174,43 +175,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
                     _context.Notifications.Add(send);
                     await _context.SaveChangesAsync();
-                }
-                else if(resumeOpeningRecordId !=null)
-                {
-                    ResumeOpeningRecord ror = new ResumeOpeningRecord
-                    {
-                        CompanyId = companyId,
-                        OpeningId = siv.OpeningId,
-                        ResumeId = siv.ResumeId,
-                        ApplyDate = null,
-                        InterviewYN = false,
-                        HireYN = false,
-                        OpeningTitle = siv.OpeningTitle,
-                        CompanyName = company.CompanyName,
-                    };
-                    _context.ResumeOpeningRecords.Add(ror);
-                    await _context.SaveChangesAsync();
-
-                    Notification send = new Notification
-                    {
-                        CompanyId = companyId,
-                        CandidateId = siv.CandidateId,
-                        OpeningId = siv.OpeningId,
-                        ResumeId = siv.ResumeId,
-                        Status = siv.Status,
-                        SubjectLine = siv.SubjectLine,
-                        Content = siv.Content,
-                        SendDate = siv.SendDate,
-                        AppointmentDate = siv.AppointmentDate,
-                        AppointmentTime = siv.AppointmentTime,
-                        Address = siv.Address,
-                        ReplyYN = siv.ReplyYN,
-                        ReplyFirstYN = siv.ReplyFirstYN,
-                        ResumeOpeningRecordId = ror.ResumeOpeningRecordId,
-                    };
-
-                    _context.Notifications.Add(send);
-                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "發送信件成功", });
                 }
                 else {
                     Notification send = new Notification
@@ -233,23 +198,15 @@ namespace JobHunting.Areas.Companies.Controllers
 
                     _context.Notifications.Add(send);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "發送信件成功", });
                 }
-
-
-
-
-
-
-
-
-
-
+                
             }
             catch(Exception ex)
             {
                 return Json(new { success = false, message = "發送信件失敗", });
             }
-            return Json(new { success = true, message = "發送信件成功", });
+            
         }
 
         [HttpPost]
