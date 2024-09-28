@@ -193,7 +193,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                 return Enumerable.Empty<OpeningStorageResumesOutputViewModel>();
             }
             var resumes = _context.Resumes.AsNoTracking()
-                .Where(r => r.CandidateId == candidateId && r.ReleaseYN == true)
+                .Where(r => r.CandidateId == candidateId)
                 .Select(r => new OpeningStorageResumesOutputViewModel
                 {
                     ResumeId = r.ResumeId,
@@ -242,14 +242,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
-            if (resume.ReleaseYN == false)
-            {
-                return new CandidatesApplyJobOutputViewModel
-                {
-                    AlertText = "履歷未開放",
-                    AlertStatus = false,
-                };
-            }
+            //if (resume.ReleaseYN == false)
+            //{
+            //    return new CandidatesApplyJobOutputViewModel
+            //    {
+            //        AlertText = "履歷未開放",
+            //        AlertStatus = false,
+            //    };
+            //}
 
             if (Candidate.Name == null || Candidate.Sex == null || Candidate.Birthday == null || Candidate.Phone == null || Candidate.Degree == null)
             {
