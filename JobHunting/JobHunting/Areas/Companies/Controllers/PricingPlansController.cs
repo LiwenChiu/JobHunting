@@ -635,13 +635,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 companyOrder.Status = true;
                 companyOrder.StatusType = "取號完成";
                 companyOrder.TradeNo = result.TradeNo;
-                companyOrder.PaymentType = result.PaymentType switch
-                {
-                    "VACC" => "ATM轉帳",
-                    "CVS" => "超商代碼繳費",
-                    "BARCODE" => "超商條碼繳費",
-                    _ => "錯誤",
-                };
+                companyOrder.PaymentType = result.PaymentType;
                 companyOrder.ExpireDate = result.ExpireDate;
             }
 
