@@ -5,6 +5,7 @@
         public int ResumeID { get; set; }
 
         public int CandidateID { get; set; }
+        public string Title { get; set; }
 
         public string Intro { get; set; }
 
