@@ -395,7 +395,22 @@ namespace JobHunting.Areas.Companies.Controllers
             }
             else
             {
+                companyOrder.Status = true;
                 companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
+
+                return BadRequest();
             }
 
             companyOrder.NewebPayStatus = NewebPayStatus;
@@ -403,21 +418,20 @@ namespace JobHunting.Areas.Companies.Controllers
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
             companyOrder.PayDate = result.PayTime;
+            companyOrder.ExpireDate = null;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
-                var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
 
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
             companyOrder.Status = true;
+
             _context.Entry(company).State = EntityState.Modified;
             _context.Entry(companyOrder).State = EntityState.Modified;
 
@@ -541,7 +555,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             // 接收TradeInfo參數
             NewebPayTakeNumberTradeInfoViewModel result = new NewebPayTakeNumberTradeInfoViewModel();
-            
+
             foreach (String key in decryptTradeCollection.AllKeys)
             {
                 if (key == "Status" && decryptTradeCollection[key] == "SUCCESS")
@@ -620,6 +634,15 @@ namespace JobHunting.Areas.Companies.Controllers
             {
                 companyOrder.Status = true;
                 companyOrder.StatusType = "取號完成";
+                companyOrder.TradeNo = result.TradeNo;
+                companyOrder.PaymentType = result.PaymentType switch
+                {
+                    "VACC" => "ATM轉帳",
+                    "CVS" => "超商代碼繳費",
+                    "BARCODE" => "超商條碼繳費",
+                    _ => "錯誤",
+                };
+                companyOrder.ExpireDate = result.ExpireDate;
             }
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
@@ -732,14 +755,37 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
             }
 
-            
+
             if (NewebPayStatus == "SUCCESS")
             {
+                if(companyOrder.StatusType == "付款成功")
+                {
+                    return Ok();
+                }
                 companyOrder.StatusType = "付款成功";
             }
             else
             {
+                companyOrder.Status = true;
+                if (companyOrder.StatusType == "付款失敗")
+                {
+                    return BadRequest();
+                }
                 companyOrder.StatusType = "付款失敗";
+                companyOrder.ExpireDate = null;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
+
+                return BadRequest();
             }
 
             companyOrder.NewebPayStatus = NewebPayStatus;
@@ -747,19 +793,18 @@ namespace JobHunting.Areas.Companies.Controllers
             companyOrder.TradeNo = result.TradeNo;
             companyOrder.PaymentType = result.PaymentType;
             companyOrder.PayDate = result.PayTime;
+            companyOrder.ExpireDate = null;
             companyOrder.IP = result.IP;
             companyOrder.EscrowBank = result.EscrowBank;
 
             var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
             if (company == null) { return NotFound(); }
-            if (!companyOrder.Status)
-            {
-                var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
-                var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
-                DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
-                deadline.AddDays(companyOrder.Duration);
-                company.Deadline = deadline;
-            }
+
+            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+            deadline = deadline.AddDays(companyOrder.Duration);
+            company.Deadline = deadline;
 
             companyOrder.Status = true;
             _context.Entry(company).State = EntityState.Modified;

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
+using Serilog.Events;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +61,7 @@ builder.Services.AddHangfire(configuration =>
 builder.Services.AddHangfireServer(); // 過去在 UseHangfireServer 的配置現在移到這裡
 builder.Services.AddScoped<PlanExpiredService>();
 builder.Services.AddScoped<NewebPaySearchService>();
+builder.Services.AddScoped<NewebPaySearchNonCurrentService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -73,6 +76,21 @@ builder.Services.AddAuthentication(options =>
 
 );
 builder.Services.AddAuthorization();  // 添加授權服務
+
+//Log.Logger = new LoggerConfiguration()
+//    .MinimumLevel.Information()
+//    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console()
+//    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
+
+// 設置: 讀取組態檔 (appsettings.json)
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -98,6 +116,7 @@ app.UseMiddleware<IgnoreRouteMiddleware>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSerilogRequestLogging();
 
 app.MapAreaControllerRoute(
     name: "Companies",
@@ -125,6 +144,7 @@ using (var scope = app.Services.CreateScope())
 {
     var companyService = scope.ServiceProvider.GetRequiredService<PlanExpiredService>();
     var NewebPaySearchService = scope.ServiceProvider.GetRequiredService<NewebPaySearchService>();
+    var NewebPaySearchNonCurrentService = scope.ServiceProvider.GetRequiredService<NewebPaySearchNonCurrentService>();
 
     var options = new RecurringJobOptions
     {
@@ -146,6 +166,9 @@ using (var scope = app.Services.CreateScope())
 
     //每小時執行一次，檢查Status==false的訂單，再於一小時後看他是否還是false，若還是就取消授權
     RecurringJob.AddOrUpdate("NewebPaySearchStatusFalse", () => NewebPaySearchService.NewebPaySearchStatusFalse(), "0 0 * ? * *", options);
+
+    //每天00:00:00執行一次，檢查非即時付款方式取號完成但超過過期時間還未付款卻沒有收到付款通知的訂單，再改資料庫
+    RecurringJob.AddOrUpdate("NewebPaySearchNonCurrentService", () => NewebPaySearchNonCurrentService.NewebPaySearchStatusFalse(), "0 0 * * *", options);
 }
 
 app.Run();

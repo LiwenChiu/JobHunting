@@ -253,6 +253,7 @@ CREATE TABLE CompanyOrders
 	Price money not null
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
+	[ExpireDate] datetime,
 	PayDate datetime,
 	Duration int not null,
 	[Status] bit not null default(0),
