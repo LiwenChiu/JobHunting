@@ -34,6 +34,6 @@
         public string CompanyName { get; set; }
 
         public DateOnly? ApplyDate { get; set; }
-
+        public int ResumeOpeningRecordId { get; set; }
     }
 }

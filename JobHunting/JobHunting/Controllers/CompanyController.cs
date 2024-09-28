@@ -308,6 +308,22 @@ namespace JobHunting.Controllers
             {
                 var CompanyId = int.Parse(companyIdClaim.Value);
                 var today = DateOnly.FromDateTime(DateTime.Now);
+
+                
+                ResumeOpeningRecord ror = new ResumeOpeningRecord
+                {
+                    CompanyId = CompanyId,
+                    OpeningId = letter.OpeningId,
+                    ResumeId = Convert.ToInt32(letter.ResumeId),
+                    ApplyDate = null,
+                    InterviewYN = false,
+                    HireYN = false,
+                    //OpeningTitle = siv.OpeningTitle,
+                    //CompanyName = company.CompanyName,
+                };
+                _context.ResumeOpeningRecords.Add(ror);
+                await _context.SaveChangesAsync();
+
                 Notification notificationLetter = new Notification();
                 if (letter != null)
                 {

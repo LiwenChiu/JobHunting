@@ -601,8 +601,10 @@
                         request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate);
                         request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime);
                         request.Address = _this.Sendinterview.place;
-                        request.ReplyYN = _this.SendAdmission.interviewReplyYN;
-                        request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
+                        request.ReplyYN = _this.Sendinterview.interviewReplyYN;
+                        request.ReplyFirstYN = _this.Sendinterview.interviewReplyFirstYN;
+                        request.OpeningTitle = _this.itemselected.OpeningTitle;
+                        request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId
                         fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
                             headers: {
