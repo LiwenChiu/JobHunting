@@ -22,7 +22,7 @@
         public string Title { get; set; }
         public string OpeningTitle { get; set; }
         public byte[] Headshot { get; set; }
-        public byte[] Certification { get; set; }
+
         public string? WorkExperience { get; set; }
         public string? Autobiography { get; set; }
         public int CandidateId { get; set; }
@@ -32,10 +32,11 @@
         public string? Intro { get; set; }
         public List<int> TagId { get; set; }
         public List<int> TitleClassId { get; set; }
+        public object? FileName { get; set; }
 
-        public List<IFormFile>? CertificationImageFile { get; set; }
         public IFormFile? HeadshotImageFile { get; set; }
-        
+        public int ResumeOpeningRecordId { get; set; }
+
 
     }
 }

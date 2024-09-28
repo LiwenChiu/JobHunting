@@ -109,9 +109,9 @@ namespace JobHunting.Areas.Candidates.Controllers
                     Reply = n.Reply,
                     ReplyTime = n.ReplyTime,
                     EditReplyYN = false,
-                    InterviewYN = n.Company.Openings.Where(o=>o.OpeningId == n.OpeningId).SelectMany(o=>o.ResumeOpeningRecords).Where(r=>r.ResumeId == n.ResumeId).Select(r=>r.InterviewYN).FirstOrDefault(),
-                    HireYN = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Select(r => r.HireYN).FirstOrDefault(),
-                    ResumeOpeningRecordId = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Select(r => r.ResumeOpeningRecordId).FirstOrDefault(),
+                    InterviewYN = n.Company.Openings.Where(o=>o.OpeningId == n.OpeningId).SelectMany(o=>o.ResumeOpeningRecords).Where(r=>r.ResumeId == n.ResumeId).Where(r=>r.ResumeOpeningRecordId == n.ResumeOpeningRecordId).Select(r=>r.InterviewYN).FirstOrDefault(),
+                    HireYN = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Where(r =>r.ResumeOpeningRecordId == n.ResumeOpeningRecordId).Select(r => r.HireYN).FirstOrDefault(),
+                    ResumeOpeningRecordId = n.ResumeOpeningRecordId
                 }).FirstOrDefaultAsync();
 
             if (notification == null)
@@ -156,7 +156,7 @@ namespace JobHunting.Areas.Candidates.Controllers
             }
 
 
-            //var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
+            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
 
 
 
@@ -165,9 +165,9 @@ namespace JobHunting.Areas.Candidates.Controllers
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
             //面試或錄取同意狀態
-            //resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
-            //resumeOpeningRecords.HireYN = nsrivm.HireYN;
-
+            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            resumeOpeningRecords.HireYN = nsrivm.HireYN;
+            resumeOpeningRecords.ApplyDate = DateOnly.FromDateTime(DateTime.Now);
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try
             {
@@ -218,14 +218,14 @@ namespace JobHunting.Areas.Candidates.Controllers
                 };
             }
 
-            //var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
+            var resumeOpeningRecords = await _context.ResumeOpeningRecords.FindAsync(nsrivm.ResumeOpeningRecordId);
             candidateNotification.Reply = nsrivm.Reply;
             candidateNotification.ReplyYN = true;
             candidateNotification.ReplyTime = DateTime.Now;
 
             //面試或錄取同意狀態
-            //resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
-            //resumeOpeningRecords.HireYN = nsrivm.HireYN;
+            resumeOpeningRecords.InterviewYN = nsrivm.InterviewYN;
+            resumeOpeningRecords.HireYN = nsrivm.HireYN;
             _context.Entry(candidateNotification).State = EntityState.Modified;
             try
             {

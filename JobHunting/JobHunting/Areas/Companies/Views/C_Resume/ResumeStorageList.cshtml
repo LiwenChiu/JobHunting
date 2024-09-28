@@ -136,19 +136,22 @@
                                                                     <label class="">
                                                                         <label class="mb-2 fw-bold">希望職缺: </label>
                                                                         {{ getTitleClassName(item.titleClassId) }}
-                                                                    </label>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{item.address}}</label>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <label for="" class="mb-2 fw-bold">
-                                                                        證照 :
-                                                                        <img v-if="item.certification != null" class="certification rounded float-end mx-4 img-fluid" :src="'data:image/jpeg;base64,' + item.certification" style="width:50px;height:50px" title="證照" />
-                                                                    </label>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="fw-bold">能力標籤:</label><label class="ms-2"></label>
+                                                                         </label>
+
+
+                                                                     </div>
+                                                                     <div class="col">
+                                                                    <label class="mb-2">希望上班地點: {{item.address}}</label>
+                                                                     </div>
+                                                                     <div class="col">
+                                                                         <label for="" class="mb-2">
+                                                                             證照 :
+                                                                        <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
+                                                                        
+                                                                         </label>
+                                                                     </div>
+                                                                     <div>
+                                                                         <label class="">能力標籤:</label>
                                                                     {{getTagName(item.tagId)}}
                                                                 </div>
                                                             </p>
@@ -180,11 +183,9 @@
 
 
                                             @* 發送錄取通知按鈕 *@
-                                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openAdmissionModal(item)"
-                                            @* data-bs-target="#OfferMailBtn" *@>
+@*                                             <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" v-on:click="getOpenings();openAdmissionModal(item)"
                                                 錄取
-                                            </button>
-                                            @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">拒絕</button> *@
+                                            </button> *@
                                         </div>
 
                                     </div>
@@ -201,16 +202,16 @@
         </div>
         <div>
             @* 發送錄取通知 *@
-            <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+            @* <div class="modal fade" id="OfferMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
                  aria-labelledby="modalTitleId " aria-hidden="true">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
                             <h3 class="CompanyNameh3 text-center" style="width:95%">錄用通知</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+                        </div> *@
                         @* 錄取通知內容 *@
-                        <div class="modal-body">
+                        @* <div class="modal-body">
                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
                                 <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                     <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
@@ -249,7 +250,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
 
             @* 發送面試通知 *@
             <div class="modal fade" id="interviewMailBtn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
@@ -264,9 +265,9 @@
                         <div class="modal-body">
                             <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                 <label for=" inputCompanyName" class="col-sm-2 col-form-label labelDate">選擇職缺：</label>
-                                <select v-model="openingId">
+                                <select v-model="selectedOpening">
                                     <option value="" class="" selected disabled>請選擇職缺</option>
-                                    <option v-for="(item,index) in Openings" :key="item.openingId" :value="item.openingId">{{item.title}}</option>
+                                    <option v-for="(item,index) in Openings" :key="item.openingId" :value="item">{{item.title}}</option>
                                 </select>
                             </div>
                             <div class="container bg-light" style="border-radius: 30px;width: 100%;">
@@ -296,7 +297,7 @@
                             </div>
                         </div>
                         <div class="modal-footer bg-warning">
-                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter">發送</button>
+                            <button type="submit" class="btn btn-outline-secondary" v-on:click="SendInterviewLetter(item)">發送</button>
                         </div>
                     </div>
                 </div>
@@ -358,7 +359,8 @@
                     noimagepreview: "/images/No_Image_Available.jpg",
                     resumes: [], //從後端撈回來的資料存入這邊
                     Openings: [],
-                    openingId: "",
+                    openingtitle:"",
+                    selectedOpening: "",
                     filter: "",
                     TagClasses: [],
                     Tags: [],
@@ -377,17 +379,17 @@
                         interviewReplyYN: false,
                         interviewReplyFirstYN: false,
                     },
-                    SendAdmission: {
-                        AdmissionSubjectLine: "",
-                        AdmissionDate: "",
-                        AdmissionTime: "",
-                        AdmissionPlace: "",
-                        AdmissionContent: "",
-                        AdmissionStatus: "錄取通知",
-                        AdmissionsendDate: new Date(),
-                        AdmissionsendReplyYN: false,
-                        AdmissionsendReplyFirstYN: false,
-                    },
+                    // SendAdmission: {
+                    //     AdmissionSubjectLine: "",
+                    //     AdmissionDate: "",
+                    //     AdmissionTime: "",
+                    //     AdmissionPlace: "",
+                    //     AdmissionContent: "",
+                    //     AdmissionStatus: "錄取通知",
+                    //     AdmissionsendDate: new Date(),
+                    //     AdmissionsendReplyYN: false,
+                    //     AdmissionsendReplyFirstYN: false,
+                    // },
                     selectedItem: {}, // 用儲存選中的資料
                     minDate: ''
                 };
@@ -495,6 +497,7 @@
                         }
                         else {
                             return _this.Openings = data;
+                            
                         }
                     }).catch(err => {
                         alert(JSON.stringify(err))
@@ -514,26 +517,29 @@
                     modal.show();
                 },
                 //打開錄取modal
-                openAdmissionModal(item) {
-                    // 將資料賦予 selectedItem
-                    this.selectedItem = {
-                        companyId: item.companyId,
-                        candidateId: item.candidateId,
-                        // openingId: item.openingId,
-                        resumeId: item.resumeId
-                    };
-                    // 打開modal
-                    let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
-                    modal.show();
-                },
+                // openAdmissionModal(item) {
+                //     // 將資料賦予 selectedItem
+                //     this.selectedItem = {
+                //         companyId: item.companyId,
+                //         candidateId: item.candidateId,
+                //         // openingId: item.openingId,
+                //         resumeId: item.resumeId
+                //     };
+                //     // 打開modal
+                //     let modal = new bootstrap.Modal(document.getElementById('OfferMailBtn'));
+                //     modal.show();
+                // },
+                // openresume: function (item) {
+                //     this.selectedItem = item;
+                // },
                 //發送面試通知
-                SendInterviewLetter: function () {
+                SendInterviewLetter: function (item) {
                     let _this = this;
                     let request = {};
                     const confirmdel = confirm("確定要發送?");
                     if (confirmdel == true) {
                         request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.openingId;
+                        request.OpeningId = _this.selectedOpening.openingId;
                         request.ResumeId = _this.selectedItem.resumeId;
                         request.Status = _this.Sendinterview.Interviewnotice;
                         request.SubjectLine = _this.Sendinterview.Purpose;
@@ -542,8 +548,9 @@
                         request.AppointmentDate = convertDateOnly(_this.Sendinterview.Interviewdate);
                         request.AppointmentTime = convertTimeOnly(_this.Sendinterview.Interviewtime);
                         request.Address = _this.Sendinterview.place;
-                        request.ReplyYN = _this.SendAdmission.interviewReplyYN;
-                        request.ReplyFirstYN = _this.SendAdmission.interviewReplyFirstYN;
+                        request.ReplyYN = _this.Sendinterview.interviewReplyYN;
+                        request.ReplyFirstYN = _this.Sendinterview.interviewReplyFirstYN;
+                        request.OpeningTitle = _this.selectedOpening.title;
                         fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
                             headers: {
@@ -567,45 +574,45 @@
                     }
 
                 },
-                SendAdmissionLetter: function () {
-                    let _this = this;
-                    let request = {};
-                    let confirmdel = confirm("確定要發送?");
-                    if (confirmdel == true) {
-                        request.CandidateId = _this.selectedItem.candidateId;
-                        request.OpeningId = _this.openingId;
-                        request.ResumeId = _this.selectedItem.resumeId;
-                        request.Status = _this.SendAdmission.AdmissionStatus,
-                            request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
-                            request.Content = _this.SendAdmission.AdmissionContent,
-                            request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
-                            request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
-                            request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
-                            request.Address = _this.SendAdmission.AdmissionPlace,
-                            request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
-                            fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json"  // 指定 JSON 格式
-                                },
-                                body: JSON.stringify(request),  // 將數據序列化為 JSON
-                            }).then(res => {
-                                return res.json();
-                            }).then(data => {
-                                if (data.success == true) {
-                                    alert(data.message);
-                                    location.reload(); // 刷新页面
-                                } else if (data.success == false) {
-                                    alert(data.message);
-                                };
-                            }).catch(err => {
-                                alert(JSON.stringify(err));
-                            })
-                    } else {
-                        alert("已取消操作")
-                    }
+                // SendAdmissionLetter: function (item) {
+                //     let _this = this;
+                //     let request = {};
+                //     let confirmdel = confirm("確定要發送?");
+                //     if (confirmdel == true) {
+                //         request.CandidateId = _this.selectedItem.candidateId;
+                //         request.OpeningId = _this.openingId;
+                //         request.ResumeId = _this.selectedItem.resumeId;
+                //         request.Status = _this.SendAdmission.AdmissionStatus,
+                //             request.SubjectLine = _this.SendAdmission.AdmissionSubjectLine,
+                //             request.Content = _this.SendAdmission.AdmissionContent,
+                //             request.SendDate = convertDateOnly(_this.SendAdmission.AdmissionsendDate),
+                //             request.AppointmentDate = convertDateOnly(_this.SendAdmission.AdmissionDate),
+                //             request.AppointmentTime = convertTimeOnly(_this.SendAdmission.AdmissionTime),
+                //             request.Address = _this.SendAdmission.AdmissionPlace,
+                //             request.ReplyYN = _this.SendAdmission.AdmissionsendReplyYN,
+                //             fetch(`${_this.baseAddress}/Companies/C_Resume/SendAdmission`, {
+                //                 method: "POST",
+                //                 headers: {
+                //                     "Content-Type": "application/json"  // 指定 JSON 格式
+                //                 },
+                //                 body: JSON.stringify(request),  // 將數據序列化為 JSON
+                //             }).then(res => {
+                //                 return res.json();
+                //             }).then(data => {
+                //                 if (data.success == true) {
+                //                     alert(data.message);
+                //                     location.reload(); // 刷新页面
+                //                 } else if (data.success == false) {
+                //                     alert(data.message);
+                //                 };
+                //             }).catch(err => {
+                //                 alert(JSON.stringify(err));
+                //             })
+                //     } else {
+                //         alert("已取消操作")
+                //     }
 
-                },
+                // },
                 removeCompanyResumeLikeRecords: function (item) {
                     let _this = this
                     let request = {
