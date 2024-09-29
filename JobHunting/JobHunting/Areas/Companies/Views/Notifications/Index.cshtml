@@ -203,6 +203,7 @@
                     baseAddress: "https://localhost:7169",
                     filterInput: null,
                     notifications: [],
+                    notificationsYN: true,
                     notificationModal: {},
                     deleteNotificationId: null,
                     pageStart: 1,
@@ -241,10 +242,6 @@
                             headers:{
                                 'Content-Type':'application/json'
                             }
-                        }).then(response => { 
-                            this.notificationModal = response.data;
-                            $("#modalId").modal("show");
-                        })
                         }).then(response => {
                             this.notificationModal = response.data;
                             this.interviewRadio = response.data.interviewYN;
