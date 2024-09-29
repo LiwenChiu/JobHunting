@@ -47,7 +47,6 @@ namespace JobHunting.Areas.Companies.Controllers
 
         [HttpGet]
         public async Task<IEnumerable<ResumeStorageViewModel>> ResumeStorageJson()
-            
         {
             var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
