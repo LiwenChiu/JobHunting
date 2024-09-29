@@ -55,7 +55,7 @@
                                 <span class="card-text"><i class="fa-solid fa-caret-right"></i> 日期: {{notification.appointmentDate}}</span>
                             </div>
                             <div class="card-footer text-center">
-                                <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modalId" v-on:click="showModal(notification.notificationId)">
+                                <button type="button" class="btn btn-primary btn-md" v-on:click="showModal(notification.notificationId)">
                                     查看
                                 </button>
                             </div>
@@ -203,6 +203,7 @@
                     baseAddress: "https://localhost:7169",
                     filterInput: null,
                     notifications: [],
+                    notificationsYN: true,
                     notificationModal: {},
                     deleteNotificationId: null,
                     pageStart: 1,
@@ -216,7 +217,10 @@
                     let request = {};
                     request.CompanyId = this.companyId;
                     request.filterInput = this.filterInput == null ? "" : this.filterInput;
-                    request.pageStart = this.pageStart
+                    // if(this.notifications.length == 0 && this.pageStart != 1){
+                    //     this.pageStart = this.pageStart - 1;
+                    // }
+                    request.pageStart = this.pageStart;
                     axios.post(`${this.baseAddress}/Companies/Notifications/GetNotificationLess`, request, { 
                         headers: { 'Content-Type': 'application/json' } 
                     })
@@ -243,6 +247,7 @@
                             this.interviewRadio = response.data.interviewYN;
                             this.HireRadio = response.data.hireYN;
                             this.ResumeOpeningRecordId = response.data.resumeOpeningRecordId;
+                            $("#modalId").modal("show");
                         })
                         .catch(err => { alert(err) });
                 },

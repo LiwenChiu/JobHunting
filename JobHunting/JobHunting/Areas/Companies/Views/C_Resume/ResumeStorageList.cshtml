@@ -18,7 +18,14 @@
 <div class="container-fluid py-2" id="resumeStorage">
     <div class="letters row">
         <template v-if="resumes.length == 0">
-
+            <template v-if="resumesYN">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </template>
+            <template v-else>
+                <strong>尚無收藏履歷</strong>
+            </template>
         </template>
         <template v-else>
             <div class="col-md-3 mb-4" v-for="item in resumes.slice(pageStart,pageEnd)">
@@ -145,10 +152,10 @@
 
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label class="mb-2">希望上班地點: {{item.address}}</label>
+                                                                        <label class="mb-2 fw-bold">希望上班地點: {{item.address}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">
+                                                                        <label for="" class="mb-2 fw-bold">
                                                                             證照 :
                                                                             <label v-for="(certifications,index) in item.fileName"><a v-bind:href="fileUrlReturn(certifications)">{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
 
@@ -363,6 +370,7 @@
                     MessageStatus: 1,
                     noimagepreview: "/images/No_Image_Available.jpg",
                     resumes: [], //從後端撈回來的資料存入這邊
+                    resumesYN: true,
                     Openings: [],
                     openingtitle: "",
                     selectedOpening: "",
@@ -463,7 +471,10 @@
                         return response.json();
                     })
                         .then(data => {
-                            return _this.resumes = data
+                            if(data.length == 0){
+                                this.resumesYN = false;
+                            }
+                            return _this.resumes = data;
                         }).catch(err => {
                             alert(JSON.stringify(err))
                         });
