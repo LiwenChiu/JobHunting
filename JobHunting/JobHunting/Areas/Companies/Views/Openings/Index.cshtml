@@ -278,9 +278,9 @@
                                                 <input type="text" v-model="item.contactEmail" class="form-control" />
                                                 <label class="fw-bold">薪資條件:</label>
                                                 <div class="">
-                                                    <input type="text" v-model="item.salaryMin" class="text-center fw-bold" placeholder="最低薪資" />
+                                                    <input type="text" v-model.number.trim="item.salaryMin" class="text-center fw-bold" placeholder="最低薪資" />
                                                     <span> - </span>
-                                                    <input type="text" v-model="item.salaryMax" class="text-center fw-bold" placeholder="最高薪資" />
+                                                    <input type="text" v-model.number.trim="item.salaryMax" class="text-center fw-bold" placeholder="最高薪資" />
                                                 </div>
                                                 <label class="fw-bold">上班時段:</label>
                                                 <input type="text" v-model="item.time" class="form-control" />
