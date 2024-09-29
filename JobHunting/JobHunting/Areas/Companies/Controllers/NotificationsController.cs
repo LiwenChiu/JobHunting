@@ -111,6 +111,9 @@ namespace JobHunting.Areas.Companies.Controllers
                     ReplyYN = n.ReplyYN,
                     Reply = n.Reply,
                     ReplyTime = n.ReplyTime,
+                    InterviewYN = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Where(r => r.ResumeOpeningRecordId == n.ResumeOpeningRecordId).Select(r => r.InterviewYN).FirstOrDefault(),
+                    HireYN = n.Company.Openings.Where(o => o.OpeningId == n.OpeningId).SelectMany(o => o.ResumeOpeningRecords).Where(r => r.ResumeId == n.ResumeId).Where(r => r.ResumeOpeningRecordId == n.ResumeOpeningRecordId).Select(r => r.HireYN).FirstOrDefault(),
+                    ResumeOpeningRecordId = n.ResumeOpeningRecordId
                 }).Single();
 
             if (notification == null)
