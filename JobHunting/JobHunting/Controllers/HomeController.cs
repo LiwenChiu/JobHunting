@@ -912,6 +912,7 @@ namespace JobHunting.Controllers
                              b.Benefits.Contains(opening.SearchText) ||
                              b.Description.Contains(opening.SearchText) ||
                              b.Title.Contains(opening.SearchText) ||
+                             b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
@@ -990,6 +991,7 @@ namespace JobHunting.Controllers
                              b.Benefits.Contains(opening.SearchText) ||
                              b.Description.Contains(opening.SearchText) ||
                              b.Title.Contains(opening.SearchText) ||
+                             b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
