@@ -108,7 +108,13 @@
                                         <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
                                             公司名稱<span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control col" v-model="item.companyName">
+                                        <input type="text" class="form-control col" v-model="item.companyName" disabled>
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
+                                            統一編號<span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" disabled="false" class="form-control col" v-model="item.guiNumber">
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas">
                                         <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
@@ -120,23 +126,21 @@
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                         <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
-                                            統一編號<span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" disabled="false" class="form-control col" v-model="item.guiNumber">
-                                    </div>
-                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
-                                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
                                             電子郵件<span class="text-danger">*</span>
                                         </label>
                                         <input type="email" class="form-control col" v-model="item.contactEmail">
-
+                                    </div>
+                                    <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
+                                        <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
+                                            聯絡人姓名<span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control col" v-model="item.contactName">
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                         <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
                                             通訊電話<span class="text-danger">*</span>
                                         </label>
                                         <input type="text" class="form-control col" v-model="item.contactPhone">
-
                                     </div>
                                     <div class="d-sm-flex my-1 py-3 inputAreas justify-content-around">
                                         <label for=" inputCompanyIntroHeader" class="col-sm-2 col-form-label labelCompanyName fw-bold">
