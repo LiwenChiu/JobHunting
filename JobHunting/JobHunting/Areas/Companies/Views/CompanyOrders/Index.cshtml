@@ -17,7 +17,7 @@
         <div class="col-sm-2">
             <input id="searchOrder" class="form-control" placeholder="搜尋關鍵字" v-model.trim="searchOrderInput" />
         </div>
-        <button type="button" class="col-sm-1 btn btn-warning btn-sm text-light" v-on:click="cleanFilter()">清空</button>
+        <button type="button" class="col-sm-1 btn btn-warning btn-sm text-light" v-on:click="cleanFilter()" style="height:">清空</button>
     </div>
 
     <div style="overflow-y:auto;height:81vh">
@@ -31,26 +31,38 @@
                     <td>付款時間</td>
                     <td>付款狀態</td>
                     <td></td>
-                   @*  <td></td> *@
+                    @*  <td></td> *@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="order in orders">
-                    <td>{{order.title}}</td>
-                    <td>{{order.duration}}</td>
-                    <td>{{order.price}}</td>
-                    <td>{{order.orderDate}}</td>
-                    <td>{{order.payDate == null ? "無" : order.payDate}}</td>
-                    <td>{{order.statusType}}</td>
-                    <td>
-                        <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
-                    </td>
-                    @* <td>
+                <template v-if="orders.length == 0">
+                    <template v-if="ordersYN">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <h1>暫無訂單紀錄</h1>
+                    </template>
+                </template>
+                <template v-else>
+                    <tr v-for="order in orders">
+                        <td>{{order.title}}</td>
+                        <td>{{order.duration}}</td>
+                        <td>{{order.price}}</td>
+                        <td>{{order.orderDate}}</td>
+                        <td>{{order.payDate == null ? "無" : order.payDate}}</td>
+                        <td>{{order.statusType}}</td>
+                        <td>
+                            <button type="button" class="btn btn-outline-secondary" v-on:click="SendToNewebPaySearch(order.orderId)">詳情</button>
+                        </td>
+                        @* <td>
                         <template v-if="order.statusType == '取號完成'">
-                            <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
+                        <button type="button" class="btn btn-danger text-light" v-on:click="SendToNewebPayCancel(order.orderId)">取消</button>
                         </template>
-                    </td> *@
-                </tr>
+                        </td> *@
+                    </tr>
+                </template>
             </tbody>
         </table>
     </div>
@@ -157,6 +169,7 @@
                     // baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     orders: [],
+                    ordersYN: true,
                     deadline: null,
                     searchOrderInput: "",
                     searchData: [],
@@ -174,21 +187,26 @@
                             'search': this.searchOrderInput // Sending the search parameter in the header
                         }
                     })
-                    .then(response => this.orders = response.data)
+                        .then(response => {
+                            this.orders = response.data;
+                            if (response.data.length == 0) {
+                                this.ordersYN = false;
+                            }
+                        })
                         .catch(err => { alert(err) });
                 },
                 showDeadline() {
                     // 拿Companies裡的Deadline
                     axios.get(`${this.baseAddress}/Companies/CompanyOrders/GetDeadline`)
-                    .then(response => this.deadline = (response.data ? response.data : "無"))
+                        .then(response => this.deadline = (response.data ? response.data : "無"))
                         .catch(err => { alert(err) })
                         .finally(() => {
-                            if(this.deadline === null){
+                            if (this.deadline === null) {
                                 alert("請購買方案");
                             }
                         });
                 },
-                cleanFilter:function(){
+                cleanFilter: function () {
                     this.searchOrderInput = "";
                     this.getCompanyOrders();
                 },
@@ -214,9 +232,9 @@
                     }).catch(error => {
                         alert(error.response.status + " " + error.response.statusText + '\n' + error.response.data);
                     }).finally(() => {
-                            this.getCompanyOrders();
-                            this.showDeadline();
-                        });
+                        this.getCompanyOrders();
+                        this.showDeadline();
+                    });
                 },
                 SendToNewebPayCancel: function (orderId) {
                     this.selectedCancelOrder = orderId;

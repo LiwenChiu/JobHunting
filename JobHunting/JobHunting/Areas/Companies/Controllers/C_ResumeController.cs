@@ -124,7 +124,7 @@ namespace JobHunting.Areas.Companies.Controllers
         {
             try
             {
-                var resumeOpeningRecordId = await _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == siv.ResumeOpeningRecordId).FirstOrDefaultAsync();
+                //var resumeOpeningRecordId = await _context.ResumeOpeningRecords.Where(c => c.ResumeOpeningRecordId == siv.ResumeOpeningRecordId).FirstOrDefaultAsync();
 
                 var CompanyId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(CompanyId) || !int.TryParse(CompanyId, out int companyId))
@@ -139,7 +139,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
 
 
-                if (siv.ResumeOpeningRecordId == null || resumeOpeningRecordId != null)
+                if (siv.ResumeOpeningRecordId == null)
                 {
                     ResumeOpeningRecord ror = new ResumeOpeningRecord
                     {
