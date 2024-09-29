@@ -6,6 +6,7 @@
 
         public int CandidateID { get; set; }
         public string Title { get; set; }
+        public object TitleClass { get; set; }
 
         public string Intro { get; set; }
 

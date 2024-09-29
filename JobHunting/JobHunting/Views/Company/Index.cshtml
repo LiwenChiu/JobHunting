@@ -106,6 +106,8 @@
             <thead id="listHeader" class="table-warning" align="center">
                 <tr>
                     <td>姓名</td>
+                    <td>履歷名稱</td>
+                    <td>希望職缺類型</td>
                     <td>年紀</td>
                     <td>性別</td>
                     <td>學歷</td>
@@ -118,6 +120,8 @@
             <tbody id="listItem" align="center">
                 <tr v-for="(item,index) in resumes">
                     <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`>{{item.name}}</a></td>
+                    <td>{{item.title}}</td>
+                    <td><p>{{getTagTitleClass(item.titleClass)}}</p></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
@@ -240,10 +244,10 @@
                 <div class="modal-footer bg-warning">
                     <template v-if="memberRole == 'company'">
                         <template v-if="item.likeYN == false">
-                        <button class="btn btn-danger" v-on:click="addFavorite(item.resumeID)">儲存</button>
+                        <button class="btn btn-danger" v-on:click="addFavorite(item)">儲存</button>
                         </template>
                         <template v-else>
-                        <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.resumeID)">已存</button>
+                        <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item)">已存</button>
                         </template>
                     </template>
                     <button type="button" class="btn btn-primary" v-on:click="goToPage(item)">詳細</button>
@@ -353,16 +357,25 @@
                     }
                     return str;
                 },
+                getTagTitleClass(item) {
+                    let str = "";
+                    for (let i = 0; i < item.length; i++) {
+                        str += item[i].titleClassName
+                        if (i < item.length - 1) {
+                            str += "、"
+                        }
+                    }
+                    return str;
+                },
                 addFavorite(item) {
                     let self = this;
                     request = {
-                        resumeId: item,
+                        resumeId: item.resumeID,
                     };
                     axios.post(`${self.baseAddress}/Company/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        alert(res.data);
-                        self.filterResumes();
+                        item.likeYN = true;
                     }).catch(error => {
                         console.error(error);
                     })
@@ -370,13 +383,12 @@
                 deleteFavorite(item) {
                     let self = this;
                     let request = {
-                        resumeId: item,
+                        resumeId: item.resumeID,
                     };
                     axios.post(`${self.baseAddress}/Company/DeleteFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        alert(res.data);
-                        self.filterResumes();
+                        item.likeYN = false;
                     }).catch(error => {
                         console.error(error);
                     })
