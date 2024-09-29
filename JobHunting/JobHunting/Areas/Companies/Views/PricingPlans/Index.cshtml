@@ -11,22 +11,36 @@
 <div id="PricingPlans" class="py-2">
     <h3 class="" align="center">方案選擇</h3>
     <div class="container" style="overflow-y:auto;height:73vh">
-        <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
-            <div class="col-11 pt-sm-1">
-                <div class="card overcard">
-                    <div class="card-body">
-                        <div class="row row-cols-2 align-items-center">
-                            <p class="col-sm-2">{{plan.title}}</p>
-                            <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
-                            <p class="col-sm-2">{{plan.duration}}天</p>
-                            <p class="col-sm-2">NT${{plan.price}}</p>
-                            <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                            <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
+        <template v-if="pricingPlans.length === 0">
+            <template v-if="pricingPlansYN">
+                <div class="mx-auto my-auto">
+                    <div class="spinner-border text-warning" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </template>
+            <template v-else>
+                <strong>現無方案</strong>
+            </template>
+        </template>
+        <template v-else>
+            <div class="container-fluid row" style="display:flex;align-items: center;justify-content: center;" v-for="plan in pricingPlans">
+                <div class="col-11 pt-sm-1">
+                    <div class="card overcard">
+                        <div class="card-body">
+                            <div class="row row-cols-2 align-items-center">
+                                <p class="col-sm-2">{{plan.title}}</p>
+                                <button type="button" class="col-1 btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#Intro" v-on:click="clickedPlanIntro = plan.intro;">簡介</button>
+                                <p class="col-sm-2">{{plan.duration}}天</p>
+                                <p class="col-sm-2">NT${{plan.price}}</p>
+                                <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
+                                <button type="button" class="btn btn-warning col-sm-3 text-light" data-bs-toggle="modal" data-bs-target="#paymentAgreement" v-on:click="selectedPlanId = plan.planId;selectedPlanTitle = plan.title;selectedPlanPrice = plan.price; selectedPlanDiscount = plan.discount;">選擇</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
     <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
         <div class="col-md-10">
@@ -105,6 +119,7 @@
                     CompanyId: 1,
                     filterPlantext: "",
                     pricingPlans: [],
+                    pricingPlansYN: true,
                     clickedPlanIntro: "",
                     selectedPlanTitle: "",
                     selectedPlanId: null,
@@ -126,6 +141,9 @@
                         }
                     }).then(response => {
                         this.pricingPlans = response.data;
+                        if (response.data.length == 0) {
+                            this.pricingPlansYN = false;
+                        }
                     }).catch(err => { alert(err) });
                 },
                 // 傳送至藍新金流
