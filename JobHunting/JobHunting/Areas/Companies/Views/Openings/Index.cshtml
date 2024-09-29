@@ -45,7 +45,16 @@
                 </a>
             </div>
             <template v-if="openings.length == 0">
-
+                <template v-if="openingsYN">
+                    <div class="px-1">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </template>
+                <template v-else>
+                    <h1>尚無職缺</h1>
+                </template>
             </template>
             <template v-else>
                 @* 職缺card *@
@@ -504,6 +513,7 @@
                     //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
                     openings: [],
+                    openingsYN: true,
                     openingsfilter: [],
                     selectedDegreeName: '',
                     alertText: "",
@@ -769,6 +779,9 @@
                     axios.get(`${_this.baseAddress}/Companies/Openings/OpeningJson`).then(
                         res => {
                             _this.openings = res.data;
+                            if(res.data.length == 0){
+                                this.openingsYN = false;
+                            }
                         }
                     ).catch(
                         err => { alert(err) }
