@@ -33,10 +33,18 @@
                     @* 職缺內容按鈕 *@
                 </div>
                 <div class="card-footer text-center" style="background-color:transparent">
-                    <button type="button" data-bs-toggle="modal"
-                            :data-bs-target="'#'+mergeID(item)" class="btn btn-primary" v-on:click="selectedOpeningId = item.openingId">
-                        詳細
-                    </button>
+                    <template v-if="item.releaseYN == true">
+                        <button type="button" data-bs-toggle="modal"
+                                :data-bs-target="'#'+mergeID(item)" class="btn btn-primary" v-on:click="selectedOpeningId = item.openingId">
+                            詳細
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button type="button" data-bs-toggle="modal"
+                                :data-bs-target="'#'+mergeID(item)" class="btn btn-secondary" v-on:click="selectedOpeningId = item.openingId" disabled>
+                            已下架
+                        </button>
+                    </template>
                 </div>
             </div>
         </div>
