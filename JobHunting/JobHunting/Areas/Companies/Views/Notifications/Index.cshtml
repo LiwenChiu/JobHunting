@@ -138,7 +138,25 @@
                         <template v-if="notificationModal.replyFirstYN === true">
                             <div class="container d-grid">
                                 <label class="h5">求職者回覆:</label>
+                                <hr>
                                 <template v-if="notificationModal.replyYN === true">
+                                    <template v-if="notificationModal.status == '面試邀請'">
+                                        <div class="row-3">
+                                            <span>是否接受面試 :</span>
+                                            <span class="bg-secondary text-light rounded-pill px-2" style="width:auto">{{InterviewynHireyn(notificationModal.interviewYN)}}</span>
+                                        </div>
+                                        
+                                    </template>
+                                    <template v-else>
+                                        <div class="row-3">
+                                            <span>是否接受錄取 : </span>
+                                            <span class="bg-secondary text-light rounded-pill px-2" style="width:auto">{{InterviewynHireyn(notificationModal.hireYN)}}</span>
+                                        </div>
+                                    </template>
+                                        
+                                        
+
+
                                     <button class="btn btn-warning text-light" v-on:click="confirmReply()">確認回覆</button>
                                 </template>
                                 <div class="border border-3"><p>{{notificationModal.reply}}</p></div>
@@ -190,6 +208,7 @@
                     pageStart: 1,
                     totalDataCount: null,   //總共幾筆資料
                     totalPage: null,    //總共幾頁
+                    ResumeOpeningRecordId: "",
                 };
             },
             methods: {
@@ -208,6 +227,10 @@
                         })
                         .catch(err => { alert(err) });
                 },
+                InterviewynHireyn(notificationModal) {
+                    return notificationModal == true ? "同意" : "不同意";
+                },
+
                 showModal(notificationId) {
                     let request = {};
                     request.NotificationId = notificationId,
@@ -215,7 +238,12 @@
                             headers:{
                                 'Content-Type':'application/json'
                             }
-                        }).then(response => this.notificationModal = response.data)
+                        }).then(response => {
+                            this.notificationModal = response.data;
+                            this.interviewRadio = response.data.interviewYN;
+                            this.HireRadio = response.data.hireYN;
+                            this.ResumeOpeningRecordId = response.data.resumeOpeningRecordId;
+                        })
                         .catch(err => { alert(err) });
                 },
                 confirmReply: function () {
