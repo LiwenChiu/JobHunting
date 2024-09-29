@@ -28,6 +28,7 @@
         public string ContactEmail { get; set; }
 
         public string CompanyName { get; set; }
+        public object TitleClass { get; set; }
 
         public bool? LikeYN { get; set; }
     }
