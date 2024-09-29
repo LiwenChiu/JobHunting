@@ -135,10 +135,10 @@
                         </button>
                             <template v-if="memberRole=='candidate'">
                                 <template v-if="item.likeYN == false">
-                                    <button class="btn btn-danger" v-on:click="addFavorite(item.openingId)">儲存</button>
+                                    <button class="btn btn-danger" v-on:click="addFavorite(item)">儲存</button>
                                 </template>
                                 <template v-else>
-                                    <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item.openingId)">已存</button>
+                                    <button class="btn btn-outline-danger" v-on:click="deleteFavorite(item)">已存</button>
                                 </template>
                             </template>
                     </td>
@@ -452,28 +452,26 @@
                 addFavorite(item) {
                     let self = this;
                     request = {
-                        openingId: item,
+                        openingId: item.openingId,
                     };
                     axios.post(`${self.baseAddress}/Home/AddFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        // alert(res.data)
-                        self.filterOpenings();
+                        item.likeYN = true;
                     }).catch(error => {
                         console.error(error);
                     })
                 },
-                deleteFavorite: function (openingId) {
+                deleteFavorite: function (item) {
                     let self = this;
                     let request = {
-                        OpeningId: openingId,
+                        OpeningId: item.openingId,
                     };
 
                     axios.post(`${self.baseAddress}/Home/DeleteFavorite`, request, {
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
-                        // alert(res.data)
-                        this.filterOpenings();
+                        item.likeYN = false;
                     }).catch(error => {
                         console.error(error);
                     })

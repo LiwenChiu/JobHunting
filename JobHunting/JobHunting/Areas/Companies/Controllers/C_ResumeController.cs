@@ -106,7 +106,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return new List<GetOpenIngsOutputmodel>(); // 或處理未授權訪問的情況
             }
 
-            var query = await _context.Openings.Include(a => a.Company).Where(rs => rs.CompanyId.ToString() == CompanyId).ToListAsync();
+            var query = await _context.Openings.Include(a => a.Company).Where(rs => rs.CompanyId.ToString() == CompanyId).Where(x => x.ReleaseYN == true).ToListAsync();
             
             var opening = query.Select(p => new GetOpenIngsOutputmodel
             {
