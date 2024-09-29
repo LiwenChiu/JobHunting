@@ -126,12 +126,13 @@ namespace JobHunting.Controllers
             var companyIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (companyIdClaim == null)
             {
-                var sourceUnLogin = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(z => z.Companies).Where(b => b.ReleaseYN == true).ToList()
+                var sourceUnLogin = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies).Where(b => b.ReleaseYN == true).ToList()
                     .Select(c => new
                     {
                         ResumeID = c.ResumeId,
                         CandidateID = c.CandidateId,
                         Intro = c.Intro,
+                        Title = c.Title,
                         Autobiography = c.Autobiography,
                         WorkExperience = c.WorkExperience,
                         WishAddress = c.Address,
@@ -140,6 +141,7 @@ namespace JobHunting.Controllers
                         Birthday = c.Candidate.Birthday,
                         Degree = c.Candidate.Degree,
                         Address = c.Candidate.Address,
+                        TitleClass = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName }),
                         skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                         Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
                         LikeYN = false,
@@ -163,6 +165,8 @@ namespace JobHunting.Controllers
                 {
                     sourceUnLogin = sourceUnLogin.Where(b =>
                             resume.searchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
+                            b.Title.Contains(resume.searchText) ||
+                            b.TitleClass.Any(x => x.TitleClassName.Contains(resume.searchText)) ||
                             b.Sex == resume.Sex ||
                             b.Age.ToString().Contains(resume.searchText) ||
                             b.Address.Contains(resume.searchText) ||
@@ -175,6 +179,8 @@ namespace JobHunting.Controllers
                 var temp = sourceUnLogin.Select(x => new CompanyResumes
                 {
                     ResumeID = x.ResumeID,
+                    Title = x.Title,
+                    TitleClass = x.TitleClass,
                     CandidateID = x.CandidateID,
                     Intro = x.Intro,
                     Autobiography = x.Autobiography,
@@ -195,7 +201,7 @@ namespace JobHunting.Controllers
             else
             {
                 var companyId = int.Parse(companyIdClaim.Value);
-                var sourceLogin = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(z => z.Companies).Where(b => b.ReleaseYN == true).ToList()
+                var sourceLogin = _context.Resumes.Include(a => a.Candidate).Include(x => x.Tags).Include(y => y.TitleClasses).Include(z => z.Companies).Where(b => b.ReleaseYN == true).ToList()
                     .Select(c => new
                     {
                         ResumeID = c.ResumeId,
@@ -210,6 +216,7 @@ namespace JobHunting.Controllers
                         Birthday = c.Candidate.Birthday,
                         Degree = c.Candidate.Degree,
                         Address = c.Candidate.Address,
+                        TitleClass = c.TitleClasses.Select(z => new { z.TitleClassId, z.TitleClassName }),
                         skill = c.Tags.Select(z => new { z.TagId, z.TagName }),
                         Age = c.Candidate.Birthday.HasValue ? CalculateAge(c.Candidate.Birthday.Value, today) : 0,
                         LikeYN = c.Companies.Where(a => a.CompanyId == companyId).FirstOrDefault() != null,
@@ -233,6 +240,8 @@ namespace JobHunting.Controllers
                 {
                     sourceLogin = sourceLogin.Where(b =>
                             resume.searchText.Any(c => b.Name.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0) ||  //不區分英文字母大小寫，逐一檢查
+                            b.Title.Contains(resume.searchText) ||
+                            b.TitleClass.Any(x => x.TitleClassName.Contains(resume.searchText)) ||
                             b.Sex == resume.Sex ||
                             b.Age.ToString().Contains(resume.searchText) ||
                             b.Address.Contains(resume.searchText) ||
@@ -256,6 +265,7 @@ namespace JobHunting.Controllers
                     WorkExperience = x.WorkExperience,
                     WishAddress = x.WishAddress,
                     Degree = x.Degree,
+                    TitleClass = x.TitleClass,
                     TagObj = x.skill,
                     LikeYN = x.LikeYN,
                 });
@@ -292,7 +302,7 @@ namespace JobHunting.Controllers
 
             int companyId = int.Parse(companyIdClaim.Value);
 
-            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == companyId).Select(p => new OpeningsListViewModel
+            return Json(_context.Openings.Include(a => a.Company).Where(c => c.CompanyId == companyId).Where(c => c.ReleaseYN == true).Select(p => new OpeningsListViewModel
             {
                 OpeningId = p.OpeningId,
                 CompanyId = p.CompanyId,

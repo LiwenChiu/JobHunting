@@ -125,8 +125,8 @@
                                 <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{item.wishTime}}</label>
                             </div>
                             <div class="col">
-                                <label class="mb-2"  v-for="title in item.titleObj">
-                                    <label class="fw-bold">希望職缺: </label><label class="ms-2">{{title.titleClassName}} </label>
+                                <label class="mb-2" >
+                                    <label class="fw-bold">希望職缺: </label><label class="ms-2" v-for="(title,index) in item.titleObj">{{title.titleClassName}}<span v-if="index < item.titleObj.length-1">、</span></label>
                                 </label>
                             </div>
                             <div class="col">

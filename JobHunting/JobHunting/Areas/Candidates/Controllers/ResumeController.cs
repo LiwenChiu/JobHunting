@@ -346,7 +346,7 @@ namespace JobHunting.Areas.Candidates.Controllers
 
                 // 儲存變更並將 ResumeId 自動生成
                 await _context.SaveChangesAsync();
- 
+            
 
             }
             catch (Exception ex) 
