@@ -86,9 +86,9 @@ builder.Services.AddAuthorization();  // 添加授權服務
 //    .CreateLogger();
 
 // 設置: 讀取組態檔 (appsettings.json)
-//Log.Logger = new LoggerConfiguration()
-//    .ReadFrom.Configuration(builder.Configuration)
-//    .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
 
 builder.Host.UseSerilog();
 

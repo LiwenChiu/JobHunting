@@ -29,9 +29,9 @@ CREATE TABLE Companies
 		references CompanyClasses(CompanyClassId)
 		on delete set null,
 	[Address] nvarchar(100),
-    Intro nvarchar(200),
-	Benefits nvarchar(200),
-    Picture varbinary(max),
+    Intro nvarchar(MAX),
+	Benefits nvarchar(MAX),
+    Picture varbinary(MAX),
     ContactName nvarchar(30) not null,
     ContactPhone nvarchar(24) not null,
     ContactEmail nvarchar(320) not null,
@@ -62,11 +62,11 @@ CREATE TABLE Openings
 	CompanyId int not null
 		references Companies(CompanyId)
 		on delete cascade,
-	Title nvarchar(60) not null,
+	Title nvarchar(100) not null,
 	[Address] nvarchar(100),
-	[Description] nvarchar(300) not null,
+	[Description] nvarchar(MAX) not null,
 	Degree nvarchar(20),
-	Benefits nvarchar(200),
+	Benefits nvarchar(MAX),
 	InterviewYN bit not null default(0),
 	SalaryMax money,
 	SalaryMin money,
@@ -117,8 +117,8 @@ CREATE TABLE Resumes
 	CandidateId int not null
 		references Candidates(CandidateId)
 		on delete cascade,
-	Title nvarchar(60) not null,
-	Intro nvarchar(200),
+	Title nvarchar(100) not null,
+	Intro nvarchar(2000),
 	Headshot varbinary(Max),
 	Autobiography nvarchar(Max),
 	WorkExperience nvarchar(Max),
@@ -157,7 +157,7 @@ CREATE TABLE ResumeOpeningRecords
 	OpeningId int
 		references Openings(OpeningId)
 		on delete cascade,
-	OpeningTitle nvarchar(60),
+	OpeningTitle nvarchar(100),
 	CompanyId int,
 	CompanyName nvarchar(60),
 	ApplyDate date,
@@ -227,7 +227,7 @@ GO
 CREATE TABLE PricingPlans
 (
 	PlanId int primary key identity,
-	Title nvarchar(40) not null,
+	Title nvarchar(100) not null,
 	Intro nvarchar(100),
 	Duration int not null,
 	Price money not null
@@ -249,7 +249,7 @@ CREATE TABLE CompanyOrders
 	OrderNumber int not null,
 	CompanyName nvarchar(60) not null,
 	GUINumber nchar(8) not null,
-	Title nvarchar(40) not null,
+	Title nvarchar(100) not null,
 	Price money not null
 		CHECK(Price >= 0), 
 	OrderDate datetime not null,
