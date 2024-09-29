@@ -752,7 +752,7 @@ namespace JobHunting.Areas.Companies.Controllers
 
             if (NewebPayStatus == "SUCCESS")
             {
-                if(companyOrder.StatusType == "付款成功")
+                if (companyOrder.StatusType == "付款成功")
                 {
                     return Ok();
                 }
@@ -782,35 +782,39 @@ namespace JobHunting.Areas.Companies.Controllers
                 return BadRequest();
             }
 
-            companyOrder.NewebPayStatus = NewebPayStatus;
-            companyOrder.NewebPayMessage = result.Message;
-            companyOrder.TradeNo = result.TradeNo;
-            companyOrder.PaymentType = result.PaymentType;
-            companyOrder.PayDate = result.PayTime;
-            companyOrder.ExpireDate = null;
-            companyOrder.IP = result.IP;
-            companyOrder.EscrowBank = result.EscrowBank;
-
-            var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
-            if (company == null) { return NotFound(); }
-
-            var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
-            var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
-            DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
-            deadline = deadline.AddDays(companyOrder.Duration);
-            company.Deadline = deadline;
-
-            companyOrder.Status = true;
-            _context.Entry(company).State = EntityState.Modified;
-            _context.Entry(companyOrder).State = EntityState.Modified;
-
-            try
+            if (companyOrder.NewebPayStatus != NewebPayStatus)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest();
+                companyOrder.NewebPayStatus = NewebPayStatus;
+                companyOrder.NewebPayMessage = result.Message;
+                companyOrder.TradeNo = result.TradeNo;
+                companyOrder.PaymentType = result.PaymentType;
+                companyOrder.PayDate = result.PayTime;
+                companyOrder.ExpireDate = null;
+                companyOrder.IP = result.IP;
+                companyOrder.EscrowBank = result.EscrowBank;
+
+                var company = await _context.Companies.FindAsync(companyOrder.CompanyId);
+                if (company == null) { return NotFound(); }
+
+                var taiwanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+                var nowTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, taiwanTimeZone);
+                DateTime deadline = (DateTime)(company.Deadline.HasValue ? company.Deadline : nowTime);
+                deadline = deadline.AddDays(companyOrder.Duration);
+                company.Deadline = deadline;
+
+                _context.Entry(company).State = EntityState.Modified;
+                companyOrder.Status = true;
+
+                _context.Entry(companyOrder).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
             }
 
             return Ok();
