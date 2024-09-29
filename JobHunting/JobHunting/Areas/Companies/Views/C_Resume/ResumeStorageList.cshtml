@@ -145,10 +145,10 @@
 
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label class="mb-2">希望上班地點: {{item.address}}</label>
+                                                                        <label class="mb-2 fw-bold">希望上班地點: {{item.address}}</label>
                                                                     </div>
                                                                     <div class="col">
-                                                                        <label for="" class="mb-2">
+                                                                        <label for="" class="mb-2 fw-bold">
                                                                             證照 :
                                                                             <label v-for="(certifications,index) in item.fileName"><a v-bind:href="fileUrlReturn(certifications)">{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
 
@@ -650,8 +650,7 @@
 
                 },
                 fileUrlReturn: function (certifications) {
-                    let urlStr = `${this.baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`;
-                    return urlStr.replace(" ", "");
+                    return `${this.baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`;
                 }
             },
             watch: {
