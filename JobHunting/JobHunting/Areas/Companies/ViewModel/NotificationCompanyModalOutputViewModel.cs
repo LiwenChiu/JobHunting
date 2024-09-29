@@ -32,5 +32,11 @@
 
         public DateTime? ReplyTime { get; set; }
 
+
+        public bool InterviewYN { get; set; }
+
+        public bool HireYN { get; set; }
+
+        public int ResumeOpeningRecordId { get; set; }
     }
 }
