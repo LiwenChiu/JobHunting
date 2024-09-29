@@ -2,7 +2,7 @@
 {
     public class OpeningSelectInputViewModel
     {
-        public string? ClassNumber { get; set; }
+        public int? ClassNumber { get; set; }
         public int? Salary { get; set; }
         public string AreaName { get; set; }
         public string? SearchText { get; set; }
