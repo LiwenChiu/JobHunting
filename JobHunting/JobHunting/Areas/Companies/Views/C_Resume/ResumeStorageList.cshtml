@@ -141,17 +141,17 @@
 
                                                                      </div>
                                                                      <div class="col">
-                                                                    <label class="mb-2">希望上班地點: {{item.address}}</label>
+                                                                    <label class="mb-2 fw-bold">希望上班地點: {{item.address}}</label>
                                                                      </div>
                                                                      <div class="col">
-                                                                         <label for="" class="mb-2">
+                                                                    <label for="" class="mb-2 fw-bold">
                                                                              證照 :
                                                                         <label v-for="(certifications,index) in item.fileName"> <a :href=`${baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`>{{certifications.certificationName}}</a><span v-if="index < item.fileName.length-1">、</span></label>
                                                                         
                                                                          </label>
                                                                      </div>
                                                                      <div>
-                                                                         <label class="">能力標籤:</label>
+                                                                    <label class="fw-bold">能力標籤:</label>
                                                                     {{getTagName(item.tagId)}}
                                                                 </div>
                                                             </p>
