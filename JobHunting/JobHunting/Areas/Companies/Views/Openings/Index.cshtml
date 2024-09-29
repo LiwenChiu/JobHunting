@@ -105,30 +105,35 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="">職缺名稱:</label>
+                                            <label class="fw-bold">職缺名稱:</label>
                                             <input type="text" class="form-control" name="title" value="" placeholder="請輸入職缺名稱" v-model="Title" />
-                                            <label class="">需求人數:</label>
+                                            <label class="fw-bold">需求人數:</label>
                                             <input type="text" class="form-control" name="RequiredNumber" value="" placeholder="請輸入需求人數" v-model.number.trim="RequiredNumber" />
-                                            <label class="">工作地點:</label>
+                                            <label class="fw-bold">工作地點:</label>
                                             <input type="text" class="form-control" name="Address" value="" placeholder="請輸入地址" v-model="Address" />
-                                            <label class="">連絡人:</label>
+                                            <label class="fw-bold">連絡人:</label>
                                             <input type="text" class="form-control" name="ContactName" value="" placeholder="請輸入聯絡人姓名" v-model="ContactName" />
-                                            <label class="">連絡電話:</label>
+                                            <label class="fw-bold">連絡電話:</label>
                                             <input type="text" class="form-control" name="ContactPhone" value="" placeholder="請輸入聯絡電話" v-model="ContactPhone" />
-                                            <label class="">電子郵件:</label>
+                                            <label class="fw-bold">電子郵件:</label>
                                             <input type="text" class="form-control" name="ContactEmail" value="" placeholder="請輸入聯絡電子郵件" v-model="ContactEmail" />
-                                            <label class="">薪資條件:</label>
+                                            <label class="fw-bold">薪資條件:</label>
                                             <div class="">
-                                                <input type="text" value="" v-model="SalaryMin" class="text-center" placeholder="最低薪資" />
+                                                <input type="text" value="" v-model.number.trim="SalaryMin" class="text-center" placeholder="最低薪資" />
                                                 <span> -- </span>
-                                                <input type="text" value="" v-model="SalaryMax" class="text-center" placeholder="最高薪資" />
+                                                <input type="text" value="" v-model.number.trim="SalaryMax" class="text-center" placeholder="最高薪資" />
                                             </div>
-                                            <label class="">上班時段:</label>
+                                            <label class="fw-bold">上班時段:</label>
                                             <input type="text" value="" v-model="Time" class="form-control" />
                                         </div>
 
                                         <div class="mb-3">
-                                            <p>
+                                            <label class="fw-bold">學歷要求:</label>
+                                            <select v-model="selectedDegreeName">
+                                                <option value="" selected>--請選擇--</option>
+                                                <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
+                                            </select>
+                                            <p class="mt-3">
                                                 <label>
                                                     <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
                                                 </label>
@@ -164,59 +169,55 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <label class="">學歷要求:</label>
-                                            <select v-model="selectedDegreeName">
-                                                <option value="" selected>--請選擇--</option>
-                                                <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <p>
-                                                <label>
-                                                    <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
-                                                    <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
-                                                </label>
-                                            </p>
-                                            <div class="collapse" id="TagsCollapse">
-                                                <div class="card card-body">
-                                                    <template v-for="item in TagClasses">
-                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
-                                                            {{item.tagClassName}}
-                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
-                                                        </button>
-                                                        <div class="collapse" v-bind:id="ReturnClassNameId(item)">
-                                                            <div class="row">
-                                                                <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
-                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
-                                                                    <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                            <div>
+                                                <p>
+                                                    <label>
+                                                        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                        <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
+                                                    </label>
+                                                </p>
+                                                <div class="collapse" id="TagsCollapse">
+                                                    <div class="card card-body">
+                                                        <template v-for="item in TagClasses">
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                {{item.tagClassName}}
+                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,TagChecked) > 0">{{selectedFilterTagClass(item.tagClassId,TagChecked)}}</span>
+                                                            </button>
+                                                            <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                <div class="row">
+                                                                    <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                        <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
+                                                                        <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <hr />
-                                                    </template>
-                                                    <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
-                                                        其他
-                                                        <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
-                                                    </button>
-                                                    <div class="collapse" id="otherClass">
-                                                        <div class="row">
-                                                            <div class="col-2" v-for="Tag in filterTagClass(0)">
-                                                                <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
-                                                                <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                            <hr />
+                                                        </template>
+                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                            其他
+                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(0,TagChecked) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
+                                                        </button>
+                                                        <div class="collapse" id="otherClass">
+                                                            <div class="row">
+                                                                <div class="col-2" v-for="Tag in filterTagClass(0)">
+                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
+                                                                    <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="form-textarea" class="col-form-label">福利:</label>
+                                            <label for="form-textarea" class="col-form-label fw-bold">福利:</label>
                                             <textarea class="form-control" id="benefits" v-model="Benefits" value="" style="height:100px"></textarea>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                            <label for="form-textarea" class="col-form-label fw-bold">工作內容:</label>
                                             <textarea class="form-control" id="description" v-model="Description" value="" style="height:300px"></textarea>
                                         </div>
                                     </div>
@@ -263,31 +264,37 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label class="">職缺名稱:</label>
+                                                <label class="fw-bold">職缺名稱:</label>
                                                 <input type="text" v-model="item.title" class="form-control" />
-                                                <label class="">需求人數:</label>
+                                                <label class="fw-bold">需求人數:</label>
                                                 <input type="text" v-model.number.trim="item.requiredNumber" class="form-control" />
-                                                <label class="">工作地點:</label>
+                                                <label class="fw-bold">工作地點:</label>
                                                 <input type="text" v-model="item.address" class="form-control" />
-                                                <label class="">連絡人:</label>
+                                                <label class="fw-bold">連絡人:</label>
                                                 <input type="text" v-model="item.contactName" class="form-control" />
-                                                <label class="">連絡電話:</label>
+                                                <label class="fw-bold">連絡電話:</label>
                                                 <input type="text" v-model="item.contactPhone" class="form-control" />
-                                                <label class="">電子郵件:</label>
+                                                <label class="fw-bold">電子郵件:</label>
                                                 <input type="text" v-model="item.contactEmail" class="form-control" />
-                                                <label class="">薪資條件:</label>
+                                                <label class="fw-bold">薪資條件:</label>
                                                 <div class="">
-                                                    <input type="text" v-model="item.salaryMin" class="text-center" placeholder="最低薪資" />
+                                                    <input type="text" v-model.number.trim="item.salaryMin" class="text-center fw-bold" placeholder="最低薪資" />
                                                     <span> - </span>
-                                                    <input type="text" v-model="item.salaryMax" class="text-center" placeholder="最高薪資" />
+                                                    <input type="text" v-model.number.trim="item.salaryMax" class="text-center fw-bold" placeholder="最高薪資" />
                                                 </div>
-                                                <label class="">上班時段:</label>
+                                                <label class="fw-bold">上班時段:</label>
                                                 <input type="text" v-model="item.time" class="form-control" />
                                             </div>
 
                                             <div class="mb-3">
+                                                @* 學歷要求 *@
+                                                <label class="fw-bold">學歷要求:</label>
+                                                <select v-model="item.degree">
+                                                    <option value="">--請選擇--</option>
+                                                    <option v-for="Degree in DegreeRequired" :value="Degree.DegreeName">{{Degree.DegreeName}}</option>
+                                                </select>
                                                 @* 職缺類別 *@
-                                                <p>
+                                                <p class="mt-3">
                                                     <label>
                                                         <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
                                                     </label>
@@ -323,60 +330,55 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @* 學歷要求 *@
-                                                <label class="">學歷要求:</label>
-                                                <select v-model="item.degree">
-                                                    <option value="">--請選擇--</option>
-                                                    <option v-for="Degree in DegreeRequired" :value="Degree.DegreeName">{{Degree.DegreeName}}</option>
-                                                </select>
-                                            </div>
-                                            @* 能力標籤 *@
-                                            <div>
-                                                <p>
-                                                    <label>
-                                                        <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
-                                                    </label>
-                                                </p>
-                                                <div class="collapse" id="TagsCollapse">
-                                                    <div class="card card-body">
-                                                        <template v-for="item in TagClasses">
-                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
-                                                                {{item.tagClassName}}
-                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,selectedTagId) > 0">{{selectedFilterTagClass(item.tagClassId,selectedTagId)}}</span>
+                                                @* 能力標籤 *@
+                                                <div>
+                                                    <p>
+                                                        <label>
+                                                            <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
+                                                        </label>
+                                                    </p>
+                                                    <div class="collapse" id="TagsCollapse">
+                                                        <div class="card card-body">
+                                                            <template v-for="item in TagClasses">
+                                                                <button class="astext overcard" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="Returnhashtag(ReturnClassNameId(item))" aria-expanded="false" v-bind:aria-controls="ReturnClassNameId(item)">
+                                                                    {{item.tagClassName}}
+                                                                    <span class="badge bg-warning" v-if="selectedFilterTagClass(item.tagClassId,selectedTagId) > 0">{{selectedFilterTagClass(item.tagClassId,selectedTagId)}}</span>
+                                                                </button>
+                                                                <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                                    <div class="row">
+                                                                        <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                            <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
+                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </template>
+                                                            <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
+                                                                其他
+                                                                <span class="badge bg-warning" v-if="selectedFilterTagClass(0,selectedTagId) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
                                                             </button>
-                                                            <div class="collapse" v-bind:id="ReturnClassNameId(item)">
+                                                            <div class="collapse" id="otherClass">
                                                                 <div class="row">
-                                                                    <div class="col-4" v-for="Tag in filterTagClass(item.tagClassId)">
+                                                                    <div class="col-2" v-for="Tag in filterTagClass(0)">
                                                                         <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
                                                                         <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            <hr />
-                                                        </template>
-                                                        <button class="astext overcard" type="button" data-bs-toggle="collapse" data-bs-target="#otherClass" aria-expanded="false" aria-controls="otherClass">
-                                                            其他
-                                                            <span class="badge bg-warning" v-if="selectedFilterTagClass(0,selectedTagId) > 0">{{selectedFilterTagClass(0,TagChecked)}}</span>
-                                                        </button>
-                                                        <div class="collapse" id="otherClass">
-                                                            <div class="row">
-                                                                <div class="col-2" v-for="Tag in filterTagClass(0)">
-                                                                    <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="selectedTagId" />
-                                                                    <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="form-textarea" class="col-form-label">福利:</label>
+                                                <label for="form-textarea" class="col-form-label fw-bold">福利:</label>
                                                 <textarea class="form-control" id="benefits" v-model="item.benefits" style="height:100px"></textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                                <label for="form-textarea" class="col-form-label fw-bold">工作內容:</label>
                                                 <textarea class="form-control" id="description" v-model="item.description" style="height:300px"></textarea>
                                             </div>
                                         </div>
@@ -411,30 +413,30 @@
                                                 <p>{{item.title}}</p>
                                                 <label class="">公司名稱:</label>
                                                 <p>{{item.companyName}}</p> *@
-                                                <label class="">需求人數:</label>
+                                                <label class="fw-bold">需求人數:</label>
                                                 <p>{{item.requiredNumber}}</p>
-                                                <label class="">工作地點:</label>
+                                                <label class="fw-bold">工作地點:</label>
                                                 <p>{{item.address}}</p>
-                                                <label class="">連絡人:</label>
+                                                <label class="fw-bold">連絡人:</label>
                                                 <p>{{item.contactName}}</p>
-                                                <label class="">連絡電話:</label>
+                                                <label class="fw-bold">連絡電話:</label>
                                                 <p>{{item.contactPhone}}</p>
-                                                <label class="">電子郵件:</label>
+                                                <label class="fw-bold">電子郵件:</label>
                                                 <p>{{item.contactEmail}}</p>
-                                                <label class="">薪資條件:</label>
+                                                <label class="fw-bold">薪資條件:</label>
                                                 <p>{{item.salaryMin}} - {{item.salaryMax}}</p>
-                                                <label class="">上班時段:</label>
+                                                <label class="fw-bold">上班時段:</label>
                                                 <p>{{item.time}}</p>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="">職缺類別:</label>
+                                                <label class="fw-bold">職缺類別:</label>
                                                 <p>
                                                     {{ getTitleClassName(item.titleClassId) }}
                                                 </p>
-                                                <label class="">學歷要求:</label><span>{{item.degree}}</span>
+                                                <label class="fw-bold">學歷要求:</label><span>{{item.degree}}</span>
                                             </div>
                                             <div>
-                                                <label class="">能力標籤:</label>
+                                                <label class="fw-bold">能力標籤:</label>
                                                 <p>
                                                     {{ getTagName(item.tagId) }}
                                                 </p>
@@ -442,11 +444,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="form-textarea" class="col-form-label">福利:</label>
+                                                <label for="form-textarea" class="col-form-label fw-bold">福利:</label>
                                                 <p style="height:200px">{{item.benefits}}</p>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-textarea" class="col-form-label">工作內容:</label>
+                                                <label for="form-textarea" class="col-form-label fw-bold">工作內容:</label>
                                                 <p style="height:200px">{{item.description}}</p>
                                             </div>
                                         </div>

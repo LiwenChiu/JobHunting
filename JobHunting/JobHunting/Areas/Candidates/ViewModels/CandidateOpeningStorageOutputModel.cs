@@ -35,5 +35,7 @@
         public List<int> TitleClassId { get; set; }
 
         public List<int> TagId { get; set; }
+
+        public bool ReleaseYN {  get; set; }
     }
 }
