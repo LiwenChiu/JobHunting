@@ -61,6 +61,7 @@ namespace JobHunting.Areas.Candidates.Controllers
                     TagId = ror.Tags.Select(t => t.TagId).ToList(),
                     Benefits = ror.Benefits,
                     Degree = ror.Degree,
+                    ReleaseYN = ror.ReleaseYN,
                 });
 
             if (query == null)
