@@ -95,7 +95,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
 
-                                            <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                            <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
                                             <div>
                                                 <a href="#" class="mb-3" v-on:click.prevent="triggerFileInput">
                                                     <div>
@@ -111,31 +111,34 @@
                                             </div>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2" size="10">
+                                                    <label class="mb-2 fw-bold">
                                                         名字:
+                                                    </label><label class="ms-2">
                                                         {{createResume.name}}
                                                     </label>
                                                 </div>
                                                 <div>
-                                                    <label for="" class="mb-2">性別 : {{Sexif(createResume.sex)}}</label>
+                                                    <label for="" class="mb-2 fw-bold">性別 :  </label><label class="ms-2">{{Sexif(createResume.sex)}}</label>
 
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">生日 : {{createResume.birthday}}</label>
+                                                    <label for="" class="mb-2 fw-bold">生日 :  </label><label class="ms-2">{{createResume.birthday}}</label>
 
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">電話 : {{createResume.phone}}</label>
-                                                    <label for="" class="mb-2 mx-3">學歷 : {{createResume.degree}}</label>
+                                                    <label for="" class="mb-2 fw-bold">電話 :  </label><label class="ms-2">{{createResume.phone}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">郵件 : {{createResume.email}}</label>
+                                                    <label for="" class="mb-2 fw-bold">學歷 :  </label><label class="ms-2">{{createResume.degree}}</label>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="" class="mb-2">就業狀態 :{{createResume.employmentStatus}}</label>
+                                                    <label for="" class="mb-2 fw-bold">郵件 :  </label><label class="ms-2">{{createResume.email}}</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{createResume.employmentStatus}}</label>
                                                 </div>
                                                 <div>
-                                                    <p class="card-text">
+                                                    <p class="card-text fw-bold">
                                                         自我介紹：
                                                         <textarea name="" id="" class="form-control overflow-auto" rows="6" v-model="ResumeIntro"></textarea>
                                                     </p>
@@ -148,7 +151,7 @@
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                            <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
                                             <p class="card-text">
                                                 <textarea name="" id="" class="form-control overflow-auto" rows="12" v-model.lazy="WorkExperience" style="height:440px"></textarea>
                                             </p>
@@ -161,12 +164,20 @@
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                            <h5 class="card-title fw-bold" style="text-align:center">求職條件</h5>
                                             <p class="card-text">
                                                 <div class="col">
-                                                    <label class="mb-2">希望上班時段: <input type="text" v-model="timeR"></label>
+                                                    <label class="mb-2 fw-bold">希望上班時段: <input type="text" v-model="timeR"></label>
                                                 </div>
-
+                                                <div class="col">
+                                                    <label class="mb-2 fw-bold">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="mb-2 fw-bold">
+                                                        證照:
+                                                        <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
+                                                    </label>
+                                                </div>
                                                 <div class="mb-3">
                                                     <p>
                                                         <label>
@@ -206,28 +217,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div>
-
-
-                                                    <div class="col">
-                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="hopeaddress"></label>
-                                                    </div>
-
-                                                    <div class="col">
-                                                        <label for="" class="mb-2">
-                                                            證照
-                                                            <input id="CertificationInsertFile" type="file" accept="image/*" multiple />
-                                                        </label>
-                                                    </div>
-
                                                     <p>
                                                         <label>
                                                             <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
                                                             <label><span class="badge bg-primary" v-for="item in TagCheckedOpening"></span></label>
                                                         </label>
                                                     </p>
-
                                                     <div class="collapse" id="TagsCollapse">
                                                         <div class="card card-body">
                                                             <template v-for="item in TagClasses">
@@ -260,16 +256,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </p>
-
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title" style="text-align:center">自傳</h5>
+                                            <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
                                             <p class="card-text">
                                                 <textarea name="" id="" class="form-control overflow-auto" rows="9" v-model.lazy="Autobiography"></textarea>
                                             </p>
@@ -278,7 +272,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 ">
-                                <span class="form-control text-center ">
+                                <span class="form-control text-center fw-bold">
                                     履歷狀態：
                                     <select v-model.lazy="releaseYN" class="btn btn-primary ms-4" disabled>
                                         <option :value="true">開放</option>
@@ -335,7 +329,7 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">個人資料</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">個人資料</h5>
                                                 <div>
                                                     <a href="#" class="mb-3" v-on:click.prevent="">
                                                         <div>
@@ -350,46 +344,39 @@
 
                                                 <p class="card-text">
                                                     <div class="col">
-                                                        <label class="mb-2" size="10">
-                                                            姓名:{{ResumeD.name}}
-                                                        </label>
+                                                        <label class="mb-2 fw-bold">姓名 : </label><label class="ms-2">{{ResumeD.name}} </label>
                                                     </div>
                                                     <div>
-                                                        <label for="" class="mb-2">性別 : {{Sexif(ResumeD.sex)}}</label>
+                                                        <label for="" class="mb-2 fw-bold">性別 : </label><label class="ms-2">{{Sexif(ResumeD.sex)}}</label>
 
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">生日 : {{ResumeD.birthday}}</label>
+                                                        <label for="" class="mb-2 fw-bold">生日 : </label><label class="ms-2">{{ResumeD.birthday}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">電話 : {{ResumeD.phone}}</label>
-                                                        <label for="" class="mb-2 mx-3">學歷 : {{ResumeD.degree}}</label>
+                                                        <label for="" class="mb-2 fw-bold">電話 : </label><label class="ms-2">{{ResumeD.phone}}</label>
+                                                        <label for="" class="mb-2 mx-3 fw-bold">學歷 : </label><label class="ms-2">{{ResumeD.degree}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">郵件 : {{ResumeD.email}}</label>
+                                                        <label for="" class="mb-2 fw-bold">郵件 : </label><label class="ms-2">{{ResumeD.email}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label for="" class="mb-2">就業狀態 : {{ResumeD.employmentStatus}}</label>
+                                                        <label for="" class="mb-2 fw-bold">就業狀態 : </label><label class="ms-2">{{ResumeD.employmentStatus}}</label>
                                                     </div>
                                                     <div>
-                                                        <p class="card-text">
+                                                        <p class="card-text fw-bold">
                                                             自我介紹：
                                                             <textarea name="" id="" class="form-control" rows="6" v-model="ResumeD.intro"></textarea>
                                                         </p>
                                                     </div>
-
                                                 </p>
-
-
-
-
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">工作經驗</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">工作經驗</h5>
                                                 <p class="card-text">
                                                     <textarea name="" id="" class="form-control" rows="12" v-model.lazy="ResumeD.workExperience" style="height:440px"></textarea>
                                                 </p>
@@ -397,24 +384,43 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">求職條件</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">求職條件</h5>
                                                 <p class="card-text">
 
                                                     <div class="col">
-                                                        <label class="mb-2">上班時段: <input type="text" v-model.lazy="ResumeD.time"></label>
+                                                        <label class="mb-2 fw-bold">上班時段: <input type="text" v-model.lazy="ResumeD.time"></label>
                                                     </div>
                                                     <div class="col">
-                                                        <p>
+                                                        <label class="mb-2 fw-bold">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="" class="mb-2 fw-bold">
+                                                            證照:
+                                                            <label v-for="(certifications,index) in CertificationList">
+                                                                <label :id='"cer"+certifications.certificationId'>
+                                                                    <input type="button" class="btn btn-outline-primary btn-sm" :value="certifications.certificationName" v-on:click="deltCertifications(certifications)" />
+                                                                    <span v-if="index < CertificationList.length-1">、</span>
+                                                                </label>
+                                                            </label>
+
+                                                        </label>
+                                                        <br>
+                                                        <label>
+                                                            <input id="CertificationEditFile" type="file" accept="image/*" />
+
+                                                        </label>
+                                                        <burron class="btn btn-primary btn-sm" v-on:click="upload(ResumeD)">上傳檔案</burron>
+                                                    </div>
+                                                    <div class="col">
+                                                        <p class="mt-3">
                                                             <label>
                                                                 <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
                                                             </label>
                                                         </p>
-
                                                         <div class="collapse" id="TitleClassCollapse">
                                                             <div class="card card-body">
                                                                 <template v-for="item in titleCategory">
@@ -446,30 +452,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
-
                                                     </div>
-                                                    <div class="col">
-                                                        <label class="mb-2">希望上班地點: <input type="text" v-model.lazy="ResumeD.address"></label>
-                                                    </div>
-                                                    <div class="col">
-                                                        <label for=""  class="mb-2">
-                                                            證照:
-                                                            <label v-for="(certifications,index) in CertificationList">
-                                                                <label :id='"cer"+certifications.certificationId'>
-                                                                    <input type="button" class="btn btn-outline-primary btn-sm" :value="certifications.certificationName" v-on:click="deltCertifications(certifications)" />
-                                                                    <span v-if="index < CertificationList.length-1">、</span>
-                                                                </label>
-                                                            </label>
-                                                            
-                                                        </label>
-                                                        <br>
-                                                        <label>
-                                                            <input id="CertificationEditFile" type="file" accept="image/*" />
-                                                            
-                                                        </label>
-                                                        <burron class="btn btn-primary btn-sm" v-on:click="upload(ResumeD)">上傳檔案</burron>
-                                                    </div>
+                                                    
                                                     <div>
                                                         <p>
                                                                 <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TagsCollapse" aria-expanded="false" aria-controls="TagsCollapse">能力標籤</button>
@@ -501,8 +485,7 @@
                                                                     <div class="row">
                                                                         <div class="col-2" v-for="Tag in filterTagClass(0)">
                                                                             <input type="checkbox" v-bind:id="ReturnNameId(Tag)" v-bind:value="Tag.tagId" v-model="TagChecked" />
-
-                                                                            <label>                   <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
+                                                                            <label v-bind:for="ReturnNameId(Tag)">{{Tag.tagName}}</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -517,7 +500,7 @@
                                     <div class="col-sm-6">
                                         <div class="card mb-3">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="text-align:center">自傳</h5>
+                                                <h5 class="card-title fw-bold" style="text-align:center">自傳</h5>
                                                 <p class="card-text">
                                                     <textarea name="" id="" class="form-control" rows="10" v-model.lazy="ResumeD.autobiography"></textarea>
                                                 </p>
@@ -610,16 +593,10 @@
                                                         <label class="mb-2 fw-bold">上班時段: </label><label class="ms-2">{{ResumeD.time}}</label>
                                                     </div>
                                                     <div class="col">
-                                                        <label class="">
-                                                            <label class="mb-2 fw-bold">
-                                                                希望職缺:
-                                                            </label>
-                                                            {{ getTitleClassName(ResumeD.titleClassId) }}
-                                                        </label>
-                                                    </div>
-                                                    <div class="col">
                                                         <label class="mb-2 fw-bold">希望上班地點: </label><label class="ms-2">{{ResumeD.address}}</label>
                                                     </div>
+                                                    
+                                                    
                                                     <div class="col">
                                                         <label for="" class="mb-2 fw-bold">
                                                             證照:
@@ -628,7 +605,14 @@
                                                         </label>
 
                                                     </div>
-
+                                                    <div class="col">
+                                                        <label class="">
+                                                            <label class="mb-2 fw-bold">
+                                                                希望職缺:
+                                                            </label>
+                                                            {{ getTitleClassName(ResumeD.titleClassId) }}
+                                                        </label>
+                                                    </div>
                                                     <div>
                                                         <label class="fw-bold">能力標籤:</label><label class="ms-2"></label>
                                                         {{getTagName(ResumeD.tagId)}}
@@ -1244,13 +1228,13 @@
 
                     let form = new FormData();
                     form.append("ResumeId", ResumeD.resumeid);
-                    form.append("Address", ResumeD.address);
+                    form.append("Address", ResumeD.address ??"");
                     form.append("Title", ResumeD.title);
-                    form.append("Autobiography", ResumeD.autobiography);
-                    form.append("WorkExperience", ResumeD.workExperience);
-                    form.append("Time", ResumeD.time);
+                    form.append("Autobiography", ResumeD.autobiography?? "");
+                    form.append("WorkExperience", ResumeD.workExperience?? "");
+                    form.append("Time", ResumeD.time?? "");
                     form.append("ReleaseYN", ResumeD.releaseYN);
-                    form.append("Intro", ResumeD.intro);
+                    form.append("Intro", ResumeD.intro?? "");
                     //手動新增每個元素到 FormData
                     _this.selectedtitleClassId.forEach((id, index) => {
                         form.append(`TitleClassId[${index}]`, id);
