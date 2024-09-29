@@ -31,23 +31,24 @@
             <div class="col-sm-2">
                 <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
                 <br>
-                <select v-model="city" v-on:change="getArea">
+                <select class="rounded-2" v-model="city" v-on:change="getArea" style="height:28.95px">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select v-model="areaName">
+                <select class="rounded-2" v-model="areaName" style="height:28.95px">
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
                 <label class="calculator-dropdown-label" for="">期望薪資</label>
                 <br>
-                <input type="number" value="0" v-model="salary" min="0" step="1000" required />
+                <input class="rounded-2" type="number" value="0" v-model="salary" min="0" step="1000" required />
             </div>
             <div class="col-sm-4">
-                <label class="calculator-dropdown-label" for="">職業類別</label>
-                <select v-model="classNumber">
-                    <optgroup v-for="(item,index) in companyClassList" :label="item.companyCategoryName">
-                        <option v-for="tag in companyClassList[index].companyClassObj" :value="tag.companyClassId">{{tag.companyClassName}}</option>
+                <label class="calculator-dropdown-label" for="">職缺職業類別</label>
+                <br>
+                <select class="rounded-2" v-model="classNumber" style="height:28.95px">
+                    <optgroup v-for="(item,index) in titleClassList" :label="item.titleCategoryName">
+                        <option v-for="titleclass in titleClassList[index].titleClassObj" :value="titleclass.titleClassId">{{titleclass.titleClassName}}</option>
                     </optgroup>
                 </select>
             </div>
@@ -112,7 +113,7 @@
                     <td>職稱</td>
                     <td>公司名稱</td>
                     <td>地區</td>
-                    <td>工作內容</td>
+                    <td>職缺類別</td>
                     <td>薪資條件</td>
                     <template v-if="memberRole=='candidate'">
                         <td>應徵 / 儲存</td>
@@ -127,7 +128,7 @@
                     <td><a target="_blank" :href=`${baseAddress}/Candidate/OpeningDetail/?companyId=${item.companyId}&openingId=${item.openingId}`>{{item.title}}</a></td>
                     <td>{{item.companyName}}</td>
                     <td>{{item.address}}</td>
-                    <td>{{item.description}}</td>
+                    <td><p>{{getTagTitleClass(item.titleClass)}}</p></td>
                     <td>{{item.salaryMin}}~{{item.salaryMax}}</td>
                     <td>
                         <button type="button" class="btn btn-info text-light" v-on:click="showOpeningDataModal(item.openingId)">
@@ -335,11 +336,12 @@
                     openings: [],
                     cityList: [],
                    
-                    companyClassList: [],
+                    titleClassList: [],
+                    tiltleClassList: [],
                     city: "",
                     area: [],
                     areaName: "",
-                    classNumber: "",
+                    classNumber: null,
                     salary:null,
                     filter:"",
                     alertStatus: null,
@@ -365,7 +367,8 @@
                         this.city = "";
                         this.areaName = "";
                         this.salary = null;
-                        this.classNumber = "";
+                        this.classNumber = null;
+                        this.area = "";
                         this.filterOpenings();
                 },
                 setPage(page) {     //當按到第幾頁顯示的資料
@@ -378,6 +381,16 @@
                 turnPage: function (page) {
                     this.currentPage = page;
                     this.filterOpenings();
+                },
+                getTagTitleClass(item) {
+                    let str = "";
+                    for (let i = 0; i < item.length; i++) {
+                        str += item[i].titleClassName
+                        if (i < item.length - 1) {
+                            str += "、"
+                        }
+                    }
+                    return str;
                 },
                 filterOpenings(){
                     let self = this;
@@ -439,11 +452,11 @@
                 getArea() {
                     this.area = this.cityList.find(x => x.CityName === this.city).AreaList;
                 },
-                getCompanyClass() {
+                getTitleClass() {
                     let self = this;
-                    axios.get('@Url.Action("CompanyClassSelect", "Home")')
+                    axios.get('@Url.Action("TitleClassSelect", "Home")')
                                 .then(model => {
-                            self.companyClassList = model.data;
+                            self.titleClassList = model.data;
                         })
                         .catch(function (error) {
                             console.error(error);
@@ -578,7 +591,7 @@
                 self.getRole();
                 self.filterOpenings();
                 self.getCity();
-                self.getCompanyClass();
+                self.getTitleClass();
             }
         };
         let listData = Vue.createApp(vueList).mount("#app1");

@@ -21,26 +21,26 @@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
             <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
-                <select v-model="city" v-on:change="getArea">
+                <label class="calculator-dropdown-label mx-2" for="apiChoice">地區篩選</label>
+                <select class="rounded-2" v-model="city" v-on:change="getArea" style="height:28.95px">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select v-model="areaName">
+                <select class="rounded-2" v-model="areaName" style="height:28.95px">
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-4">
-                <label class="calculator-dropdown-label" for="apiChoice">技能類別</label>
-                <select v-model="tagClassName" v-on:change="getTagName" style="width:72.59px;height:22.93px">
+                <label class="calculator-dropdown-label mx-2" for="apiChoice">技能類別</label>
+                <select class="rounded-2" v-model="tagClassName" v-on:change="getTagName" style="width:72.59px;height:28.95px">
                     <option v-for="(item,index) in tagClasses" :key="item.tagClassName" :value="item.tagClassName">{{item.tagClassName}}</option>
                 </select>
-                <select v-model="skill" >
+                <select class="rounded-2" v-model="skill" style="height:28.95px">
                     <option v-for="item in tagNameList" :value="item.tagId">{{item.tagName}}</option>
                 </select>
             </div>
             <div class="col-3">
-                <label class="calculator-dropdown-label" for="apiChoice">學歷</label>
-                <select class="select" v-model="edu" style="width:90px;height:22.93px">
+                <label class="calculator-dropdown-label mx-2" for="apiChoice">學歷</label>
+                <select class="rounded-2" v-model="edu" style="width:90px;height:28.95px">
                     <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
@@ -107,7 +107,6 @@
                 <tr>
                     <td>姓名</td>
                     <td>履歷名稱</td>
-                    <td>希望職缺類型</td>
                     <td>年紀</td>
                     <td>性別</td>
                     <td>學歷</td>
@@ -121,7 +120,6 @@
                 <tr v-for="(item,index) in resumes">
                     <td><a target="_blank" :href=`${baseAddress}/Company/ResumeIntro/?candidateId=${item.candidateID}&resumeId=${item.resumeID}`>{{item.name}}</a></td>
                     <td>{{item.title}}</td>
-                    <td><p>{{getTagTitleClass(item.titleClass)}}</p></td>
                     <td>{{item.age}}歲</td>
                     <td>{{selectSex(item.sex)}}</td>
                     <td>{{item.degree}}</td>
@@ -352,16 +350,6 @@
                     for (let i = 0; i < item.length;i++){
                         str += item[i].tagName 
                         if( i < item.length-1){
-                            str += "、"
-                        }
-                    }
-                    return str;
-                },
-                getTagTitleClass(item) {
-                    let str = "";
-                    for (let i = 0; i < item.length; i++) {
-                        str += item[i].titleClassName
-                        if (i < item.length - 1) {
                             str += "、"
                         }
                     }
