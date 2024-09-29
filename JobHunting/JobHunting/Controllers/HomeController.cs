@@ -357,14 +357,14 @@ namespace JobHunting.Controllers
         }
 
 
-        public IActionResult CompanyClassSelect()
+        public IActionResult TitleClassSelect()
         {
-            var source = _context.CompanyCategories.Include(a => a.CompanyClasses);
-            var temp = source.Select(b => new CompanyClassSelectViewModelcs
+            var source = _context.TitleCategories.Include(a => a.TitleClasses);
+            var temp = source.Select(b => new TitleClassSelectViewModelcs
             {
-                CompanyClassObj = b.CompanyClasses.Select(x => new { x.CompanyClassId, x.CompanyClassName }),
-                CompanyCategoryId = b.CompanyCategoryId,
-                CompanyCategoryName = b.CompanyCategoryName,
+                TitleClassObj = b.TitleClasses.Select(x => new { x.TitleClassId, x.TitleClassName }),
+                TitleCategoryId = b.TitleCategoryId,
+                TitleCategoryName = b.TitleCategoryName,
             });
             return Json(temp);
         }
@@ -885,7 +885,7 @@ namespace JobHunting.Controllers
             EditResume(opening);
             if (candidateIdClaim == null)
             {
-                var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Where(y => y.ReleaseYN == true)
+                var sourceUnlogin = _context.Openings.AsNoTracking().Include(a => a.Company).Include(a => a.Candidates).Include(x => x.Tags).Include(y => y.TitleClasses).Where(y => y.ReleaseYN == true)
                         .Select(c => new
                         {
                             OpeningId = c.OpeningId,
@@ -902,7 +902,7 @@ namespace JobHunting.Controllers
                             ContactName = c.ContactName,
                             ContactPhone = c.ContactPhone,
                             CompanyName = c.Company.CompanyName,
-                            ClassNumber = c.Company.CompanyClassId,
+                            TitleClass = c.TitleClasses.Select(x => new { x.TitleClassId, x.TitleClassName }),
                             LikeYN = false,
                         });
                 if (!opening.SearchText.IsNullOrEmpty())
@@ -912,6 +912,7 @@ namespace JobHunting.Controllers
                              b.Benefits.Contains(opening.SearchText) ||
                              b.Description.Contains(opening.SearchText) ||
                              b.Title.Contains(opening.SearchText) ||
+                             b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
@@ -920,10 +921,10 @@ namespace JobHunting.Controllers
                     sourceUnlogin = sourceUnlogin.Where(b =>
                              b.Address.Contains(opening.AreaName));
                 }
-                if (!opening.ClassNumber.IsNullOrEmpty())
+                if (opening.ClassNumber != null)
                 {
                     sourceUnlogin = sourceUnlogin.Where(b =>
-                             b.ClassNumber == opening.ClassNumber);
+                             b.TitleClass.Any(x => x.TitleClassId == opening.ClassNumber));
                 }
                 if (opening.Salary != null)
                 {
@@ -931,7 +932,7 @@ namespace JobHunting.Controllers
                              opening.Salary <= b.SalaryMin ||
                              b.SalaryMax >= opening.Salary );
                 }
-                if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == "" && opening.Salary == null)
+                if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == null && opening.Salary == null)
                 {
                     sourceUnlogin = sourceUnlogin;
                 }
@@ -951,6 +952,7 @@ namespace JobHunting.Controllers
                     ContactName = c.ContactName,
                     ContactPhone = c.ContactPhone,
                     CompanyName = c.CompanyName,
+                    TitleClass = c.TitleClass,
                     LikeYN = null,
                 });
                 var openingSelectOutput = new OpeningSelectOutputViewModel();
@@ -979,7 +981,7 @@ namespace JobHunting.Controllers
                             ContactName = c.ContactName,
                             ContactPhone = c.ContactPhone,
                             CompanyName = c.Company.CompanyName,
-                            ClassNumber = c.Company.CompanyClassId,
+                            TitleClass = c.TitleClasses.Select(x => new { x.TitleClassId, x.TitleClassName }),
                             LikeYN = c.Candidates.Where(c => c.CandidateId == candidateId).FirstOrDefault() != null,
                         });
                 if (!opening.SearchText.IsNullOrEmpty())
@@ -989,6 +991,7 @@ namespace JobHunting.Controllers
                              b.Benefits.Contains(opening.SearchText) ||
                              b.Description.Contains(opening.SearchText) ||
                              b.Title.Contains(opening.SearchText) ||
+                             b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
@@ -997,10 +1000,10 @@ namespace JobHunting.Controllers
                     sourcelogin = sourcelogin.Where(b =>
                              b.Address.Contains(opening.AreaName));
                 }
-                if (!opening.ClassNumber.IsNullOrEmpty())
+                if (opening.ClassNumber != null)
                 {
                     sourcelogin = sourcelogin.Where(b =>
-                             b.ClassNumber == opening.ClassNumber);
+                             b.TitleClass.Any(x => x.TitleClassId == opening.ClassNumber));
                 }
                 if (opening.Salary != null)
                 {
@@ -1008,7 +1011,7 @@ namespace JobHunting.Controllers
                              opening.Salary <= b.SalaryMin ||
                              b.SalaryMax >= opening.Salary);
                 }
-                if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == "" && opening.Salary == null)
+                if (opening.SearchText == "" && opening.AreaName == "" && opening.ClassNumber == null && opening.Salary == null)
                 {
                     sourcelogin = sourcelogin;
                 }
@@ -1028,6 +1031,7 @@ namespace JobHunting.Controllers
                     ContactName = c.ContactName,
                     ContactPhone = c.ContactPhone,
                     CompanyName = c.CompanyName,
+                    TitleClass = c.TitleClass,
                     LikeYN = c.LikeYN,
                 });
                 var openingSelectOutput = new OpeningSelectOutputViewModel();
