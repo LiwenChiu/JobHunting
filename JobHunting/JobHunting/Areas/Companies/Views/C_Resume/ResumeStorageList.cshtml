@@ -650,8 +650,7 @@
 
                 },
                 fileUrlReturn: function (certifications) {
-                    let urlStr = `${this.baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`;
-                    return urlStr.replace(" ", "");
+                    return `${this.baseAddress}/Companies/C_Resume/DownloadFile/?resumeId=${certifications.resumeId}&certificationId=${certifications.certificationId}`;
                 }
             },
             watch: {

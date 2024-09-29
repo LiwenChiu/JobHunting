@@ -13,8 +13,8 @@
 @* 通知 *@
 <div id="createOpening">
     @* <div class="container-fluid row py-2">
-        <label class="form-label">關鍵字搜尋：</label>
-        <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup.lazy="filterOpenings" />
+    <label class="form-label">關鍵字搜尋：</label>
+    <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup.lazy="filterOpenings" />
     </div> *@
     <div class="pt-2 px-1 bg-blanchedalmond" style="position: relative">
         <template v-if="alertStatus == '成功'">
@@ -44,25 +44,29 @@
                     </div>
                 </a>
             </div>
-            @* 職缺card *@
-            <div class="col-md-3 mb-4" v-for="item in openings.slice(pageStart,pageEnd)">
-                <div class="card" style="width: 16rem; height: 16rem;">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-10">
-                                <span class="card-title mb-3">{{item.title}}</span>
+            <template v-if="openings.length == 0">
+
+            </template>
+            <template v-else>
+                @* 職缺card *@
+                <div class="col-md-3 mb-4" v-for="item in openings.slice(pageStart,pageEnd)">
+                    <div class="card" style="width: 16rem; height: 16rem;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-10">
+                                    <span class="card-title mb-3">{{item.title}}</span>
+                                </div>
+                                @* 刪除履歷 *@
+                                <div class="col-2">
+                                    <button type="button" class="astext" aria-label="Close" v-on:click="deleteOpening(item)"><i class="fa-solid fa-trash"></i></button>
+                                </div>
                             </div>
-                            @* 刪除履歷 *@
-                            <div class="col-2">
-                                <button type="button" class="astext" aria-label="Close" v-on:click="deleteOpening(item)"><i class="fa-solid fa-trash"></i></button>
-                            </div>
+                            <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
+                            <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
+                            <p class="card-text"><i class="fa-solid fa-caret-right"></i> 履歷數量 : {{item.resumeNumber}}</p>
+                            @* 履歷內容按鈕 *@
                         </div>
-                        <p class="card-text"><i class="fa-solid fa-caret-right mt-2"></i> 工作地點 : {{item.address}}</p>
-                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 工作時間 : {{item.time}}</p>
-                        <p class="card-text"><i class="fa-solid fa-caret-right"></i> 履歷數量 : {{item.resumeNumber}}</p>
-                        @* 履歷內容按鈕 *@
-                    </div>
-                    <div class="card-footer text-center" style="background-color:transparent">
+                        <div class="card-footer text-center" style="background-color:transparent">
                             <button type="button" data-bs-toggle="modal"
                                     :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
                                 詳細
@@ -73,9 +77,11 @@
                             <template v-else>
                                 <button type="button" class="btn btn-warning ms-1 text-light" v-on:click="toggleStatusToTrue(item);">啟用</button>
                             </template>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </template>
+
 
             @* 新增職缺modal *@
             <div class="modal fade"
@@ -208,7 +214,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -370,7 +376,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
@@ -628,7 +634,7 @@
                     let CategoryNameId = `CategoryNameId${item.titleCategoryName}${item.titleCategoryId}`;
                     return CategoryNameId.replace(" ", "");
                 },
-               
+
                 //綁modal target
                 mergeID(item) {
                     let str = item.title.replace(/\s/g, "").replace(/#/g, "");
@@ -666,7 +672,7 @@
                     if (_this.SalaryMax < _this.SalaryMin) {
                         alert("最高薪資不能低於最低薪資");
                         return;  // 阻止後續代碼執行
-                        }
+                    }
                     let request = {};
                     request.Title = _this.Title;
                     request.Address = _this.Address;
@@ -701,7 +707,7 @@
                             alert(err);
                         });
                 },
-                editCopy:function(item){
+                editCopy: function (item) {
                     this.originalItem = JSON.parse(JSON.stringify(item));
                     item.edit = true;
                     this.selectedtitleClassId = item.titleClassId;
@@ -755,7 +761,7 @@
                         alert(err);
                     });
                     // 關閉編輯模式
-                   
+
                 },
                 //資料初始
                 ReceiveOpeningData() {
@@ -837,7 +843,7 @@
                         headers: { 'Content-Type': 'application/json' },
                     }).then(res => {
                         _this.openings = res.data
-                            this.ReceiveOpeningData();
+                        this.ReceiveOpeningData();
                     }).catch(err => JSON.stringify(err))
                 },
                 //切換成下架職缺
@@ -852,18 +858,18 @@
                     }).catch(err => { alert(err) });
                 },
                 //切換成上架職缺
-                toggleStatusToTrue: function (item){
+                toggleStatusToTrue: function (item) {
                     axios.post(`${this.baseAddress}/Companies/Openings/ToggleStautsTrue`, item.openingId, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
                         let data = response.data;
-                        if(data.success==true){
+                        if (data.success == true) {
                             alert(data.message);
                             this.ReceiveOpeningData();
                         }
-                        else if(data.success==false){
+                        else if (data.success == false) {
                             alert(data.message);
                             window.location.href = data.redirectUrl;
                         }
