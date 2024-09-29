@@ -1228,13 +1228,13 @@
 
                     let form = new FormData();
                     form.append("ResumeId", ResumeD.resumeid);
-                    form.append("Address", ResumeD.address);
+                    form.append("Address", ResumeD.address ??"");
                     form.append("Title", ResumeD.title);
-                    form.append("Autobiography", ResumeD.autobiography);
-                    form.append("WorkExperience", ResumeD.workExperience);
-                    form.append("Time", ResumeD.time);
+                    form.append("Autobiography", ResumeD.autobiography?? "");
+                    form.append("WorkExperience", ResumeD.workExperience?? "");
+                    form.append("Time", ResumeD.time?? "");
                     form.append("ReleaseYN", ResumeD.releaseYN);
-                    form.append("Intro", ResumeD.intro);
+                    form.append("Intro", ResumeD.intro?? "");
                     //手動新增每個元素到 FormData
                     _this.selectedtitleClassId.forEach((id, index) => {
                         form.append(`TitleClassId[${index}]`, id);

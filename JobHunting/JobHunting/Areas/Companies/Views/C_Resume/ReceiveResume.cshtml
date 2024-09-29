@@ -603,7 +603,7 @@
                         request.Address = _this.Sendinterview.place;
                         request.ReplyYN = _this.Sendinterview.interviewReplyYN;
                         request.ReplyFirstYN = _this.Sendinterview.interviewReplyFirstYN;
-                        request.OpeningTitle = _this.itemselected.OpeningTitle;
+                        request.OpeningTitle = _this.itemselected.openingTitle;
                         request.ResumeOpeningRecordId = _this.itemselected.resumeOpeningRecordId
                         fetch(`${_this.baseAddress}/Companies/C_Resume/SendInterview`, {
                             method: "POST",
