@@ -48,7 +48,8 @@ namespace JobHunting.Areas.Admins.Controllers
                 cdfilter.Name.Contains(cdvm.Name) ||
                 cdfilter.Sex == cdvm.Sex ||
                 cdfilter.Degree.Contains(cdvm.Degree) ||
-                cdfilter.Address.Contains(cdvm.Address))
+                cdfilter.Address.Contains(cdvm.Address)||
+                cdfilter.Email.Contains(cdvm.Email))
             .Select(p => new CandidateListViewModel
             {
                 CandidateId = p.CandidateId,
