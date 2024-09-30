@@ -129,7 +129,7 @@
                         request.sex = false;
 
                     request.CandidateId = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
-                    request.Name = request.Degree = request.Address = _this.filter;
+                    request.Name = request.Degree = request.Address =request.Email= _this.filter;
                     axios.post(`${_this.baseAddress}/Admins/CandidateList/Filter`, request).then(response => {
                         // alert(JSON.stringify(response.data));
                         _this.candidatelist = response.data;

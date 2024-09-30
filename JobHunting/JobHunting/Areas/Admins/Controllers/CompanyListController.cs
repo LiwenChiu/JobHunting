@@ -3,6 +3,7 @@ using JobHunting.Areas.Admins.ViewModels;
 using JobHunting.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JobHunting.Areas.Admins.Controllers
 {
@@ -65,6 +66,7 @@ namespace JobHunting.Areas.Admins.Controllers
                 ContactName = p.ContactName,
                 ContactPhone = p.ContactPhone,
                 ContactEmail = p.ContactEmail,
+                Date = p.Date,
             });
         }
 
