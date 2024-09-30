@@ -138,7 +138,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 }
 
 
-                if (siv.ResumeOpeningRecordId == null)
+                if (siv.ResumeOpeningRecordId == 0)
                 {
                     ResumeOpeningRecord ror = new ResumeOpeningRecord
                     {
