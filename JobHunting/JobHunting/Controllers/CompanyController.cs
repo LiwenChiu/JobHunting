@@ -13,6 +13,7 @@ using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Web;
@@ -169,6 +170,7 @@ namespace JobHunting.Controllers
                             b.TitleClass.Any(x => x.TitleClassName.Contains(resume.searchText)) ||
                             b.Sex == resume.Sex ||
                             b.Age.ToString().Contains(resume.searchText) ||
+                            b.skill.Any(x => resume.searchText.Any(c => x.TagName.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0)) ||
                             b.Address.Contains(resume.searchText) ||
                             b.Degree.Contains(resume.searchText));
                 }
@@ -244,6 +246,7 @@ namespace JobHunting.Controllers
                             b.TitleClass.Any(x => x.TitleClassName.Contains(resume.searchText)) ||
                             b.Sex == resume.Sex ||
                             b.Age.ToString().Contains(resume.searchText) ||
+                            b.skill.Any(x => resume.searchText.Any(c => x.TagName.IndexOf(c, StringComparison.OrdinalIgnoreCase) >= 0)) ||
                             b.Address.Contains(resume.searchText) ||
                             b.Degree.Contains(resume.searchText));
                 }

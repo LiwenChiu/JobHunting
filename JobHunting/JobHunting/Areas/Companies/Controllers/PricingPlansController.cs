@@ -782,9 +782,7 @@ namespace JobHunting.Areas.Companies.Controllers
                 return BadRequest();
             }
 
-
-
-            if (!companyOrder.Status)
+            if (companyOrder.NewebPayStatus != NewebPayStatus)
             {
                 companyOrder.NewebPayStatus = NewebPayStatus;
                 companyOrder.NewebPayMessage = result.Message;
@@ -805,19 +803,18 @@ namespace JobHunting.Areas.Companies.Controllers
                 company.Deadline = deadline;
 
                 _context.Entry(company).State = EntityState.Modified;
-            }
+                companyOrder.Status = true;
 
-            companyOrder.Status = true;
+                _context.Entry(companyOrder).State = EntityState.Modified;
 
-            _context.Entry(companyOrder).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest();
+                }
             }
 
             return Ok();
