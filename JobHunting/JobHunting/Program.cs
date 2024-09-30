@@ -156,7 +156,7 @@ using (var scope = app.Services.CreateScope())
     () => companyService.SendExpirationReminders(),
     "59 23 * * *",
     options);
-
+    
     // 每天執行一次，檢查過期的公司並關閉其職缺
     RecurringJob.AddOrUpdate(
         "CloseExpiredJobOpenings",

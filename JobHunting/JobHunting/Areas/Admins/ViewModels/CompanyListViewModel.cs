@@ -23,5 +23,7 @@ namespace JobHunting.Areas.Admins.ViewModels
         [Display(Name = "電子信箱")]
         public string ContactEmail { get; set; }
 
+        public DateTime Date { get; set; }
+
     }
 }
