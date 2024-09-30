@@ -914,8 +914,6 @@ namespace JobHunting.Controllers
                              b.Title.Contains(opening.SearchText) ||
                              b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
-                             Convert.ToInt32(opening.SearchText) <= b.SalaryMin ||
-                             b.SalaryMax >= Convert.ToInt32(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
                 if (!opening.AreaName.IsNullOrEmpty())
@@ -995,8 +993,6 @@ namespace JobHunting.Controllers
                              b.Title.Contains(opening.SearchText) ||
                              b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
-                             Convert.ToInt32(opening.SearchText) <= b.SalaryMin ||
-                             b.SalaryMax >= Convert.ToInt32(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
                 if (!opening.AreaName.IsNullOrEmpty())
