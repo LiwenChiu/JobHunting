@@ -101,6 +101,8 @@
                                 <div class="d-sm-flex my-1 py-3 mx-3 inputAreas form-group">
                                     <img class="card-img-top img-fluid" style="height:240px" asp-append-version=true
                                          :src=`${baseAddress}/Companies/CompanyIntro/GetPicture/${item.companyId}?rand=${rand}` />
+                                </div>
+                                <div class="ms-3">
                                     <input id="editFile" type="file" class="form-control" v-on:change="editFileChange($event.target)" accept="image/*" style="height:30px;width:250px " />
                                 </div>
                                 <div class="inputOutAreas text-center pt-3">
@@ -277,7 +279,7 @@
                 },
                 editFileChange(inputFile) {
                     let self = this;
-                    self.readURL(inputFile, inputFile.previousElementSibling, $("#update"))
+                    self.readURL(inputFile, inputFile.parentElement.previousElementSibling.firstChild, $("#update"))
                 },
                 readURL(inputFile, img, btn) {
                     if (inputFile.files && inputFile.files[0]) {
