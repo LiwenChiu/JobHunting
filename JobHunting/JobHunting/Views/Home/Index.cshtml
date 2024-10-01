@@ -79,8 +79,8 @@
     </div>
     <div class="container text-center">
     <div class="row " >
-       <div class="col-sm-2 row">
-            <div class="col-sm-6 ms-auto">
+       <div class="col-sm-2 ms-auto row">
+            <div class="col-sm-10">
                 <label>第</label>
                 <select v-model="currentPageSafe" v-on:change="turnPage(currentPageSafe)">
                     <option v-for="page in totalPage" :value="page">{{page}}</option>
