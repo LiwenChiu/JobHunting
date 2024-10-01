@@ -277,19 +277,23 @@
             methods: {
                 bootFilterPage: function () {
                     let request = {};
-                    request.filterInput = this.filterInput == null ? "" : this.filterInput;
+                    request.filterInput = this.filterInput === null ? "" : this.filterInput;
                     request.pageStart = this.pageStart;
                     axios.post(`${this.baseAddress}/Candidates/Notifications/GetNotificationLess`, request, { 
                         headers: { 'Content-Type': 'application/json' } 
                     })
                         .then(response => {
                             if (response.data.candidateNotificationsFilter.length == 0) {
+                                this.notifications = [];
+                                this.totalDataCount = 0;
+                                this.totalPage = 0;
                                 this.notificationYN = false;
                             }
                             else {
                                 this.notifications = response.data.candidateNotificationsFilter;
                                 this.totalDataCount = response.data.totalDataCount;
                                 this.totalPage = Number.isInteger((response.data.totalDataCount) / 8) ? parseInt((response.data.totalDataCount) / 8) : parseInt((response.data.totalDataCount) / 8) + 1;
+                                this.notificationYN = true;
                             }
                         })
                         .catch(err => { alert(err) });
