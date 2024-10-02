@@ -487,6 +487,7 @@ namespace JobHunting.Controllers
                     {
                         return Json(new { success = false, message = "公司帳號尚未審核通過" });
                     }
+
                     if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
                     {
                         // 驗證通過，建立 claims，包含 CompanyId
@@ -504,10 +505,11 @@ namespace JobHunting.Controllers
 
                         return Json(new { success = true, message = "公司登入成功", role = "company" });
                     }
-                }
-                else
-                {
-                    return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
+                    else
+                    {
+                        return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
+                    }
+                    
                 }
             }
 

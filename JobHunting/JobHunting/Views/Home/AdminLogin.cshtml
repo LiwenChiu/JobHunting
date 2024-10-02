@@ -1,20 +1,53 @@
-﻿    
-@section Styles{
-    <style>
+﻿@{
+    Layout = null;
+}
 
-        #adminLogin{
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>小鴨上工 - 管理登入</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="~/css/oldstyles.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="assets/duck.ico" />
+    <style>
+        .bgcolor {
+            background-color: #ffeedf;
+        }
+
+        .astext {
+            background: none;
+            border: none;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .overcard:hover {
+            background-color: #e6e6e6;
+        }
+
+        .form-label {
+            color: steelblue;
+            font-weight: bold;
+        }
+
+        #adminLogin {
             background-color: #ffc107;
         }
-        
+
 
         .form-group {
             margin: 30px;
         }
     </style>
-
-}
-
-<div id="adminLogin" v-on:keyup.enter.exact="DoLogin">
+</head>
+<body id="adminLogin" v-on:keyup.enter.exact="DoLogin">
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
@@ -26,27 +59,34 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label class="control-label">員工編號:</label>
-                                    <input v-model="PersonnelCode" class="form-control rounded-pill" v-on:keyup.enter.exact="DoLogin" />
+                                        <input v-model="PersonnelCode" class="form-control rounded-pill" v-on:keyup.enter.exact="DoLogin" />
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">密碼 :</label>
-                                    <input v-model="Password" class="form-control rounded-pill" type="password" v-on:keyup.enter.exact="DoLogin" />
+                                        <input v-model="Password" class="form-control rounded-pill" type="password" v-on:keyup.enter.exact="DoLogin" />
                                     </div>
                                     <div class="form-group text-center">
-                                    <input type="submit" value="登入" class="btn btn-primary rounded-pill" v-on:click="DoLogin"  />
+                                        <input type="submit" value="登入" class="btn btn-primary rounded-pill" v-on:click="DoLogin" />
                                     </div>
                                     @* <div class="small"><a href="register.html">註冊</a></div> *@
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
             </main>
         </div>
-
     </div>
-</div>
-@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="~/js/indexscripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/datatables-simple-demo.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.4/axios.min.js" integrity="sha512-6VJrgykcg/InSIutW2biLwA1Wyq+7bZmMivHw19fI+ycW0jIjsadm8wKQQLlfv3YUS4owfMDlZU38NtaAK6fSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const adminLogin = {
             data() {
@@ -60,14 +100,14 @@
             },
             methods: {
                 DoLogin: function (event) {
-    
+
                     let _this = this;
                     event.preventDefault();
                     let request = {
                         PersonnelCode: _this.PersonnelCode,
                         Password: _this.Password
                     };
-    
+
                     axios({
                         method: 'post',
                         url: `${_this.baseAddress}/Home/AdminDoLogin`,
@@ -84,11 +124,11 @@
                         .catch(function (error) {
                             console.log(error);
                         });
-    
-                }
-            }
+                },
+            },
         };
         Vue.createApp(adminLogin).mount("#adminLogin");
     </script>
-}
-        
+</body>
+</html>
+

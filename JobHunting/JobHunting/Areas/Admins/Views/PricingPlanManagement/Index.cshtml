@@ -50,12 +50,12 @@
                                     <p class="col-sm-2">天數: {{plan.duration}}</p>
                                     <p class="col-sm-2">售價: ${{plan.price}}</p>
                                     <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                    <button type="button" class="col-sm-2 btn btn-warning text-light" v-on:click="plan.edit = true;">編輯</button>
+                                    <button type="button" class="col-sm-1 btn btn-warning text-light mx-1" v-on:click="plan.edit = true;">編輯</button>
                                     <template v-if="plan.status == true">
-                                        <button type="button" class="col-sm-1 btn btn-danger" v-on:click="planStatusFalse(plan);">停用</button>
+                                        <button type="button" class="col-sm-1 btn btn-danger mx-1" v-on:click="planStatusFalse(plan);">停用</button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" class="col-sm-1 btn btn-primary" v-on:click="planStatusTrue(plan);">啟用</button>
+                                        <button type="button" class="col-sm-1 btn btn-primary mx-1" v-on:click="planStatusTrue(plan);">啟用</button>
                                     </template>
                                 </template>
                                 <template v-else>
@@ -64,8 +64,8 @@
                                     <label class="col-sm-2">天數:<input class="col-sm-8" type="text" name="duration" v-model.trim.number="plan.duration" /></label>
                                     <label class="col-sm-2">售價:<input class="col-sm-8" type="text" name="price" v-model.trim.number="plan.price" /></label>
                                     <label class="col-sm-2">折扣:<input class="col-sm-8" type="text" name="discount" v-model.trim.number="plan.discount" /></label>
-                                    <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
-                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
+                                    <button type="button" class="col-sm-1 btn btn-primary mx-1" v-on:click="editPricingPlans(plan);">儲存</button>
+                                    <button type="button" class="col-sm-1 btn btn-secondary mx-1" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
                                 </template>
                             </div>
                         </div>
@@ -83,12 +83,12 @@
                                     <p class="col-sm-2">天數: {{plan.duration}}</p>
                                     <p class="col-sm-2">售價: ${{plan.price}}</p>
                                     <p class="col-sm-2">折扣: {{plan.discount*100}}%</p>
-                                    <button type="button" class="col-sm-2 btn btn-warning text-light" v-on:click="plan.edit = true;">編輯</button>
+                                    <button type="button" class="col-sm-1 btn btn-warning text-light mx-1" v-on:click="plan.edit = true;">編輯</button>
                                     <template v-if="plan.status == true">
-                                        <button type="button" class="col-sm-1 btn btn-danger" v-on:click="planStatusFalse(plan);">停用</button>
+                                        <button type="button" class="col-sm-1 btn btn-danger mx-1" v-on:click="planStatusFalse(plan);">停用</button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" class="col-sm-1 btn btn-primary" v-on:click="planStatusTrue(plan);">啟用</button>
+                                        <button type="button" class="col-sm-1 btn btn-primary mx-1" v-on:click="planStatusTrue(plan);">啟用</button>
                                     </template>
                                 </template>
                                 <template v-else>
@@ -97,8 +97,8 @@
                                     <label class="col-sm-2">天數:<input type="text" name="duration" v-model.trim.number="plan.duration" /></label>
                                     <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim.number="plan.price" /></label>
                                     <label class="col-sm-2">折扣:<input type="text" name="discount" v-model.trim.number="plan.discount" /></label>
-                                    <button type="button" class="col-sm-2 btn btn-primary" v-on:click="editPricingPlans(plan);">儲存</button>
-                                    <button type="button" class="col-sm-1 btn btn-secondary" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
+                                    <button type="button" class="col-sm-1 btn btn-primary mx-1" v-on:click="editPricingPlans(plan);">儲存</button>
+                                    <button type="button" class="col-sm-1 btn btn-secondary mx-1" v-on:click="plan.edit = false;bootFilterPage();">取消</button>
                                 </template>
                             </div>
                         </div>
@@ -109,11 +109,11 @@
         <div class="container-fluid row py-2" style="display:flex;align-items: center;justify-content: center;">
             <div class="col-md-6">
                 <label for="filterPlan">關鍵字搜尋: </label>
-                <input type="search" id="filterPlan" name="filterPlan" placeholder="請輸入篩選關鍵字" v-model.trim="filterPlanInput" v-on:keydown.enter.exact="bootFilterPage();" />
-                <button class="btn btn-warning text-light" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
+                <input type="search" id="filterPlan" name="filterPlan" class="mx-1" placeholder="請輸入篩選關鍵字" v-model.trim="filterPlanInput" v-on:keydown.enter.exact="bootFilterPage();" />
+                <button class="btn btn-warning text-light mx-1" v-on:click="filterPlanInput = '';bootFilterPage();">清除</button>
             </div>
-            <button type="button" class="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createPlan">新增</button>
-            <button type="button" class="btn btn-danger col-md-2" data-bs-toggle="modal" data-bs-target="#deletePlan">刪除</button>
+            <button type="button" class="btn btn-primary col-md-2 mx-1" data-bs-toggle="modal" data-bs-target="#createPlan">新增</button>
+            <button type="button" class="btn btn-danger col-md-2 mx-1" data-bs-toggle="modal" data-bs-target="#deletePlan">刪除</button>
         </div>
     </div>
 
