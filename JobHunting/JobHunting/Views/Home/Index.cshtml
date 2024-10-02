@@ -32,7 +32,7 @@
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4 ">
         <div class="row calculator-dropdown py-md-2 ">
-            <div class="col-4">
+            <div class="col-lg-4">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">地區篩選</label>
               
                 <select class="form-control rounded-2 col-form-label mx-1" v-model="city" v-on:change="getArea" style="width:90px;height:32.95px;display:inline-block" >
@@ -42,12 +42,12 @@
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
-            <div class="col-4">
+            <div class="col-lg-3">
                 <label class="calculator-dropdown-label mx-2" for="">期望薪資</label>
                 
                 <input class="form-control rounded-2 " type="number" value="0" v-model="salary" min="0" step="1000" required style="width:150px;height:32.95px;display:inline-block" />
             </div>
-            <div class="col-3">
+            <div class="col-lg-4">
                 <label class="calculator-dropdown-label mx-2" for="">職缺職業類別</label>
                 <select class="form-control rounded-2 " v-model="classNumber" style="width:150px;height:32.95px;display:inline-block">
                     <optgroup v-for="(item,index) in titleClassList" :label="item.titleCategoryName">
@@ -55,7 +55,7 @@
                     </optgroup>
                 </select>
             </div>
-            <div class="col-1">
+            <div class="col-lg-1">
                 <button class="btn btn-warning text-light" v-on:click="clearSearch()">清空</button>
             </div>
         </div>

@@ -25,7 +25,7 @@
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
-            <div class="col-4">
+            <div class="col-lg-4">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">地區篩選</label>
                 <select class="form-control rounded-2" v-model="city" v-on:change="getArea" style="width:90px;height:32.95px;display:inline-block">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
@@ -34,7 +34,7 @@
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">技能類別</label>
                 <select class="form-control rounded-2" v-model="tagClassName" v-on:change="getTagName" style="width:90px;height:32.95px;display:inline-block" >
                     <option v-for="(item,index) in tagClasses" :key="item.tagClassName" :value="item.tagClassName">{{item.tagClassName}}</option>
@@ -43,13 +43,13 @@
                     <option v-for="item in tagNameList" :value="item.tagId">{{item.tagName}}</option>
                 </select>
             </div>
-            <div class="col-3">
+            <div class="col-lg-3">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">學歷</label>
                 <select class="form-control rounded-2" v-model="edu" style="width:90px;height:28.95px;display:inline-block">
                     <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
-            <div class="col-1">
+            <div class="col-lg-1">
                 <button class="btn btn-warning text-light" v-on:click="cancelSelect()">清空</button>
             </div>
         </div>
