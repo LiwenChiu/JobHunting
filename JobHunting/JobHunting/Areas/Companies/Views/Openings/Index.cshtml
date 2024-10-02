@@ -11,7 +11,7 @@
 
 
 @* 通知 *@
-<div id="createOpening">
+<div id="createOpening" v-cloak>
     @* <div class="container-fluid row py-2">
     <label class="form-label">關鍵字搜尋：</label>
     <input type="text" class="form-control" v-model="filter" placeholder="請輸入篩選關鍵字" v-on:keyup.lazy="filterOpenings" />
@@ -141,13 +141,14 @@
                                             <label class="fw-bold">上班時段:</label>
                                             <input type="text" value="" v-model="Time" class="form-control" />
                                         </div>
-
-                                        <div class="mb-3">
+                                        <div>
                                             <label class="fw-bold">學歷要求:</label>
-                                            <select v-model="selectedDegreeName">
-                                                <option value="" selected>--請選擇--</option>
-                                                <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
-                                            </select>
+                                            <div>
+                                                <select v-model="selectedDegreeName">
+                                                    <option value="" selected>--請選擇--</option>
+                                                    <option v-for="item in DegreeRequired" :value="item.DegreeName">{{item.DegreeName}}</option>
+                                                </select>
+                                            </div>
                                             <p class="mt-3">
                                                 <label>
                                                     <button class="btn btn-outline-primary " type="button" data-bs-toggle="collapse" data-bs-target="#TitleClassCollapse" aria-expanded="false" aria-controls="TitleClassCollapse">職缺類型</button>
