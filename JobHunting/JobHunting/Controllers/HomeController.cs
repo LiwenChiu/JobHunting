@@ -625,7 +625,7 @@ namespace JobHunting.Controllers
             // 驗證統一編號
             if (!await ValidateGUINumber(cr.GUINumber, cr.CompanyName))
             {
-                return Json(new { success = false, message = "統一編號 or 公司名稱需與商工登記資料相符" });
+                return Json(new { success = false, message = "統一編號 or 公司名稱需與商工登記資料不相符" });
             }
 
             if (await _context.Companies.AnyAsync(c => c.GUINumber == cr.GUINumber))
