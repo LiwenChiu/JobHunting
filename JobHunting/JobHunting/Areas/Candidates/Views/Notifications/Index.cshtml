@@ -8,12 +8,12 @@
         .card{
             overflow:hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            /* white-space: nowrap; */
         }
     </style>
 }
 
-<div id="NotificationsVue" style="position: relative">
+<div id="NotificationsVue" style="position: relative" v-cloak>
     @* 通知 *@
     <template v-if="alertStatus === true">
         <div id="alert" class="alert alert-primary alert-dismissible fade show" role="alert" style="position: absolute; z-index:100;">

@@ -8,7 +8,7 @@
 }
 
 @* 收藏職缺 *@
-<div class="container-fluid py-2" id="OpeningApp">
+<div class="container-fluid py-2" id="OpeningApp" v-cloak>
     <label>
         篩選關鍵字：
         <input type="text" class="mb-2" v-model.lazy="filter" v-on:keyup.enter="ReceiveOpeningData">
