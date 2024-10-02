@@ -487,6 +487,7 @@ namespace JobHunting.Controllers
                     {
                         return Json(new { success = false, message = "公司帳號尚未審核通過" });
                     }
+
                     if (BCrypt.Net.BCrypt.Verify(companyLogin.Password, company.Password))
                     {
                         // 驗證通過，建立 claims，包含 CompanyId
@@ -504,10 +505,11 @@ namespace JobHunting.Controllers
 
                         return Json(new { success = true, message = "公司登入成功", role = "company" });
                     }
-                }
-                else
-                {
-                    return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
+                    else
+                    {
+                        return Json(new { success = false, message = "公司登入失敗：統一編號或密碼錯誤" });
+                    }
+                    
                 }
             }
 
@@ -914,8 +916,6 @@ namespace JobHunting.Controllers
                              b.Title.Contains(opening.SearchText) ||
                              b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
-                             Convert.ToInt32(opening.SearchText) <= b.SalaryMin ||
-                             b.SalaryMax >= Convert.ToInt32(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
                 if (!opening.AreaName.IsNullOrEmpty())
@@ -995,8 +995,6 @@ namespace JobHunting.Controllers
                              b.Title.Contains(opening.SearchText) ||
                              b.TitleClass.Any(x => x.TitleClassName.Contains(opening.SearchText)) ||
                              b.Time.Contains(opening.SearchText) ||
-                             Convert.ToInt32(opening.SearchText) <= b.SalaryMin ||
-                             b.SalaryMax >= Convert.ToInt32(opening.SearchText) ||
                              b.Address.Contains(opening.SearchText));
                 }
                 if (!opening.AreaName.IsNullOrEmpty())

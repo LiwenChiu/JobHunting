@@ -332,6 +332,7 @@
                         this.imgKey++;
                         this.CandidateMemberData.imgUrl = `${this.imgUrl}&t${this.imgKey}`;
                         alert(response.data);
+                        location.reload();
                     }).catch(err => { alert(err); });
 
                 },
