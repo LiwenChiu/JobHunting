@@ -10,15 +10,8 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-
-        button {
-            font-weight: bold;
-        }
         a:link {   /* 未瀏覽過的超連結 */
             text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: blue;
         }
 
 
@@ -38,57 +31,56 @@
     <br />
     <br />
     @* 搜尋列 *@
-    <div class="container border border-2 col-10 mb-4">
-        <div class="row calculator-dropdown py-md-2">
-            <div class="col-sm-2">
-                <label class="calculator-dropdown-label" for="apiChoice">地區篩選</label>
-                <br>
-                <select class="rounded-2" v-model="city" v-on:change="getArea" style="height:28.95px">
+    <div class="container border border-2 col-10 mb-4 ">
+        <div class="row calculator-dropdown py-md-2 ">
+            <div class="col-4">
+                <label class="calculator-dropdown-label mx-2" for="apiChoice">地區篩選</label>
+              
+                <select class="form-control rounded-2 col-form-label mx-1" v-model="city" v-on:change="getArea" style="width:90px;height:32.95px;display:inline-block" >
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select class="rounded-2" v-model="areaName" style="height:28.95px">
+                <select class="form-control rounded-2 mx-0" v-model="areaName" style="width:90px;height:32.95px;display:inline-block">
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
-            <div class="col-sm-3">
-                <label class="calculator-dropdown-label" for="">期望薪資</label>
-                <br>
-                <input class="rounded-2" type="number" value="0" v-model="salary" min="0" step="1000" required />
+            <div class="col-4">
+                <label class="calculator-dropdown-label mx-2" for="">期望薪資</label>
+                
+                <input class="form-control rounded-2 " type="number" value="0" v-model="salary" min="0" step="1000" required style="width:150px;height:32.95px;display:inline-block" />
             </div>
-            <div class="col-sm-4">
-                <label class="calculator-dropdown-label" for="">職缺職業類別</label>
-                <br>
-                <select class="rounded-2" v-model="classNumber" style="height:28.95px">
+            <div class="col-3">
+                <label class="calculator-dropdown-label mx-2" for="">職缺職業類別</label>
+                <select class="form-control rounded-2 " v-model="classNumber" style="width:150px;height:32.95px;display:inline-block">
                     <optgroup v-for="(item,index) in titleClassList" :label="item.titleCategoryName">
                         <option v-for="titleclass in titleClassList[index].titleClassObj" :value="titleclass.titleClassId">{{titleclass.titleClassName}}</option>
                     </optgroup>
                 </select>
             </div>
-            <div class="col-sm-1 pt-3">
+            <div class="col-1">
                 <button class="btn btn-warning text-light" v-on:click="clearSearch()">清空</button>
             </div>
         </div>
         <div class="row py-md-2">
-            <div class="col-10 mb-0">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterOpenings" v-model.trim="filter" />
+            <div class="col-11 mb-0">
+                <input type="text" class="form-control rounded-2" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterOpenings" v-model.trim="filter" />
             </div>
-            <div class="col-2 mb-0">
+            <div class="col-1 mb-0">
                 <button class="btn btn-warning text-light" v-on:click="filterOpenings">搜尋</button>
             </div>
         </div>
     </div>
     <div class="container text-center">
     <div class="row " >
-       <div class="col-sm-2 ms-auto row">
+        <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
-                <label>第</label>
-                <select v-model="currentPageSafe" v-on:change="turnPage(currentPageSafe)">
+                <label class="mx-1">第</label>
+                <select class="form-control rounded-2 mx-1" v-model="currentPageSafe" v-on:change="turnPage(currentPageSafe)" style="width:50px; height:32px;display:inline-block;">
                     <option v-for="page in totalPage" :value="page">{{page}}</option>
                 </select>
                 <label>頁</label>
             </div>
        </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8 ms-auto">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                         <li class="page-item" v-on:click="setPage(currentPageSafe-1)">
@@ -109,8 +101,10 @@
         </div>
         <div class="col-sm-2 ms-auto row">
             <div class="col-sm-10">
-                <label>一頁</label>
-                <input style="width:3vh;" v-model.number.trim="perpage" />
+                <label class="mx-1">一頁</label>
+                <select class="form-control rounded-2 mx-1" v-model="perpageSafe" v-on:change="perPage(perpageSafe)" style="width:50px; height:32px;display:inline-block;">
+                    <option v-for="per in selectPer" :value="per">{{per}}</option>
+                </select>
                 <label>筆</label>
             </div>
         </div>
@@ -340,6 +334,7 @@
                     // baseAddress: "https://duckjobhunting.azurewebsites.net",
 
                     perpage: 5, //一頁的資料數
+                    selectPer:[5,10,15,20,25],
                     perpageSafe: null,
                     currentPage: 1,
                     currentPageSafe: null,
@@ -388,6 +383,10 @@
                         return
                     }
                     this.currentPage = page
+                    this.filterOpenings();
+                },
+                perPage(per){
+                    this.perpage = per;
                     this.filterOpenings();
                 },
                 turnPage: function (page) {
@@ -588,14 +587,6 @@
                         .catch(function (error) {
                             console.log(error);
                         });
-                },
-            },
-            watch:{
-                perpage:function(){
-                    if(this.currentPage > this.totalPage){
-                        this.currentPage = this.totalPage;
-                    }
-                    this.filterOpenings();
                 },
             },
             mounted() {
