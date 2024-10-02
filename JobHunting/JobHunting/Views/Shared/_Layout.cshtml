@@ -51,11 +51,11 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Candidates" asp-controller="Home" asp-action="Index">會員中心</a></li>
-                            <li style="padding:7px;" class=" nav-item"><button type="button" class="fs-5 nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                            <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 mt-1">
+                            <li class="nav-item"><a class="nav-link active fs-6" aria-current="page" asp-area="Candidates" asp-controller="Home" asp-action="Index">會員中心</a></li>
+                            <li style="padding:7px;" class=" nav-item"><button type="button" class="fs-6 nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
+                            <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                                 <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn text-danger ">登出</button>
+                                    <button type="submit" class="btn text-danger fs-6">登出</button>
                                 </form>
                             </li>
                         </ul>
@@ -66,13 +66,13 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                            <li class="nav-item"><a class="nav-link active fs-5" aria-current="page" asp-area="Companies" asp-controller="Home" asp-action="Index">會員中心</a></li>
-                            <li style="padding:7px;" class="nav-item"><button type="button" class="fs-5 nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
-                            <li class="nav-item"><a class="nav-link active fs-5" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
-                            <li class="nav-item"><a class="nav-link active fs-5" asp-area="" asp-controller="Company" asp-action="Index">履歷瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" aria-current="page" asp-area="Companies" asp-controller="Home" asp-action="Index">會員中心</a></li>
+                            <li style="padding:7px;" class="nav-item"><button type="button" class="fs-6 nav-item astext" data-bs-toggle="modal" data-bs-target="#modalId">意見信件</button></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" asp-area="" asp-controller="Company" asp-action="Index">履歷瀏覽</a></li>
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                                 <form asp-area="" asp-controller="Home" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn text-danger ">登出</button>
+                                    <button type="submit" class="btn text-danger fs-6">登出</button>
                                 </form>
                             </li>
                         </ul>
@@ -83,13 +83,15 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Index">管理中心</a></li>
-                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
-                            <li class="nav-item"><a class="nav-link active" asp-area="" asp-controller="Company" asp-action="Index">履歷瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" aria-current="page" asp-area="Admins" asp-controller="Home" asp-action="Index">管理中心</a></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" asp-area="" asp-controller="Home" asp-action="Index">職缺瀏覽</a></li>
+                            <li class="nav-item"><a class="nav-link active fs-6" asp-area="" asp-controller="Company" asp-action="Index">履歷瀏覽</a></li>
+                            
                             <li class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                                <form asp-area="" asp-controller="Home" asp-action="AdminLogout" method="post">
-                                    <button type="submit" class="btn nav-link">管理者登出</button>
-                                </form>
+                                    <form asp-area="" asp-controller="Home" asp-action="AdminLogout" method="post">
+                                        <button type="submit" class="btn nav-link fs-6 ">管理者登出</button>
+                                    </form>
+                                
                             </li>
                         </ul>
                     </div>
