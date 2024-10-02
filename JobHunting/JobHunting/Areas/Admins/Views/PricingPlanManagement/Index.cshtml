@@ -45,7 +45,7 @@
                         <div class="card-body">
                             <div class="row row-cols-2 align-items-center">
                                 <template v-if="plan.edit == false">
-                                    <p class="col-sm-3">方案: {{plan.title}}</p>
+                                    <p class="col-sm-2">方案: {{plan.title}}</p>
                                     <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                     <p class="col-sm-2">天數: {{plan.duration}}</p>
                                     <p class="col-sm-2">售價: ${{plan.price}}</p>
@@ -59,7 +59,7 @@
                                     </template>
                                 </template>
                                 <template v-else>
-                                    <label class="col-sm-3">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
+                                    <label class="col-sm-2">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
                                     <button type="button" class="col-sm-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                     <label class="col-sm-2">天數:<input class="col-sm-8" type="text" name="duration" v-model.trim.number="plan.duration" /></label>
                                     <label class="col-sm-2">售價:<input class="col-sm-8" type="text" name="price" v-model.trim.number="plan.price" /></label>
@@ -78,7 +78,7 @@
                         <div class="card-body" style="background-color: #e6e6e6">
                             <div class="row row-cols-2 align-items-center">
                                 <template v-if="plan.edit == false">
-                                    <p class="col-sm-3">方案: {{plan.title}}</p>
+                                    <p class="col-sm-2">方案: {{plan.title}}</p>
                                     <button type="button" class="col-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                     <p class="col-sm-2">天數: {{plan.duration}}</p>
                                     <p class="col-sm-2">售價: ${{plan.price}}</p>
@@ -92,7 +92,7 @@
                                     </template>
                                 </template>
                                 <template v-else>
-                                    <label class="col-sm-3">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
+                                    <label class="col-sm-2">方案:<input type="text" class="col-sm-2" name="title" style="width:50%" v-model.trim="plan.title" /></label>
                                     <button type="button" class="col-sm-1 btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editIntro" v-on:click="clickedPlanIntro = clickedPlanIntroOld = plan.intro;clickedPlanIntroId = plan.planId;">簡介</button>
                                     <label class="col-sm-2">天數:<input type="text" name="duration" v-model.trim.number="plan.duration" /></label>
                                     <label class="col-sm-2">售價:<input type="text" name="price" v-model.trim.number="plan.price" /></label>

@@ -15,17 +15,17 @@
     @*<h3 class="text-center pt-2">訂單紀錄</h3> *@
 
     <div class="py-2 px-1">
-       @*  <div class="col-md-10">
-            <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
-                <option :value="idx" v-for="items,idx in OrderDetail">{{items.Detail}}</option>
-            </select>
-            <select class="" style=" width:20%" v-model="orderSelB">
-                <option value=0 v-if="orderSelA==0" v-for="item in CompanyOrders">{{item.companyName}}</option>
-                <option value=1 v-else-if="orderSelA==1" v-for="item in CompanyOrders">{{item.title}}</option>
-                <option value=2 v-else-if="orderSelA==2" v-for="item in CompanyOrders">{{item.payDate}}</option>
-                <option value=3 v-else-if="orderSelA==3" v-for="item in CompanyOrders">{{item.duration}}</option>
-                <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
-            </select>
+        @*  <div class="col-md-10">
+        <select class="" style="width:17%" id="OrderOpTitle2" v-model="orderSelA">
+        <option :value="idx" v-for="items,idx in OrderDetail">{{items.Detail}}</option>
+        </select>
+        <select class="" style=" width:20%" v-model="orderSelB">
+        <option value=0 v-if="orderSelA==0" v-for="item in CompanyOrders">{{item.companyName}}</option>
+        <option value=1 v-else-if="orderSelA==1" v-for="item in CompanyOrders">{{item.title}}</option>
+        <option value=2 v-else-if="orderSelA==2" v-for="item in CompanyOrders">{{item.payDate}}</option>
+        <option value=3 v-else-if="orderSelA==3" v-for="item in CompanyOrders">{{item.duration}}</option>
+        <option value=4 v-else v-for="item in CompanyOrders">{{item.status}}</option>
+        </select>
         </div> *@
         <div class="container-fluid">
             <div class="row">
@@ -34,16 +34,25 @@
             </div>
             <div class="row">
                 <label for="pageNumber" class="col-md-2 text-end">每頁筆數: </label>
-                <input type="text" id="pageNumber" name="pageNumber" class="col-md-8" placeholder="請輸入每頁筆數" v-model.trim.number="pageLength" />
+                <select id="pageNumber" name="pageNumber" class="col-md-8" v-model="pageLength">
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                @* <input type="text" id="pageNumber" name="pageNumber" class="col-md-8" placeholder="請輸入每頁筆數" v-model.trim.number="pageLength" /> *@
                 <div class="col-md-2">
                     <label for="inputPaging">第</label>
-                    <input type="text" id="inputPaging" style="width: 3vh" v-model.trim.number="pageStart" />
+                    @* <select id="inputPaging" v-model="pageStart">
+                        <option v-for="page in totalPage" value="page">{{page}}</option>
+                    </select>
+                    <input type="text" id="inputPaging" style="width: 3vh" v-model.trim.number="pageStart" /> *@
+                    <span id="inputPaging" class="">{{pageStart}}</span>
                     <label for="inputPaging">頁</label>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="container tableOutside" style="overflow-y:auto;height:73vh">
         <table class="table table-striped text-center mt-1" id="ChangePage">
             <thead class="table-warning">
@@ -73,29 +82,34 @@
         </table>
     </div>
     <nav aria-label="Page navigation" class="justify-content-center" style="display: flex;">
-            <ul class="pagination" style="margin: 0;">
-                <li class="page-item">
+        <ul class="pagination" style="margin: 0;">
+            <li class="page-item">
                 <button type="button" class="page-link" aria-label="Previous" v-on:click="turnPagePrevious()" v-bind:disabled="turnPagePreviousisdisabled">
-                        <span aria-hidden="true">&laquo;</span>
-                    </button>
-                </li>
-                <template v-for="page in totalPage">
-                    <li class="page-item"><button class="page-link" v-on:click="turnPage(page)">{{page}}</button></li>
-                </template>
-                <li class="page-item">
+                    <span aria-hidden="true">&laquo;</span>
+                </button>
+            </li>
+            <template v-for="page in totalPage">
+                <li class="page-item"><button class="page-link" v-on:click="turnPage(page)">{{page}}</button></li>
+            </template>
+            <li class="page-item">
                 <button type="button" class="page-link" aria-label="Next" v-on:click="turnPageNext()" v-bind:disabled="turnPageNextisdisabled">
-                        <span aria-hidden="true">&raquo;</span>
-                    </button>
-                </li>
-            </ul>
-        </nav>
+                    <span aria-hidden="true">&raquo;</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+    @* <div class="col-md-2">
+        <label for="inputPaging">第</label>
+        <span id="inputPaging" class="">{{pageStart}}</span>
+        <label for="inputPaging">頁</label>
+    </div> *@
 </div>
 
 @section Scripts
 {
     <script>
-            let VueAppCompanyOrders = {
-            data(){
+        let VueAppCompanyOrders = {
+            data() {
                 return {
                     //baseAddress: "https://duckjobhunting.azurewebsites.net",
                     baseAddress: "https://localhost:7169",
@@ -114,7 +128,7 @@
                     turnPageNextisdisabled: false,
                 };
             },
-            methods:{
+            methods: {
                 bootFilterPaging: function () {
                     this.pageLengthSafe = this.pageLength == null || Number.isNaN(Number(this.pageLength)) || this.pageLength <= 0 ? 8 : this.pageLength;
                     this.pageStartSafe = this.pageStart == null || Number.isNaN(Number(this.pageStart)) || this.pageStart <= 0 ? 1 : this.pageStart;
@@ -123,7 +137,7 @@
                     request.OrderId = request.CompanyName = request.GUINumber = request.Title = request.Intro = request.PayDate = request.Expiration = request.StatusType = this.filterInput;
                     request.PageDraw = this.pageDraw;
                     request.PageLength = this.pageLengthSafe,
-                    request.PageStart = this.pageStartSafe;
+                        request.PageStart = this.pageStartSafe;
                     axios.post(`${this.baseAddress}/Admins/CompanyOrders/BootFilterPaging`, request, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -133,21 +147,21 @@
                         this.totalDataCount = response.data.totalDataCount;
                         this.totalPage = Number.isInteger((response.data.totalDataCount) / (this.pageLengthSafe)) ? parseInt((response.data.totalDataCount) / (this.pageLengthSafe)) : parseInt((response.data.totalDataCount) / (this.pageLengthSafe)) + 1;
                     })
-                    .catch(err => { alert(err) })
-                    .finally(() => {
-                        if (this.pageStart === 1) {
-                            this.turnPagePreviousisdisabled = true;
-                        }
-                        else {
-                            this.turnPagePreviousisdisabled = false;
-                        }
-                        if (this.pageStart == this.totalPage) {
-                            this.turnPageNextisdisabled = true;
-                        }
-                        else{
-                            this.turnPageNextisdisabled = false;
-                        }
-                    });
+                        .catch(err => { alert(err) })
+                        .finally(() => {
+                            if (this.pageStart === 1) {
+                                this.turnPagePreviousisdisabled = true;
+                            }
+                            else {
+                                this.turnPagePreviousisdisabled = false;
+                            }
+                            if (this.pageStart == this.totalPage) {
+                                this.turnPageNextisdisabled = true;
+                            }
+                            else {
+                                this.turnPageNextisdisabled = false;
+                            }
+                        });
                 },
                 turnPage: function (page) {
                     this.pageStart = page;
@@ -163,21 +177,21 @@
                     }
                 },
             },
-            watch:{
-                filterInput:function(){
+            watch: {
+                filterInput: function () {
                     this.bootFilterPaging();
                 },
-                pageLength:function(){
+                pageLength: function () {
                     this.bootFilterPaging();
-                    if(this.pageStart > this.totalPage){
+                    if (this.pageStart > this.totalPage) {
                         this.pageStart = this.totalPage;
                     }
                 },
-                pageStart:function(){
+                pageStart: function () {
                     this.bootFilterPaging();
                 },
             },
-            mounted: function(){
+            mounted: function () {
                 this.bootFilterPaging();
             },
         };
