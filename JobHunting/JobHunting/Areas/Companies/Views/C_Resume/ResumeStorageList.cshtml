@@ -15,7 +15,7 @@
 }
 
 
-<div class="container-fluid py-2" id="resumeStorage">
+<div class="container-fluid py-2" id="resumeStorage" v-cloak>
     <div class="letters row">
         <template v-if="resumes.length == 0">
             <template v-if="resumesYN">
@@ -45,14 +45,14 @@
                             <p class="card-text"><i class="fa-solid fa-caret-right"></i> 學歷 :{{item.degree}}</p>
                             <p class="card-text"><i class="fa-solid fa-caret-right"></i> 就業狀態 :{{item.employmentStatus}}</p>
                         </div>
-
-                        <div class="text-center mt-4">
+                        <div class="card-footer text-center mt-3" style="background-color:transparent">
                             <!-- Button trigger modal --> @* 查看履歷moda *@
                             <button type="button" data-bs-toggle="modal"
                                     :data-bs-target="'#'+mergeID(item)" class="btn btn-primary">
                                 查看履歷
                             </button>
-
+                        </div>
+                        <div class="text-center mt-4">
                             <!-- Modal -->
                             <div class="modal fade"
                                  :id="mergeID(item)"

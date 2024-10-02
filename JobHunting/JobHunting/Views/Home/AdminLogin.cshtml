@@ -45,9 +45,13 @@
         .form-group {
             margin: 30px;
         }
+
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
-<body id="adminLogin" v-on:keyup.enter.exact="DoLogin">
+<body id="adminLogin" v-on:keyup.enter.exact="DoLogin" v-cloak>
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
