@@ -6,14 +6,7 @@
     <style>
         a:link { /* 未瀏覽過的超連結 */
             text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: blue;
         }
-        button{
-            font-weight: bold;
-        }
-
 
     </style>
 }
@@ -32,39 +25,39 @@
     @* 搜尋列 *@
     <div class="container border border-2 col-10 mb-4">
         <div class="row calculator-dropdown py-md-2">
-            <div class="col-sm-3">
+            <div class="col-4">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">地區篩選</label>
-                <select class="rounded-2" v-model="city" v-on:change="getArea" style="height:28.95px">
+                <select class="form-control rounded-2" v-model="city" v-on:change="getArea" style="width:90px;height:32.95px;display:inline-block">
                     <option v-for="(item,index) in cityList" :key="item.CityName" :value="item.CityName">{{item.CityName}}</option>
                 </select>
-                <select class="rounded-2" v-model="areaName" style="height:28.95px">
+                <select class="form-control rounded-2 mx-1" v-model="areaName" style="width:90px;height:32.95px;display:inline-block">
                     <option v-for="item in area" :value="item.AreaName">{{item.AreaName}}</option>
                 </select>
             </div>
             <div class="col-4">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">技能類別</label>
-                <select class="rounded-2" v-model="tagClassName" v-on:change="getTagName" style="width:72.59px;height:28.95px">
+                <select class="form-control rounded-2" v-model="tagClassName" v-on:change="getTagName" style="width:90px;height:32.95px;display:inline-block" >
                     <option v-for="(item,index) in tagClasses" :key="item.tagClassName" :value="item.tagClassName">{{item.tagClassName}}</option>
                 </select>
-                <select class="rounded-2" v-model="skill" style="height:28.95px">
+                <select class="form-control rounded-2 mx-1" v-model="skill" style="width:90px;height:32.95px;display:inline-block">
                     <option v-for="item in tagNameList" :value="item.tagId">{{item.tagName}}</option>
                 </select>
             </div>
             <div class="col-3">
                 <label class="calculator-dropdown-label mx-2" for="apiChoice">學歷</label>
-                <select class="rounded-2" v-model="edu" style="width:90px;height:28.95px">
+                <select class="form-control rounded-2" v-model="edu" style="width:90px;height:28.95px;display:inline-block">
                     <option v-for="item in allDegree" :value="item">{{item}}</option>
                 </select>
             </div>
-            <div class="col-2">
+            <div class="col-1">
                 <button class="btn btn-warning text-light" v-on:click="cancelSelect()">清空</button>
             </div>
         </div>
         <div class="row py-md-2">
-            <div class="col-10 mb-0">
+            <div class="col-11 mb-0">
                 <input type="text" class="form-control" placeholder="請輸入關鍵字" v-on:keyup.lazy="filterResumes" v-model="filter" />
             </div>
-            <div class="col-2 mb-0">
+            <div class="col-1 mb-0">
                 <button class="btn btn-warning text-light" v-on:click="filterResumes">搜尋</button>
             </div>
         </div>
@@ -74,16 +67,16 @@
     @* ----------上方換頁------------------- *@
     <div class="container text-center">
         <div class="row ">
-            <div class="col-sm-2 row">
-                <div class="col-sm-6 ms-auto">
-                    <label>第</label>
-                    <select v-model="currentPageNow" v-on:change="setPage(currentPageNow)">
+            <div class="col-sm-2 ms-auto row">
+                <div class="col-sm-10">
+                    <label class="mx-1">第</label>
+                    <select class="form-control rounded-2 mx-1" v-model="currentPageNow" v-on:change="setPage(currentPageNow)" style="width:50px; height:32px;display:inline-block;">
                         <option v-for="page in totalPage" :value="page">{{page}}</option>
                     </select>
                     <label>頁</label>
                 </div>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-8 ms-auto">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" v-on:click="setPage(currentPageNow-1)">
@@ -104,8 +97,10 @@
             </div>
             <div class="col-sm-2 ms-auto row">
                 <div class="col-sm-10">
-                    <label>一頁</label>
-                    <input style="width:3vh;" v-on:change="filterResumes" v-model.number.trim="perpage" />
+                    <label class="mx-1">一頁</label>
+                    <select class="form-control rounded-2 mx-1" v-model="perpageSafe" v-on:change="perPage(perpageSafe)" style="width: 50px; height: 32px; display: inline-block;">
+                        <option v-for="per in selectPer" :value="per">{{per}}</option>
+                    </select>
                     <label>筆</label>
                 </div>
             </div>
@@ -287,6 +282,8 @@
                     tagNameList:[],
                     tagName:"",
                     perpage: 5, //一頁的資料數
+                    selectPer: [5, 10, 15, 20, 25],
+                    perpageSafe: null,
                     totalPage: null,
                     currentPage: 1,
                     currentPageNow: null,
@@ -326,12 +323,17 @@
                     this.currentPage = page
                     this.filterResumes();
                 },
+                perPage(per) {
+                    this.perpage = per;
+                    this.filterResumes();
+                },
                 filterResumes() {
                     let self = this;
                     self.currentPageNow = self.currentPage == null || self.currentPage == "" ? 1 : self.currentPage;
+                    this.perpageSafe = this.perpage == null || this.perpage == "" ? 5 : this.perpage;
                     let today = new Date().getFullYear();
                     var request = {
-                        perpage: self.perpage,
+                        perpage: self.perpageSafe,
                         currentpage: self.currentPageNow,
                         sex:null,
                         searchText: self.filter,
