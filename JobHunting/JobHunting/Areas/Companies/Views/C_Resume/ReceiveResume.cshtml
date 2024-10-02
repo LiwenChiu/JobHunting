@@ -17,15 +17,13 @@
     </style>
 }
 
-<div id="receiveResume" >
+<div id="receiveResume" v-cloak>
     <div class="col-10 mx-auto  mt-4" >
         <div class="row">
             <div class="col-5">
                 <label style=" width:60%">
                     <input type="text" class="form-control mb-2"  v-model.trim.lazy="filter" v-on:change="receiveResumeData" placeholder="篩選關鍵字">
                 </label>
-                
-
                 <span id="TitleClass"></span>
             </div>
             <div class="col-7">
