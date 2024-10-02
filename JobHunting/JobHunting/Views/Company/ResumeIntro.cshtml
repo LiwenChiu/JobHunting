@@ -31,7 +31,7 @@
                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#autobiography">自傳</a></li>
                 <li v-for="item in resumeList">
                     <template v-if="memberRole == 'company'">
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-sm mx-2" data-bs-toggle="modal"
                                 data-bs-target="#interviewMailBtn" style="color:white" v-on:click="getOpenings">
                             面試
                         </button>

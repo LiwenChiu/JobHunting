@@ -28,7 +28,7 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#benefits">福利制度</a></li>
             <li v-for="item in openingList">
                 <template v-if="memberRole == 'candidate'">
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-sm mx-2" data-bs-toggle="modal"
                                 data-bs-target="#applyMailBtn" style="color:white" v-on:click="getResumes">
                             應徵
                         </button>
