@@ -35,8 +35,8 @@
                 <td>{{item.degree}}</td>
                 <td>{{item.address}}</td>
                 <td>{{item.registerTime}}</td>
-                <template v-if="item.verifyEmailYN == false"><td class="col-1"><button class="btn btn-danger disabled">待審核</button></td></template>
-                <template v-else=""><td class="col-2"><button class="btn btn-secondary" disabled>已審核</button></td></template>
+                <template v-if="item.verifyEmailYN == false"><td class="col-1"><button class="btn btn-danger disabled">待驗證</button></td></template>
+                <template v-else=""><td class="col-2"><button class="btn btn-secondary" disabled>已驗證</button></td></template>
             </tr>
         </tbody>
     </table>
