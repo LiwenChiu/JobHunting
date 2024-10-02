@@ -18,7 +18,7 @@
 }
 
 
-<div class="container py-2" id="indexApp" style="position: relative">
+<div class="container py-2" id="indexApp" style="position: relative" v-cloak>
 
     @* 通知 *@
     <template v-if="alertStatus == '成功'">
@@ -332,6 +332,7 @@
                         this.imgKey++;
                         this.CandidateMemberData.imgUrl = `${this.imgUrl}&t${this.imgKey}`;
                         alert(response.data);
+                        location.reload();
                     }).catch(err => { alert(err); });
 
                 },

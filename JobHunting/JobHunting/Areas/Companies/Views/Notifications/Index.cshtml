@@ -8,12 +8,12 @@
         .card{
             overflow:hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            /* white-space: nowrap; */
         }
     </style>
 }
 
-<div id="NotificationsVue">
+<div id="NotificationsVue" v-cloak>
 
     <div class="selectbutton text-center pt-2">
         <button type="button" class="btn btn-outline-danger btn-sm mx-3" v-on:click="filterInput = '面試邀請';">面試邀請</button>
